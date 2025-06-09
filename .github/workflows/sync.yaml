@@ -1,0 +1,28 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials from OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-session-name: awssyncssesion
+        role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Sync to S3 bucket
+      run: aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }} --delete
