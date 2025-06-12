@@ -38,7 +38,7 @@ const navigationItems: NavigationItem[] = [
       { text: 'Home', icon: <DashboardIcon />, path: AppRoutingPaths.HOME },
       { text: 'Calificaciones', icon: <OrdersIcon />, path: AppRoutingPaths.CALIFICACIONES },
       { text: 'Mi Ruta', icon: <OrdersIcon />, path: AppRoutingPaths.MIRUTA },
-      { text: 'ToDo', icon: <OrdersIcon />, path: AppRoutingPaths.TODO },
+      // { text: 'ToDo', icon: <OrdersIcon />, path: AppRoutingPaths.TODO },
     ],
   },
   // {

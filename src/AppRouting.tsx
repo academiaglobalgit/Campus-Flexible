@@ -11,7 +11,6 @@ import {
     MiRuta,
     PreguntasFrecuentes,
     NotFound,
-    ToDo
 } from "@components";
 
 import { ProtectedRoute } from "./components/templates/ProtectedRoute";
@@ -42,10 +41,6 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.MIRUTA,
                 Component: MiRuta
-              },
-              {
-                path: AppRoutingPaths.TODO,
-                Component: ToDo
               },
             ]
           }
