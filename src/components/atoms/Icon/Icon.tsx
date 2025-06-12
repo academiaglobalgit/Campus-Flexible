@@ -1,11 +1,13 @@
+import type { SxProps, Theme } from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
 
 type IconProps = {
     component: any;
     color: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'inherit';
+    sxProps?: SxProps<Theme>;
 }
 
-const DsSvgIcon = ({component, color = 'primary'}: IconProps) => {
+const DsSvgIcon = ({component, color = 'primary', sxProps}: IconProps) => {
     return (
         color === 'inherit'
             ? <SvgIcon component={component} inheritViewBox sx={{ fill: "none" }} />
@@ -24,6 +26,7 @@ const DsSvgIcon = ({component, color = 'primary'}: IconProps) => {
                         "& rect": {
                             stroke: "currentColor",
                         },
+                        ...sxProps
                     }}
                     color={color}
                 />
