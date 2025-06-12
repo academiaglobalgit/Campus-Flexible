@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
     { id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => console.log('Manual de Inducción') },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES) },
     { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true) },
-    { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => console.log('Ayuda') },
+    { id: 'ayuda', icon: Help, label: 'Ayuda', action: ()=> Navigation(AppRoutingPaths.AYUDA_EXTERIOR) },
   ];
 
   return (

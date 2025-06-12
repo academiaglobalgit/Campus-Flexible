@@ -14,6 +14,8 @@ import {
 } from "@components";
 
 import { ProtectedRoute } from "./components/templates/ProtectedRoute";
+import {AyudaLogin} from "./components/pages/ayuda/AyudaLogin";
+
 
 export const AppRouting = createHashRouter([
   {
@@ -52,7 +54,7 @@ export const AppRouting = createHashRouter([
       },
       {
         path: AppRoutingPaths.AYUDA_EXTERIOR,
-        Component: PreguntasFrecuentes
+        Component: AyudaLogin
       },
       {
         path: '*',
