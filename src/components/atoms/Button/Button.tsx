@@ -10,9 +10,10 @@ type dsButtonProps = {
     onClick: () => void;
     children: React.ReactNode;
     sxProps?: SxProps<Theme>;
+    isLoading?: boolean;
 };
 
-const Button = ({ color = 'primary', variant = 'contained', size = 'medium', children, disabled, onClick, sxProps, fullWidth }: dsButtonProps) => {
+const Button = ({ color = 'primary', variant = 'contained', size = 'medium', children, disabled, onClick, sxProps, fullWidth, isLoading }: dsButtonProps) => {
     return (
         <ButtonMUI 
             fullWidth={fullWidth}
@@ -22,8 +23,20 @@ const Button = ({ color = 'primary', variant = 'contained', size = 'medium', chi
             size={size}
             onClick={onClick}
             sx={sxProps}
+            loading={isLoading}
+            loadingPosition="end"
         >{children}</ButtonMUI>
     );
 }
 
 export default Button;
+
+{/* <Button
+          onClick={handleClick}
+          endIcon={<SendIcon />}
+          loading={loading}
+          loadingPosition="end"
+          variant="contained"
+        >
+          Send
+        </Button> */}
