@@ -9,7 +9,7 @@ import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 
-export const AyudaLogin = () => {
+const AyudaLogin: React.FC = () => {
   const navigate = useNavigate();
   const onBack = () => navigate(AppRoutingPaths.HOME);
   return (
@@ -104,3 +104,5 @@ export const AyudaLogin = () => {
     </Container>
   );
 };
+
+export default AyudaLogin;

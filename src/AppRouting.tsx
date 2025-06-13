@@ -11,10 +11,10 @@ import {
     MiRuta,
     PreguntasFrecuentes,
     NotFound,
+    AyudaLogin,
 } from "@components";
 
 import { ProtectedRoute } from "./components/templates/ProtectedRoute";
-import {AyudaLogin} from "./components/pages/ayuda/AyudaLogin";
 
 
 export const AppRouting = createHashRouter([
