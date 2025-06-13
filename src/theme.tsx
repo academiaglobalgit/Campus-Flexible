@@ -95,6 +95,42 @@ const theme = createTheme({
         }),
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        // Estas serán las props por defecto para todos los TextField
+        variant: 'outlined',
+        fullWidth: true,
+        size: 'medium',
+        autoComplete: 'new-password',
+      },
+      styleOverrides: {
+        root: {
+          // Estilos globales para TextField
+          marginBottom: '1rem',
+          '& .MuiOutlinedInput-root': {
+            // Estilos específicos para el outlined variant
+            borderRadius: '4px',
+          },
+          '& .MuiInputLabel-root': {
+            // Estilos para el label
+            transform: 'translate(14px, 14px) scale(1)',
+            '&.Mui-focused': {
+              transform: 'translate(14px, -9px) scale(0.75)',
+            },
+            '&.MuiFormLabel-filled': {
+              transform: 'translate(14px, -9px) scale(0.75)',
+            },
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        input: {
+          padding: '14px',
+        },
+      },
+    },
   },
   breakpoints: {
     values: {
