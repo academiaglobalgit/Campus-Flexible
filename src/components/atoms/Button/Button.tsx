@@ -30,13 +30,3 @@ const Button = ({ color = 'primary', variant = 'contained', size = 'medium', chi
 }
 
 export default Button;
-
-{/* <Button
-          onClick={handleClick}
-          endIcon={<SendIcon />}
-          loading={loading}
-          loadingPosition="end"
-          variant="contained"
-        >
-          Send
-        </Button> */}
