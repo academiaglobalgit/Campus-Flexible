@@ -5,6 +5,7 @@ import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { AccordionPregunta } from "../../organisms/AccordionPregunta/AccordionPregunta";
+import { Footer } from "../../atoms/Footer/Footer";
 
 const PreguntasFrecuentes: React.FC = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const PreguntasFrecuentes: React.FC = () => {
         </Box>
 
         <AccordionPregunta titleDivider="Generales" preguntas={["1", "2", "3", "4","12", "22", "23"]} />
+        <Footer />
     </Container>
     {/* <BottomBar /> */}
     </>

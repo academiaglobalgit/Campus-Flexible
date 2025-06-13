@@ -1,6 +1,5 @@
-import { Box, Container, TextareaAutosize, Typography } from "@mui/material";
+import { Box, Container, TextField, Typography } from "@mui/material";
 
-import { InputText } from '../../atoms/Input/Input';
 import { LogoBox } from '../../atoms/logo/LogoBox';
 import { Footer } from '../../atoms/Footer/Footer';
 import Button from '../../atoms/Button/Button';
@@ -15,7 +14,7 @@ const AyudaLogin: React.FC = () => {
   return (
     // maxWidth={isMobile ? 'xs' : 'lg'}
 
-    <Container component="main" maxWidth='xs'>
+    <Container maxWidth='xs'>
       <TopBar isExternal={true} onBack={onBack} titleScreen={TitleScreen.AYUDA} />
       <Box
         sx={{
@@ -57,30 +56,27 @@ const AyudaLogin: React.FC = () => {
         </Typography>
 
         <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <InputText
+          <TextField
             id="username"
             label="Nombre completo"
             placeholder="Ingresa tu nombre completo"
-            value={''}
           />
-          <InputText
+          <TextField
             id="correo"
             label="Correo electrónico"
             placeholder="Ingresa tu Correo electrónico"
-            value={''}
           />
-          <InputText
+          <TextField
             id="telefono"
             label="Teléfono"
             placeholder="Ingresa tu Teléfono"
-            value={''}
           />
 
-          <TextareaAutosize
-
-            minRows={5}
+          <TextField
             placeholder="Mensaje"
-            style={{ width: '100%' }}
+            label="Mensaje"
+            multiline
+            rows={5}
           />
 
           <Button
@@ -88,19 +84,14 @@ const AyudaLogin: React.FC = () => {
             sxProps={{
               py: 1.5,
             }}
+            onClick={() => {}}
           >
             ENVIAR
           </Button>
         </Box>
       </Box>
 
-      <Footer
-        
-        sxTypo={{ color: '#231F20', mt: 2.5, mb: 4  }}
-        text="Derechos Reservados © AG COLLEGE; <br />
-          Manuel Romero 96-A, Colonia Chapultepec C.P. 80040, Culiacán, Sinaloa, México; todo el material, imágenes y textos incluidos en esta página web, son propiedad de AG COLLEGE, y se encuentran protegidos por la legislación internacional y mexicana en materia de derechos de autor. Ninguna parte de esta página web podrá ser citada, copiada ni reproducida, en forma o medio alguno, sin el previo consentimiento por escrito de AG COLLEGE.
-        "
-      />
+      <Footer />
     </Container>
   );
 };
