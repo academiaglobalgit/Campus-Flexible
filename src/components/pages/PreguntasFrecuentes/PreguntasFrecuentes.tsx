@@ -28,14 +28,14 @@ const PreguntasFrecuentes: React.FC = () => {
         ? 
           <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }}>
             <TopBar isExternal={true} onBack={onBack} titleScreen={TitleScreen.PREGUNTAS_FRECUENTES}  />
-            <TituloIcon Titulo={TitleScreen.PREGUNTAS_FRECUENTES} />
+            <TituloIcon Titulo="Déjanos tu mensaje y nos contactaremos a la brevedad posible." />
             <AccordionPregunta titleDivider="Generales" preguntas={["1", "2", "3", "4","12", "22", "23"]} />
             <Footer />
           </Container>
         :
         <>
           <TituloIcon Titulo={TitleScreen.PREGUNTAS_FRECUENTES} Icon={ !isExternal ? Document : undefined } />
-          <AccordionPregunta titleDivider="Generales" preguntas={["1", "2", "3", "4","12", "22", "23"]} />
+          <AccordionPregunta titleDivider="Generales" preguntas={["1", "2", "3", "4","12", "22", "23"]} isExternal={false} />
         </>
       }
     </>
