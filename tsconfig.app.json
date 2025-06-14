@@ -29,6 +29,7 @@
     "paths": {
       "@constants": ["./src/types/index.tsx"],
       "@components": ["./src/components/index.tsx"],
+      "@iconsCustomizeds": ["./src/assets/IconsCustomize/index.tsx"]
     }
   },
   "include": ["src"]

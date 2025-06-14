@@ -7,5 +7,6 @@ export { default as PreguntasFrecuentes } from './pages/PreguntasFrecuentes/Preg
 export { default as AyudaLogin } from './pages/ayuda/AyudaLogin';
 export { default as MainTemplate } from './templates/MainTemplate/MainTemplate';
 export { default as LoginPage } from './pages/Login/Login';
+export { default as ServiciosEscolares } from './pages/ServiciosEscolares/ServiciosEscolares';
 
 export * as Organisms from './organisms';

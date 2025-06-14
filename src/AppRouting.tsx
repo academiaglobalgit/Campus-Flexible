@@ -12,6 +12,7 @@ import {
     PreguntasFrecuentes,
     NotFound,
     AyudaLogin,
+    ServiciosEscolares
 } from "@components";
 
 import { ProtectedRoute } from "./components/templates/ProtectedRoute";
@@ -43,6 +44,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.MIRUTA,
                 Component: MiRuta
+              },
+              {
+                path: AppRoutingPaths.SERVICIOS_ESCOLORES,
+                Component: ServiciosEscolares
               },
               {
                 path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT,
