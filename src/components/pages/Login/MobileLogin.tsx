@@ -14,6 +14,7 @@ import { Eye, Hide } from "../../../assets/icons";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
 import { Footer } from "../../atoms/Footer/Footer";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface AccessLoginItem {
     id: string;
@@ -36,7 +37,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-
+    
     const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
@@ -105,7 +106,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         placeholder="Ingresa tu contraseña"
                         autoComplete="new-password"
                         type={showPassword ? 'text' : 'password'}
-                         {...register("password")}
+                        {...register("password")}
                         error={!!errors.password}
                         helperText={errors.password?.message}
                         slotProps={{
@@ -118,10 +119,11 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                             onMouseDown={handleMouseDownPassword}
                                             edge="end"
                                         >
-                                            <DsSvgIcon 
+                                            {/* <DsSvgIcon 
                                                 component={showPassword ? Hide : Eye}
                                                 color="inherit"
-                                            />    
+                                            />     */}
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
                                         </IconButton>
                                     </InputAdornment>
                                 ),

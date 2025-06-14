@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthLogin as loginApi, useLogout as logoutApi } from '../services/AuthService';
 import type { User } from '@constants';
-import { checkAuthStatus, cleanStorage, getAuthModel, setAuthModel } from '../hooks/useLocalStorage';
+import { checkAuthStatus, cleanStorage, getAuthModel, setAuthModel, setToken } from '../hooks/useLocalStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -69,16 +69,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             setIsLoading(true);
             setError(null);
-            
-            const response = await loginMutation.mutateAsync({ email, password });
+
+            const username = email;
+            const response = await loginMutation.mutateAsync({ email, password, username });
             
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
             setIsLoading(false);
 
-            if (response?.data?.token) {
+            if (response?.AccessToken) {
                 setUser(response.data);
                 setAuthModel(response.data);
+                setToken(response?.AccessToken);
                 setIsAuthenticated(true);
                 return { success: true, data: response.data };
             } else {

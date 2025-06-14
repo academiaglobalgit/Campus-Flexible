@@ -44,6 +44,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.MIRUTA,
                 Component: MiRuta
               },
+              {
+                path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT,
+                Component: PreguntasFrecuentes
+              }
             ]
           }
         ]

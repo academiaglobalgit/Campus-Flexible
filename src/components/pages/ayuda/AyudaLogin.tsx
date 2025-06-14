@@ -1,4 +1,4 @@
-import { Box, Container, TextField, Typography } from "@mui/material";
+import { Box, Container, InputAdornment, TextField, Typography } from "@mui/material";
 
 import { LogoBox } from '../../atoms/logo/LogoBox';
 import { Footer } from '../../atoms/Footer/Footer';
@@ -7,6 +7,7 @@ import Logo from '../../../assets/logo_ag.svg';
 import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
+import { AccountCircle } from "@mui/icons-material";
 
 const AyudaLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -60,6 +61,15 @@ const AyudaLogin: React.FC = () => {
             id="username"
             label="Nombre completo"
             placeholder="Ingresa tu nombre completo"
+            // slotProps={{
+            //   input: {
+            //     endAdornment: (
+            //       <InputAdornment position="end">
+            //         <AccountCircle />
+            //       </InputAdornment>
+            //     ),
+            //   },
+            // }}
           />
           <TextField
             id="correo"

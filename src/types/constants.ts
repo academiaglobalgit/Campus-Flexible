@@ -15,7 +15,8 @@ export const AppRoutingPaths = {
     MIRUTA: "/miruta",
     MI_PERFIL: "/mi-perfil",
     NOTFOUND: '*',
-    PREGUNTAS_FRECUENTES: "/faqs",
+    PREGUNTAS_FRECUENTES: "/faqs-ext",
+    PREGUNTAS_FRECUENTES_INT: "/faqs",
     PLAN_ESTUDIOS: "/plan-estudios",
     SALA_CONVERSACIONES: "/sala",
     VIDEOS_LECTURAS: "/videos",
@@ -66,16 +67,10 @@ export const MenuInformacion = [
     { text: TitleScreen.SERVICIOS_ESCOLORES, icon: ServiciosEscolares, path: AppRoutingPaths.SERVICIOS_ESCOLORES, order: 0 },
     { text: TitleScreen.AYUDA, icon: Ayuda, path: AppRoutingPaths.AYUDA_INTERIOR, order: 1 },
     { text: TitleScreen.CONTACTO, icon: Contacto, path: AppRoutingPaths.CONTACTO, order: 2 },
-    { text: TitleScreen.FAQS, icon: PreguntasFrecuentes, path: AppRoutingPaths.PREGUNTAS_FRECUENTES, order: 3},
+    { text: TitleScreen.FAQS, icon: PreguntasFrecuentes, path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT, order: 3},
     { text: TitleScreen.MANUAL_INDUCCION, icon: ManualInduccion, path: AppRoutingPaths.MANUAL_INDUCCION, order: 4 },
 ] as const;
 
 export type MenuInformacion = typeof MenuInformacion;
 
 export type MenuType = 'menuRoutes' | 'menuInformacion';
-
-// export const LOGIN_ENDPOINTS = {
-//     POST_LOGIN: '/login',
-// }
-
-// export type LOGIN_ENDPOINTS = typeof LOGIN_ENDPOINTS;
