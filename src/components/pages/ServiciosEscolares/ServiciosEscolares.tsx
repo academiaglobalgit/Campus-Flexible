@@ -51,7 +51,7 @@ const ServiciosEscolares: React.FC = () => {
                                         component="span" 
                                         variant="body1"
                                         color="primary"
-                                        sxProps={{ fontWeight:400, fontSize: '18px', lineHeight:'24px', color: (theme) => `${theme.palette.primary[300]}CC` }}>
+                                        sxProps={{ fontWeight:400, fontSize: '18px', lineHeight:'24px', color: (theme: any) => `${theme.palette.primary[300]}CC` }}>
                                         Ver Información
                                     </Typography>
                                 </Box>

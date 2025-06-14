@@ -1,5 +1,5 @@
-import { Box, Container, InputAdornment, TextField, Typography } from "@mui/material";
-
+import { Box, Container,  TextField, Typography } from "@mui/material";
+// InputAdornment,
 import { LogoBox } from '../../atoms/logo/LogoBox';
 import { Footer } from '../../atoms/Footer/Footer';
 import Button from '../../atoms/Button/Button';
@@ -7,7 +7,7 @@ import Logo from '../../../assets/logo_ag.svg';
 import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
-import { AccountCircle } from "@mui/icons-material";
+// import { AccountCircle } from "@mui/icons-material";
 
 const AyudaLogin: React.FC = () => {
   const navigate = useNavigate();
