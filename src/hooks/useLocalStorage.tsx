@@ -20,7 +20,7 @@ export const getToken = (): string => {
     return localStorage.getItem(TOKEN_STORAGE_KEY) || '';
 };
 
-const setToken = (token: string): void => {
+export const setToken = (token: string): void => {
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
 };
 
@@ -33,7 +33,7 @@ export const getAuthModel = (): any => {
 
 export const setAuthModel = (auth: any): void => {
     localStorage.setItem(AUTH_MODEL_STORAGE_KEY, JSON.stringify(auth));
-    setToken(auth.token);
+    // setToken(auth.token);
 }
 
 export const cleanStorage = (): void => {

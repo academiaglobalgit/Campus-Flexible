@@ -40,8 +40,8 @@ export const BottomBar: React.FC = () => {
               icon={<HomeOutlinedIcon />} 
               onClick={handleHome}
             />
-            <BottomNavigationAction
-              icon={<AddCircleOutlineIcon sx={{ fontSize: 40 }} />}
+            <BottomNavigationAction 
+              icon={<AddCircleOutlineIcon color="primary" sx={{ fontSize: 40 }} />}
               onClick={(event) => handleMenuClick(event, "menuRoutes")}
             />
             <BottomNavigationAction 

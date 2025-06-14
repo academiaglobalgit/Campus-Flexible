@@ -4,13 +4,16 @@ import { Accordion } from "../../molecules/Accordion/Accordion";
 import { useEffect, useState } from "react";
 
 type AccordionPreguntaProps = {
+    isExternal?: boolean;
     titleDivider: string;
     preguntas: any[];
 };
 
-export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivider, preguntas}) => {
+export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivider, preguntas, isExternal = true}) => {
     const [data, setData] = useState<any[]>([]);
+    // const [ sxProps, setSxProps ] = useState<()
 
+    //  sxProps={{mt: 1}}
     useEffect(() => {
         if(preguntas) {
             setData(preguntas);
@@ -19,13 +22,7 @@ export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivide
     
     return (
         <>
-            <Divider textAlign="center"
-                sx={{ 
-                    my: 2, 
-                    '&::before, &::after': {
-                        borderColor: 'primary.main',
-                    },
-                }}>
+            <Divider textAlign="center">
                 <Typography component="span" variant="subtitle1" color="primary">{titleDivider}</Typography>
             </Divider>
             {

@@ -15,4 +15,10 @@ export interface AuthResponse {
   status: string;
   message: string;
   data: User;
+  AccessToken:  string;
+  ExpiresIn:    number;
+  IdToken:      string;
+  RefreshToken: string;
+  TokenType:    string;
 }
+

@@ -104,7 +104,7 @@ const theme = createTheme({
         autoComplete: 'new-password',
       },
       styleOverrides: {
-        root: {
+        root: ({theme}) => ({
           // Estilos globales para TextField
           marginBottom: '1rem',
           '& .MuiOutlinedInput-root': {
@@ -121,7 +121,13 @@ const theme = createTheme({
               transform: 'translate(14px, -9px) scale(0.75)',
             },
           },
-        },
+          '& .Mui-focused .MuiInputAdornment-root .MuiSvgIcon-root': {
+            color: theme.palette.primary.light,
+          },
+          '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+            color: theme.palette.text.secondary,
+          },
+        }),
       },
     },
     MuiOutlinedInput: {
@@ -131,6 +137,17 @@ const theme = createTheme({
         },
       },
     },
+    MuiDivider: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          marginTop: '16px',
+          marginBottom: '16px',
+          '&::before, &::after': {
+            borderColor: theme.palette.primary.main,
+          }
+        })
+      }
+    }
   },
   breakpoints: {
     values: {
