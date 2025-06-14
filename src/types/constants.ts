@@ -20,10 +20,10 @@ export const AppRoutingPaths = {
     PLAN_ESTUDIOS: "/plan-estudios",
     SALA_CONVERSACIONES: "/sala",
     VIDEOS_LECTURAS: "/videos",
-
     SERVICIOS_ESCOLORES: "/serv-esco",
     CONTACTO: "/contact",
-    MANUAL_INDUCCION: "/manual"
+    MANUAL_INDUCCION: "/manual",
+    PLAN_ESTUDIO_INFORMACION: "/informacion"
 
 } as const;
 

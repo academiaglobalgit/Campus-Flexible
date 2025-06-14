@@ -17,7 +17,7 @@ const theme = createTheme({
       main: "#D9A514"
     },
     success: {
-      main: "#D9A514"
+      main: "#1F7B5C"
     },
     grey: {
       50: '#E6EFFC',      
@@ -68,6 +68,13 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {

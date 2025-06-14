@@ -9,5 +9,6 @@ export { default as MainTemplate } from './templates/MainTemplate/MainTemplate';
 export { default as LoginPage } from './pages/Login/Login';
 export { default as ServiciosEscolares } from './pages/ServiciosEscolares/ServiciosEscolares';
 export { default as Calendario } from './pages/Calendario/Calendario';
+export { default as PlanEstudio } from './pages/PlanEstudio/PlanEstudio';
 
 export * as Organisms from './organisms';
