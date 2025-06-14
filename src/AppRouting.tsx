@@ -12,7 +12,8 @@ import {
     PreguntasFrecuentes,
     NotFound,
     AyudaLogin,
-    ServiciosEscolares
+    ServiciosEscolares,
+    Calendario
 } from "@components";
 
 import { ProtectedRoute } from "./components/templates/ProtectedRoute";
@@ -52,6 +53,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT,
                 Component: PreguntasFrecuentes
+              },
+              {
+                path: AppRoutingPaths.CALENDARIO,
+                Component: Calendario
               }
             ]
           }
