@@ -9,8 +9,6 @@ import { useAuth } from "../../../hooks";
 
 import Logo from '../../../assets/logo_ag.svg';
 import { useNavigate } from "react-router-dom";
-import DsSvgIcon from "../../atoms/Icon/Icon";
-import { Eye, Hide } from "../../../assets/icons";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
 import { Footer } from "../../atoms/Footer/Footer";
@@ -119,10 +117,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                             onMouseDown={handleMouseDownPassword}
                                             edge="end"
                                         >
-                                            {/* <DsSvgIcon 
-                                                component={showPassword ? Hide : Eye}
-                                                color="inherit"
-                                            />     */}
                                             {showPassword ? <VisibilityOff /> : <Visibility />}
                                         </IconButton>
                                     </InputAdornment>
