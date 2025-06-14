@@ -9,20 +9,57 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials from OIDC
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-session-name: awssyncssesion
-        role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # o la versión que uses
+          cache: 'npm'
 
-    - name: Sync to S3 bucket
-      run: aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/avatares --delete
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build # asegúrate que este script exista
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # o './build' según tu proyecto
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+  # deploy:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout repo
+  #     uses: actions/checkout@v4
+
+    # - name: Configure AWS credentials from OIDC
+    #   uses: aws-actions/configure-aws-credentials@v4
+    #   with:
+    #     role-session-name: awssyncssesion
+    #     role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+    #     aws-region: ${{ secrets.AWS_REGION }}
+
+    # - name: Sync to S3 bucket
+    #   run: aws s3 sync . s3://${{ secrets.AWS_BUCKET_NAME }}/avatares --delete
