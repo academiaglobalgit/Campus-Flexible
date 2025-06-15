@@ -73,6 +73,9 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
         },
+        containedWarning: {
+          color: '#fff'
+        }
       },
     },
     MuiDrawer: {
