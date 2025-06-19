@@ -31,6 +31,7 @@ export type AppRoutingPaths = typeof AppRoutingPaths;
 
 export const TitleScreen = {
     AYUDA: "Ayuda",
+    BIBLIOTECA_VIRTUAL: "Biblioteca virtual",
     CALENDARIO: "Calendario",
     CALIFICACIONES: "Calificaciones",
     CURSOS_ACTIVOS: "Cursos Activos",
@@ -41,7 +42,7 @@ export const TitleScreen = {
     PLAN_ESTUDIOS: "Plan de estudios",
     PREGUNTAS_FRECUENTES: "Preguntas Frecuentes",
     SALA_CONVERSACIONES: "Sala de conversación",
-    VIDEOS_LECTURAS: "Videos y lecturas de interes",
+    VIDEOS_LECTURAS: "Videos y Lecturas de interés",
     SERVICIOS_ESCOLORES: "Servicios Escolares",
     CONTACTO: "Contacto",
     MANUAL_INDUCCION: "Manual de inducción",

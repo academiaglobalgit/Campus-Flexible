@@ -10,5 +10,6 @@ export { default as LoginPage } from './pages/Login/Login';
 export { default as ServiciosEscolares } from './pages/ServiciosEscolares/ServiciosEscolares';
 export { default as Calendario } from './pages/Calendario/Calendario';
 export { default as PlanEstudio } from './pages/PlanEstudio/PlanEstudio';
+export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/VideotecaBiblioteca';
 
 export * as Organisms from './organisms';

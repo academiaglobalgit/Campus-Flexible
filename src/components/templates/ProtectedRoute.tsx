@@ -7,7 +7,7 @@ import { AppRoutingPaths } from '@constants';
 export const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isInitializing } = useAuth();
     const location = useLocation();
-// return <Outlet />;
+return <Outlet />;
     if (isInitializing) {
         return ''; // show un spinner mientras verifica
     }
