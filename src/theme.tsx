@@ -32,21 +32,25 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
     h1: {
+      fontFamily: 'Gotham',
       fontWeight: 700,
       fontSize: '64px',
       lineHeight: '76px',
     },
     h2: {
+      fontFamily: 'Gotham',
       fontWeight: 600,
       fontSize: '36px',
       lineHeight: '44px',
     },
     h3: {
+      fontFamily: 'Gotham',
       fontWeight: 600,
       fontSize: '28px',
       lineHeight: '36px',
     },
     h4: {
+      fontFamily: 'Gotham',
       fontWeight: 600,
       fontSize: '20px',
       lineHeight: '28px',
@@ -157,7 +161,34 @@ const theme = createTheme({
           }
         })
       }
-    }
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'space-around',
+        },
+        flexContainer: {
+          justifyContent: 'space-around',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          textTransform: 'none',
+          minWidth: 0,
+          flex: 1,
+          color: '#C0C0C0',
+          '&.Mui-selected': {
+            color: theme.palette.primary.main,
+          },
+          fontWeight: 500,
+          fontSize: '16px',
+          lineHeight: '24px'
+        }),
+      },
+    },
   },
   breakpoints: {
     values: {
