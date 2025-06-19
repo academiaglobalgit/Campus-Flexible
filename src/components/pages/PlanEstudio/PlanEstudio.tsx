@@ -45,13 +45,17 @@ const PlanEstudio: React.FC = () => {
                 <Typography component="span" variant="body1" sxProps={{ fontSize: '18px', lineHeight: '24px' }} >
                     {materia}
                 </Typography>
-                <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px' }}>
-                    <Button onClick={goToInformacion} sxProps={{width: '165px'}} variant="outlined">Información</Button>
-                    <Button 
-                        onClick={() => {}} 
-                        sxProps={{width: '165px'}} 
-                        color={color}
-                    >{status}</Button>
+                <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
+                    <>
+                        <Button onClick={goToInformacion} fullWidth variant="outlined">Información</Button>
+                    </>
+                    <>
+                        <Button 
+                            fullWidth
+                            onClick={() => {}} 
+                            color={color}
+                        >{status}</Button>
+                    </>
                 </Box>
             </Box>
         )
@@ -63,9 +67,13 @@ const PlanEstudio: React.FC = () => {
           <Typography component="span" variant="body1">
             En esta sección encontrarás todos los cursos, agrupados por períodos, que integran el Programa de Prepa Coppel. En la columna derecha observamos dos botones. En Información tienes a tu disposición la descripción de objetivos, estructura y recursos que integran cada material académico. El segundo botón, te permitirá solicitar la activación de cada curso.
           </Typography>
-          <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', gap: '15px' }}>
-            <Button onClick={() => {}} sxProps={{width: '165px'}}>Video de Bienvenida</Button>
-            <Button onClick={() => {}} sxProps={{width: '165px'}} variant="outlined" >Mapa Curricular</Button>
+          <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
+            <>
+                <Button onClick={() => {}} fullWidth>Video de Bienvenida</Button>
+            </>
+            <>
+                <Button onClick={() => {}} fullWidth variant="outlined" >Mapa Curricular</Button>
+            </>
           </Box>
           <Box>
             {
