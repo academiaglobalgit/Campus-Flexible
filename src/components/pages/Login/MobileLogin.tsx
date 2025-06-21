@@ -21,7 +21,7 @@ interface AccessLoginItem {
     action?: () => void;
 }
 
-type AccessLogin = {
+export type AccessLogin = {
     accessLogin: AccessLoginItem[];
 };
 

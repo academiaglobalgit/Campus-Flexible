@@ -8,7 +8,7 @@ import {
 
 import { ManualInduccion, FAQS, Contacto, Help } from '../../../assets/icons';
 import { MobileLogin } from './MobileLogin';
-// import DesktopLogin from './DesktopLogin';
+import DesktopLogin from './DesktopLogin';
 import React from 'react';
 import { Dialog } from '../../atoms/Dialog/Dialog';
 import Button from '../../atoms/Button/Button';
@@ -33,15 +33,13 @@ const LoginPage: React.FC = () => {
   ];
 
   return (
-    // maxWidth={isMobile ? 'xs' : 'lg'}
-    <Container component="main" maxWidth='xs'>
+    <Container component="main">
       {
         isMobile 
         ?
           <MobileLogin accessLogin={accessLogin} />
         : 
-        <MobileLogin accessLogin={accessLogin} />
-          // <DesktopLogin />
+          <DesktopLogin accessLogin={accessLogin} />
       }
       <Dialog isOpen={isOpen} >
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', paddingTop: '20px', paddingBottom: '12px' }}>
