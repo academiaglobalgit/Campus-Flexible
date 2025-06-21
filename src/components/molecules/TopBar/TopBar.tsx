@@ -7,6 +7,7 @@ import { LeftCircle } from "../../../assets/icons";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { useAuth } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
 
 type TopBarProps = {
   titleScreen?: string;
@@ -16,6 +17,12 @@ type TopBarProps = {
 
 export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack}) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    // console.log("click");
+    navigate('/mi-perfil');
+  };
   
   return (
     <AppBar
@@ -36,7 +43,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack})
           ) : (
             <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Avatar alt={ user?.name } src="" width={48} height={48} />
+                <Avatar alt={ user?.name } src="" width={48} height={48} onClick={() => handleClick()} />
                 <Typography component="h4" variant="h4" sxProps={{ ml: 1 }}>
                   { user?.name }
                 </Typography>

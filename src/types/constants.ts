@@ -14,6 +14,7 @@ export const AppRoutingPaths = {
     LOGIN: "/login",
     MIRUTA: "/miruta",
     MI_PERFIL: "/mi-perfil",
+    MI_PERFIL_EDIT: "/edit-perfil",
     NOTFOUND: '*',
     PREGUNTAS_FRECUENTES: "/faqs-ext",
     PREGUNTAS_FRECUENTES_INT: "/faqs",

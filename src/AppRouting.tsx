@@ -53,6 +53,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.VIDEOS_LECTURAS,
                 Component: Component.VideotecaBiblioteca
               },
+              {
+                path: AppRoutingPaths.MI_PERFIL,
+                Component: Component.MiPerfil
+              },
             ]
           }
         ]

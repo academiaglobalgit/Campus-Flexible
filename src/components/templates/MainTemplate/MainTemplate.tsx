@@ -12,7 +12,7 @@ const MainTemplate: React.FC = () => {
     const theme = useTheme();
     const location = useLocation();
 
-    const hideTopBarRoutes = [`${AppRoutingPaths.MI_PERFIL}`];
+    const hideTopBarRoutes = [`${AppRoutingPaths.MI_PERFIL_EDIT}`];
     const hideTopBar = hideTopBarRoutes.includes(location.pathname);
 
     const [isSidenavOpen, setIsSidenavOpen] = React.useState(false);

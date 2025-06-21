@@ -11,5 +11,6 @@ export { default as ServiciosEscolares } from './pages/ServiciosEscolares/Servic
 export { default as Calendario } from './pages/Calendario/Calendario';
 export { default as PlanEstudio } from './pages/PlanEstudio/PlanEstudio';
 export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/VideotecaBiblioteca';
+export { default as MiPerfil } from './pages/MiPerfil/MiPerfil';
 
 export * as Organisms from './organisms';

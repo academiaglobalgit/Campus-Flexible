@@ -21,3 +21,6 @@ export { default as ServiciosEscolares } from './ServiciosEscolares.svg?react';
 export { default as SubirArchivo } from './SubirArchivo.svg?react';
 export { default as VidaEstudiantil } from './VidaEstudiantil.svg?react';
 export { default as Videoteca } from './Videoteca.svg?react';
+export { default as Edit } from './Edit.svg?react';
+export { default as Location } from './Location.svg';
+export { default as CheckCircle } from './CheckCircle.svg';
