@@ -2,6 +2,8 @@ import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getToken } from '../../hooks/useLocalStorage';
 
+import * as crypto from '../../utils/crypto';
+
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 class httpClient {
@@ -134,6 +136,10 @@ class httpClient {
       url,
       data,
     });
+  }
+
+  public encryptData(data?: unknown) {
+    return crypto.encryptData(data);
   }
 }
 

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthLogin as loginApi, useLogout as logoutApi } from '../services/AuthService';
 import type { User } from '@constants';
-import { checkAuthStatus, cleanStorage, getAuthModel, setAuthModel, setToken } from '../hooks/useLocalStorage';
+import { checkAuthStatus, cleanStorage, getAuthModel, setToken } from '../hooks/useLocalStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -71,18 +71,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setError(null);
 
             const username = email;
-            const response = await loginMutation.mutateAsync({ email, password, username });
+            const response = await loginMutation.mutateAsync({ password, username });
             
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
             setIsLoading(false);
 
-            if (response?.AccessToken) {
-                setUser(response.data);
-                setAuthModel(response.data);
-                setToken(response?.AccessToken);
+            if (response?.token) {
+                // setUser(response.data);
+                // setAuthModel(response.data);
+                setToken(response?.token);
                 setIsAuthenticated(true);
-                return { success: true, data: response.data };
+                return { success: true, data: null };
             } else {
                 const errorMessage = response?.message || 'Autenticación fallida';
                 setError(errorMessage);

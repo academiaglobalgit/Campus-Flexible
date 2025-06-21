@@ -1,5 +1,4 @@
 export interface LoginCredentials {
-  email: string;
   password: string;
   username?: string; // Optional, used for login
 }
@@ -12,13 +11,7 @@ export interface User {
 }
 
 export interface AuthResponse {
-  status: string;
+  success: boolean;
   message: string;
-  data: User;
-  AccessToken:  string;
-  ExpiresIn:    number;
-  IdToken:      string;
-  RefreshToken: string;
-  TokenType:    string;
+  token:  string;
 }
-

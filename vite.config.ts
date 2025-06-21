@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
         '@iconsCustomizeds': path.resolve(__dirname, './src/assets/IconsCustomize')
       },
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    },
+    define: {
+      global: {}
     }
   }
 })
