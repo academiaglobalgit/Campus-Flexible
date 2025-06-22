@@ -1,27 +1,24 @@
 import {
+  Box,
   Container,
-  DialogActions,
-  DialogContent,
+  Grid,
   useMediaQuery, 
   useTheme 
 } from '@mui/material';
 
 import { ManualInduccion, FAQS, Contacto, Help } from '../../../assets/icons';
 import { MobileLogin } from './MobileLogin';
-import DesktopLogin from './DesktopLogin';
 import React from 'react';
-import { Dialog } from '../../atoms/Dialog/Dialog';
-import Button from '../../atoms/Button/Button';
-import { Avatar } from '../../atoms/Avatar/Avatar';
-import { Typography } from '../../atoms/Typography/Typography';
-
-import contactanos from '../../../assets/contactanos.png';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
+
+import Home from "../../../assets/home.png";
+import ContactoDialog from '../../molecules/ContactoDialog/ContactoDialog';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const [isOpen, setIsOpen] = React.useState(false);
   const Navigation = useNavigate();
 
@@ -33,56 +30,39 @@ const LoginPage: React.FC = () => {
   ];
 
   return (
-    <Container component="main">
+    <>
       {
         isMobile 
         ?
-          <MobileLogin accessLogin={accessLogin} />
+          <Container component="main">
+            <MobileLogin accessLogin={accessLogin} />
+          </Container>
         : 
-          <DesktopLogin accessLogin={accessLogin} />
-      }
-      <Dialog isOpen={isOpen} >
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', paddingTop: '20px', paddingBottom: '12px' }}>
-            <Avatar src={contactanos} width={150} height={150} />
-            <Typography 
-                color='primary'
-                component="h3"
-                variant='h3'
-            >
-              CONTACTO
-            </Typography>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <Typography component="h4" variant='h4'>
-                Teléfonos
-              </Typography>
-              <Typography component="p" variant='body2'>            
-                (667) 712 41 72<br />
-                (667) 176 09 85
-              </Typography>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <Typography component="h4" variant='h4'>
-                Correo Electrónico
-              </Typography>
-              <Typography component="p" variant='body2'>            
-                daniela.cazares@umi.edu.mx
-              </Typography>
-            </div>
-          </div>
-         
-         
-        </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'center', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '20px' }}>
-          <Button 
-              fullWidth
-              onClick={() => setIsOpen(false)}
-          >
-              CERRAR
-          </Button>
-        </DialogActions>
-      </Dialog> 
-    </Container> 
+          <Grid container size={{ md:12 }} sx={{ height: '100vh' }}>
+            <Grid size={{ md:4 }} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+              <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
+                <MobileLogin accessLogin={accessLogin} />
+              </Box>
+            </Grid>
+            {
+              !showImage && 
+                <Grid size={{ md:8 }} >
+                  <Box
+                    component="img"
+                    src={Home}
+                    alt="Login"
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </Grid>
+            }
+          </Grid>
+      }   
+      <ContactoDialog isOpen={isOpen} close={() => setIsOpen(false)} />
+    </>
   );
 };
 
