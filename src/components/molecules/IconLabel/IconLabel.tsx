@@ -26,7 +26,7 @@ export const IconLabel = ({
     onClick={() => action && action()}
 >
     <DsSvgIcon component={icon} color='primary' />
-    <Typography color={color} component="p" variant="body2">
+    <Typography color={color} component="p" variant="body2" sx={{textAlign:'center'}}>
       {label}
     </Typography>
   </div>

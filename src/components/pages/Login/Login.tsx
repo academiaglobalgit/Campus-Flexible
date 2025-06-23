@@ -14,13 +14,16 @@ import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
 import ContactoDialog from '../../molecules/ContactoDialog/ContactoDialog';
+import { useGetContacto } from '../../../services/ContactoService';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
+  const Navigation = useNavigate();
+  const { data: contacto } = useGetContacto(1);
+
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const [isOpen, setIsOpen] = React.useState(false);
-  const Navigation = useNavigate();
 
   const accessLogin = [
     { id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => console.log('Manual de Inducción') },
@@ -61,7 +64,7 @@ const LoginPage: React.FC = () => {
             }
           </Grid>
       }   
-      <ContactoDialog isOpen={isOpen} close={() => setIsOpen(false)} />
+      <ContactoDialog isOpen={isOpen} close={() => setIsOpen(false)} data={contacto} />
     </>
   );
 };

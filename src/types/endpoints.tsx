@@ -43,5 +43,9 @@ export const MAS_INFORMACION_ENDPOINTS = {
 }
 
 export const FAQS_ENDPOINTS = {
-    GET_FAQS: { path:'/login/preguntas-frecuentes', key: 'preguntas-frecuentes' },
+    GET_FAQS: { path:'/preguntas-frecuentes', key: 'preguntas-frecuentes' },
+}
+
+export const CONTACTO_ENDPOINTS = {
+    GET_CONTACTO: { path:'/contacto', key: 'contacto' },
 }

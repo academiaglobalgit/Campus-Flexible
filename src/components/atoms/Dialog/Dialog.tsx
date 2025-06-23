@@ -19,6 +19,7 @@ export const Dialog: React.FC<ResponsiveDialogProps> = ({children, isOpen, width
     return (
         <React.Fragment>
             <MuiDialog
+                maxWidth="md"
                 open={open}
                 slotProps={{
                     paper: {
