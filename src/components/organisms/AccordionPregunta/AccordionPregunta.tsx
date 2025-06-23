@@ -2,15 +2,16 @@ import { Divider, type SxProps, type Theme } from "@mui/material";
 import { Typography } from "../../atoms/Typography/Typography";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { useEffect, useState } from "react";
+import type { Pregunta } from "../../../types/preguntas-frecuentes.interface";
 
 type AccordionPreguntaProps = {
     isExternal?: boolean;
     titleDivider: string;
-    preguntas: any[];
+    preguntas: Pregunta[];
 };
 
 export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivider, preguntas, isExternal = true}) => {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<Pregunta[]>([]);
     const [ sxProps, setSxProps ] = useState<SxProps<Theme> | undefined>(undefined);
     
     useEffect(() => {
@@ -36,9 +37,9 @@ export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivide
             </Divider>
             {
                 data && data.map((item, index) => (
-                    <Accordion key={index} title={"Pregunta Frecuente " + item} sxProps={sxProps}>
+                    <Accordion key={index} title={item.pregunta} sxProps={sxProps}>
                         <Typography key={index} component="span" variant="subtitle1">
-                            Aquí va la respuesta a la pregunta frecuente número {item}.
+                            {item.respuesta}
                         </Typography>
                     </Accordion>
                 ))
