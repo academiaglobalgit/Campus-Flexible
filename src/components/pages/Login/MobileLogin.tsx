@@ -13,6 +13,7 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
 import { Footer } from "../../atoms/Footer/Footer";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AppRoutingPaths } from "@constants";
 
 interface AccessLoginItem {
     id: string;
@@ -44,7 +45,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         const result = await login(data.username, data.password);
 
         if (result.success) {
-            navigate('/');
+            navigate(AppRoutingPaths.PLAN_ESTUDIOS);
         } else {
             showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
         }
