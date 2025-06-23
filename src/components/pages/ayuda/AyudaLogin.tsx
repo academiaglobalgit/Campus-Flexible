@@ -16,7 +16,7 @@ const AyudaLogin: React.FC = () => {
   
   return (
     <Container component="main" maxWidth={isMobile ? 'xs' : 'lg'}>
-      <TopBar isExternal={true} onBack={onBack} titleScreen={isMobile ? TitleScreen.AYUDA : 'Regresar a Inicio'} />
+      <TopBar isExternal={true} onBack={onBack} titleScreen={isMobile ? TitleScreen.AYUDA : TitleScreen.BACK_HOME_EXT} />
       {
         isMobile
         ?

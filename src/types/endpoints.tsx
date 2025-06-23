@@ -49,3 +49,7 @@ export const FAQS_ENDPOINTS = {
 export const CONTACTO_ENDPOINTS = {
     GET_CONTACTO: { path:'/contacto', key: 'contacto' },
 }
+
+export const AYUDA_ENDPOINTS = {
+    POST_AYUDA: { path:'/ayuda' },
+}
