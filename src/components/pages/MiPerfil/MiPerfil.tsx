@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IMaskInput, IMask } from "react-imask";
+import { IMask } from "react-imask";
 
 import { Avatar } from "../../atoms/Avatar/Avatar";
 import perfil from '../../../assets/perfil.jpg';
@@ -20,29 +20,7 @@ import { useAuth } from "../../../hooks";
 import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema";
 
 import {Location as LocationIcon, CheckCircle} from "@iconsCustomizeds";
-
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
-const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
-    function TextMaskCustom(props, ref) {
-      const { onChange, ...other } = props;
-      return (
-        <IMaskInput
-          {...other}
-          mask="(#00) 000-0000"
-          definitions={{
-            '#': /[1-9]/,
-          }}
-          inputRef={ref}
-          onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
-          overwrite
-        />
-      );
-    },
-);
+import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
 
 const initialData = {
     email: 'joseornelaz@gmail.com', 
