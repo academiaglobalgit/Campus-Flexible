@@ -1,14 +1,16 @@
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Grid, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { Home } from "@iconsCustomizeds";
 import Button from "../../atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+import TabPanel from "../../molecules/TabPanel/TabPanel";
 
 const materiaData = [
     {
-        periodo: "Primer Periodo", materias: [
+        id: 0, periodo: "Primer Periodo", materias: [
             { titulo: "Práctica y Colaboración Ciudadana I", status: "Finalizada" },
             { titulo: "Ciencias sociales I", status: "Cursando" },
             { titulo: "Pensamiento Matemático I", status: "Inscribirme" },
@@ -16,7 +18,7 @@ const materiaData = [
         ]
     },
     {
-        periodo: "Segundo Periodo", materias: [
+        id: 1, periodo: "Segundo Periodo", materias: [
             { titulo: "Práctica y Colaboración Ciudadana II", status: "Inscribirme" },
             { titulo: "Ciencias sociales II", status: "Inscribirme" },
             { titulo: "Pensamiento Matemático II", status: "Inscribirme" },
@@ -27,10 +29,35 @@ const materiaData = [
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
     const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
 
-    const materiaItem = (materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme') => {        
+    const [value, setValue] = React.useState(0);
+    const [periodos, setPeriodo] = React.useState(Array.from({ length: 5 })); //<-- REVISAR CON EL ENDPOINT
+    
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    const InformacionStatusButtons = (status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
+        <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
+            <>
+                <Button onClick={goToInformacion} fullWidth variant="outlined">Información</Button>
+            </>
+            <>
+                <Button 
+                    fullWidth
+                    onClick={() => {}} 
+                    color={color}
+                >{status}</Button>
+            </>
+        </Box>
+    );
+
+    const materiaItem = (materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {        
         let color: "success" | "primary" | "info" | "warning" | undefined;
         if(status === 'Finalizada') {
             color = "success";
@@ -41,41 +68,48 @@ const PlanEstudio: React.FC = () => {
         }
 
         return (
+            isDesktop ? 
+                <Box sx={{ borderBottom: '2px solid #AAB1B6'}}>
+                    <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}}>
+                        <Grid size={{md: 6}}>
+                            <Typography component="span" variant="body1" sxProps={{ fontSize: '18px', lineHeight: '24px' }} >
+                                {materia}
+                            </Typography>
+                        </Grid>
+                        <Grid size={{md: 6}}>
+                            {InformacionStatusButtons(status, color)}
+                        </Grid>
+                    </Grid>
+                </Box>
+            :
             <Box>
                 <Typography component="span" variant="body1" sxProps={{ fontSize: '18px', lineHeight: '24px' }} >
                     {materia}
                 </Typography>
-                <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
-                    <>
-                        <Button onClick={goToInformacion} fullWidth variant="outlined">Información</Button>
-                    </>
-                    <>
-                        <Button 
-                            fullWidth
-                            onClick={() => {}} 
-                            color={color}
-                        >{status}</Button>
-                    </>
-                </Box>
+                {InformacionStatusButtons(status, color)}
             </Box>
         )
     };
 
-    return(
-        <>
-          <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} Icon={ Home } />
-          <Typography component="span" variant="body1">
+    const Leyenda = (
+        <Typography component="span" variant="body1">
             En esta sección encontrarás todos los cursos, agrupados por períodos, que integran el Programa de Prepa Coppel. En la columna derecha observamos dos botones. En Información tienes a tu disposición la descripción de objetivos, estructura y recursos que integran cada material académico. El segundo botón, te permitirá solicitar la activación de cada curso.
-          </Typography>
-          <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
+        </Typography>
+    );
+
+    const BotonesVideoMapa = (flexDirection: string = "row") => (
+        <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
             <>
                 <Button onClick={() => {}} fullWidth>Video de Bienvenida</Button>
             </>
             <>
                 <Button onClick={() => {}} fullWidth variant="outlined" >Mapa Curricular</Button>
             </>
-          </Box>
-          <Box>
+        </Box>
+    );
+
+    const ListadoMateriaVistaMobil = (
+        <Box>
             {
                 materiaData &&
                 materiaData.map((item, index) => (
@@ -86,15 +120,75 @@ const PlanEstudio: React.FC = () => {
                         <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
                             {item.materias.map((materia, idx) => (
                                 <Box key={idx}>
-                                    {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme')}
+                                    {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', false)}
                                 </Box>
                             ))}
                         </Box>
                     </Box>
                 ))
             }
-          </Box>
+        </Box>
+    );
+
+    return (
+        isMobile 
+        ? 
+        <>
+            <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} Icon={ Home } />
+            {Leyenda}
+            {BotonesVideoMapa()}
+            {ListadoMateriaVistaMobil}
         </>
+        :
+            <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
+                <Grid container sx={{ alignItems:'center'}}>
+                    <Grid size={{md: !betweenDevice ? 8 : 12}}>
+                        <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} fontSize="h2" />
+                        {Leyenda}
+                    </Grid>
+                    <Grid size={{md: !betweenDevice ? 4 : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
+                        {BotonesVideoMapa(!betweenDevice ? "column" : "row")}
+                    </Grid>
+                </Grid>
+                <Grid container>
+                    <Grid size={{md: 12}} sx={{ width: '100%'}}>
+                        {                                
+                            !betweenDevice ?
+                                <>
+                                    <Box sx={{ width: `${(periodos.length * 108.8)}px`}}>
+                                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                                            {
+                                                periodos.map((_, i) => <Tab label={`Periodo ${i + 1}`} value={i} key={i} />)
+                                            }
+                                        </Tabs>
+                                    </Box>
+                                    {
+                                        periodos.map((_, i) => (
+                                            <TabPanel value={value} index={i} key={i}>
+                                                <Box sx={{ p:4}}>
+                                                    <TituloIcon Titulo={`Periodo ${i + 1} - Tus materias`} fontSize="h3" />
+                                                    {
+                                                        materiaData && materiaData.filter((item) => item.id === i).map((item, kix) => (
+                                                            <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
+                                                                {item.materias.map((materia, idx) => (
+                                                                    <Box key={idx}>
+                                                                        {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
+                                                                    </Box>
+                                                                ))}
+                                                            </Box>
+                                                        ))
+                                                    }
+                                                </Box>                                                
+                                            </TabPanel>
+                                        ))
+                                    }
+                                </>
+                            :
+                            ListadoMateriaVistaMobil
+                        }                            
+                    </Grid>
+                </Grid>
+            </Box>
     );
 };
 
