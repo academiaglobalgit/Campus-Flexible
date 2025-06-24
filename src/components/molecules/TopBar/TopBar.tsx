@@ -7,7 +7,8 @@ import { LeftCircle } from "../../../assets/icons";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { useAuth } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { PerfilMenu } from "../Menu/PerfilMenu/PerfilMenu";
 
 type TopBarProps = {
   titleScreen?: string;
@@ -17,11 +18,14 @@ type TopBarProps = {
 
 export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack}) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = () => {
-    // console.log("click");
-    navigate('/mi-perfil');
+  const handleMenuClose = () => {
+        setAnchorEl(null);
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
   };
   
   return (
@@ -43,7 +47,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack})
           ) : (
             <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Avatar alt={ user?.name } src="" width={48} height={48} onClick={() => handleClick()} />
+                <Avatar alt={ user?.name } src="" width={48} height={48} onClick={(event) => handleMenuClick(event)} />
                 <Typography component="h4" variant="h4" sxProps={{ ml: 1 }}>
                   { user?.name }
                 </Typography>
@@ -56,6 +60,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack})
                   <NotificationsNoneIcon />
                 </IconButton>
               </Box>
+              <PerfilMenu anchorEl={anchorEl} onClose={handleMenuClose} />
             </Toolbar>
           )
         }

@@ -12,15 +12,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { AppBar, Badge, IconButton, Menu, MenuItem, styled, Typography, type CSSObject, type Theme } from '@mui/material';
+import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
 import { MenuRoutes as MenuItems } from '@constants';
 
 import Logo from '../../../assets/logo_ag.svg';
 import miniLogo from '../../../assets/miniLogo.png';
 import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
-import AvatarMui from '@mui/material/Avatar';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
+import { PerfilMenu } from '../../molecules/Menu/PerfilMenu/PerfilMenu';
 
 const drawerWidth = 240;
 
@@ -168,7 +168,7 @@ const Sidenav = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
@@ -201,12 +201,12 @@ const Sidenav = () => {
         </Box>
                
         <Box sx={[{height: '70px', display: 'flex', alignItems:'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start'}, open && {paddingLeft: '20px'}]}>
-              <IconButton onClick={handleMenu} sx={{ p: 0 }}>
-                <Avatar width={48} height={48} />
+              <IconButton sx={{ p: 0 }}>
+                <Avatar width={48} height={48} onClick={(event) => handleMenu(event)} />
               </IconButton>
               {
                 open && 
-                <Badge onClick={handleMenu} sx={{cursor: 'pointer'}}
+                <Badge onClick={(event) => handleMenu(event)} sx={{cursor: 'pointer'}}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
@@ -225,24 +225,7 @@ const Sidenav = () => {
                   </Box>
                 </Badge>                
               }
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Mi Perfil</MenuItem>
-                <MenuItem onClick={handleClose}>Cerrar Sesión</MenuItem>
-              </Menu>
+              <PerfilMenu anchorEl={anchorEl} onClose={handleMenuClose} />
         </Box>
       </Drawer>
       <Box

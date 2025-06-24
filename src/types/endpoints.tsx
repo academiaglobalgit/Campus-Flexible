@@ -1,10 +1,8 @@
 export const LOGIN_ENDPOINTS = {
     POST_AUTH: { path: '/auth' },
     POST_LOGIN: { path: '/auth/login' },
-    POST_LOGOUT: { path: '/logout' }
+    POST_LOGOUT: { path: '/auth/logout' }
 }
-
-// export type LOGIN_ENDPOINTS = typeof LOGIN_ENDPOINTS;
 
 export const NOTIFICATIONS_ENDPOINTS = {
     GET_NOTIFICATIONS: { path: '/notificaciones', key: 'notificaciones' }
