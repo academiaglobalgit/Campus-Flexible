@@ -1,6 +1,5 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Navbar } from "../../organisms";
 import Sidenav from "../../organisms/Sidenav/Sidenav";
 import { Container, useMediaQuery, useTheme } from "@mui/material";
 import { TopBar } from "../../molecules/TopBar/TopBar";
@@ -14,19 +13,14 @@ const MainTemplate: React.FC = () => {
 
     const hideTopBarRoutes = [`${AppRoutingPaths.MI_PERFIL_EDIT}`];
     const hideTopBar = hideTopBarRoutes.includes(location.pathname);
-
-    const [isSidenavOpen, setIsSidenavOpen] = React.useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
      
     return (
         !isMobile
         ?
-            <>
-                <Navbar onMenuClick={() => setIsSidenavOpen(!isSidenavOpen)} />
-                <Box sx={{ display: "flex" }}>
-                    <Sidenav isOpen={!isSidenavOpen} onClose={() => setIsSidenavOpen(false)} />
-                </Box>
-            </>
+            <Box sx={{ display: "flex" }}>
+                <Sidenav />
+            </Box>
         :
             <>
                 <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }}>
