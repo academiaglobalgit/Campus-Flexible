@@ -246,7 +246,7 @@ const MiPerfil: React.FC = () => {
             <Box component="form" sx={{ paddingLeft: '25px', paddingRight: '25px', width: '100%'}}>
                 {formMiPerfil}
             </Box>
-            <Box sx={{ paddingLeft: '25px', paddingRight: '25px', paddingTop: '20px', width: '100%'}}>
+            <Box sx={{ paddingLeft: '25px', paddingRight: '25px', paddingTop: '20px', paddingBottom: '25px', width: '100%'}}>
                 {ButtonCerrarSesion}
             </Box>
         </Box>
