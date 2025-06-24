@@ -36,7 +36,7 @@ const PlanEstudio: React.FC = () => {
     const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
 
     const [value, setValue] = React.useState(0);
-    const [periodos, setPeriodo] = React.useState(Array.from({ length: 5 })); //<-- REVISAR CON EL ENDPOINT
+    const [periodos, _setPeriodo] = React.useState(Array.from({ length: 5 })); //<-- REVISAR CON EL ENDPOINT
     
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
