@@ -61,6 +61,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.MI_PERFIL,
                 Component: Component.MiPerfil
               },
+              {
+                path: AppRoutingPaths.AYUDA_INTERIOR,
+                Component: Component.Ayuda
+              },
             ]
           }
         ]
