@@ -79,9 +79,6 @@ export const FormAyuda: React.FC = () => {
             />            
             <Button
                 fullWidth
-                sxProps={{
-                    py: 1.5,
-                }}
                 onClick={handleSubmit(onSubmit)}
                 isLoading={loading}
             >
