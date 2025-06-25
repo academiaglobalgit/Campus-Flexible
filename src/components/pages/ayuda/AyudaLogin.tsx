@@ -3,9 +3,8 @@ import { Footer } from '../../atoms/Footer/Footer';
 import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
-import FormAyuda from "./FormAyuda";
-
 import Home from "../../../assets/ayuda_ext.png";
+import AyudaLoginForm from "./AyudaLoginForm";
 
 const AyudaLogin: React.FC = () => {
   const theme = useTheme();
@@ -21,7 +20,7 @@ const AyudaLogin: React.FC = () => {
         isMobile
         ?
           <>
-            <FormAyuda />
+            <AyudaLoginForm />
             <Footer />
           </>
         :
@@ -36,7 +35,7 @@ const AyudaLogin: React.FC = () => {
             }}
           >
             <Box>
-              <FormAyuda />
+              <AyudaLoginForm />
               <Footer />
             </Box>
           </Grid>
