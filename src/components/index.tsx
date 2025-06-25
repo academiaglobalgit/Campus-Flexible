@@ -12,5 +12,6 @@ export { default as Calendario } from './pages/Calendario/Calendario';
 export { default as PlanEstudio } from './pages/PlanEstudio/PlanEstudio';
 export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/VideotecaBiblioteca';
 export { default as MiPerfil } from './pages/MiPerfil/MiPerfil';
+export { default as Ayuda } from './pages/ayuda/Ayuda';
 
 export * as Organisms from './organisms';
