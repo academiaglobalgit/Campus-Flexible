@@ -51,7 +51,7 @@ const Ayuda: React.FC = () => {
             setValue(newValue);
         };
 
-        const arrayTab = ["Ayuda General","Contacta tu tutor"];
+        const arrayTab = ["Ayuda General","Contacto con tutor"];
 
         return(
             <Box sx={{ width: '100%', paddingTop: '50px'}}>
@@ -60,12 +60,14 @@ const Ayuda: React.FC = () => {
                         arrayTab.map((tab, i) => <Tab label={tab} value={i} key={i} />)
                     }
                 </Tabs>
-                <TabPanel value={value} index={0}>
-                    <FormAyuda />
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                    <FormTutor />
-                </TabPanel>
+                <Box sx={{paddingTop: '20px'}}>
+                    <TabPanel value={value} index={0}>
+                        <FormAyuda />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <FormTutor />
+                    </TabPanel>
+                </Box>
             </Box>
         )
     };

@@ -2,7 +2,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/
 import Button from "../../atoms/Button/Button";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ayudaTutorSchema, type AyudaTutorFormData } from "../../../schemas/ayudaSchema";
+import { ayudaTutorSchema, type AyudaTutorFormData } from "../../../schemas/ayudaTutorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useCreateAyuda } from "../../../services/AyudaService";
@@ -85,6 +85,14 @@ export const FormTutor: React.FC = () => {
                     </Select>
                     </FormControl>
                 )}
+            />
+            <TextField
+                id="email"
+                label="Correo del alumno"
+                placeholder="Ingresa tu Correo electrónico"
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
             />
             <TextField
                 placeholder="Mensaje"
