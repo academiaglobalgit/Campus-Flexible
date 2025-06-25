@@ -49,7 +49,8 @@ export const TitleScreen = {
     CONTACTO: "Contacto",
     MANUAL_INDUCCION: "Manual de inducción",
     FAQS: "Faqs",
-    BACK_HOME_EXT: "Regresar a inicio"
+    BACK_HOME_EXT: "Regresar a inicio",
+    NUEVA_SOLICITUD: "Nueva Solicitud"
 }
 
 export type TitleScreen = typeof TitleScreen;
