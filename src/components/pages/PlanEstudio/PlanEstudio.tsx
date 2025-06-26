@@ -43,6 +43,10 @@ const PlanEstudio: React.FC = () => {
         setValue(newValue);
     };
 
+    const handleVideoBienvenida = () => {
+        alert("Abrir Modal del video");
+    }
+
     const InformacionStatusButtons = (status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
@@ -102,7 +106,7 @@ const PlanEstudio: React.FC = () => {
         <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
             <>
                 <Button
-                    onClick={() => {}}
+                    onClick={handleVideoBienvenida}
                     fullWidth
                     icon={!isMobile ? <OndemandVideoIcon /> : undefined}
                     iconPosition={!isMobile ? "start" : undefined}

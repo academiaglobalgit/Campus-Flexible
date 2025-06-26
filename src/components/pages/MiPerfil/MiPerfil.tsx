@@ -190,6 +190,7 @@ const MiPerfil: React.FC = () => {
             id="telefono"
             label="Teléfono"
             placeholder="Ingresa tu Teléfono"
+            inputMode="numeric"
             slotProps={{
               input: {
                 inputComponent: TextMaskCustom as any,
@@ -208,6 +209,7 @@ const MiPerfil: React.FC = () => {
             id="whatsApp"
             label="WhatsApp"
             placeholder="WhatsApp"
+            inputMode="numeric"
             slotProps={{
               input: {
                 inputComponent: TextMaskCustom as any,
@@ -229,6 +231,7 @@ const MiPerfil: React.FC = () => {
             id="telefonoContacto"
             label="Teléfono Contacto"
             placeholder="Ingresa Teléfono de Contacto"
+            inputMode="numeric"
             slotProps={{
               input: {
                 inputComponent: TextMaskCustom as any,
