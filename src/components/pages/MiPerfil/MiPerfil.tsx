@@ -15,6 +15,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import WhatsApp from "@mui/icons-material/WhatsApp";
 import { useAuth } from "../../../hooks";
 
 import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema";
@@ -26,7 +27,8 @@ import { AppRoutingPaths, TitleScreen } from "@constants";
 
 const initialData = {
     email: 'joseornelaz@gmail.com', 
-    telefono: '(669) 116-6107'
+    telefono: '(669) 116-6107',
+    whatsApp: '',
 };
 
 const formatWithIMask = (value: string): string => {
@@ -55,7 +57,8 @@ const MiPerfil: React.FC = () => {
     const hasChanges = () => {
         return (
             currentValues.email !== initialData.email ||
-            currentValues.telefono !== initialData.telefono
+            currentValues.telefono !== initialData.telefono ||
+            currentValues.whatsApp !== initialData.whatsApp
         );
     };
 
@@ -68,6 +71,7 @@ const MiPerfil: React.FC = () => {
                 // Actualizar los inputs con los datos de la API
                 setValue("email", response.email);
                 setValue("telefono", formatWithIMask(response.telefono));
+                setValue("whatsApp", formatWithIMask(response.whatsApp));
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -199,6 +203,24 @@ const MiPerfil: React.FC = () => {
             {...register("telefono")}
             error={!!errors.telefono}
             helperText={errors.telefono?.message}
+        />
+        <TextField
+            id="whatsApp"
+            label="WhatsApp"
+            placeholder="WhatsApp"
+            slotProps={{
+              input: {
+                inputComponent: TextMaskCustom as any,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <WhatsApp />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            {...register("whatsApp")}
+            error={!!errors.whatsApp}
+            helperText={errors.whatsApp?.message}
         />
         <Divider textAlign="center">
           <Typography component="span" variant="body2" color="primary">Contacto Familiar</Typography>

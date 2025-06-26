@@ -4,15 +4,15 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ayudaTutorSchema, type AyudaTutorFormData } from "../../../schemas/ayudaTutorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useCreateAyuda } from "../../../services/AyudaService";
+// import { useMutation } from "@tanstack/react-query";
+// import { useCreateAyuda } from "../../../services/AyudaService";
 
 export const FormTutor: React.FC = () => {
-    const [loading, setLoading] = React.useState(false);
+    const [loading, _setLoading] = React.useState(false);
     const materias = [{ id: 0, label: 'Seleccionar' }, { id: 1, label: 'matemáticas' }];
     const tutores = [{ id: 0, label: 'Seleccionar' },{ id: 10, label: 'Juan Pérez' }];
     
-    const { control, register, handleSubmit, formState: { errors }, reset } = useForm<AyudaTutorFormData>({
+    const { control, register, handleSubmit, formState: { errors } } = useForm<AyudaTutorFormData>({
             resolver: zodResolver(ayudaTutorSchema(materias.map((m) => m.id), tutores.map((t) => t.id))),
             defaultValues: {
                 materia: 0,
@@ -27,21 +27,21 @@ export const FormTutor: React.FC = () => {
         // createMutation.mutate({...data, id_plan_estudios: "1"});
     };
 
-    const createMutation = useMutation({
-        mutationFn: useCreateAyuda,
-        onSuccess: () => {            
+    // const createMutation = useMutation({
+    //     mutationFn: useCreateAyuda,
+    //     onSuccess: () => {            
 
-            // Resetear el formulario
-            reset();
-            setLoading(false);
-        },
-        onError: (error) => {
-            alert(`Error al registrar: ${error.message}`);
-        },
-        onSettled: () => {
-            console.log('La mutación ha finalizado');
-        }
-    });
+    //         // Resetear el formulario
+    //         reset();
+    //         setLoading(false);
+    //     },
+    //     onError: (error) => {
+    //         alert(`Error al registrar: ${error.message}`);
+    //     },
+    //     onSettled: () => {
+    //         console.log('La mutación ha finalizado');
+    //     }
+    // });
 
     return(
         <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>

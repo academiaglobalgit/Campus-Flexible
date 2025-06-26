@@ -7,6 +7,7 @@ import Button from "../../atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
 const materiaData = [
     {
@@ -100,7 +101,14 @@ const PlanEstudio: React.FC = () => {
     const BotonesVideoMapa = (flexDirection: string = "row") => (
         <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
             <>
-                <Button onClick={() => {}} fullWidth>Video de Bienvenida</Button>
+                <Button
+                    onClick={() => {}}
+                    fullWidth
+                    icon={!isMobile ? <OndemandVideoIcon /> : undefined}
+                    iconPosition={!isMobile ? "start" : undefined}
+                >
+                    Video de Bienvenida
+                </Button>
             </>
             <>
                 <Button onClick={() => {}} fullWidth variant="outlined" >Mapa Curricular</Button>

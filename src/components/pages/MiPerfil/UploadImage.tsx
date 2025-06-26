@@ -17,16 +17,16 @@ export const UploadIage: React.FC = () => {
         }
     };
 
-    const onCrop = () => {
-        const cropper = cropperRef.current;
-        if (cropper) {
-        const canvas = cropper.getCanvas();
-        const newTab = window.open();
-        if (newTab && canvas) {
-            newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
-        }
-        }
-    };
+    // const onCrop = () => {
+    //     const cropper = cropperRef.current;
+    //     if (cropper) {
+    //     const canvas = cropper.getCanvas();
+    //     const newTab = window.open();
+    //     if (newTab && canvas) {
+    //         newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
+    //     }
+    //     }
+    // };
 
     const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
