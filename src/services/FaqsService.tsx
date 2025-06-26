@@ -5,7 +5,7 @@ import type { PreguntasFrecuentesResponse, Pregunta } from '../types/preguntas-f
 import React from 'react';
 
 type FaqsGroup = {
-  [group: string]: Pregunta[];
+    [group: string]: Pregunta[];
 };
 
 export const useGetPreguntasFrecuentes = (id_plan_estudios: number) => {

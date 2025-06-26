@@ -10,6 +10,8 @@ export { default as LoginPage } from './pages/Login/Login';
 export { default as ServiciosEscolares } from './pages/ServiciosEscolares/ServiciosEscolares';
 export { default as Calendario } from './pages/Calendario/Calendario';
 export { default as PlanEstudio } from './pages/PlanEstudio/PlanEstudio';
+export { default as CursoActivo } from './pages/CursosActivos/CursosActivos';
+export { default as CursosActivosDetalles } from './pages/CursosActivosDetalles/CursosActivosDetalles';
 export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/VideotecaBiblioteca';
 export { default as MiPerfil } from './pages/MiPerfil/MiPerfil';
 

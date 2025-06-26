@@ -19,6 +19,9 @@ const theme = createTheme({
     success: {
       main: "#1F7B5C"
     },
+    disabled: {
+      main: "#7B8186"
+    },
     grey: {
       50: '#E6EFFC',      
       100: '#7B8186',
