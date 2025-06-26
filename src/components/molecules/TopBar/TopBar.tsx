@@ -4,11 +4,10 @@ import { Typography } from "../../atoms/Typography/Typography";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { LeftCircle } from "../../../assets/icons";
 
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { useAuth } from "../../../hooks";
 import { useState } from "react";
 import { PerfilMenu } from "../Menu/PerfilMenu/PerfilMenu";
+import { IconsTopBar } from "../IconsTopBar/IconsTopBar";
 
 type TopBarProps = {
   titleScreen?: string;
@@ -52,14 +51,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack})
                   { user?.name }
                 </Typography>
               </Box>
-              <Box>
-                <IconButton>
-                  <HelpOutlineIcon />
-                </IconButton>
-                <IconButton>
-                  <NotificationsNoneIcon />
-                </IconButton>
-              </Box>
+              <IconsTopBar />
               <PerfilMenu anchorEl={anchorEl} onClose={handleMenuClose} />
             </Toolbar>
           )

@@ -21,6 +21,7 @@ import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import { PerfilMenu } from '../../molecules/Menu/PerfilMenu/PerfilMenu';
+import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
 
 const drawerWidth = 240;
 
@@ -233,10 +234,11 @@ const Sidenav = () => {
         sx={{ flexGrow: 1, p: 3,  overflowX: 'hidden' }}
       >
         <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
-          <Toolbar sx={{display: 'flex', justifyContent: 'flex-end'}}>
-            <Typography variant="h6" component="div">
+          <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
+            <Typography variant="h4" component="h4" color='primary'>
               Nombre de la plataforma
             </Typography>
+            <IconsTopBar />
           </Toolbar>
         </AppBar>
         <Toolbar />

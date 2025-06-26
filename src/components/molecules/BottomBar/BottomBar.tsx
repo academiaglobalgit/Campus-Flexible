@@ -33,6 +33,7 @@ export const BottomBar: React.FC = () => {
               bottom: 0,
               width: "100%",
               borderTop: "1px solid #ddd",
+              zIndex: 1
             }}
         >
             <BottomNavigationAction 
