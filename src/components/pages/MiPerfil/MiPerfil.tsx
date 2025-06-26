@@ -3,19 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Box, Divider, Grid, InputAdornment, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IMask } from "react-imask";
 
 import { Avatar } from "../../atoms/Avatar/Avatar";
 import perfil from '../../../assets/perfil.jpg';
 import { Typography } from "../../atoms/Typography/Typography";
 import Button from "../../atoms/Button/Button";
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import WhatsApp from "@mui/icons-material/WhatsApp";
 import { useAuth } from "../../../hooks";
 
 import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema";
@@ -25,18 +18,14 @@ import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 
+import { Calendar, Mail, User, Contacto, WhatsApp, Right } from "../../../assets/icons";
+import DsSvgIcon from "../../atoms/Icon/Icon";
+import { formatWithIMask } from "../../../utils/Helpers";
+
 const initialData = {
     email: 'joseornelaz@gmail.com', 
     telefono: '(669) 116-6107',
     whatsApp: '',
-};
-
-const formatWithIMask = (value: string): string => {
-  const mask = IMask.createMask({
-    mask: "(000) 000-0000", // Máscara deseada
-  });
-  mask.resolve(value); // Aplica la máscara
-  return mask.value; // Devuelve el valor formateado
 };
 
 const MiPerfil: React.FC = () => {
@@ -70,8 +59,8 @@ const MiPerfil: React.FC = () => {
                 
                 // Actualizar los inputs con los datos de la API
                 setValue("email", response.email);
-                setValue("telefono", formatWithIMask(response.telefono));
-                setValue("whatsApp", formatWithIMask(response.whatsApp));
+                setValue("telefono", formatWithIMask(response.telefono, "(000) 000-0000"));
+                setValue("whatsApp", formatWithIMask(response.whatsApp, "(000) 000-0000"));
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -79,7 +68,7 @@ const MiPerfil: React.FC = () => {
         };
 
         fetchData();
-    }, [setValue]); // Dependencia: setValue
+    }, [setValue]);
 
     const handleEdit = () => {
         alert("Hey");
@@ -116,7 +105,7 @@ const MiPerfil: React.FC = () => {
           disabled={!hasChanges()} 
           onClick={handleSubmit(onSubmit)} 
           fullWidth 
-          icon={<CloudUploadOutlinedIcon />}
+          icon={ <DsSvgIcon component={Right} color={!hasChanges() ? "inherit" : "white"} /> }
       >Guardar Cambios</Button>
     );
 
@@ -148,7 +137,7 @@ const MiPerfil: React.FC = () => {
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <CalendarMonthOutlinedIcon />
+                    <Calendar />
                   </InputAdornment>
                 ),
               },
@@ -163,7 +152,7 @@ const MiPerfil: React.FC = () => {
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <EmailOutlinedIcon />
+                    <Mail />
                   </InputAdornment>
                 ),
               },
@@ -179,7 +168,7 @@ const MiPerfil: React.FC = () => {
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <PersonOutlineOutlinedIcon />
+                    <User />
                   </InputAdornment>
                 ),
               },
@@ -195,8 +184,8 @@ const MiPerfil: React.FC = () => {
               input: {
                 inputComponent: TextMaskCustom as any,
                 endAdornment: (
-                  <InputAdornment position="end">
-                    <PhoneInTalkOutlinedIcon />
+                  <InputAdornment position="end">                    
+                      <Contacto />                     
                   </InputAdornment>
                 ),
               },
@@ -215,7 +204,7 @@ const MiPerfil: React.FC = () => {
                 inputComponent: TextMaskCustom as any,
                 endAdornment: (
                   <InputAdornment position="end">
-                    <WhatsApp />
+                      <WhatsApp />
                   </InputAdornment>
                 ),
               },
@@ -237,7 +226,7 @@ const MiPerfil: React.FC = () => {
                 inputComponent: TextMaskCustom as any,
                 endAdornment: (
                   <InputAdornment position="end">
-                    <PhoneInTalkOutlinedIcon />
+                    <Contacto />
                   </InputAdornment>
                 ),
               },

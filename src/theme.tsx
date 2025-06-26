@@ -27,7 +27,11 @@ const theme = createTheme({
     },
     text: {
       primary: '#231F20',
-    }
+    },
+    white: {
+      main: '#ffffff',
+      contrastText: '#000000',
+    },
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
