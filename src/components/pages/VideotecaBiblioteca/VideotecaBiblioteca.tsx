@@ -1,38 +1,18 @@
 import React from "react";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Grid, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
 import { Videoteca } from "./Videoteca";
 import imgVideoteca from "../../../assets/videoteca.jpg";
 import imgBiblioteca from "../../../assets/biblioteca.jpg";
 import { Biblioteca } from "./Biblioteca";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  dir?: string;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
+import TabPanel from "../../molecules/TabPanel/TabPanel";
+import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
+import { TitleScreen } from "@constants";
+import { Typography } from "../../atoms/Typography/Typography";
 
 const VideotecaBiblioteca: React.FC = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [value, setValue] = React.useState(0);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -45,27 +25,48 @@ const VideotecaBiblioteca: React.FC = () => {
             <Box
                 component="img"
                 src={src}
-                maxHeight={138}
+                maxHeight={isMobile ? 138 : 320}
                 width="100%"
             />
         );
     };
 
+    const Contents = () => (
+      <>
+        <Image />
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                <Tab label="Biblioteca" value={0} />
+                <Tab label="Videoteca" value={1} />
+            </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+            <Biblioteca />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+            <Videoteca />
+        </TabPanel>
+      </>
+    );
+
     return(
-        <Box sx={{ width: '100%', paddingTop:'28px', paddingBottom: '28px' }}>
-            <Image />
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                    <Tab label="Biblioteca" value={0} />
-                    <Tab label="Videoteca" value={1} />
-                </Tabs>
-            </Box>
-            <TabPanel value={value} index={0}>
-                <Biblioteca />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Videoteca />
-            </TabPanel>
+        <Box sx={[{ width: '100%', }, isMobile && { paddingTop:'28px', paddingBottom: '28px' }]}>
+          {
+            isMobile 
+            ? <Contents />
+            :
+              <Box sx={{width: { md: '60.2vw', display: 'flex', flexDirection: 'column', gap: '32px' }}}>
+                <Grid container sx={{ alignItems:'center'}}>
+                      <Grid size={{md: !betweenDevice ? 8 : 12}}>
+                          <TituloIcon Titulo={TitleScreen.BIBLIOTECA} fontSize="h2" />
+                          <Typography component="span" variant="body1">
+                              Bienvenido a nuestra Biblioteca y Videoteca Digital, un espacio cuidadosamente organizado donde encontrarás una amplia colección de recursos escritos y audiovisuales
+                          </Typography>
+                      </Grid>
+                </Grid>
+                <Contents />
+              </Box>
+          }      
         </Box>
     );
 };
