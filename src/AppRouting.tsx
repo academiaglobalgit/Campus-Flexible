@@ -73,6 +73,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.AYUDA_INTERIOR,
                 Component: Component.Ayuda
               },
+              {
+                path: AppRoutingPaths.CURSOS_CERTIFICACIONES,
+                Component: Component.CurosCertificaciones
+              },
             ]
           }
         ]
