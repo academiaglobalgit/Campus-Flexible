@@ -157,12 +157,19 @@ const Ayuda: React.FC = () => {
             </Box>
         :
             <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
-                <Grid container sx={{ alignItems:'center'}}>
-                    <Grid size={{md: !betweenDevice ? 8 : 12}}>
+                <Grid container sx={{ alignItems:'center'}} spacing={5}>
+                    <Grid size={{md: 6}}>
                         <TituloIcon Titulo={TitleScreen.NUEVA_SOLICITUD} fontSize="h2" />
                         <Typography component="span" variant="body2" sx={{textAlign: 'center', paddingBottom: '20px'}}>
                             Esta sala es de uso libre. El único requisito para participar es estar inscrito(a) y activo(a) en alguno de los programas de Academia Global.
                         </Typography>
+                        <TabsSection />
+                    </Grid>
+                    <Grid size={{md: 6}}>
+                        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 50px 30px', borderRadius: '20px', backgroundColor: '#F8F8F9'}}>
+                            <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4"/>
+                            <TabsStatusSection />
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
