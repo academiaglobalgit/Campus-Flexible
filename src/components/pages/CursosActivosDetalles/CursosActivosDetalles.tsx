@@ -1,4 +1,4 @@
-import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -111,16 +111,13 @@ const CursosActivosDetalles: React.FC = () => {
     //const {data} = useGetCursosById(Number(id!));
     const navigate = useNavigate();
     const onBack = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     return (
         <>
             {
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
                     <>
-                        <TopBar isExternal onBack={onBack} isMobile={true} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
+                        <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
                         <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
                             <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
                             <Box sx={{
