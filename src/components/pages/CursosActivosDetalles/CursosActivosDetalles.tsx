@@ -14,10 +14,10 @@ import Button from "../../atoms/Button/Button";
 const cursosDatas = [
     {
         materia: "Práctica y Colaboración Ciudadana I", temas: [
-            { titulo: "Tema 1", proceso: 80, status: "Finalizado" },
-            { titulo: "Tema 2", proceso: 80, status: "Cursando" },
-            { titulo: "Tema 3", proceso: 80, status: "No iniciado" },
-            { titulo: "Tema 4", proceso: 80, status: "No iniciado" },
+            { titulo: "Unidad I", proceso: 80, status: "Finalizado" },
+            { titulo: "Unidad II", proceso: 80, status: "Cursando" },
+            { titulo: "Unidad III", proceso: 80, status: "No iniciado" },
+            { titulo: "Unidad IV", proceso: 80, status: "No iniciado" },
         ]
     },
 ];
@@ -50,7 +50,7 @@ const materiaItem = (status: 'Finalizado' | 'Cursando' | 'No iniciado') => {
                 width: '100%',
                 borderRadius: 1,
                 overflow: 'hidden',
-                marginBottom: '10px'
+                margin: '10px'
             }}>
                 <Box sx={{ flex: 2, bgcolor: '#7B8186' }} />
                 <Box sx={{ flex: 2, bgcolor: '#D9A514' }} />
@@ -64,15 +64,15 @@ const materiaItem = (status: 'Finalizado' | 'Cursando' | 'No iniciado') => {
         <>
             {MultiColorBar()}
 
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '15px', justifyContent: 'space-between', alignContent: 'center', alignItems: 'center', width: '100%', marginBottom: '23px' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '15px', justifyContent: 'space-around', alignContent: 'center', alignItems: 'center', width: '100%', marginBottom: '23px' }}>
 
-                <Typography component="span" variant="body2">
+                <Typography component="span" variant="body3">
                     No iniciado
                 </Typography>
-                <Typography component="span" variant="body2">
+                <Typography component="span" variant="body3">
                     En Curso
                 </Typography>
-                <Typography component="span" variant="body2">
+                <Typography component="span" variant="body3">
                     Finalizado
                 </Typography>
             </Box>
@@ -111,51 +111,52 @@ const CursosActivosDetalles: React.FC = () => {
     //const {data} = useGetCursosById(Number(id!));
     const navigate = useNavigate();
     const onBack = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-
     return (
         <>
-            <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
-
             {
-
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
-
                     <>
-                        <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
-                        <Box sx={{ paddingLeft: '30px' }}>
-                            <Typography component="span" variant="body1" color="text.primary">Ver lectura de la materia</Typography>
+                        <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
+                        <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
+                            <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
+                            <Box sx={{
+                                paddingLeft: '30px', fontFamily: 'Gotham', fontSize: '28px',
+                                fontStyle: 'normal',
+                                fontWeight: 700,
+                            }} >
+                                <Typography component="span" variant="body5" color="text.primary">Ver lectura de la materia</Typography>
+                            </Box>
+
+                            <Divider textAlign="center">
+                                <Typography component="span" variant="body2" color="primary">Materias</Typography>
+                            </Divider>
+
+                            {item.temas.map((temas) => (
+                                <Accordion title={temas.titulo} sxProps={{
+                                    backgroundColor: "#F8F8F9",
+                                    boxShadow: "0px 2px 4px 0px #6BBBE44D",
+                                    border: "1px solid #BABABA0D"
+                                }}>
+
+                                    <Divider textAlign="center">
+                                        <Typography component="span" variant="body2" color="primary">Control de avance</Typography>
+                                    </Divider>
+                                    <Typography component="p" variant="body1" sxProps={{ justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                        El estado de tu progreso dependerá de los elementos que hayas completado y se representará mediante uno de los siguientes colores:                                      </Typography>
+
+                                    {materiaItem(temas.status as 'Finalizado' | 'Cursando' | 'No iniciado')}
+
+
+                                    <Divider textAlign="center">
+                                        <Typography component="span" variant="body2" color="primary">Tutorias</Typography>
+                                    </Divider>
+                                    <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'center', width: '100%' }}>
+                                        <Button onClick={() => { }} fullWidth variant="contained">Ver Tutorias</Button>
+                                    </Box>
+                                </Accordion>
+                            ))}
                         </Box>
-
-                        <Divider textAlign="center">
-                            <Typography component="span" variant="body2" color="primary">Materias</Typography>
-                        </Divider>
-
-                        {item.temas.map((temas) => (
-                            <Accordion title={temas.titulo} sxProps={{
-                                backgroundColor: "#F8F8F9",
-                                boxShadow: "0px 2px 4px 0px #6BBBE44D",
-                                border: "1px solid #BABABA0D"
-                            }}>
-
-                                <Divider textAlign="center">
-                                    <Typography component="span" variant="body2" color="primary">Control de avance</Typography>
-                                </Divider>
-                                <Typography component="p" variant="body1" sxProps={{ justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-                                    El estado de tu progreso dependerá de los elementos que hayas completado y se representará mediante uno de los siguientes colores:
-                                </Typography>
-
-                                {materiaItem(temas.status as 'Finalizado' | 'Cursando' | 'No iniciado')}
-
-
-                                <Divider textAlign="center">
-                                    <Typography component="span" variant="body2" color="primary">Tutorias</Typography>
-                                </Divider>
-                                <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'center', width: '100%' }}>
-                                    <Button onClick={() => { }} fullWidth variant="contained">Ver Tutorias</Button>
-                                </Box>
-                            </Accordion>
-                        ))}
                     </>
                 ))
             }

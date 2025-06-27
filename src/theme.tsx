@@ -1,4 +1,5 @@
-import { createTheme } from "@mui/material";
+import { colors, createTheme } from "@mui/material";
+import { blue } from "@mui/material/colors";
 
 const theme = createTheme({
   palette: {
@@ -71,6 +72,27 @@ const theme = createTheme({
       fontWeight: 400,
       fontSize: '16px',
       lineHeight: '24px',
+    },
+    body3: {
+      fontFamily: 'Roboto',
+      fontWeight: 400,
+      fontSize: '18px',
+      lineHeight: '24px',
+      color: '#0C4D88 !important'
+    },
+    body4: {
+      fontFamily: 'Gotham',
+      fontWeight: 700,
+      fontSize: '20px',
+      lineHeight: '28px',
+      color: '#0C4D88 !important'
+    },
+    body5: {
+      fontFamily: 'Gotham',
+      fontWeight: 700,
+      fontSize: '20px',
+      lineHeight: '28px',
+      color: '#231F20 !important'
     },
     subtitle1: {
       fontWeight: 500,
