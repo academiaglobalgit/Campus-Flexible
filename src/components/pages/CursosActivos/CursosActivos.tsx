@@ -30,7 +30,7 @@ const cursosDatas = [
 const CursoActivo: React.FC = () => {
 
     const navigate = useNavigate();
-    const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES + 1);
+    const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES);
 
     const materiaItem = (status: 'Finalizada' | 'Cursando' | 'Inscribirme') => {
         let color: "success" | "primary" | "info" | "warning" | undefined;
@@ -91,8 +91,8 @@ const CursoActivo: React.FC = () => {
                                 Curso Activo Hasta: {item.fechaActivo}
                             </Typography>
 
-                            <Typography component="span" variant="body1">
-                                Tu progreso
+                            <Typography component="span" variant="body4">
+                                Tu Proceso
                             </Typography>
                             <Box sx={{ padding: '10px 0 10px 0' }}>
 

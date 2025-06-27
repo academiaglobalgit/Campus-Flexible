@@ -3,7 +3,7 @@ import TypographyMui from "@mui/material/Typography";
 
 type TypographyProps = {
     component: "span" | "h1" | "h2" | "h3" | "h4" | "p";
-    variant: "body1" | "body2" | "h1" | "h2" | "h3" | "h4" | "subtitle1" | "subtitle2";
+    variant: "body1" | "body2" | 'body3'|'body4' | 'body5' |"h1" | "h2" | "h3" | "h4" | "subtitle1" | "subtitle2";
     color?: 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning' | `text.primary`;
     children?: React.ReactNode;
     sxProps?: SxProps<Theme>;
