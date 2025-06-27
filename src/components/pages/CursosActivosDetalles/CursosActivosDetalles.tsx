@@ -7,6 +7,7 @@ import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import Button from "../../atoms/Button/Button";
+import theme from "../../../theme";
 
 //import { useParams } from "react-router-dom";
 //import { useGetCursos, useGetCursosById } from "../../../services/CursosActivosService";
@@ -66,13 +67,13 @@ const materiaItem = (status: 'Finalizado' | 'Cursando' | 'No iniciado') => {
 
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: '15px', justifyContent: 'space-around', alignContent: 'center', alignItems: 'center', width: '100%', marginBottom: '23px' }}>
 
-                <Typography component="span" variant="body3">
+                <Typography component="span" variant="body3" sxProps={{color: theme.palette.primary.main}}>
                     No iniciado
                 </Typography>
-                <Typography component="span" variant="body3">
+                <Typography component="span" variant="body3" sxProps={{color: theme.palette.primary.main}}>
                     En Curso
                 </Typography>
-                <Typography component="span" variant="body3">
+                <Typography component="span" variant="body3" sxProps={{color: theme.palette.primary.main}}>
                     Finalizado
                 </Typography>
             </Box>
@@ -109,15 +110,13 @@ const CursosActivosDetalles: React.FC = () => {
 
     //const {id} = useParams<{id:string}>();
     //const {data} = useGetCursosById(Number(id!));
-    const navigate = useNavigate();
-    const onBack = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+    
     return (
         <>
             {
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
                     <>
-                        <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
                         <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
                             <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
                             <Box sx={{
@@ -125,7 +124,7 @@ const CursosActivosDetalles: React.FC = () => {
                                 fontStyle: 'normal',
                                 fontWeight: 700,
                             }} >
-                                <Typography component="span" variant="body5" color="text.primary">Ver lectura de la materia</Typography>
+                                <Typography component="h5" color="text.primary" variant={"h5"}>Ver lectura de la materia</Typography>
                             </Box>
 
                             <Divider textAlign="center">

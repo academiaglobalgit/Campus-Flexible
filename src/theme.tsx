@@ -63,6 +63,12 @@ const theme = createTheme({
       fontSize: '20px',
       lineHeight: '28px',
     },
+    h5: {
+      fontFamily: 'Gotham',
+      fontWeight: 700,
+      fontSize: '20px',
+      lineHeight: '28px'
+    },
     body1: {
       fontWeight: 400,
       fontSize: '14px',
@@ -77,22 +83,7 @@ const theme = createTheme({
       fontFamily: 'Roboto',
       fontWeight: 400,
       fontSize: '18px',
-      lineHeight: '24px',
-      color: '#0C4D88 !important'
-    },
-    body4: {
-      fontFamily: 'Gotham',
-      fontWeight: 700,
-      fontSize: '20px',
-      lineHeight: '28px',
-      color: '#0C4D88 !important'
-    },
-    body5: {
-      fontFamily: 'Gotham',
-      fontWeight: 700,
-      fontSize: '20px',
-      lineHeight: '28px',
-      color: '#231F20 !important'
+      lineHeight: '24px'
     },
     subtitle1: {
       fontWeight: 500,
