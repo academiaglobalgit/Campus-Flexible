@@ -2,9 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
 
-import type { Todo, TodoResponse } from '../types/todo.interface';
-import type { number } from 'zod';
-
 export const useGetCursos = () => {
     return useQuery<any, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
