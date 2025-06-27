@@ -39,7 +39,7 @@ export const AppRouting = createHashRouter([
               },
               {
                 path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT,
-                Component: Component.PreguntasFrecuentes
+                Component: Component.PreguntasFrecuentesInternas
               },
               {
                 path: AppRoutingPaths.CALENDARIO,
