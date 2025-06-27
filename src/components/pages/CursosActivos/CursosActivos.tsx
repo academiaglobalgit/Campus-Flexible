@@ -30,7 +30,7 @@ const cursosDatas = [
 const CursoActivo: React.FC = () => {
 
     const navigate = useNavigate();
-    const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
+    const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES + 1);
 
     const materiaItem = (status: 'Finalizada' | 'Cursando' | 'Inscribirme') => {
         let color: "success" | "primary" | "info" | "warning" | undefined;
