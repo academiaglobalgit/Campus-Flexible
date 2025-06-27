@@ -174,8 +174,10 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
 
 const Sidenav: React.FC = () => {
   const location = useLocation();
-  const showBackMenuRoutes = [`${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES}`];
-  const showBackMenu = showBackMenuRoutes.includes(location.pathname);
+  const showBackMenuRoutes = [`${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace("/:id","")}`];  
+  const showBackMenu = showBackMenuRoutes.some(route =>
+    location.pathname.startsWith(route)
+  );  
   
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -188,26 +190,33 @@ const Sidenav: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleNavigate = () => {
+    window.history.back();
+  }
+
+
   const AppBarSection = () => {
     return(
       <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
+        
           <Box sx={
             [
-              showBackMenu && {display: 'flex', justifyContent: 'space-around'}
+              showBackMenu && {display: 'flex', justifyContent: 'space-between'}
             ]
           }>
-            {
-              showBackMenu && <Toolbar>
-                <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px',}}>
-                  <IconButton >
-                    <DsSvgIcon component={LeftCircle} color='primary' />
-                  </IconButton>
-                  <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
-                    { TitleScreen.CURSOS_ACTIVOS }
-                  </Typography>
-                </Box>
-              </Toolbar>
-            }
+            
+          {showBackMenu && (
+            <Toolbar onClick={handleNavigate}>
+              <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px',}}>
+                <IconButton >
+                  <DsSvgIcon component={LeftCircle} color='primary' />
+                </IconButton>
+                <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
+                  { TitleScreen.CURSOS_ACTIVOS }
+                </Typography>
+              </Box>
+            </Toolbar>
+          )}
             
             <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
               <Typography variant="h4" component="h4" color='primary'>
