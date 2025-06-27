@@ -30,8 +30,8 @@ export const AppRouting = createHashRouter([
                 Component: Component.Calificaciones
               },
               {
-                path: AppRoutingPaths.MIRUTA,
-                Component: Component.MiRuta
+                path: AppRoutingPaths.MI_TRAYECTO,
+                Component: Component.MiTrayecto
               },
               {
                 path: AppRoutingPaths.SERVICIOS_ESCOLORES,

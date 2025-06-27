@@ -2,7 +2,7 @@ import { Box, LinearProgress } from "@mui/material";
 import { Typography } from "../../atoms/Typography/Typography";
 
 type LinearProgressWithLabelProps = {
-    value?: number;
+    value: number;
     barColor?: string;
     trackColor?: string
 };
