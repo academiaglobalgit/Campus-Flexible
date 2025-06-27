@@ -2,7 +2,7 @@ import { Box, LinearProgress } from "@mui/material";
 import { Typography } from "../../atoms/Typography/Typography";
 
 type LinearProgressWithLabelProps = {
-    value?: number;
+    value: number;
     barColor?: string;
     trackColor?: string
 };
@@ -30,7 +30,7 @@ export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> = (
             </Box>
 
             <Box sx={{ minWidth: 40 }}>
-                <Typography variant="body1" color="text.primary" component={"p"}>{`${Math.round(value,)}%`}</Typography>
+                <Typography variant="body1" color="text.primary" component={"p"}>{`${Math.round(value)}%`}</Typography>
             </Box>
         </Box>
     );

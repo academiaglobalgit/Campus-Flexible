@@ -25,8 +25,8 @@ const cursosDatas = [
 
 
 const materiaItem = (status: 'Finalizado' | 'Cursando' | 'No iniciado') => {
-    let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
-    let variant: "outlined" | "contained";
+    let color: any;
+    let variant: "outlined" | "contained" | undefined;
 
     if (status === 'Finalizado') {
         color = "success";

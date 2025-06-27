@@ -13,7 +13,6 @@ import { FormTutor } from "./FormTutor";
 const Ayuda: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
