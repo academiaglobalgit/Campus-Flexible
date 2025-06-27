@@ -62,6 +62,14 @@ export const AppRouting = createHashRouter([
                 Component: Component.MiPerfil
               },
               {
+                path: AppRoutingPaths.CURSOS_ACTIVOS,
+                Component: Component.CursoActivo
+              },
+              {
+                path: AppRoutingPaths.CURSOS_ACTIVOS_DETALLES,
+                Component: Component.CursosActivosDetalles
+              },
+              {
                 path: AppRoutingPaths.AYUDA_INTERIOR,
                 Component: Component.Ayuda
               },
