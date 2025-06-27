@@ -117,18 +117,11 @@ const CursosActivosDetalles: React.FC = () => {
     return (
         <>
             {
-                isMobile && (
-
-                    <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
-
-                )}{
-
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
-
                     <>
-                        <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column'}}>
-
+                        <TopBar isExternal onBack={onBack} isMobile={true} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
+                        <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
                             <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
                             <Box sx={{
                                 paddingLeft: '30px', fontFamily: 'Gotham', fontSize: '28px',
