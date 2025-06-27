@@ -11,9 +11,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
-import { MenuRoutes as MenuItems } from '@constants';
+import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
 import Logo from '../../../assets/logo_ag.svg';
 import miniLogo from '../../../assets/miniLogo.png';
@@ -23,6 +23,7 @@ import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined
 import { PerfilMenu } from '../../molecules/Menu/PerfilMenu/PerfilMenu';
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
 import { FabMenu } from '../../molecules/FabMenu/FabMenu';
+import { LeftCircle } from '../../../assets/icons';
 
 const drawerWidth = 240;
 
@@ -74,9 +75,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const Listado = (title: string, open: boolean) => {
+const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
   const navigate = useNavigate();
-  const menuRoutes = [...MenuItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
 
   const handleToggleSubmenu = (label: string) => {
@@ -95,7 +96,16 @@ const Listado = (title: string, open: boolean) => {
             open
               && { ml: 6 }
       ]}>
-        <Typography variant='body1' color='primary' sx={[{ fontWeight: 700 }, open && {fontSize: '18px'}]}>{title}</Typography>
+        <Typography 
+          variant='body1' 
+          color='primary' 
+          sx={[
+            menuType === "more" && { color: (theme) => theme.palette.grey[600] },
+            { fontWeight: 700}, open && {fontSize: '18px'}]
+          }
+        >
+          {title}
+        </Typography>
       </Box>
     
       <List sx={{ width: '100%' }}>
@@ -162,7 +172,11 @@ const Listado = (title: string, open: boolean) => {
   );
 };
 
-const Sidenav = () => {
+const Sidenav: React.FC = () => {
+  const location = useLocation();
+  const showBackMenuRoutes = [`${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES}`];
+  const showBackMenu = showBackMenuRoutes.includes(location.pathname);
+  
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState(false);
 
@@ -172,6 +186,38 @@ const Sidenav = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const AppBarSection = () => {
+    return(
+      <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
+          <Box sx={
+            [
+              showBackMenu && {display: 'flex', justifyContent: 'space-around'}
+            ]
+          }>
+            {
+              showBackMenu && <Toolbar>
+                <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px',}}>
+                  <IconButton >
+                    <DsSvgIcon component={LeftCircle} color='primary' />
+                  </IconButton>
+                  <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
+                    { TitleScreen.CURSOS_ACTIVOS }
+                  </Typography>
+                </Box>
+              </Toolbar>
+            }
+            
+            <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
+              <Typography variant="h4" component="h4" color='primary'>
+                Nombre de la plataforma
+              </Typography>
+              <IconsTopBar />
+            </Toolbar>
+          </Box>
+      </AppBar>
+    )
   };
 
   return (
@@ -197,9 +243,9 @@ const Sidenav = () => {
                       mb: '29px',
                   }}
             />
-            {Listado("Menú", open)}
+            {Listado("Menú", open, "main")}
             <Divider sx={{ width: open ? '90%' : '50%'}} />
-            {/* {Listado("Más", open)} */}
+            {Listado("Más", open, "more")}
         </Box>
                
         <Box sx={[{height: '70px', display: 'flex', alignItems:'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start'}, open && {paddingLeft: '20px'}]}>
@@ -234,14 +280,7 @@ const Sidenav = () => {
         component="main"
         sx={{ flexGrow: 1, p: 3,  overflowX: 'hidden' }}
       >
-        <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
-          <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
-            <Typography variant="h4" component="h4" color='primary'>
-              Nombre de la plataforma
-            </Typography>
-            <IconsTopBar />
-          </Toolbar>
-        </AppBar>
+        <AppBarSection />
         <Toolbar />
         <Box sx={[
             {p: 2},
@@ -254,4 +293,5 @@ const Sidenav = () => {
     </Box>
   );
 }
+
 export default Sidenav;
