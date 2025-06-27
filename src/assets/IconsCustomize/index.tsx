@@ -7,6 +7,7 @@ export { default as ConsejeriaEstudiantil } from './ConsejeriaEstudiantil.svg?re
 export { default as ConstanciaDeEstudios } from './ConstanciaDeEstudios.svg?react';
 export { default as CredencialEstudiante } from './CredencialEstudiante.svg?react';
 export { default as CursosActivos } from './CursosActivos.svg?react';
+export { default as CursosActivosDetalle } from './CursosActivosDetalles.svg?react';
 export { default as CursosCertificaciones } from './CursosCertificaciones.svg?react';
 export { default as Home } from './Home.svg?react';
 export { default as Kardex } from './Kardex.svg?react';
