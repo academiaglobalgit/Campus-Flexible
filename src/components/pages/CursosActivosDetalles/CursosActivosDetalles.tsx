@@ -110,15 +110,13 @@ const CursosActivosDetalles: React.FC = () => {
 
     //const {id} = useParams<{id:string}>();
     //const {data} = useGetCursosById(Number(id!));
-    const navigate = useNavigate();
-    const onBack = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+    
     return (
         <>
             {
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
                     <>
-                        <TopBar isExternal onBack={onBack} titleScreen={TitleScreen.CURSOS_ACTIVOS} />
                         <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
                             <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
                             <Box sx={{
