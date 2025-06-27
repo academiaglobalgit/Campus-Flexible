@@ -160,25 +160,6 @@ const CursosActivosDetalles: React.FC = () => {
                 ))
             }
 
-            {/* <Box>
-                {
-                    materiaData &&
-                    materiaData.map((item, index) => (
-                        <Box key={index} sx={{ marginBottom: '24px' }}>
-                            <Divider textAlign="center">
-                                <Typography component="span" variant="body2" color="primary">{item.periodo}</Typography>
-                            </Divider>
-                            <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                {item.materias.map((materia, idx) => (
-                                    <Box key={idx}>
-                                        {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme')}
-                                    </Box>
-                                ))}
-                            </Box>
-                        </Box>
-                    ))
-                }
-            </Box> */}
         </>
     );
 };
