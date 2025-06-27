@@ -52,9 +52,9 @@ const materiaItem = (status: 'Finalizado' | 'Cursando' | 'No iniciado') => {
                 overflow: 'hidden',
                 marginBottom: '10px'
             }}>
-                <Box sx={{ flex: 2, bgcolor: '#b0b5bb' }} />
-                <Box sx={{ flex: 2, bgcolor: '#d49e04' }} />
-                <Box sx={{ flex: 2, bgcolor: '#20755b' }} />
+                <Box sx={{ flex: 2, bgcolor: '#7B8186' }} />
+                <Box sx={{ flex: 2, bgcolor: '#D9A514' }} />
+                <Box sx={{ flex: 2, bgcolor: '#1F7B5C' }} />
             </Box>
         );
     }
