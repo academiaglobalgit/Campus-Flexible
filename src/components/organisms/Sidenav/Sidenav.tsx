@@ -22,6 +22,7 @@ import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import { PerfilMenu } from '../../molecules/Menu/PerfilMenu/PerfilMenu';
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
+import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 
 const drawerWidth = 240;
 
@@ -247,6 +248,7 @@ const Sidenav = () => {
             open && { marginLeft: `-${drawerWidth}px`}
           ]}>
           <Outlet/>
+          <FabMenu />
         </Box>
       </Box>
     </Box>

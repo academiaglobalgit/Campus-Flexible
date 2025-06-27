@@ -75,7 +75,9 @@ export { default as X } from './X.svg?react';
 
 // Iconos de navegación
 export { default as LeftCircle } from './LeftCircle.svg?react';
+export { default as PlusCircleWhite } from './PlusCircleWhite.svg?react';
 
 
 // Flechas
 export { default as Right } from './Right.svg?react';
+export { default as ArrowUp } from './ArrowUp.svg?react';
