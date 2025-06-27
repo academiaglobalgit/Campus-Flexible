@@ -56,15 +56,15 @@ const VideotecaBiblioteca: React.FC = () => {
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                    <Tab label="Videoteca" value={0} />
-                    <Tab label="Biblioteca" value={1} />
+                    <Tab label="Biblioteca" value={0} />
+                    <Tab label="Videoteca" value={1} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <Videoteca />
+                <Biblioteca />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <Biblioteca />
+                <Videoteca />
             </TabPanel>
         </Box>
     );

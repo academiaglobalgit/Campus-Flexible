@@ -14,7 +14,6 @@ export const BottomBar: React.FC = () => {
     const [menuType, setMenuType] = useState<MenuType>("menuRoutes");
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>, menuType: MenuType) => {
-      console.log(menuType);
         setMenuType(menuType);
         setAnchorEl(event.currentTarget);
     };
@@ -23,7 +22,7 @@ export const BottomBar: React.FC = () => {
         setAnchorEl(null);
     };
 
-    const handleHome = () => navigate(AppRoutingPaths.BLANK);
+    const handleHome = () => navigate(AppRoutingPaths.PLAN_ESTUDIOS);
 
   return (
     <React.Fragment>
@@ -34,6 +33,7 @@ export const BottomBar: React.FC = () => {
               bottom: 0,
               width: "100%",
               borderTop: "1px solid #ddd",
+              zIndex: 1
             }}
         >
             <BottomNavigationAction 

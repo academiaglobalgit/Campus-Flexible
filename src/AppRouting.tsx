@@ -50,6 +50,10 @@ export const AppRouting = createHashRouter([
                 Component: Component.PlanEstudio
               },
               {
+                path: AppRoutingPaths.BIBLIOTECA,
+                Component: Component.VideotecaBiblioteca
+              },
+              {
                 path: AppRoutingPaths.VIDEOS_LECTURAS,
                 Component: Component.VideotecaBiblioteca
               },
@@ -64,6 +68,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.CURSOS_ACTIVOS_DETALLES,
                 Component: Component.CursosActivosDetalles
+              },
+              {
+                path: AppRoutingPaths.AYUDA_INTERIOR,
+                Component: Component.Ayuda
               },
             ]
           }

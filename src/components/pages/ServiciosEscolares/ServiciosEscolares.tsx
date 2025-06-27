@@ -2,13 +2,14 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import {ServiciosEscolares as IconServiciosEscolares} from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import CardImage from "../../molecules/Card/CardImage";
 
 import serv_escolares from '../../../assets/serv_escolares.png';
 import examenes from '../../../assets/examenes.png';
 import constancia from '../../../assets/constancia.png';
 import credencial from '../../../assets/credencial.png';
+// import { useNavigate } from "react-router-dom";
 
 const cardData = [
     { image:serv_escolares, titulo: "Inscripción y materias", servicios: "Inscripción Materias y/o mensualidad" },
@@ -18,17 +19,26 @@ const cardData = [
 ];
 
 const ServiciosEscolares: React.FC = () => {
+    // const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+     
     return(
         <>
           <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
           <Typography component="span" variant="body1">
             Gestiona de forma sencilla tus inscripciones, documentos, pagos y trámites académicos. Todo en un solo lugar, siempre disponible.
           </Typography>
-          <Box sx={{ paddingTop: '32px' }}>
+          <Box 
+            sx={[
+                { paddingTop: '32px' },
+                !isMobile && {width: { md: '90vw' }, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '94px'}
+            ]}
+          >
             {
                 cardData && 
                 cardData.map((item, index) => (
-                    <Box sx={{ mb:4 }}>
+                    <Box sx={{ mb:4 }} key={index}>
                         <CardImage key={index} image={item.image} >
                             <Box sx={{ display: 'flex', flexDirection:'column', gap: '24px', paddingLeft: '32px' }}>
                                 <Typography component="h2" variant="h2" color="primary">

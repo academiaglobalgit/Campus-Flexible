@@ -7,7 +7,6 @@ export const useAuthLogin = async (credentials: LoginCredentials): Promise<AuthR
     return await apiClient.post<AuthResponse>(LOGIN_ENDPOINTS.POST_LOGIN.path, { data: encryptedPayload });
 };
 
-export const useLogout = async (_id: number): Promise<boolean> => {
-  // await apiClient.post<void>(`/auth/logout/${id}`);
-  return true;
+export const useLogout = async (): Promise<void> => {
+  return await apiClient.post<void>(LOGIN_ENDPOINTS.POST_LOGOUT.path);
 };

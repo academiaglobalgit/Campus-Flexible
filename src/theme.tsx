@@ -30,7 +30,11 @@ const theme = createTheme({
     },
     text: {
       primary: '#231F20',
-    }
+    },
+    white: {
+      main: '#ffffff',
+      contrastText: '#000000',
+    },
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
@@ -79,6 +83,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
+          height: '40px'
         },
         containedWarning: {
           color: '#fff'
@@ -184,7 +189,7 @@ const theme = createTheme({
           flex: 1,
           color: '#C0C0C0',
           '&.Mui-selected': {
-            color: theme.palette.primary.main,
+            color: theme.palette.primary.main, 
           },
           fontWeight: 500,
           fontSize: '16px',

@@ -89,7 +89,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
     };   
 
     return(
-        <Dialog isOpen={open} width={isMobile ? '350px' : '900px'} >
+        <Dialog isOpen={open} sxProps={{ width: isMobile ? '350px' : '900px'}} >
         {
             isMobile 
             ? 

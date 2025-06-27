@@ -14,5 +14,6 @@ export { default as CursoActivo } from './pages/CursosActivos/CursosActivos';
 export { default as CursosActivosDetalles } from './pages/CursosActivosDetalles/CursosActivosDetalles';
 export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/VideotecaBiblioteca';
 export { default as MiPerfil } from './pages/MiPerfil/MiPerfil';
+export { default as Ayuda } from './pages/ayuda/Ayuda';
 
 export * as Organisms from './organisms';

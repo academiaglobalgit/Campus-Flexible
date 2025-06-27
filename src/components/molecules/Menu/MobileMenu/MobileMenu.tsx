@@ -84,7 +84,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({anchorEl, onClose, menuTy
             }
             
             {
-                items.map((item, index) => (
+                items.filter((item) => item.visible === 1).map((item, index) => (
                     <MenuItem 
                         key={index}
                         onClick={() => handleNavigation(item)}

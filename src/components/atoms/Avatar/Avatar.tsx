@@ -5,12 +5,12 @@ import { Badge, styled } from '@mui/material';
 import EditPerfil from '../../../assets/IconsCustomize/Edit.svg';
 
 type AvatarProps = {
-    alt?: string;
-    src?: string;
-    width?: number;
-    height?: number;
-    isEdit?: boolean;
-    onClick?: () => void;
+  alt?: string;
+  src?: string;
+  width?: number;
+  height?: number;
+  isEdit?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit, onClick }) => {
@@ -37,7 +37,7 @@ export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit,
           src={src}
           sx={{ width, height }}
           onError={() => setError(true)}
-          onClick={() => onClick && onClick()}
+          onClick={(event) => onClick && onClick(event)}
         >
           {error && getInitials(alt || '')}
         </AvatarMui>
@@ -46,7 +46,7 @@ export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit,
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           badgeContent={
-            <SmallAvatar src={EditPerfil} onClick={() => onClick && onClick()} />
+            <SmallAvatar src={EditPerfil} onClick={(event) => onClick && onClick(event)} />
           }
         >
           <AvatarMui

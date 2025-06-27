@@ -1,4 +1,4 @@
-import { Ayuda, Contacto, ManualInduccion, PreguntasFrecuentes, ServiciosEscolares } from "../assets/IconsCustomize";
+import { Ayuda, Biblioteca, Calendario, Calificaciones, Contacto, CursosCertificaciones, Home, ManualInduccion, PreguntasFrecuentes, SalaConversacion, ServiciosEscolares } from "../assets/IconsCustomize";
 
 export const AppRoutingPaths = {
     AYUDA_EXTERIOR: "/help-ext",
@@ -33,6 +33,7 @@ export type AppRoutingPaths = typeof AppRoutingPaths;
 
 export const TitleScreen = {
     AYUDA: "Ayuda",
+    BIBLIOTECA: "Biblioteca",
     BIBLIOTECA_VIRTUAL: "Biblioteca virtual",
     CALENDARIO: "Calendario",
     CALIFICACIONES: "Calificaciones",
@@ -49,32 +50,47 @@ export const TitleScreen = {
     CONTACTO: "Contacto",
     MANUAL_INDUCCION: "Manual de inducción",
     FAQS: "Faqs",
-    BACK_HOME_EXT: "Regresar a inicio"
+    BACK_HOME_EXT: "Regresar a inicio",
+    NUEVA_SOLICITUD: "Nueva Solicitud"
 }
 
 export type TitleScreen = typeof TitleScreen;
 
-export const MenuRoutes = [
-    { text: TitleScreen.CALIFICACIONES, icon: undefined, path: AppRoutingPaths.CALIFICACIONES, order: 3 },
-    { text: TitleScreen.MIRUTA, icon: undefined, path: AppRoutingPaths.MIRUTA, order: 7 },
-    { text: TitleScreen.CURSOS_ACTIVOS, icon: undefined, path: AppRoutingPaths.CURSOS_ACTIVOS, order: 1 },
-    { text: TitleScreen.CURSOS_CERTIFICACIONES, icon: undefined, path: AppRoutingPaths.CURSOS_CERTIFICACIONES, order: 4},
-    { text: TitleScreen.PLAN_ESTUDIOS, icon: undefined, path: AppRoutingPaths.PLAN_ESTUDIOS, order: 0 },
-    { text: TitleScreen.CALENDARIO, icon: undefined, path: AppRoutingPaths.CALENDARIO, order: 2 },
-    { text: TitleScreen.VIDEOS_LECTURAS, icon: undefined, path: AppRoutingPaths.VIDEOS_LECTURAS, order: 6 },
-    { text: TitleScreen.SALA_CONVERSACIONES, icon: undefined, path: AppRoutingPaths.SALA_CONVERSACIONES, order: 5 },
+export const MenuRoutes: Menu[] = [
+    { text: TitleScreen.PLAN_ESTUDIOS, icon: Home, path: AppRoutingPaths.PLAN_ESTUDIOS, order: 0, visible: 1, children:[] },
+    { text: TitleScreen.CURSOS_ACTIVOS, icon: CursosCertificaciones, path: AppRoutingPaths.CURSOS_ACTIVOS, order: 1, visible: 1, children:[] },
+    { text: TitleScreen.CALIFICACIONES, icon: Calificaciones, path: AppRoutingPaths.CALIFICACIONES, order: 2, visible: 1, children:[] },
+    { text: TitleScreen.CALENDARIO, icon: Calendario, path: AppRoutingPaths.CALENDARIO, order: 3, visible: 1, children:[] },
+    { text: TitleScreen.BIBLIOTECA, icon: Biblioteca, path: AppRoutingPaths.BIBLIOTECA, order: 4, visible: 1, children:[] },
+    { text: TitleScreen.CURSOS_CERTIFICACIONES, icon: CursosCertificaciones, path: AppRoutingPaths.CURSOS_CERTIFICACIONES, order: 5, visible: 0, children:[]},
+    { text: TitleScreen.SALA_CONVERSACIONES, icon: SalaConversacion, path: AppRoutingPaths.SALA_CONVERSACIONES, order: 6, visible: 0, children:[] },
+    { text: TitleScreen.MIRUTA, icon: undefined, path: AppRoutingPaths.MIRUTA, order: 7, visible: 0, children:[] },
 ] as const;
 
 export type MenuRoutes = typeof MenuRoutes;
 
 export const MenuInformacion = [
-    { text: TitleScreen.SERVICIOS_ESCOLORES, icon: ServiciosEscolares, path: AppRoutingPaths.SERVICIOS_ESCOLORES, order: 0 },
-    { text: TitleScreen.AYUDA, icon: Ayuda, path: AppRoutingPaths.AYUDA_INTERIOR, order: 1 },
-    { text: TitleScreen.CONTACTO, icon: Contacto, path: AppRoutingPaths.CONTACTO, order: 2 },
-    { text: TitleScreen.FAQS, icon: PreguntasFrecuentes, path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT, order: 3},
-    { text: TitleScreen.MANUAL_INDUCCION, icon: ManualInduccion, path: AppRoutingPaths.MANUAL_INDUCCION, order: 4 },
+    { text: TitleScreen.SERVICIOS_ESCOLORES, icon: ServiciosEscolares, path: AppRoutingPaths.SERVICIOS_ESCOLORES, order: 0, visible: 1 },
+    { text: TitleScreen.AYUDA, icon: Ayuda, path: AppRoutingPaths.AYUDA_INTERIOR, order: 1, visible: 1 },
+    { text: TitleScreen.CONTACTO, icon: Contacto, path: AppRoutingPaths.CONTACTO, order: 2, visible: 1 },
+    { text: TitleScreen.FAQS, icon: PreguntasFrecuentes, path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT, order: 3, visible: 1 },
+    { text: TitleScreen.MANUAL_INDUCCION, icon: ManualInduccion, path: AppRoutingPaths.MANUAL_INDUCCION, order: 4, visible: 1 },
 ] as const;
 
 export type MenuInformacion = typeof MenuInformacion;
 
 export type MenuType = 'menuRoutes' | 'menuInformacion';
+
+export interface Menu {
+    text:     string;
+    icon:     any;
+    path:     string;
+    order:    number;
+    visible:  number;
+    children: Child[];
+}
+
+export interface Child {
+    text: string;
+    path: string;
+}
