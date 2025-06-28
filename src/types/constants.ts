@@ -9,7 +9,7 @@ export const AppRoutingPaths = {
     CALIFICACIONES: "/calificaciones",
     CURSOS_ACTIVOS: "/cursos-activos",
     CURSOS_ACTIVOS_DETALLES: "/cursos-detalles/:id",
-    CURSOS_CERTIFICACIONES: "/certificaciones",
+    CURSOS_CERTIFICACIONES: "/cursos-certificaciones",
     ERROR: "/error",
     HOME: "/",
     LOGIN: "/login",
