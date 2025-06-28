@@ -18,5 +18,6 @@ export { default as VideotecaBiblioteca } from './pages/VideotecaBiblioteca/Vide
 export { default as MiPerfil } from './pages/MiPerfil/MiPerfil';
 export { default as Ayuda } from './pages/ayuda/Ayuda';
 export { default as PreguntasFrecuentesInternas } from './pages/PreguntasFrecuentes/PreguntasFrecuentesInternas';
+export { default as SalaConversacion } from './pages/SalaConversacion/SalaConversacion';
 
 export * as Organisms from './organisms';

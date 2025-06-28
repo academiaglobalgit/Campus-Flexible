@@ -4,3 +4,5 @@ export * from './constants';
 export * from './apiTypes';
 
 export * from './authorization';
+
+export * from './descripcionesPantallas';

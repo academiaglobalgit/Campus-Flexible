@@ -294,7 +294,8 @@ const Sidenav: React.FC = () => {
         <Box sx={[
             {p: 2},
             open && { marginLeft: `-${drawerWidth}px`}
-          ]}>
+          ]}
+        >
           <Outlet/>
           <FabMenu />
         </Box>

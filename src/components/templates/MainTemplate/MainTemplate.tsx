@@ -13,7 +13,7 @@ const MainTemplate: React.FC = () => {
     return (
         !isMobile
         ?
-            <Box sx={{ display: "flex" }}>
+            <Box>
                 <Sidenav />
             </Box>
         :

@@ -33,8 +33,12 @@ export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, c
     );
     
     return(
-        <Dialog isOpen={open} sxProps={{margin: '5px', width: isMobile ? '100%' : '900px'}} >
-            <Box sx={{padding: '15px', display: 'flex', flexDirection: 'column'}}>
+        <Dialog isOpen={open} sxProps={{ margin: '5px', ...(isMobile ? { width: '100%' } : {}) }} >
+            <Box sx={[
+                {display: 'flex', flexDirection: 'column'},
+                isMobile ? {padding: '15px'} : {padding: '30px'},
+                !isMobile && { width: '700px'}
+            ]}>
                 <Divider sx={{
                         '& .MuiDivider-wrapper': {
                         backgroundColor: '#fff',
