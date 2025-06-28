@@ -3,9 +3,6 @@ import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { CursosActivosDetalle } from "@iconsCustomizeds";
-import { TopBar } from "../../molecules/TopBar/TopBar";
-import { useNavigate } from "react-router-dom";
-import { AppRoutingPaths, TitleScreen } from "@constants";
 import Button from "../../atoms/Button/Button";
 import theme from "../../../theme";
 
