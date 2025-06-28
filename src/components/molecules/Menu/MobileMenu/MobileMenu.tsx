@@ -1,10 +1,12 @@
+import React from "react";
 import { ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { Typography } from "../../../atoms/Typography/Typography";
 
-import { MenuRoutes as MenuItems, MenuInformacion, type MenuType } from "@constants";
+import { MenuRoutes as MenuItems, MenuInformacion, type MenuType, TitleScreen } from "@constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
+import ContactoDialog from "../../ContactoDialog/ContactoDialog";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -21,6 +23,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({anchorEl, onClose, menuTy
     const [menuRootStyle, setMenuRootStyle] = useState({});
     const [menuBordersStyle, setMenuBordersStyle] = useState({});
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isOpenContactoDialog, setIsOpenContactoDialog] = React.useState(false);
 
     const menuRoutes = [...MenuItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -28,7 +31,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({anchorEl, onClose, menuTy
     const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
 
     const handleNavigation = (item: any) => {
-        navigate(item.path);
+        if(item.text === TitleScreen.CONTACTO){
+            setIsOpenContactoDialog(true);
+        }else{
+            navigate(item.path);
+        }
+        
         if (onClose) {
             onClose();
         }
@@ -64,54 +72,57 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({anchorEl, onClose, menuTy
     },[menuType]);
 
     return (
-        <Menu
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={onClose}
-            slotProps={{
-                root: {...menuRootStyle},
-                paper: {
-                    sx: {
-                        ...menuBordersStyle, 
-                        mt: isMobile ? 1 : -3, 
-                        width: '100%', 
-                        maxWidth,
-                        padding: '8px', 
-                        display: 'flex', 
-                        justifyContent: 'center' 
-                    }
-                }
-            }}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            transformOrigin={
-                isMobile ? { vertical: 'top', horizontal: 'center' } : { vertical: 'bottom', horizontal: 'center' }
-            }
-        >
-            <Typography component="h3" variant="h3" sxProps={{py: 1, fontWeight: 'bold', color: 'primary.main', textAlign: 'center' }}>
-                { menuType === 'menuRoutes' ? 'Menú' : 'Más información' }
-            </Typography>
-            {
-                items.filter((item) => item.visible === 1).map((item, index) => (
-                    <MenuItem 
-                        key={index}
-                        onClick={() => handleNavigation(item)}
-                        sx={[{...menuItemStyle, mt: index === 0 ? 0 : 2}, !isMobile && {width: '100%', maxWidth: '232px'}]}
-                    >
-                        {
-                            menuType === 'menuRoutes' 
-                            ?
-                                item.text
-                            :
-                            <>
-                                <ListItemIcon>
-                                    <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
-                                </ListItemIcon>
-                                <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
-                            </>
+        <>
+            <Menu
+                anchorEl={anchorEl}
+                open={menuOpen}
+                onClose={onClose}
+                slotProps={{
+                    root: {...menuRootStyle},
+                    paper: {
+                        sx: {
+                            ...menuBordersStyle, 
+                            mt: isMobile ? 1 : -3, 
+                            width: '100%', 
+                            maxWidth,
+                            padding: '8px', 
+                            display: 'flex', 
+                            justifyContent: 'center' 
                         }
-                    </MenuItem>
-                ))
-            }
-        </Menu>
+                    }
+                }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                transformOrigin={
+                    isMobile ? { vertical: 'top', horizontal: 'center' } : { vertical: 'bottom', horizontal: 'center' }
+                }
+            >
+                <Typography component="h3" variant="h3" sxProps={{py: 1, fontWeight: 'bold', color: 'primary.main', textAlign: 'center' }}>
+                    { menuType === 'menuRoutes' ? 'Menú' : 'Más información' }
+                </Typography>
+                {
+                    items.filter((item) => item.visible === 1).map((item, index) => (
+                        <MenuItem 
+                            key={index}
+                            onClick={() => handleNavigation(item)}
+                            sx={[{...menuItemStyle, mt: index === 0 ? 0 : 2}, !isMobile && {width: '100%', maxWidth: '232px'}]}
+                        >
+                            {
+                                menuType === 'menuRoutes' 
+                                ?
+                                    item.text
+                                :
+                                <>
+                                    <ListItemIcon>
+                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
+                                    </ListItemIcon>
+                                    <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
+                                </>
+                            }
+                        </MenuItem>
+                    ))
+                }
+            </Menu>
+            <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{telefono:["(667) 712 41 72"], email:["daniela.cazares@umi.edu.mx"]}} />
+        </>
     );
 }
