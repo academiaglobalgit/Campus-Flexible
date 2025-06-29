@@ -2,8 +2,8 @@ import {
   Box,
   Container,
   Grid,
-  useMediaQuery, 
-  useTheme 
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 
 import { ManualInduccion, FAQS, Contacto, Help } from '../../../assets/icons';
@@ -11,6 +11,7 @@ import { MobileLogin } from './MobileLogin';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
+
 
 import Home from "../../../assets/home.png";
 import ContactoDialog from '../../molecules/ContactoDialog/ContactoDialog';
@@ -26,44 +27,46 @@ const LoginPage: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const accessLogin = [
-    { id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => console.log('Manual de Inducción') },
+    {
+      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open('https://academiaglobal.mx/resources/assets/files/manuales/induccion/prueba.pdf', '_blank')
+    },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES) },
     { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true) },
-    { id: 'ayuda', icon: Help, label: 'Ayuda', action: ()=> Navigation(AppRoutingPaths.AYUDA_EXTERIOR) },
+    { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => Navigation(AppRoutingPaths.AYUDA_EXTERIOR) },
   ];
 
   return (
     <>
       {
-        isMobile 
-        ?
+        isMobile
+          ?
           <Container component="main">
             <MobileLogin accessLogin={accessLogin} />
           </Container>
-        : 
-          <Grid container size={{ md:12 }} sx={{ height: '100vh' }}>
-            <Grid size={{ md:4 }} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+          :
+          <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
+            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
                 <MobileLogin accessLogin={accessLogin} />
               </Box>
             </Grid>
             {
-              !showImage && 
-                <Grid size={{ md:8 }} >
-                  <Box
-                    component="img"
-                    src={Home}
-                    alt="Login"
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Grid>
+              !showImage &&
+              <Grid size={{ md: 8 }} >
+                <Box
+                  component="img"
+                  src={Home}
+                  alt="Login"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Grid>
             }
           </Grid>
-      }   
+      }
       <ContactoDialog isOpen={isOpen} close={() => setIsOpen(false)} data={contacto} />
     </>
   );
