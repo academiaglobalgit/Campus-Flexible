@@ -54,7 +54,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
             });
             setMenuRootStyle({});
             setMenuBordersStyle({
-                borderRadius: '20px'
+                borderRadius: '20px',
+                '& .MuiMenu-list': {
+                    width: '100%',
+                }
             });
         } else {
             setMaxWidth(isMobile ? 278 : 370);
@@ -106,7 +109,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                         <MenuItem
                             key={index}
                             onClick={() => handleNavigation(item)}
-                            sx={[{ ...menuItemStyle, mt: index === 0 ? 0 : 2 }, !isMobile && { width: '100%', maxWidth: '232px' }]}
+                            sx={[
+                                { ...menuItemStyle, mt: index === 0 ? 0 : 2 }, 
+                                !isMobile && { width: '100%', maxWidth: '232px' }
+                            ]}
                         >
                             {
                                 menuType === 'menuRoutes'
