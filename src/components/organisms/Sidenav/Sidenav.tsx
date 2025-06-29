@@ -11,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
 import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
@@ -297,6 +297,7 @@ const Sidenav: React.FC = () => {
           ]}
         >
           <Outlet/>
+          <ScrollRestoration />
           <FabMenu />
         </Box>
       </Box>

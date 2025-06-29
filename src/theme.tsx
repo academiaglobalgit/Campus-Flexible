@@ -80,7 +80,6 @@ const theme = createTheme({
       lineHeight: '24px',
     },
     body3: {
-      fontFamily: 'Roboto',
       fontWeight: 400,
       fontSize: '18px',
       lineHeight: '24px'

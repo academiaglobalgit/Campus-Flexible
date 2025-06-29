@@ -4,7 +4,7 @@ import Sidenav from "../../organisms/Sidenav/Sidenav";
 import { Container, useMediaQuery, useTheme } from "@mui/material";
 import { TopBar } from "../../molecules/TopBar/TopBar";
 import { BottomBar } from "../../molecules/BottomBar/BottomBar";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 
 const MainTemplate: React.FC = () => {
     const theme = useTheme();
@@ -21,6 +21,7 @@ const MainTemplate: React.FC = () => {
                 <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }}>
                     <TopBar />
                     <Outlet />
+                    <ScrollRestoration />
                 </Container>
                 <BottomBar />
             </>

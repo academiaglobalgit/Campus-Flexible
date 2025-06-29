@@ -109,55 +109,48 @@ const CursosActivosDetalles: React.FC = () => {
     //const {data} = useGetCursosById(Number(id!));
     
     return (
-        <>
-            {
-                cursosDatas &&
-                cursosDatas.map((item, index) => (
-                    <>
-                        <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
-                            <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
-                            <Box sx={{
-                                paddingLeft: '30px', fontFamily: 'Gotham', fontSize: '28px',
-                                fontStyle: 'normal',
-                                fontWeight: 700,
-                            }} >
-                                <Typography component="h5" color="text.primary" variant={"h5"}>Ver lectura de la materia</Typography>
-                            </Box>
+        cursosDatas &&
+        cursosDatas.map((item, index) => (
+            <Box key={index} sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column' }}>
+                <TituloIcon key={index} Titulo={item.materia} Icon={CursosActivosDetalle} />
+                <Box sx={{
+                    paddingLeft: '30px', fontFamily: 'Gotham', fontSize: '28px',
+                    fontStyle: 'normal',
+                    fontWeight: 700,
+                }} >
+                    <Typography component="h5" color="text.primary" variant={"h5"}>Ver lectura de la materia</Typography>
+                </Box>
 
-                            <Divider textAlign="center">
-                                <Typography component="span" variant="body2" color="primary">Materias</Typography>
-                            </Divider>
+                <Divider textAlign="center">
+                    <Typography component="span" variant="body2" color="primary">Materias</Typography>
+                </Divider>
 
-                            {item.temas.map((temas) => (
-                                <Accordion title={temas.titulo} sxProps={{
-                                    backgroundColor: "#F8F8F9",
-                                    boxShadow: "0px 2px 4px 0px #6BBBE44D",
-                                    border: "1px solid #BABABA0D"
-                                }}>
+                {item.temas.map((temas, i) => (
+                    <Accordion key={i} title={temas.titulo} sxProps={{
+                        backgroundColor: "#F8F8F9",
+                        boxShadow: "0px 2px 4px 0px #6BBBE44D",
+                        border: "1px solid #BABABA0D"
+                    }}>
 
-                                    <Divider textAlign="center">
-                                        <Typography component="span" variant="body2" color="primary">Control de avance</Typography>
-                                    </Divider>
-                                    <Typography component="p" variant="body1" sxProps={{ justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-                                        El estado de tu progreso dependerá de los elementos que hayas completado y se representará mediante uno de los siguientes colores:                                      </Typography>
+                        <Divider textAlign="center">
+                            <Typography component="span" variant="body2" color="primary">Control de avance</Typography>
+                        </Divider>
+                        <Typography component="p" variant="body1" sxProps={{ justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                            El estado de tu progreso dependerá de los elementos que hayas completado y se representará mediante uno de los siguientes colores:                                      </Typography>
 
-                                    {materiaItem(temas.status as 'Finalizado' | 'Cursando' | 'No iniciado')}
+                        {materiaItem(temas.status as 'Finalizado' | 'Cursando' | 'No iniciado')}
 
 
-                                    <Divider textAlign="center">
-                                        <Typography component="span" variant="body2" color="primary">Tutorias</Typography>
-                                    </Divider>
-                                    <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'center', width: '100%' }}>
-                                        <Button onClick={() => { }} fullWidth variant="contained">Ver Tutorias</Button>
-                                    </Box>
-                                </Accordion>
-                            ))}
+                        <Divider textAlign="center">
+                            <Typography component="span" variant="body2" color="primary">Tutorias</Typography>
+                        </Divider>
+                        <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'center', width: '100%' }}>
+                            <Button onClick={() => { }} fullWidth variant="contained">Ver Tutorias</Button>
                         </Box>
-                    </>
-                ))
-            }
-
-        </>
+                    </Accordion>
+                ))}
+            </Box>
+        ))
     );
 };
 
