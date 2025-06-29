@@ -9,6 +9,7 @@ import React from "react";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { VideoBienvenidaDialog } from "../../molecules/VideoBienvenidaDialog/VideoBienvenidaDialog";
+import { InscribirmeDialog } from "../../molecules/InscribirmeDialog/InscribirmeDialog";
 
 const materiaData = [
     {
@@ -35,6 +36,7 @@ const PlanEstudio: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
+    const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
 
     const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
 
@@ -49,6 +51,12 @@ const PlanEstudio: React.FC = () => {
         setIsOpenVideo(true);
     }
 
+    const handleAction = (status: string) => {
+        if(status === "Inscribirme") {
+            setIsOpenInscribirmeDialog(true);
+        }
+    }
+
     const InformacionStatusButtons = (status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
@@ -57,7 +65,7 @@ const PlanEstudio: React.FC = () => {
             <>
                 <Button 
                     fullWidth
-                    onClick={() => {}} 
+                    onClick={() => handleAction(status)} 
                     color={color}
                 >{status}</Button>
             </>
@@ -207,6 +215,7 @@ const PlanEstudio: React.FC = () => {
                     </Box>
             }
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} />
+            <InscribirmeDialog isOpen={isOpenInscribirmeDialog} close={() => setIsOpenInscribirmeDialog(false)} />
         </>
         
     );
