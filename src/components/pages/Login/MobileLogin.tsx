@@ -99,6 +99,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         {...register("username")}
                         error={!!errors.username}
                         helperText={errors.username?.message}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
+                            }
+                        }}
                     />
                     <TextField
                         label="Contraseña"
@@ -122,6 +128,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                         </IconButton>
                                     </InputAdornment>
                                 ),
+                            }
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
                             }
                         }}
                     />
