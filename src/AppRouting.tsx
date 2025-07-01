@@ -51,11 +51,7 @@ export const AppRouting = createHashRouter([
               },
               {
                 path: AppRoutingPaths.BIBLIOTECA,
-                Component: Component.VideotecaBiblioteca
-              },
-              {
-                path: AppRoutingPaths.VIDEOS_LECTURAS,
-                Component: Component.VideotecaBiblioteca
+                Component: Component.BibliotecaVideoteca
               },
               {
                 path: AppRoutingPaths.MI_PERFIL,
@@ -84,6 +80,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.SALA_CONVERSACIONES,
                 Component: Component.SalaConversacion
+              },
+              {
+                path: AppRoutingPaths.CONSEJERIA,
+                Component: Component.Consejeria
               },
             ]
           }

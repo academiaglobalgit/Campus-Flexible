@@ -1,12 +1,12 @@
-import { Box, Button, Divider } from "@mui/material";
-import { AppRoutingPaths, TitleScreen } from "@constants";
+import { Box, Button, Divider, useMediaQuery, useTheme } from "@mui/material";
+import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { LinearProgressWithLabel } from "../../molecules/LinearProgress/LinearProgress";
 import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
-import theme from "../../../theme";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 
 const cursosDatas = [
     {
@@ -29,6 +29,8 @@ const cursosDatas = [
 ];
 
 const CursoActivo: React.FC = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const navigate = useNavigate();
     const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", "1"));
@@ -66,12 +68,8 @@ const CursoActivo: React.FC = () => {
         )
     };
 
-    return (
+    const Materias = (
         <>
-            <TituloIcon Titulo={TitleScreen.CURSOS_ACTIVOS} Icon={CursosActivos} />
-            <Typography component="span" variant="body1">
-                En esta sección te presentamos los cursos en los que estás inscrito y en cada uno tienes la opción de ingresar, a través de los diferentes botones de acceso, a Material en Línea, Actividades Integradoras, Presentar Exámenes, Exámenes Presentados, Material Descargable y Foros.
-            </Typography>
             <Divider textAlign="center">
                 <Typography component="span" variant="body2" color="primary">Materias</Typography>
             </Divider>
@@ -113,6 +111,22 @@ const CursoActivo: React.FC = () => {
                 ))
             }
         </>
+    );
+
+    return (
+        isMobile 
+        ?
+            <>
+                <TituloIcon Titulo={TitleScreen.CURSOS_ACTIVOS} Icon={CursosActivos} />
+                <Typography component="span" variant="body1">
+                    {DescripcionesPantallas.CURSOS_ACTIVOS}
+                </Typography>
+                {Materias}
+            </>
+        :
+            <ContainerDesktop title={TitleScreen.CURSOS_ACTIVOS} description={DescripcionesPantallas.CURSOS_ACTIVOS}>
+                {Materias}
+            </ContainerDesktop>
     );
 };
 

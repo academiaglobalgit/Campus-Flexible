@@ -1,12 +1,13 @@
 import React from 'react';
-import { Box, Grid, useMediaQuery, useTheme } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
-import { TitleScreen } from '@constants';
+import { DescripcionesPantallas, TitleScreen } from '@constants';
 import { Calificaciones as CalificacionesIcon } from "@iconsCustomizeds";
 import { Typography } from '../../atoms/Typography/Typography';
 import Button from '../../atoms/Button/Button';
 import { Accordion } from '../../molecules/Accordion/Accordion';
 import { GlosarioTerminosDialog } from '../../molecules/GlosarioTerminosDialog/GlosarioTerminosDialog';
+import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesktop';
 
 const Calificaciones: React.FC = () => {
     const theme = useTheme();
@@ -70,14 +71,13 @@ const Calificaciones: React.FC = () => {
                 >PROMEDIO GENERAL: {promedio}</Typography>
         }
         </Box>
-
     );
 
     return (
         <>
            {
             isMobile 
-                ? 
+            ? 
                 <>
                     <TituloIcon Titulo={TitleScreen.CALIFICACIONES} Icon={ CalificacionesIcon } />
                     {Leyenda}
@@ -89,24 +89,24 @@ const Calificaciones: React.FC = () => {
                         </Box>
                     </Box>
                 </>
-                :
-                <Box sx={{ width: { md: '80vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
-                    <Grid container sx={{ alignItems:'center'}}>
-                        <Grid size={{md: !betweenDevice ? 9 : 12}}>
-                            <TituloIcon Titulo={TitleScreen.CALIFICACIONES} fontSize="h2" />
-                            {Leyenda}
-                            <Box sx={{ width: !betweenDevice ? '345px' : '100%', paddingTop: '20px', paddingBottom: '20px' }}>
-                                {BotonVerGlosario('outlined')}
-                            </Box>
-                        </Grid>
-                        <Grid size={{md: !betweenDevice ? 3 : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
-                            {promedio("8.6")}
-                        </Grid>
-                    </Grid>
+            :
+                <ContainerDesktop 
+                    title={TitleScreen.CALIFICACIONES} 
+                    description={DescripcionesPantallas.CALIFICACIONES}
+                    containerSize='80vw'
+                    actions={
+                        promedio("8.6")
+                    }
+                    column1Size={9}
+                    column2Size={3}
+                    specialButton={
+                        BotonVerGlosario('outlined')
+                    }
+                >
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
                         {PeriodosAccordion()}
                     </Box>
-                </Box> 
+                </ContainerDesktop>
             }            
             <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} />
         </>

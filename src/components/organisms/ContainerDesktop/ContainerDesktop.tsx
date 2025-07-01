@@ -4,23 +4,54 @@ import { Typography } from "../../atoms/Typography/Typography";
 
 type ContainerDesktopProps = {
     title: string;
-    description: string;
-    children: React.ReactNode;
+    description?: string;
+    actions?: React.ReactNode;
+    children?: React.ReactNode;
+    column1Size?: number;
+    column2Size?: number;
+    specialButton?: React.ReactNode;
+    containerSize?: string;
 }
 
-export const ContainerDesktop: React.FC<ContainerDesktopProps> = ({ title, description, children }) => {
+export const ContainerDesktop: React.FC<ContainerDesktopProps> = (
+    { 
+        title, 
+        description, 
+        specialButton,
+        actions, 
+        children, 
+        column1Size = 8, 
+        column2Size = 4,
+        containerSize = '90vw'
+    }) => {
     const theme = useTheme();
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     
     return(
-        <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
+        <Box sx={{ width: { md: containerSize }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
             <Grid container sx={{ alignItems:'center'}}>
-                <Grid size={{md: !betweenDevice ? 8 : 12}}>
+                <Grid size={{md: !betweenDevice ? (actions === undefined ? 10 : column1Size) : 12}}>
                     <TituloIcon Titulo={title} fontSize="h2" />
-                    <Typography component="span" variant="body1">
-                        { description }
-                    </Typography>
+                    {
+                        description && (<Typography component="span" variant="body1">
+                            { description }
+                        </Typography>)
+                    }
+                    { 
+                        specialButton && (
+                            <Box sx={{ width: !betweenDevice ? '345px' : '100%', paddingTop: '20px', paddingBottom: '20px' }}>
+                                {specialButton}
+                            </Box>
+                        )
+                    }
                 </Grid>
+                {
+                    actions && (
+                        <Grid size={{md: !betweenDevice ? column2Size : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
+                            {actions}
+                        </Grid>
+                    )
+                }
             </Grid>
             <Box>
                 { children }

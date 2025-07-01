@@ -1,4 +1,4 @@
-import { TitleScreen } from "@constants";
+import { DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import {ServiciosEscolares as IconServiciosEscolares} from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -9,6 +9,7 @@ import serv_escolares from '../../../assets/serv_escolares.png';
 import examenes from '../../../assets/examenes.png';
 import constancia from '../../../assets/constancia.png';
 import credencial from '../../../assets/credencial.png';
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 // import { useNavigate } from "react-router-dom";
 
 const cardData = [
@@ -22,14 +23,9 @@ const ServiciosEscolares: React.FC = () => {
     // const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-     
-    return(
-        <>
-          <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
-          <Typography component="span" variant="body1">
-            Gestiona de forma sencilla tus inscripciones, documentos, pagos y trámites académicos. Todo en un solo lugar, siempre disponible.
-          </Typography>
-          <Box 
+    
+    const CardSection = () => (
+        <Box 
             sx={[
                 { paddingTop: '32px' },
                 !isMobile && {width: { md: '90vw' }, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '94px'}
@@ -72,7 +68,23 @@ const ServiciosEscolares: React.FC = () => {
             }
             
           </Box>
-        </>
+    );
+
+
+    return(
+        isMobile
+        ?
+            <>
+                <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
+                <Typography component="span" variant="body1">
+                    {DescripcionesPantallas.SERVICIOS_ESCOLARES}
+                </Typography>
+                <CardSection />
+            </>
+        :
+            <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={DescripcionesPantallas.SERVICIOS_ESCOLARES}>
+                <CardSection />
+            </ContainerDesktop>
     );
 };
 

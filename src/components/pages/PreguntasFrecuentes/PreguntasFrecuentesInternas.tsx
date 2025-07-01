@@ -6,6 +6,7 @@ import { Document } from "../../../assets/icons";
 
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { useGetPreguntasFrecuentes } from "../../../services/FaqsService";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 
 const PreguntasFrecuentesInternas: React.FC = () => {
   const theme = useTheme();
@@ -37,14 +38,9 @@ const PreguntasFrecuentesInternas: React.FC = () => {
           {accordionPreguntas()}
       </>
     :
-      <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
-        <Box sx={{ paddingTop: '35px' }}>
-          <TituloIcon Titulo={!isMobile ? TitleScreen.PREGUNTAS_FRECUENTES : ""} Icon={Document} fontSize="h2" />
-        </Box>
-        <Box sx={{paddingLeft: '25px', paddingRight: '25px'}}>
-            {accordionPreguntas()}
-        </Box>
-      </Box>
+      <ContainerDesktop title={TitleScreen.PREGUNTAS_FRECUENTES}>
+        {accordionPreguntas()}
+      </ContainerDesktop>
   );
 };
 

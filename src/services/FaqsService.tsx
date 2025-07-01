@@ -11,16 +11,16 @@ type FaqsGroup = {
 export const useGetPreguntasFrecuentes = (id_plan_estudios: number) => {
     const query = useQuery<PreguntasFrecuentesResponse, Error>({
         queryKey: [FAQS_ENDPOINTS.GET_FAQS.key, id_plan_estudios],
-        queryFn: async () => await apiClient.get(`${FAQS_ENDPOINTS.GET_FAQS.path}?id_plan_estudios=${id_plan_estudios}`),
+        queryFn: async () => await apiClient.get(`${FAQS_ENDPOINTS.GET_FAQS.path}?id_plan_estudio=${id_plan_estudios}`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 
     const mapData = (data: Pregunta[]) => {
         const faqs = data.reduce((acc: FaqsGroup, pregunta: Pregunta) => {
-            if (!acc[pregunta.grupo]) {
-                acc[pregunta.grupo] = [];
+            if (!acc[pregunta.nombre_seccion]) {
+                acc[pregunta.nombre_seccion] = [];
             }
-            acc[pregunta.grupo].push(pregunta);
+            acc[pregunta.nombre_seccion].push(pregunta);
             return acc;
         }, {});
 
