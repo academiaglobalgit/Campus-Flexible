@@ -4,12 +4,13 @@ export interface ContactoResponse {
 }
 
 export interface Contacto {
-    id:               number;
-    id_plan_estudios: number;
-    contacto:         string;
-    type:             string;
-    created_at:       string;
-    deleted_at:       string;
-    deleted_by:       number;
-    is_deleted:       number;
+    id_contacto_plan:    number;
+    id_plan_estudio:     number;
+    id_tipo_contacto:    number;
+    valor_contacto:      string;
+    descripcion:         string;
+    fecha_creacion:      string;
+    fecha_actualizacion: string;
+    id_usuario_modifico: number;
+    eliminado:           number;
 }

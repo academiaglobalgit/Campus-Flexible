@@ -59,8 +59,8 @@ const MiPerfil: React.FC = () => {
                 
                 // Actualizar los inputs con los datos de la API
                 setValue("email", response.email);
-                setValue("telefono", formatWithIMask(response.telefono, "(000) 000-0000"));
-                setValue("whatsApp", formatWithIMask(response.whatsApp, "(000) 000-0000"));
+                setValue("telefono", formatWithIMask(response.telefono, "phone"));
+                setValue("whatsApp", formatWithIMask(response.whatsApp, "phone"));
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
