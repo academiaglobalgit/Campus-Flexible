@@ -139,6 +139,15 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
                       primary={item.text}
                       sx={{ opacity: open ? 1 : 0 }}
                     />
+                    {
+                      (item.hasCount && open) && 
+                        <Box 
+                          component="span" 
+                          sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
+                        >
+                          12
+                        </Box>
+                    }
                     {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
                   </ListItemButton>
                 </ListItem>

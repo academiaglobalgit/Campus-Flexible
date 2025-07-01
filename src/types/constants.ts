@@ -70,7 +70,7 @@ export type TitleScreen = typeof TitleScreen;
 
 export const MenuRoutes: Menu[] = [
     { text: TitleScreen.PLAN_ESTUDIOS, icon: Icons.Home, path: AppRoutingPaths.PLAN_ESTUDIOS, order: 0, visible: 1, children:[], menu: 'main' },
-    { text: TitleScreen.CURSOS_ACTIVOS, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CURSOS_ACTIVOS, order: 1, visible: 1, children:[], menu: 'main' },
+    { text: TitleScreen.CURSOS_ACTIVOS, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CURSOS_ACTIVOS, order: 1, visible: 1, children:[], menu: 'main', hasCount: true },
     { text: TitleScreen.CALIFICACIONES, icon: Icons.Calificaciones, path: AppRoutingPaths.CALIFICACIONES, order: 2, visible: 1, children:[], menu: 'main' },
     { text: TitleScreen.CALENDARIO, icon: Icons.Calendario, path: AppRoutingPaths.CALENDARIO, order: 3, visible: 1, children:[], menu: 'main' },
     { text: TitleScreen.BIBLIOTECA, icon: Icons.Biblioteca, path: AppRoutingPaths.BIBLIOTECA, order: 4, visible: 1, children:[], menu: 'main' },
@@ -106,6 +106,7 @@ export interface Menu {
     visible:  number;
     children: Child[];
     menu: 'main' | 'more';
+    hasCount?: boolean;
 }
 
 export interface Child {
