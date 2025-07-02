@@ -85,6 +85,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.CONSEJERIA,
                 Component: Component.Consejeria
               },
+              {
+                path: AppRoutingPaths.TERMINOSCONDICIONES,
+                Component: Component.terminosCondiciones
+              },
             ]
           }
         ]

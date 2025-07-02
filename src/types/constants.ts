@@ -31,6 +31,7 @@ export const AppRoutingPaths = {
     BOLSA_TRABAJO: "/bolsa-trab",
     PIZARRON: "/pizarron",
     MI_TRAYECTO: "/mi-trayecto",
+    TERMINOSCONDICIONES: "/terminos-condiciones",
     APRENDE_MAS: "more",
 
 } as const;
@@ -64,6 +65,7 @@ export const TitleScreen = {
     PIZARRON: "Pizarron del éxito",
     MI_TRAYECTO: "Mi Trayecto",
     APRENDE_MAS: "Aprende Más",
+    TERMINOS_CONDICIONES: "Términos y Condiciones",
 }
 
 export type TitleScreen = typeof TitleScreen;
