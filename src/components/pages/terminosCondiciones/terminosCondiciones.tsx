@@ -5,7 +5,7 @@ import { CheckBoxLabel } from "../../atoms/Checkbox/Checkbox";
 import { Box, Button } from "@mui/material";
 import theme from "../../../theme";
 
-const terminosCondiciones: React.FC = () => {
+const TerminosCondiciones: React.FC = () => {
 
     return (
         <>
@@ -68,4 +68,4 @@ const terminosCondiciones: React.FC = () => {
     );
 };
 
-export default terminosCondiciones;
+export default TerminosCondiciones;

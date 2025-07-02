@@ -31,7 +31,7 @@ export const AppRoutingPaths = {
     BOLSA_TRABAJO: "/bolsa-trab",
     PIZARRON: "/pizarron",
     MI_TRAYECTO: "/mi-trayecto",
-    TERMINOSCONDICIONES: "/terminos-condiciones",
+    TERMINOS_CONDICIONES: "/terminos-condiciones",
     APRENDE_MAS: "more",
 
 } as const;
