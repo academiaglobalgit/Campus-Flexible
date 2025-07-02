@@ -20,5 +20,6 @@ export { default as Ayuda } from './pages/ayuda/Ayuda';
 export { default as PreguntasFrecuentesInternas } from './pages/PreguntasFrecuentes/PreguntasFrecuentesInternas';
 export { default as SalaConversacion } from './pages/SalaConversacion/SalaConversacion';
 export { default as Consejeria } from './pages/Consejeria/Consejeria';
+export { default as TerminosCondiciones } from './pages/TerminosCondiciones/TerminosCondiciones';
 
 export * as Organisms from './organisms';
