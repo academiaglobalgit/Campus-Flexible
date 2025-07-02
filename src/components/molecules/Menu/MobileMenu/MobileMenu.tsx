@@ -35,6 +35,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
             setIsOpenContactoDialog(true);
         } else if (item.text === TitleScreen.MANUAL_INDUCCION) {
             window.open('https://academiaglobal.mx/resources/assets/files/manuales/induccion/prueba.pdf', '_blank');
+        } else if (item.text === TitleScreen.LINEAMIENTOS) { 
+            window.open('https://academiaglobal.mx/resources/assets/files/lineamientos/lineamientosPrueba.pdf', '_blank');
         } else {
             navigate(item.path);
         }
@@ -110,7 +112,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                             key={index}
                             onClick={() => handleNavigation(item)}
                             sx={[
-                                { ...menuItemStyle, mt: index === 0 ? 0 : 2 }, 
+                                { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                                 !isMobile && { width: '100%', maxWidth: '232px' }
                             ]}
                         >
