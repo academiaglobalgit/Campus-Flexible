@@ -1,11 +1,14 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Badge, Box, IconButton, Menu, useTheme } from "@mui/material";
 import { Ayuda, Notificaciones, PreguntasFrecuentes } from "@iconsCustomizeds";
-import React from "react";
 import StarIcon from '@mui/icons-material/Star';
 import { Typography } from "../../atoms/Typography/Typography";
+import { AppRoutingPaths } from "@constants";
 
 export const IconsTopBar: React.FC = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,13 +29,16 @@ export const IconsTopBar: React.FC = () => {
         handleClose();
     }
 
+    const handleFaqs = () => navigate(AppRoutingPaths.PREGUNTAS_FRECUENTES_INT);
+    const handleHelp = () => navigate(AppRoutingPaths.AYUDA_INTERIOR);
+
     return(
         <>
             <Box>
-                <IconButton>
+                <IconButton onClick={handleFaqs}>
                     <PreguntasFrecuentes />
                 </IconButton>
-                <IconButton>
+                <IconButton  onClick={handleHelp}>
                     <Ayuda />
                 </IconButton>
                 <IconButton

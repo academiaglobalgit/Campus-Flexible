@@ -25,6 +25,7 @@ import { formatWithIMask } from "../../../utils/Helpers";
 const initialData = {
     email: 'joseornelaz@gmail.com', 
     telefono: '(669) 116-6107',
+    telefonoContacto: '(669) 116-6107',
     whatsApp: '',
 };
 
@@ -44,10 +45,16 @@ const MiPerfil: React.FC = () => {
     const currentValues = watch();
     
     const hasChanges = () => {
+
+        if (currentValues.telefono && currentValues.telefono.replace(/\D/g, '').length !== 10) return false;
+        if (currentValues.whatsApp && currentValues.whatsApp.replace(/\D/g, '').length !== 10) return false;
+        if (currentValues.telefonoContacto && currentValues.telefonoContacto.replace(/\D/g, '').length !== 10) return false;
+
         return (
             currentValues.email !== initialData.email ||
             currentValues.telefono !== initialData.telefono ||
-            currentValues.whatsApp !== initialData.whatsApp
+            currentValues.whatsApp !== initialData.whatsApp ||
+            currentValues.telefonoContacto !== initialData.telefonoContacto
         );
     };
 
@@ -61,6 +68,7 @@ const MiPerfil: React.FC = () => {
                 setValue("email", response.email);
                 setValue("telefono", formatWithIMask(response.telefono, "phone"));
                 setValue("whatsApp", formatWithIMask(response.whatsApp, "phone"));
+                setValue("telefonoContacto", formatWithIMask(response.telefonoContacto, "phone"));
                 
             } catch (error) {
                 console.error("Error fetching data:", error);

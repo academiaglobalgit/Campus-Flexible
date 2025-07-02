@@ -44,48 +44,50 @@ export const FormTutor: React.FC = () => {
     // });
 
     return(
-        <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <Controller
-                name="materia"
-                control={control}
-                render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.materia}>
-                    <InputLabel id="materia-label">Materia</InputLabel>
-                    <Select
-                        labelId="materia-label"
-                        label="Materia"
-                        {...field}
-                    >
-                        {materias.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                            {item.label}
-                        </MenuItem>
-                        ))}
-                    </Select>
-                    </FormControl>
-                )}
-            />
+        <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', pb: '20px' }}>
+                <Controller
+                    name="materia"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControl fullWidth error={!!errors.materia}>
+                        <InputLabel id="materia-label">Materia</InputLabel>
+                        <Select
+                            labelId="materia-label"
+                            label="Materia"
+                            {...field}
+                        >
+                            {materias.map((item) => (
+                            <MenuItem key={item.id} value={item.id}>
+                                {item.label}
+                            </MenuItem>
+                            ))}
+                        </Select>
+                        </FormControl>
+                    )}
+                />
 
-            <Controller
-                name="tutor"
-                control={control}
-                render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.tutor}>
-                    <InputLabel id="tutor-label">Tutor</InputLabel>
-                    <Select
-                        labelId="tutor-label"
-                        label="Tutor"
-                        {...field}
-                    >
-                        {tutores.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                            {item.label}
-                        </MenuItem>
-                        ))}
-                    </Select>
-                    </FormControl>
-                )}
-            />
+                <Controller
+                    name="tutor"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControl fullWidth error={!!errors.tutor}>
+                        <InputLabel id="tutor-label">Tutor</InputLabel>
+                        <Select
+                            labelId="tutor-label"
+                            label="Tutor"
+                            {...field}
+                        >
+                            {tutores.map((item) => (
+                            <MenuItem key={item.id} value={item.id}>
+                                {item.label}
+                            </MenuItem>
+                            ))}
+                        </Select>
+                        </FormControl>
+                    )}
+                />
+            </Box>
             <TextField
                 id="email"
                 label="Correo del alumno"
@@ -93,6 +95,7 @@ export const FormTutor: React.FC = () => {
                 {...register("email")}
                 error={!!errors.email}
                 helperText={errors.email?.message}
+                sx={{pb:'4px'}}
             />
             <TextField
                 placeholder="Mensaje"
@@ -102,12 +105,10 @@ export const FormTutor: React.FC = () => {
                 {...register("message")}
                 error={!!errors.message}
                 helperText={errors.message?.message}
+                sx={{pb:'4px'}}
             />
             <Button
                 fullWidth
-                sxProps={{
-                    py: 1.5,
-                }}
                 onClick={handleSubmit(onSubmit)}
                 isLoading={loading}
             >

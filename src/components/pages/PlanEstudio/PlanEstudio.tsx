@@ -212,56 +212,6 @@ const PlanEstudio: React.FC = () => {
                             </Grid>
                         </Grid>
                     </ContainerDesktop>
-                    {/* <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}> */}
-                        {/* <Grid container sx={{ alignItems:'center'}}>
-                            <Grid size={{md: !betweenDevice ? 8 : 12}}>
-                                <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} fontSize="h2" />
-                                {Leyenda}
-                            </Grid>
-                            <Grid size={{md: !betweenDevice ? 4 : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
-                                {BotonesVideoMapa(!betweenDevice ? "column" : "row")}
-                            </Grid>
-                        </Grid> */}
-                        
-                        {/* <Grid container>
-                            <Grid size={{md: 12}} sx={{ width: '100%'}}>
-                                {                                
-                                    !betweenDevice ?
-                                        <>
-                                            <Box sx={{ width: `${(periodos.length * 108.8)}px`}}>
-                                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                                                    {
-                                                        periodos.map((_, i) => <Tab label={`Periodo ${i + 1}`} value={i} key={i} />)
-                                                    }
-                                                </Tabs>
-                                            </Box>
-                                            {
-                                                periodos.map((_, i) => (
-                                                    <TabPanel value={value} index={i} key={i}>
-                                                        <Box sx={{ p:4}}>
-                                                            <TituloIcon Titulo={`Periodo ${i + 1} - Tus materias`} fontSize="h3" />
-                                                            {
-                                                                materiaData && materiaData.filter((item) => item.id === i).map((item, kix) => (
-                                                                    <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
-                                                                        {item.materias.map((materia, idx) => (
-                                                                            <Box key={idx}>
-                                                                                {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
-                                                                            </Box>
-                                                                        ))}
-                                                                    </Box>
-                                                                ))
-                                                            }
-                                                        </Box>                                                
-                                                    </TabPanel>
-                                                ))
-                                            }
-                                        </>
-                                    :
-                                    ListadoMateriaVistaMobil
-                                }                            
-                            </Grid>
-                        </Grid> */}
-                    {/* </Box> */}
                 </>
             }
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} />

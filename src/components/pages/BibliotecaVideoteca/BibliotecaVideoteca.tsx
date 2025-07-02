@@ -55,7 +55,7 @@ const BibliotecaVideoteca: React.FC = () => {
                 <Contents />
             </Box>
         :
-            <ContainerDesktop title={TitleScreen.BIBLIOTECA} description={DescripcionesPantallas.BIBLIOTECA} containerSize="60.2vw" >
+            <ContainerDesktop title={TitleScreen.BIBLIOTECA} description={DescripcionesPantallas.BIBLIOTECA}>
                 <Box sx={{pt:'12px'}}>
                     <Contents />
                 </Box>

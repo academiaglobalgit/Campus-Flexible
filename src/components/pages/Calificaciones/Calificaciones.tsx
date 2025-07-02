@@ -93,7 +93,6 @@ const Calificaciones: React.FC = () => {
                 <ContainerDesktop 
                     title={TitleScreen.CALIFICACIONES} 
                     description={DescripcionesPantallas.CALIFICACIONES}
-                    containerSize='80vw'
                     actions={
                         promedio("8.6")
                     }

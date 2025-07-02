@@ -10,7 +10,6 @@ type ContainerDesktopProps = {
     column1Size?: number;
     column2Size?: number;
     specialButton?: React.ReactNode;
-    containerSize?: string;
 }
 
 export const ContainerDesktop: React.FC<ContainerDesktopProps> = (
@@ -22,13 +21,12 @@ export const ContainerDesktop: React.FC<ContainerDesktopProps> = (
         children, 
         column1Size = 8, 
         column2Size = 4,
-        containerSize = '90vw'
     }) => {
     const theme = useTheme();
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     
     return(
-        <Box sx={{ width: { md: containerSize }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
+        <Box sx={{ width: { md: '100%' }, display: 'flex', flexDirection: 'column', gap: '20px', pb: '100px'}}>
             <Grid container sx={{ alignItems:'center'}}>
                 <Grid size={{md: !betweenDevice ? (actions === undefined ? 10 : column1Size) : 12}}>
                     <TituloIcon Titulo={title} fontSize="h2" />

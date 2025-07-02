@@ -9,6 +9,7 @@ import React, { useRef } from "react";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { FormAyuda } from "./FormAyuda";
 import { FormTutor } from "./FormTutor";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 
 const Ayuda: React.FC = () => {
     const theme = useTheme();
@@ -115,7 +116,7 @@ const Ayuda: React.FC = () => {
                     slotProps={{
                         indicator: {
                             style: {
-                                backgroundColor: value === 0 ? '#D9A514' : '#1F7B5C', // cambia este color al que quieras para la línea
+                                backgroundColor: value === 0 ? '#D9A514' : '#1F7B5C',
                             }
                         }
                     }}
@@ -155,23 +156,23 @@ const Ayuda: React.FC = () => {
                 </Box>
             </Box>
         :
-            <Box sx={{ width: { md: '90vw' }, display: 'flex', flexDirection: 'column', gap: '20px'}}>
-                <Grid container sx={{ alignItems:'center'}} spacing={5}>
-                    <Grid size={{md: 6}}>
-                        <TituloIcon Titulo={TitleScreen.NUEVA_SOLICITUD} fontSize="h2" />
-                        <Typography component="span" variant="body2" sx={{textAlign: 'center', paddingBottom: '20px'}}>
-                            Esta sala es de uso libre. El único requisito para participar es estar inscrito(a) y activo(a) en alguno de los programas de Academia Global.
-                        </Typography>
-                        <TabsSection />
-                    </Grid>
-                    <Grid size={{md: 6}}>
-                        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 50px 30px', borderRadius: '20px', backgroundColor: '#F8F8F9'}}>
-                            <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4"/>
-                            <TabsStatusSection />
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Box>
+            <ContainerDesktop title="">
+              <Grid container sx={{ alignItems:'center'}} spacing={5}>
+                     <Grid size={{md: 6}}>
+                         <TituloIcon Titulo={TitleScreen.NUEVA_SOLICITUD} fontSize="h2" />
+                         <Typography component="span" variant="body2" sx={{textAlign: 'center', paddingBottom: '20px'}}>
+                             Esta sala es de uso libre. El único requisito para participar es estar inscrito(a) y activo(a) en alguno de los programas de Academia Global.
+                         </Typography>
+                         <TabsSection />
+                     </Grid>
+                     <Grid size={{md: 6}}>
+                         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 50px 30px', borderRadius: '20px', backgroundColor: '#F8F8F9'}}>
+                             <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4"/>
+                             <TabsStatusSection />
+                         </Box>
+                     </Grid>
+                 </Grid>
+            </ContainerDesktop>
     )
 }
 

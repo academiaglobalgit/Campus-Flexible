@@ -1,5 +1,4 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Sidenav from "../../organisms/Sidenav/Sidenav";
 import { Container, useMediaQuery, useTheme } from "@mui/material";
 import { TopBar } from "../../molecules/TopBar/TopBar";
@@ -13,9 +12,9 @@ const MainTemplate: React.FC = () => {
     return (
         !isMobile
         ?
-            <Box>
+            <Container fixed sx={{ padding:'0px !important'}}>
                 <Sidenav />
-            </Box>
+            </Container>
         :
             <>
                 <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }}>
