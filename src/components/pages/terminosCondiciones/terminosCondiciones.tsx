@@ -1,5 +1,4 @@
 import { TitleScreen } from "@constants";
-import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { CheckBoxLabel } from "../../atoms/Checkbox/Checkbox";
 import { Box, Button } from "@mui/material";
@@ -8,12 +7,8 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 
 const TerminosCondiciones: React.FC = () => {
 
-    return (
-
-        <ContainerDesktop
-            title={TitleScreen.TERMINOS_CONDICIONES}
-        >
-            <TituloIcon Titulo={TitleScreen.TERMINOS_CONDICIONES} Icon={''} fontSize="h2" />
+    const contenido = (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <Typography component="span" variant="h4">
                 Estimado(a) alumno(a):
             </Typography>
@@ -64,6 +59,15 @@ const TerminosCondiciones: React.FC = () => {
                 sx={{ width: 'fit-content', padding: '8px 22px' }}
             >Aceptar
             </Button>
+        </Box>
+    );
+
+    return (
+
+        <ContainerDesktop
+            title={TitleScreen.TERMINOS_CONDICIONES}
+            children={contenido}
+        >
         </ContainerDesktop>
 
     );
