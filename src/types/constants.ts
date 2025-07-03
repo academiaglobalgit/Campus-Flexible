@@ -30,7 +30,7 @@ export const AppRoutingPaths = {
     PIZARRON: "/pizarron",
     MI_TRAYECTO: "/mi-trayecto",
     TERMINOS_CONDICIONES: "/terminos-condiciones",
-    APRENDE_MAS: "more",
+    APRENDE_MAS: "aprende-mas",
 
 } as const;
 
@@ -53,6 +53,7 @@ export const TitleScreen = {
     SERVICIOS_ESCOLORES: "Servicios Escolares",
     CONTACTO: "Contacto",
     MANUAL_INDUCCION: "Manual de inducción",
+    LINEAMIENTOS: "Lineamientos",
     FAQS: "Faqs",
     BACK_HOME_EXT: "Regresar a inicio",
     NUEVA_SOLICITUD: "Nueva Solicitud",

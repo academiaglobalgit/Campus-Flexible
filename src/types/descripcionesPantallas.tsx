@@ -6,4 +6,8 @@ export const DescripcionesPantallas = {
     PLAN_ESTUDIO: 'En esta sección encontrarás todos los cursos, agrupados por períodos, que integran el Programa de Prepa Coppel. En la columna derecha observamos dos botones. En Información tienes a tu disposición la descripción de objetivos, estructura y recursos que integran cada material académico. El segundo botón, te permitirá solicitar la activación de cada curso.',
     SALA_CONVERSACION: 'Aquí encontrarás la calificación final de cada curso, una vez que has realizado los exámenes correspondientes. El porcentaje de avance señala el total de bloques que se han evaluado al momento de tu consulta.',
     SERVICIOS_ESCOLARES: 'Gestiona de forma sencilla tus inscripciones, documentos, pagos y trámites académicos. Todo en un solo lugar, siempre disponible.',
+    BOLETIN_EDUCATIVO: 'Aquí va el texto de boletin educativo.',
+    PIZARRON: 'Aquí va el texto de pizarron',
+    MI_TRAYECTO: 'Aquí va el texto de MI TRAYECTO',
+    APRENDE_MAS: 'Aquí va el texto de APRENDE_MAS',
 }
