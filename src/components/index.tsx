@@ -21,5 +21,8 @@ export { default as PreguntasFrecuentesInternas } from './pages/PreguntasFrecuen
 export { default as SalaConversacion } from './pages/SalaConversacion/SalaConversacion';
 export { default as Consejeria } from './pages/Consejeria/Consejeria';
 export { default as TerminosCondiciones } from './pages/TerminosCondiciones/TerminosCondiciones';
+export { default as BoletinEducativo } from './pages/BoletinEducativo/BolentinEducativo';
+export { default as Pizarron } from './pages/Pizarron/Pizarron';
+export { default as AprendeMas } from './pages/AprendeMas/AprendeMas';
 
 export * as Organisms from './organisms';
