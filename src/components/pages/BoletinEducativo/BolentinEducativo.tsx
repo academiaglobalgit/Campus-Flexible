@@ -3,13 +3,13 @@ import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesk
 import { TitleScreen, DescripcionesPantallas } from '@constants';
 import { Box } from '@mui/material';
 
-const MiTrayecto: React.FC = () => {
+const BoletinEducativo: React.FC = () => {
     return (
-        <ContainerDesktop title={TitleScreen.MI_TRAYECTO} description={DescripcionesPantallas.MI_TRAYECTO}>
+        <ContainerDesktop title={TitleScreen.BOLETIN_EDUCATIVO} description={DescripcionesPantallas.BOLETIN_EDUCATIVO}>
             <Box>
             </Box>
         </ContainerDesktop>
     );
 };
 
-export default MiTrayecto;
+export default BoletinEducativo;

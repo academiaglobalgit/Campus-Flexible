@@ -30,7 +30,7 @@ export const AppRoutingPaths = {
     PIZARRON: "/pizarron",
     MI_TRAYECTO: "/mi-trayecto",
     TERMINOS_CONDICIONES: "/terminos-condiciones",
-    APRENDE_MAS: "more",
+    APRENDE_MAS: "aprende-mas",
 
 } as const;
 
