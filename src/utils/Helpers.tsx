@@ -23,3 +23,30 @@ export const formatWithIMask = (value: string, typeMask: TypeMask): string => {
 
   return iMask.value;
 };
+
+export const numerosOrdinales = (numero: number) => {
+  const ordinales = [
+    "Primer",
+    "Segundo",
+    "Tercer",
+    "Cuarto",
+    "Quinto",
+    "Sexto",
+    "Séptimo",
+    "Octavo",
+    "Noveno",
+    "Décimo",
+    "Undécimo",
+    "Duodécimo",
+    "Decimotercero",
+    "Decimocuarto",
+    "Decimoquinto",
+    "Decimosexto",
+    "Decimoséptimo",
+    "Decimoctavo",
+    "Decimonoveno",
+    "Vigésimo"
+  ];
+
+  return ordinales[numero - 1] || "";
+};

@@ -13,10 +13,10 @@ export const PERFIL_ENDPOINTS = {
 }
 
 export const PLAN_ESTUDIO_ENDPOINTS = {
-    GET_VIDEO: { path:'/plan-estudio/video-bienvenida', key: 'video' },
-    GET_MAPA_CURRICULAR: { path:'/plan-estudio/mapa-curricular', key: 'mapa-curricular' },
-    GET_MATERIAS: { path:'/plan-estudio/materias', key: 'materias' },
-    POST_AUTH: { path: '/plan-estudio/auth' }
+    GET_VIDEO: { path:'/plan_estudio/video-bienvenida', key: 'video' },
+    GET_MAPA_CURRICULAR: { path:'/plan_estudio/mapa-curricular', key: 'mapa-curricular' },
+    GET_MATERIAS: { path:'/plan_estudio', key: 'materias' },
+    POST_AUTH: { path: '/plan_estudio/auth' }
 }
 
 export const CURSOS_ACTIVOS_ENDPOINTS = {

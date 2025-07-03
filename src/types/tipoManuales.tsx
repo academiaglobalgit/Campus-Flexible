@@ -18,6 +18,16 @@ export const TipoManuales = [
         "id_tipo_manual": 4,
         "nombre_tipo": "Guía de uso",
         "descripcion": "Guías paso a paso para el uso de funcionalidades."
+    },
+    {
+        "id_tipo_manual": 5,
+        "nombre_tipo": "Mapa Curricular",
+        "descripcion": ""
+    },
+    {
+        "id_tipo_manual": 6,
+        "nombre_tipo": "Video de Bienvenida",
+        "descripcion": ""
     }
 ];
 

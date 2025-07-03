@@ -12,12 +12,12 @@ const MainTemplate: React.FC = () => {
     return (
         !isMobile
         ?
-            <Container fixed sx={{ padding:'0px !important'}}>
+            <Container fixed sx={{ pl: { xs: 0, sm: "50px" } }}>
                 <Sidenav />
             </Container>
         :
             <>
-                <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }}>
+                <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }} >
                     <TopBar />
                     <Outlet />
                     <ScrollRestoration />
