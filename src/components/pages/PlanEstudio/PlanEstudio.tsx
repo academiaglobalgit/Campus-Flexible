@@ -12,7 +12,6 @@ import { VideoBienvenidaDialog } from "../../molecules/VideoBienvenidaDialog/Vid
 import { InscribirmeDialog } from "../../molecules/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetPlanEstudio } from "../../../services/PlanEstudioService";
-import type { PlanEstudio } from "../../../types/plan-estudio.interface";
 import { numerosOrdinales } from "../../../utils/Helpers";
 
 const PlanEstudio: React.FC = () => {
@@ -124,7 +123,7 @@ const PlanEstudio: React.FC = () => {
                             <Typography component="span" variant="body2" color="primary">{getPeriodoText(item.periodo)}</Typography>
                         </Divider>
                         <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            {item.materias.map((materia, idx) => (
+                            {item.materias.map((materia: any, idx: number) => (
                                 <Box key={idx}>
                                     {materiaItem(materia.titulo, materia.status, false)}
                                 </Box>
@@ -161,7 +160,7 @@ const PlanEstudio: React.FC = () => {
                                             {
                                                 data && data.filter((item) => item.id === i).map((item, kix) => (
                                                     <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
-                                                        {item.materias.map((materia, idx) => (
+                                                        {item.materias.map((materia: any, idx: number) => (
                                                             <Box key={idx}>
                                                                 {materiaItem(materia.titulo, materia.status, true)}
                                                             </Box>

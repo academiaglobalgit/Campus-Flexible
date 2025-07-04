@@ -20,7 +20,7 @@ export { default as Ayuda } from './pages/ayuda/Ayuda';
 export { default as PreguntasFrecuentesInternas } from './pages/PreguntasFrecuentes/PreguntasFrecuentesInternas';
 export { default as SalaConversacion } from './pages/SalaConversacion/SalaConversacion';
 export { default as Consejeria } from './pages/Consejeria/Consejeria';
-export { default as TerminosCondiciones } from './pages/TerminosCondiciones/TerminosCondiciones';
+export { default as TerminosCondiciones } from './pages/terminosCondiciones/terminosCondiciones';
 export { default as BoletinEducativo } from './pages/BoletinEducativo/BolentinEducativo';
 export { default as Pizarron } from './pages/Pizarron/Pizarron';
 export { default as AprendeMas } from './pages/AprendeMas/AprendeMas';

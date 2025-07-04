@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
 
   const accessLogin = [
     {
-      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manual.url, '_blank')
+      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manual?.url, '_blank')
     },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES) },
     { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true) },
