@@ -12,15 +12,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
-
 import Home from "../../../assets/home.png";
 import ContactoDialog from '../../molecules/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
+import { useGetManuales } from '../../../services/ManualesService';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
   const Navigation = useNavigate();
   const { data: contacto } = useGetContacto(1);
+  const { data: manual } = useGetManuales('Inducción', 1);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -28,7 +29,7 @@ const LoginPage: React.FC = () => {
 
   const accessLogin = [
     {
-      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open('https://academiaglobal.mx/resources/assets/files/manuales/induccion/prueba.pdf', '_blank')
+      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manual.url, '_blank')
     },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES) },
     { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true) },
