@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography, TextField, InputAdornment, IconButton } from "@mui/material";
 import { useForm } from "react-hook-form";
+import ReCAPTCHA from "react-google-recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Button from '../../atoms/Button/Button';
@@ -31,24 +32,35 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [showPassword, setShowPassword] = React.useState(false);
-            
+    const [captchaValido, setCaptchaValido] = useState(false);
+
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
+
     const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        const result = await login(data.username, data.password);
 
+        if (!captchaValido) {
+            showNotification("Por favor completa el CAPTCHA", "warning");
+            return;
+        }
+        const result = await login(data.username, data.password);
+        // enviar formulario
         if (result.success) {
             navigate(AppRoutingPaths.PLAN_ESTUDIOS);
         } else {
             showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
         }
+    };
+
+    const onCaptchaChange = (value) => {
+        setCaptchaValido(true);
     };
 
     return (
@@ -137,7 +149,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                             }
                         }}
                     />
-                    <Button 
+                    <Button
                         fullWidth
                         onClick={handleSubmit(onSubmit)}
                         sxProps={{
@@ -149,13 +161,19 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     >
                         INGRESAR
                     </Button>
+                    <Box sx={{ width: "auto" }}>
+                        <ReCAPTCHA
+                            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                            onChange={onCaptchaChange}
+                        />
+                    </Box>
                     <Grid container spacing={2}>
                         {
-                        accessLogin.map((access) => (
-                            <Grid size={{xs:6, sm:6}} key={access.id}>
-                            <IconLabel icon={access.icon} label={access.label} key={access.id} action={access.action} />
-                            </Grid>
-                        ))
+                            accessLogin.map((access) => (
+                                <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
+                                    <IconLabel icon={access.icon} label={access.label} key={access.id} action={access.action} />
+                                </Grid>
+                            ))
                         }
                     </Grid>
                 </Box>
