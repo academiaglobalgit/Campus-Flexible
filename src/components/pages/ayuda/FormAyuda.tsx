@@ -7,28 +7,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useCreateAyuda } from "../../../services/AyudaService";
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
+import { useNotification } from "../../../providers/NotificationProvider";
 
 export const FormAyuda: React.FC = () => {
+    const { showNotification } = useNotification();
     const [loading, setLoading] = React.useState(false);
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<AyudaFormData>({
+    const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm<AyudaFormData>({
         resolver: zodResolver(ayudaSchema),
     });
 
     const onSubmit = async (data: AyudaFormData) => {
         setLoading(true);
-        createMutation.mutate({...data, id_plan_estudios: "1"});
+        createMutation.mutate({...data, id_plan_estudio: 1});
     };
 
     const createMutation = useMutation({
         mutationFn: useCreateAyuda,
-        onSuccess: () => {            
-
-            // Resetear el formulario
+        onSuccess: () => {
+            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
             reset();
             setLoading(false);
         },
         onError: (error) => {
-            alert(`Error al registrar: ${error.message}`);
+            showNotification(`Error al registrar: ${error.message}`, "error");
+            setLoading(false);
         },
         onSettled: () => {
             console.log('La mutación ha finalizado');
@@ -41,9 +43,9 @@ export const FormAyuda: React.FC = () => {
                 id="nombre"
                 label="Nombre completo"
                 placeholder="Ingresa tu nombre completo"
-                {...register("name")}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                {...register("nombre")}
+                error={!!errors.nombre}
+                helperText={errors.nombre?.message}
             />
             <TextField
                 id="email"
@@ -63,9 +65,9 @@ export const FormAyuda: React.FC = () => {
                     inputComponent: TextMaskCustom as any,
                     },
                 }}
-                {...register("phone")}
-                error={!!errors.phone}
-                helperText={errors.phone?.message}
+                {...register("telefono")}
+                error={!!errors.telefono}
+                helperText={errors.telefono?.message}
             />
 
             <TextField
@@ -73,14 +75,15 @@ export const FormAyuda: React.FC = () => {
                 label="Mensaje"
                 multiline
                 rows={5}
-                {...register("message")}
-                error={!!errors.message}
-                helperText={errors.message?.message}
+                {...register("mensaje")}
+                error={!!errors.mensaje}
+                helperText={errors.mensaje?.message}
             />            
             <Button
                 fullWidth
                 onClick={handleSubmit(onSubmit)}
                 isLoading={loading}
+                disabled={!isValid}
             >
                 ENVIAR
             </Button>

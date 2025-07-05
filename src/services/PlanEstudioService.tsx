@@ -1,8 +1,10 @@
+import React from "react";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import type { PlanEstudio, PlanEstudioResponse } from "../types/plan-estudio.interface";
 import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import { useQueries, useQuery } from "@tanstack/react-query";
+
+import { useGetManuales } from "./ManualesService";
 
 export const useGetPlanEstudio = (id_plan_estudio: number) => {
      const query =  useQuery<PlanEstudioResponse, Error>({
@@ -48,4 +50,11 @@ export const useGetPlanEstudio = (id_plan_estudio: number) => {
             [query.data]
         )
     }
+}
+
+export const useGetVideoMapa = (id_plan_estudio: number) => {
+    const mapaCurricular = useGetManuales("Mapa Curricular", id_plan_estudio);
+    const video = useGetManuales("Video de Bienvenida", id_plan_estudio);
+
+    return { mapaCurricular, video };
 }

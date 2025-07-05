@@ -1,0 +1,2 @@
+export const flexRows = { display: "flex", alignItems: "center", justifyContent: "center" };
+export const flexColumn = { display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" };

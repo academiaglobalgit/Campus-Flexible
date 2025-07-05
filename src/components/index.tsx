@@ -24,5 +24,6 @@ export { default as TerminosCondiciones } from './pages/terminosCondiciones/term
 export { default as BoletinEducativo } from './pages/BoletinEducativo/BolentinEducativo';
 export { default as Pizarron } from './pages/Pizarron/Pizarron';
 export { default as AprendeMas } from './pages/AprendeMas/AprendeMas';
+export { default as PlanEstudioInformacion } from './pages/PlanEstudioInformacion/PlanEstudioInformacion';
 
 export * as Organisms from './organisms';

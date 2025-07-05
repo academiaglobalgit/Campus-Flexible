@@ -1,3 +1,4 @@
+import { AppRoutingPaths } from "@constants";
 import { IMask } from "react-imask";
 
 export const CustomMask = {
@@ -23,6 +24,11 @@ export const formatWithIMask = (value: string, typeMask: TypeMask): string => {
 
   return iMask.value;
 };
+
+export const ShowBackMenuRoutes = [
+    `${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace("/:id","")}`,
+    AppRoutingPaths.PLAN_ESTUDIO_INFORMACION
+];
 
 export const numerosOrdinales = (numero: number) => {
   const ordinales = [

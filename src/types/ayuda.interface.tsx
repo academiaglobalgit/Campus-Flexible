@@ -3,11 +3,11 @@ export interface Ayuda extends AyudaPayload {
 }
 
 export interface AyudaPayload {
-    name: string;
+    nombre: string;
     email: string;
-    phone: string;
-    message: string;
-    id_plan_estudios?: string;
+    telefono: string;
+    mensaje: string;
+    id_plan_estudio: number;
 }
 
 export interface AyudaResponse {

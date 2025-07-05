@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import Button from "../../atoms/Button/Button";
 import { Dialog } from "../../atoms/Dialog/Dialog";
 import { Typography } from "../../atoms/Typography/Typography";
-import video from "../../../assets/video.png";
 
 type DialogProps = {
+    urlVideo: string;
     isOpen?: boolean;
     close: () => void;
 }
 
-export const VideoBienvenidaDialog: React.FC<DialogProps> = ({isOpen, close}) => {
+export const VideoBienvenidaDialog: React.FC<DialogProps> = ({urlVideo, isOpen, close}) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
@@ -43,9 +43,11 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({isOpen, close}) =>
                 <Card>
                     <CardActionArea>
                         <CardMedia
-                            component="img"
-                            height="179"
-                            image={video}
+                            component="video"
+                            src={ urlVideo || "https://www.w3schools.com/html/mov_bbb.mp4" }
+                            controls
+                            autoPlay
+                            muted
                         />
                     </CardActionArea>
                 </Card>

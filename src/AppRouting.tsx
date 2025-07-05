@@ -50,6 +50,10 @@ export const AppRouting = createHashRouter([
                 Component: Component.PlanEstudio
               },
               {
+                path: AppRoutingPaths.PLAN_ESTUDIO_INFORMACION,
+                Component: Component.PlanEstudioInformacion
+              },
+              {
                 path: AppRoutingPaths.BIBLIOTECA,
                 Component: Component.BibliotecaVideoteca
               },

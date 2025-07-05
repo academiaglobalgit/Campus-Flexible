@@ -1,8 +1,10 @@
-import { Box, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import React, { useEffect } from "react";
+import { Box, DialogContent } from "@mui/material";
 import Button from "../../atoms/Button/Button";
 import { Dialog } from "../../atoms/Dialog/Dialog";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Avatar } from "../../atoms/Avatar/Avatar";
+import check_circle from "../../../assets/check_circle.png";
+import { Typography } from "../../atoms/Typography/Typography";
 
 type DialogProps = {
     isOpen?: boolean;
@@ -18,27 +20,29 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({isOpen, close}) => {
 
     const handleClose = () => {
         setOpen(false);
-        close();
+        close(); 
     };
     
     return(
-        <Dialog isOpen={open} sxProps={{ margin: '5px', width: '450px', height: '300px'}} >
+        <Dialog isOpen={open} sxProps={{ margin: '5px', width: '350px', height: '342px'}} >
             <DialogContent>
                 <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '30px', flexDirection: 'column'}}>
-                    <InfoOutlinedIcon color="success" sx={{width: 96, height: 96}} />
-                    <DialogContentText>
-                        ¿Desea inscribirse en la materia Etica I?
-                    </DialogContentText>
+                    <Avatar src={check_circle} width={150} height={150} />
+                    <Typography component="h3" variant="h3" color="primary">¿Deseas Inscribirte?</Typography>
+                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%'}}>
+                        <>
+                            <Button onClick={handleClose} fullWidth>
+                                Confirmar y Pagar
+                            </Button>
+                        </>
+                        <>
+                            <Button onClick={handleClose} fullWidth variant="outlined" color="primary">
+                                Cancelar
+                            </Button>
+                        </>
+                    </Box>
                 </Box>
             </DialogContent>
-            <DialogActions sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: '24px'}}>
-                <Button onClick={handleClose} color="success">
-                    Continuar
-                </Button>
-                <Button onClick={handleClose} variant="outlined" color="primary">
-                    Cancelar
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 }

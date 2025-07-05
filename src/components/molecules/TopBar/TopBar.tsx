@@ -8,6 +8,8 @@ import { useAuth } from "../../../hooks";
 import { useState } from "react";
 import { PerfilMenu } from "../Menu/PerfilMenu/PerfilMenu";
 import { IconsTopBar } from "../IconsTopBar/IconsTopBar";
+import { ShowBackMenuRoutes } from "../../../utils/Helpers";
+import { useLocation } from "react-router-dom";
 
 type TopBarProps = {
   titleScreen?: string;
@@ -15,18 +17,44 @@ type TopBarProps = {
   onBack?: () => void;
 };
 
-export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack}) => {
+export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExternal, onBack}) => {
+  const location = useLocation();
   const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const showBackMenuRoutes = ShowBackMenuRoutes;
+    
+  const showBackMenu = showBackMenuRoutes.some(route =>
+    location.pathname.startsWith(route)
+  );
+
   const handleMenuClose = () => {
-        setAnchorEl(null);
+      setAnchorEl(null);
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
   };
+
+  const handleBack = () => {
+    if (!isExternal) {
+      window.history.back();
+    }else{
+      if(onBack) onBack();
+    }
+  }
   
+  const ToolbarBackTo = () => (
+    <Toolbar sx={{ paddingLeft: '8px', paddingRight: '8px' }}>
+      <IconButton onClick={handleBack}>
+        <DsSvgIcon component={LeftCircle} color='primary' />
+      </IconButton>
+      <Typography component="h4" variant="h4" sxProps={{ ml: '2px' }}>
+        { titleScreen }
+      </Typography>
+    </Toolbar>
+  );
+
   return (
     <AppBar
         position="fixed"
@@ -35,25 +63,22 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen, isExternal, onBack})
       >
         {
           isExternal ? (
-            <Toolbar sx={{ paddingLeft: '8px', paddingRight: '8px' }}>
-              <IconButton onClick={onBack}>
-                <DsSvgIcon component={LeftCircle} color='primary' />
-              </IconButton>
-              <Typography component="h4" variant="h4" sxProps={{ ml: '2px' }}>
-                { titleScreen }
-              </Typography>
-            </Toolbar>
+            <ToolbarBackTo />
           ) : (
-            <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Avatar alt={ user?.name } src="" width={48} height={48} onClick={(event) => handleMenuClick(event)} />
-                <Typography component="h4" variant="h4" sxProps={{ ml: 1 }}>
-                  { user?.name }
-                </Typography>
-              </Box>
-              <IconsTopBar />
-              <PerfilMenu anchorEl={anchorEl} onClose={handleMenuClose} />
-            </Toolbar>
+            !showBackMenu 
+            ?
+              <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Avatar alt={ user?.name } src="" width={48} height={48} onClick={(event) => handleMenuClick(event)} />
+                  <Typography component="h4" variant="h4" sxProps={{ ml: 1 }}>
+                    { user?.name }
+                  </Typography>
+                </Box>
+                <IconsTopBar />
+                <PerfilMenu anchorEl={anchorEl} onClose={handleMenuClose} />
+              </Toolbar>
+            :
+            <ToolbarBackTo />
           )
         }
       </AppBar>

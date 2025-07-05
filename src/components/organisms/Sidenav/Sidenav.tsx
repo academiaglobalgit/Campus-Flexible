@@ -23,6 +23,7 @@ import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
 import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 import { LeftCircle } from '../../../assets/icons';
+import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 
 const drawerWidth = 240;
 
@@ -183,7 +184,8 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
 const Sidenav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const showBackMenuRoutes = [`${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace("/:id","")}`];  
+  const showBackMenuRoutes = ShowBackMenuRoutes;
+  
   const showBackMenu = showBackMenuRoutes.some(route =>
     location.pathname.startsWith(route)
   );

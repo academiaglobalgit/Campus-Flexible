@@ -11,7 +11,7 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { VideoBienvenidaDialog } from "../../molecules/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { InscribirmeDialog } from "../../molecules/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { useGetPlanEstudio } from "../../../services/PlanEstudioService";
+import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
 import { numerosOrdinales } from "../../../utils/Helpers";
 
 const PlanEstudio: React.FC = () => {
@@ -20,8 +20,11 @@ const PlanEstudio: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const {data: materiaData, isLoading } = useGetPlanEstudio(1);
+    const { mapaCurricular, video } = useGetVideoMapa(1);
     
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
+    const [urlVideo, setUrlVideo] = React.useState("");
+
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
 
     const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
@@ -33,6 +36,7 @@ const PlanEstudio: React.FC = () => {
     };
 
     const handleVideoBienvenida = () => {
+        setUrlVideo(video.data?.url ?? "");
         setIsOpenVideo(true);
     }
 
@@ -41,6 +45,11 @@ const PlanEstudio: React.FC = () => {
             setIsOpenInscribirmeDialog(true);
         }
     }
+
+    const handleMapaCurricular = () => {
+        if(mapaCurricular)
+            window.open(mapaCurricular.data?.url, "_blank");
+    };
 
     const getPeriodoText = (periodo: number): string => {
         return `${ numerosOrdinales(periodo) } Periodo`;
@@ -108,7 +117,7 @@ const PlanEstudio: React.FC = () => {
                 </Button>
             </>
             <>
-                <Button onClick={() => {}} fullWidth variant="outlined" >Mapa Curricular</Button>
+                <Button onClick={handleMapaCurricular} fullWidth variant="outlined" >Mapa Curricular</Button>
             </>
         </Box>
     );
@@ -192,7 +201,7 @@ const PlanEstudio: React.FC = () => {
                 {
                     Array.from({length: 3}).map((_, index) => (
                         <Box key={index} sx={{ borderBottom: '2px solid #AAB1B6'}}>
-                            <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}}>
+                            <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}} spacing={2}>
                                 <Grid size={{md: 6}}>
                                     <Skeleton variant="rounded" width={400} height={30} />
                                 </Grid>
@@ -259,7 +268,7 @@ const PlanEstudio: React.FC = () => {
                     </ContainerDesktop>
                 </>
             }
-            <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} />
+            <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} urlVideo={urlVideo} />
             <InscribirmeDialog isOpen={isOpenInscribirmeDialog} close={() => setIsOpenInscribirmeDialog(false)} />
         </>
         
