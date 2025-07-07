@@ -2,7 +2,7 @@ import React from "react";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import type { PlanEstudio, PlanEstudioResponse } from "../types/plan-estudio.interface";
 import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useGetManuales } from "./ManualesService";
 

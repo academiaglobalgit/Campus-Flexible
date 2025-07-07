@@ -65,6 +65,7 @@ export const TitleScreen = {
     MI_TRAYECTO: "Mi Trayecto",
     APRENDE_MAS: "Aprende Más",
     TERMINOS_CONDICIONES: "Términos y Condiciones",
+    MANUALES_USUARIOS: "Manuales de Usuario",
 }
 
 export type TitleScreen = typeof TitleScreen;

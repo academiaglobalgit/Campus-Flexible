@@ -59,7 +59,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         }
     };
 
-    const onCaptchaChange = (value) => {
+    const onCaptchaChange = () => {
         setCaptchaValido(true);
     };
 
@@ -161,7 +161,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     >
                         INGRESAR
                     </Button>
-                    <Box sx={{ width: "auto" }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                         <ReCAPTCHA
                             sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                             onChange={onCaptchaChange}

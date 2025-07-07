@@ -41,7 +41,7 @@ export const MenuInformacion = [
     { text: TitleScreen.CONTACTO, icon: Icons.Contacto, path: AppRoutingPaths.CONTACTO, order: 2, visible: 1 },
     { text: TitleScreen.FAQS, icon: Icons.PreguntasFrecuentes, path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT, order: 3, visible: 0 },
     { text: TitleScreen.LINEAMIENTOS, icon: Icons.Lineamientos, path: AppRoutingPaths.PREGUNTAS_FRECUENTES_INT, order: 4, visible: 1 },
-    { text: TitleScreen.MANUAL_INDUCCION, icon: Icons.ManualInduccion, path: AppRoutingPaths.MANUAL_INDUCCION, order: 5, visible: 1 },
+    { text: TitleScreen.MANUALES_USUARIOS, icon: Icons.ManualInduccion, path: AppRoutingPaths.MANUAL_INDUCCION, order: 5, visible: 1 },
 ] as const;
 
 export type MenuInformacion = typeof MenuInformacion;
