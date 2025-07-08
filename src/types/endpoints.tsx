@@ -53,3 +53,8 @@ export const AYUDA_ENDPOINTS = {
 export const MANUALES_ENDPOINTS = {
     GET_MANUALES: { path: '/documentos', key: 'manuales' }
 }
+
+export const BIBLIOTECA_ENDPOINTS = {
+    GET_BIBLIOTECA: { path: '/modulos-campus/detalle', key: 'biblioteca' },
+    GET_BIBLIOTECA_BY_ID: { path: '/modulos-campus/submodulos', key: 'biblioteca_by_id' },
+}

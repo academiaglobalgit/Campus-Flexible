@@ -5,3 +5,5 @@ export * from './authorization';
 export * from './descripcionesPantallas';
 export * from './menu';
 export * from './tipoManuales';
+
+export type { BibliotecaVideotecaResponse, BibliotecaVideoteca, BibliotecaResponse, Biblioteca } from './BibliotecaVideoteca.interface';
