@@ -1,11 +1,17 @@
-import { TitleScreen } from "@constants";
+import { AppRoutingPaths, TitleScreen } from "@constants";
 import { Typography } from "../../atoms/Typography/Typography";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Document } from "../../../assets/icons";
 import { Box } from "@mui/material";
 import Button from "../../atoms/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 export const Videoteca: React.FC = () => {
+    const navigate = useNavigate();
+    const handleAcceder = () => {
+        navigate(AppRoutingPaths.VIDEOTECA_DETALLE);
+    }
+
     return(
         <>
           <TituloIcon Titulo={TitleScreen.VIDEOS_LECTURAS} Icon={ Document } />
@@ -32,7 +38,7 @@ export const Videoteca: React.FC = () => {
             <Typography component="span" variant="body1">
                 * Para accesar a la Videoteca Virtual, da click en el siguiente botón.
             </Typography>
-            <Button onClick={() => {}} fullWidth>Acceder</Button>
+            <Button onClick={handleAcceder} fullWidth>Acceder</Button>
           </Box>
         </>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Skeleton, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Skeleton, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -14,6 +14,7 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
 import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
+import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
@@ -32,9 +33,6 @@ const PlanEstudio: React.FC = () => {
 
     const [value, setValue] = React.useState(0);
     
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
 
     const handleVideoBienvenida = () => {
         setUrlVideo(video.data?.url ?? "");
@@ -120,32 +118,7 @@ const PlanEstudio: React.FC = () => {
     );
 
     const TabsSection = (periodos: number[]) => (
-        <Box sx={{ width: "100%" }}>
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                variant="scrollable"
-                scrollButtons
-                allowScrollButtonsMobile
-                aria-label="basic tabs example"
-                sx={{
-                    [`& .${tabsClasses.scrollButtons}`]: {
-                        "&.Mui-disabled": { opacity: 0.3 },
-                    },
-                }}
-            >
-                {
-                    periodos.map((_, i) => (
-                        <Tab
-                            label={`Periodo ${toRoman(i + 1)}`}
-                            value={i}
-                            key={i}
-                            sx={{ minWidth: '108px', padding: '0px' }}
-                        />
-                    ))
-                }
-            </Tabs>
-        </Box>
+        <PeriodosTabs periodos={periodos.length} tabChange={(newValue) => setValue(newValue)} />
     );
 
     const ListadoMateriaVistaMobil = (data: PlanEstudioMateriasResponse[], periodos: number[]) => (
