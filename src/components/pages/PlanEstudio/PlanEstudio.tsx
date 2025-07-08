@@ -22,7 +22,7 @@ const PlanEstudio: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const {data: materiaData, isLoading } = useGetPlanEstudio(1);
-    const { mapaCurricular, video } = useGetVideoMapa(1);
+    const { mapaCurricular, video } = useGetVideoMapa();
     
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
     const [urlVideo, setUrlVideo] = React.useState("");
@@ -80,7 +80,7 @@ const PlanEstudio: React.FC = () => {
                 <Box sx={{ borderBottom: '2px solid #AAB1B6'}}>
                     <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}}>
                         <Grid size={{md: 6}}>
-                            <Typography component="span" variant="body1" sxProps={{ fontSize: '18px', lineHeight: '24px' }} >
+                            <Typography component="span" variant="body2">
                                 {materia}
                             </Typography>
                         </Grid>
@@ -91,7 +91,7 @@ const PlanEstudio: React.FC = () => {
                 </Box>
             :
             <Box>
-                <Typography component="span" variant="body1" sxProps={{ fontSize: '18px', lineHeight: '24px' }} >
+                <Typography component="span" variant="body2">
                     {materia}
                 </Typography>
                 {InformacionStatusButtons(status, color)}

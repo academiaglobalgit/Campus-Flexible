@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
   const theme = useTheme();
   const Navigation = useNavigate();
   const { data: contacto } = useGetContacto(1);
-  const { data: manual } = useGetManuales('Inducción', 1);
+  const { data: manual } = useGetManuales('Inducción','',1);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));

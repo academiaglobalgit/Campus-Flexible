@@ -37,3 +37,4 @@ export { default as VidaEstudiantil } from './VidaEstudiantil.svg?react';
 export { default as VerMas } from './VerMas.svg?react';
 export { default as Videoteca } from './Videoteca.svg?react';
 export { default as Lineamientos } from './Lineamientos.svg?react';
+export { default as Edit1 } from './Edit1.svg?react';

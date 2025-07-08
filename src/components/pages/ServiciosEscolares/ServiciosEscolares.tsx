@@ -42,7 +42,7 @@ const ServiciosEscolares: React.FC = () => {
         <Box 
             sx={[
                 { paddingTop: '32px' },
-                !isMobile && {width: { md: '90vw' }, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '94px'}
+                !isMobile && {display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '25px'}
             ]}
           >
             {

@@ -54,9 +54,9 @@ export const useGetPlanEstudio = (id_plan_estudio: number) => {
     }
 }
 
-export const useGetVideoMapa = (id_plan_estudio: number) => {
-    const mapaCurricular = useGetManuales("Mapa Curricular", id_plan_estudio);
-    const video = useGetManuales("Video de Bienvenida", id_plan_estudio);
+export const useGetVideoMapa = () => {
+    const mapaCurricular = useGetManuales("Mapa Curricular", "alumnos");
+    const video = useGetManuales("Video de Bienvenida", "alumnos");
 
     return { mapaCurricular, video };
 }

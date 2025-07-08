@@ -149,11 +149,16 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                             }
                         }}
                     />
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                        <ReCAPTCHA
+                            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                            onChange={onCaptchaChange}
+                        />
+                    </Box>
                     <Button
                         fullWidth
                         onClick={handleSubmit(onSubmit)}
                         sxProps={{
-                            mt: 3,
                             mb: '30px',
                             py: 1.5,
                         }}
@@ -161,12 +166,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     >
                         INGRESAR
                     </Button>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                        <ReCAPTCHA
-                            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                            onChange={onCaptchaChange}
-                        />
-                    </Box>
                     <Grid container spacing={2}>
                         {
                             accessLogin.map((access) => (

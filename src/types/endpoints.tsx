@@ -13,10 +13,7 @@ export const PERFIL_ENDPOINTS = {
 }
 
 export const PLAN_ESTUDIO_ENDPOINTS = {
-    GET_VIDEO: { path:'/plan_estudio/video-bienvenida', key: 'video' },
-    GET_MAPA_CURRICULAR: { path:'/plan_estudio/mapa-curricular', key: 'mapa-curricular' },
-    GET_MATERIAS: { path:'/plan_estudio', key: 'materias' },
-    POST_AUTH: { path: '/plan_estudio/auth' }
+    GET_MATERIAS: { path:'/plan-estudios', key: 'materias' },
 }
 
 export const CURSOS_ACTIVOS_ENDPOINTS = {
@@ -54,5 +51,5 @@ export const AYUDA_ENDPOINTS = {
 }
 
 export const MANUALES_ENDPOINTS = {
-    GET_MANUALES: { path: '/manuales', key: 'manuales' }
+    GET_MANUALES: { path: '/documentos', key: 'manuales' }
 }
