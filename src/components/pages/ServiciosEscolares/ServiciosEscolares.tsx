@@ -1,3 +1,4 @@
+import React from "react";
 import { DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import {ServiciosEscolares as IconServiciosEscolares} from "@iconsCustomizeds";
@@ -10,6 +11,9 @@ import examenes from '../../../assets/examenes.png';
 import constancia from '../../../assets/constancia.png';
 import credencial from '../../../assets/credencial.png';
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import Button from "../../atoms/Button/Button";
+import { flexRows } from "@styles";
+import { InformacionServiciosEscolaresDialog } from "../../molecules/Dialogs/InformacionServiciosEscolaresDialog/InformacionServiciosEscolaresDialog";
 // import { useNavigate } from "react-router-dom";
 
 const cardData = [
@@ -23,7 +27,17 @@ const ServiciosEscolares: React.FC = () => {
     // const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isOpenInformacionDialog, setIsOpenInformacionDialog] = React.useState(false);
     
+    const handleInformacion = () => {
+        setIsOpenInformacionDialog(true);
+    };
+
+    const handlePagar = () => {
+        // navigate('/servicios-escolares/pagar');
+        window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
+    };
+
     const CardSection = () => (
         <Box 
             sx={[
@@ -36,7 +50,7 @@ const ServiciosEscolares: React.FC = () => {
                 cardData.map((item, index) => (
                     <Box sx={{ mb:4 }} key={index}>
                         <CardImage key={index} image={item.image} >
-                            <Box sx={{ display: 'flex', flexDirection:'column', gap: '24px', paddingLeft: '32px' }}>
+                            <Box sx={{ display: 'flex', flexDirection:'column', gap: '24px' }}>
                                 <Typography component="h2" variant="h2" color="primary">
                                     {item.titulo}
                                 </Typography>
@@ -52,14 +66,18 @@ const ServiciosEscolares: React.FC = () => {
                                     sxProps={{ fontWeight:400, fontSize: '14px', lineHeight:'18px', color: "#3B3F5C" }}>
                                     { item.servicios }
                                 </Typography>
-                                <Box sx={{ padding: "8px 22px 8px 22px" }}>
-                                    <Typography 
-                                        component="span" 
-                                        variant="body1"
-                                        color="primary"
-                                        sxProps={{ fontWeight:400, fontSize: '18px', lineHeight:'24px', color: (theme: any) => `${theme.palette.primary[300]}CC` }}>
-                                        Ver Información
-                                    </Typography>
+                                <Box sx={{...flexRows, width: '100%', gap: '10px'}}>
+                                    <>
+                                        <Button onClick={handleInformacion} fullWidth variant="outlined" >Información</Button>
+                                    </>
+                                    <>
+                                        <Button
+                                            onClick={handlePagar}
+                                            fullWidth
+                                        >
+                                            Pagar Aquí
+                                        </Button>
+                                    </>
                                 </Box>
                             </Box>
                         </CardImage>
@@ -72,19 +90,24 @@ const ServiciosEscolares: React.FC = () => {
 
 
     return(
-        isMobile
-        ?
-            <>
-                <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
-                <Typography component="span" variant="body1">
-                    {DescripcionesPantallas.SERVICIOS_ESCOLARES}
-                </Typography>
-                <CardSection />
-            </>
-        :
-            <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={DescripcionesPantallas.SERVICIOS_ESCOLARES}>
-                <CardSection />
-            </ContainerDesktop>
+        <>
+            {
+                isMobile
+                        ?
+                            <>
+                                <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
+                                <Typography component="span" variant="body1">
+                                    {DescripcionesPantallas.SERVICIOS_ESCOLARES}
+                                </Typography>
+                                <CardSection />
+                            </>
+                        :
+                            <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={DescripcionesPantallas.SERVICIOS_ESCOLARES}>
+                                <CardSection />
+                            </ContainerDesktop>
+            }
+            <InformacionServiciosEscolaresDialog isOpen={isOpenInformacionDialog} close={() => setIsOpenInformacionDialog(false)} />
+        </>
     );
 };
 
