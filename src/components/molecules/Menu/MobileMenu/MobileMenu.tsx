@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
 import ContactoDialog from "../../ContactoDialog/ContactoDialog";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
+// import { ForosDialog } from "../../Dialogs/ForosDialog/ForosDialog";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -138,6 +139,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
             </Menu>
             <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{ telefono: ["(667) 712 41 72"], email: ["daniela.cazares@umi.edu.mx"] }} />
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} />
+            {/* <ForosDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} /> */}
         </>
     );
 }
