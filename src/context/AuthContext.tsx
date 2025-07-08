@@ -13,6 +13,7 @@ interface AuthContextType {
   clearError: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
+  isTokenExpired: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,6 +24,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isInitializing, setIsInitializing] = useState(true);
+    const [isTokenExpired, setIsTokenExpired] = useState(false);
+
 
     const queryClient = useQueryClient();
     
@@ -31,11 +34,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const checkAuth = async () => {
             try {
                 const authStatus = await checkAuthStatus();
-                if (authStatus) {
+
+                if(!authStatus.isAuth) {
+                    setIsAuthenticated(false);
+                }else if (authStatus.tokenExpired) {
+                    setIsTokenExpired(true);
+                }
+
+                if (authStatus.isAuth) {
                     const userData = await getAuthModel();
                     setUser(userData);
                 }
-                setIsAuthenticated(authStatus);
+                setIsAuthenticated(authStatus.isAuth);
             } catch (error) {
                 console.error("Error checking auth:", error);
                 setIsAuthenticated(false);
@@ -114,7 +124,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isInitializing,
         login: handleLogin,
         logout: handleLogout,
-        clearError
+        clearError,
+        isTokenExpired
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

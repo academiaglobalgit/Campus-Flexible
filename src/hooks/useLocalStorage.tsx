@@ -3,17 +3,25 @@ import { jwtDecode } from 'jwt-decode';
 const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
 const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH;
 
-export const checkAuthStatus = async (): Promise<boolean> => {
-    const token = getToken();
-    if (!token) return false;
+export const checkAuthStatus = async (): Promise<{ isAuth: boolean; tokenExpired: boolean }> => {
+  const token = getToken();
+  if (!token) return { isAuth: false, tokenExpired: false };
 
-    try {
-        const decoded = jwtDecode(token);
-        if (!decoded?.exp) return false;
-        return decoded.exp * 1000 > Date.now();
-    } catch {
-        return false;
+  try {
+    const decoded: { exp?: number } = jwtDecode(token);
+
+    if (!decoded?.exp) {
+      console.warn('Token does not have an expiration time');
+      return { isAuth: true, tokenExpired: true };
     }
+    
+    const expired = Date.now() >= decoded.exp * 1000;
+
+    return { isAuth: true, tokenExpired: expired };
+  } catch (error) {
+    console.error('Error decoding token', error);
+    return { isAuth: true, tokenExpired: false };
+  }
 };
 
 export const getToken = (): string => {
