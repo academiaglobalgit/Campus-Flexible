@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Grid, Skeleton, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Skeleton, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -12,7 +12,8 @@ import { VideoBienvenidaDialog } from "../../molecules/VideoBienvenidaDialog/Vid
 import { InscribirmeDialog } from "../../molecules/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
-import { numerosOrdinales } from "../../../utils/Helpers";
+import { toRoman } from "../../../utils/Helpers";
+import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
@@ -51,10 +52,6 @@ const PlanEstudio: React.FC = () => {
             window.open(mapaCurricular.data?.url, "_blank");
     };
 
-    const getPeriodoText = (periodo: number): string => {
-        return `${ numerosOrdinales(periodo) } Periodo`;
-    };
-
     const InformacionStatusButtons = (status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
@@ -70,7 +67,7 @@ const PlanEstudio: React.FC = () => {
         </Box>
     );
 
-    const materiaItem = (materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {        
+    const materiaItem = (materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {
         let color: "success" | "primary" | "info" | "warning" | undefined;
         if(status === 'Finalizada') {
             color = "success";
@@ -122,68 +119,93 @@ const PlanEstudio: React.FC = () => {
         </Box>
     );
 
-    const ListadoMateriaVistaMobil = (data: any[]) => (
-        <Box>
-            {
-                data &&
-                data.map((item, index) => (
-                    <Box key={index} sx={{ marginBottom: '24px' }}>
-                        <Divider textAlign="center">
-                            <Typography component="span" variant="body2" color="primary">{getPeriodoText(item.periodo)}</Typography>
-                        </Divider>
-                        <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            {item.materias.map((materia: any, idx: number) => (
-                                <Box key={idx}>
-                                    {materiaItem(materia.titulo, materia.status, false)}
-                                </Box>
-                            ))}
-                        </Box>
-                    </Box>
-                ))
-            }
+    const TabsSection = (periodos: number[]) => (
+        <Box sx={{ width: "100%" }}>
+            <Tabs
+                value={value}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons
+                allowScrollButtonsMobile
+                aria-label="basic tabs example"
+                sx={{
+                    [`& .${tabsClasses.scrollButtons}`]: {
+                        "&.Mui-disabled": { opacity: 0.3 },
+                    },
+                }}
+            >
+                {
+                    periodos.map((_, i) => (
+                        <Tab
+                            label={`Periodo ${toRoman(i + 1)}`}
+                            value={i}
+                            key={i}
+                            sx={{ minWidth: '108px', padding: '0px' }}
+                        />
+                    ))
+                }
+            </Tabs>
         </Box>
     );
 
-    const ListadoMateriasVistaDesktop = (data: any[], periodos: any[]) => (
+    const ListadoMateriaVistaMobil = (data: PlanEstudioMateriasResponse[], periodos: number[]) => (
+        <Grid container>
+            <Grid size={{md: 12}} sx={{ width: '100%'}}>
+                {
+                    TabsSection(periodos)
+                }
+                {
+                    data &&
+                    data.map((item, index) => (
+                        <TabPanel value={value} index={index} key={index}>
+                            <Box sx={{ marginBottom: '24px', pt: '16px' }}>
+                                <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                    {item.materias.map((materia: Materia, idx: number) => (
+                                        <Box key={idx}>
+                                            {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', false)}
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Box>
+                        </TabPanel>
+                    ))
+                }
+            </Grid>
+        </Grid>
+    );
+
+    const ListadoMateriasVistaDesktop = (data: PlanEstudioMateriasResponse[], periodos: number[]) => (
         <Grid container>
             <Grid size={{md: 12}} sx={{ width: '100%'}}>
                 {                                
                     !betweenDevice ?
-                        <>
-                            <Box 
-                                sx={[
-                                    periodos.length === 5 && { width: `${(periodos.length * 108.8)}px`}
-                                ]} 
-                            >
-                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                    {
-                                        periodos.map((_, i) => <Tab label={`Periodo ${i + 1}`} value={i} key={i} />)
-                                    }
-                                </Tabs>
-                            </Box>
-                            {
-                                periodos.map((_, i) => (
-                                    <TabPanel value={value} index={i} key={i}>
-                                        <Box sx={{ p:4}}>
-                                            <TituloIcon Titulo={`Periodo ${i + 1} - Tus materias`} fontSize="h3" />
-                                            {
-                                                data && data.filter((item) => item.id === i).map((item, kix) => (
-                                                    <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
-                                                        {item.materias.map((materia: any, idx: number) => (
-                                                            <Box key={idx}>
-                                                                {materiaItem(materia.titulo, materia.status, true)}
-                                                            </Box>
-                                                        ))}
-                                                    </Box>
-                                                ))
-                                            }
-                                        </Box>                                                
-                                    </TabPanel>
-                                ))
-                            }
-                        </>
+                    <>
+                        {
+                            TabsSection(periodos)
+                        }
+                        {
+                            periodos.map((_, i) => (
+                                <TabPanel value={value} index={i} key={i}>
+                                    <Box sx={{ p:4}}>
+                                        <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
+                                        {
+                                            data && data.filter((item) => item.id === i).map((item, kix) => (
+                                                <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
+                                                    {item.materias.map((materia: Materia, idx: number) => (
+                                                        <Box key={idx}>
+                                                            {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
+                                                        </Box>
+                                                    ))}
+                                                </Box>
+                                            ))
+                                        }
+                                    </Box>                                                
+                                </TabPanel>
+                            ))
+                        }
+                    </>
                     :
-                    ListadoMateriaVistaMobil(data)
+                    ListadoMateriaVistaMobil(data, periodos)
                 }                            
             </Grid>
         </Grid>
@@ -232,9 +254,9 @@ const PlanEstudio: React.FC = () => {
         }else{
             if(data.length > 0) {
                 if(isMobile) {
-                    return ListadoMateriaVistaMobil(data);
+                    return ListadoMateriaVistaMobil(data, data.map((item) => item.periodo));
                 }else{
-                    return ListadoMateriasVistaDesktop(data, data.filter((item) => item.periodo));
+                    return ListadoMateriasVistaDesktop(data, data.map((item) => item.periodo));
                 }
             }
         }

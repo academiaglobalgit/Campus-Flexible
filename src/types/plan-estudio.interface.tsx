@@ -12,3 +12,14 @@ export interface PlanEstudio {
     periodo:            number;
     estado_inscripcion: number;
 }
+
+export interface PlanEstudioMateriasResponse {
+    id:       number;
+    periodo:  number;
+    materias: Materia[];
+}
+
+export interface Materia {
+    titulo: string;
+    status: string;
+}
