@@ -22,17 +22,22 @@ export const TipoManuales = [
     {
         "id_tipo_manual": 5,
         "nombre_tipo": "Mapa Curricular",
-        "descripcion": ""
+        "descripcion": null
     },
     {
         "id_tipo_manual": 6,
         "nombre_tipo": "Video de Bienvenida",
-        "descripcion": ""
+        "descripcion": null
     },
     {
         "id_tipo_manual": 7,
         "nombre_tipo": "Calendario",
-        "descripcion": "Calendario académico con fechas importantes."
+        "descripcion": null
+    },
+    {
+        "id_tipo_manual": 8,
+        "nombre_tipo": "Manual Biblioteca",
+        "descripcion": null
     }
 ];
 
