@@ -3,7 +3,8 @@ import { AYUDA_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 
 export const useCreateAyuda = async (payload: AyudaPayload): Promise<AyudaResponse> => {
-    console.log(payload);
-    const encryptedPayload = await apiClient.encryptData({...payload, userId: null});
+    payload = {...payload, telefono: payload.telefono.replace(/\D/g, "")};
+
+    const encryptedPayload = await apiClient.encryptData({...payload});
     return await apiClient.post<AyudaResponse>(AYUDA_ENDPOINTS.POST_AYUDA.path, { data: encryptedPayload });
 };

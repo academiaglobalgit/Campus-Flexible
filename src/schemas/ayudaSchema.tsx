@@ -5,7 +5,7 @@ const messageTelefono = "Deben ser 10 dígitos";
 
 export const ayudaSchema = z.object({
     nombre: z.string().nonempty("Nombre Completo es requerido"),
-    email: z.string().nonempty("Email es requerido").email("Debe ser un email válido"),
+    correo: z.string().nonempty("Email es requerido").email("Debe ser un email válido"),
     telefono: z.string().nonempty("Teléfono es requerido").refine(isValidPhone, {
          message: messageTelefono,
     }),

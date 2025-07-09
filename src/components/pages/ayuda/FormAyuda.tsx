@@ -51,9 +51,9 @@ export const FormAyuda: React.FC = () => {
                 id="email"
                 label="Correo electrónico"
                 placeholder="Ingresa tu Correo electrónico"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message}
+                {...register("correo")}
+                error={!!errors.correo}
+                helperText={errors.correo?.message}
             />
             
             <TextField

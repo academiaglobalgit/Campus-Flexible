@@ -4,7 +4,7 @@ export interface Ayuda extends AyudaPayload {
 
 export interface AyudaPayload {
     nombre: string;
-    email: string;
+    correo: string;
     telefono: string;
     mensaje: string;
     id_plan_estudio: number;

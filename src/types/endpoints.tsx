@@ -47,7 +47,7 @@ export const CONTACTO_ENDPOINTS = {
 }
 
 export const AYUDA_ENDPOINTS = {
-    POST_AYUDA: { path:'/ayuda' },
+    POST_AYUDA: { path:'/tickets-ayuda' },
 }
 
 export const MANUALES_ENDPOINTS = {
