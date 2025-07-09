@@ -33,7 +33,6 @@ export const AppRoutingPaths = {
     VIDEOTECA_DETALLE: "/videoteca",
     APRENDE_MAS: "aprende-mas",
     CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
-    CONTACTO_INTERNO: "/contacto-interno",
 
 } as const;
 

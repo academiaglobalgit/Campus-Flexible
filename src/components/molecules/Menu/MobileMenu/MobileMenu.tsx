@@ -6,7 +6,7 @@ import { MenuRoutes as MenuItems, MenuInformacion, type MenuType, TitleScreen } 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
-import ContactoDialog from "../../Dialogs/ContactoDialog/ContactoDialog";
+// import ContactoDialog from "../../Dialogs/ContactoDialog/ContactoDialog";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 // import { ForosDialog } from "../../Dialogs/ForosDialog/ForosDialog";
 
@@ -25,7 +25,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [menuRootStyle, setMenuRootStyle] = useState({});
     const [menuBordersStyle, setMenuBordersStyle] = useState({});
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const [isOpenContactoDialog, setIsOpenContactoDialog] = React.useState(false);
+    // const [isOpenContactoDialog, setIsOpenContactoDialog] = React.useState(false);
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
 
     const menuRoutes = [...MenuItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -34,11 +34,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
 
     const handleNavigation = (item: any) => {
-        if (item.text === TitleScreen.CONTACTO) {
-            setIsOpenContactoDialog(true);
-        } else if (item.text === TitleScreen.MANUALES_USUARIOS) {
-            // window.open('https://academiaglobal.mx/resources/assets/files/manuales/induccion/prueba.pdf', '_blank');
-            //OPEN DIALOG
+        if (item.text === TitleScreen.MANUALES_USUARIOS) {
             setIsOpenManualesDialog(true);
         } else if (item.text === TitleScreen.LINEAMIENTOS) { 
             window.open('https://academiaglobal.mx/resources/assets/files/lineamientos/lineamientosPrueba.pdf', '_blank');
@@ -137,7 +133,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                     ))
                 }
             </Menu>
-            <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{ telefono: ["(667) 712 41 72"], email: ["daniela.cazares@umi.edu.mx"] }} />
+            {/* <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{ telefono: ["(667) 712 41 72"], email: ["daniela.cazares@umi.edu.mx"] }} /> */}
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} />
             {/* <ForosDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} /> */}
         </>

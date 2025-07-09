@@ -1,11 +1,14 @@
 import React from "react";
-import { Box, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, Tab, Tabs, tabsClasses, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import CampusDigital from "../../../assets/campus_digital.jpg";
 import ServiciosEscolares from "../../../assets/servicios_escolares_contacto.jpg";
 import Prospectos from "../../../assets/prospectos.jpg";
 import Asesorias from "../../../assets/asesorias.jpg";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
+import { flexColumn } from "@styles";
 
 const ContactoInterno: React.FC = () => {
     const theme = useTheme();
@@ -72,6 +75,7 @@ const ContactoInterno: React.FC = () => {
                 src={src}
                 maxHeight={isMobile ? 138 : 320}
                 width="100%"
+                sx={{mt: '25px'}}
             />
         );
     };
@@ -79,6 +83,7 @@ const ContactoInterno: React.FC = () => {
     const Contents = () => (
       <>
         <Image />
+        <TituloIcon Titulo="CONTACTO DE TU PLATAFORMA" fontSize="h4" />
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
                 value={value}
@@ -108,11 +113,36 @@ const ContactoInterno: React.FC = () => {
         {
             TabsSections.map((section, index) => (
                 <TabPanel key={index} value={value} index={section.value}>
-                    <h2>{section.label}</h2>
-                    <p>{section.data.description}</p>
-                    <p><strong>Horarios:</strong> {section.data.horarios}</p>
-                    <p><strong>Teléfonos:</strong> {section.data.telefonos}</p>
-                    <p><strong>Email:</strong> {section.data.email}</p>
+                    <Box sx={{ mt: 5 }}>
+                        <Divider textAlign="center">
+                            <Typography component="span" variant="subtitle1" color="primary" sx={{fontWeight: 400, color: "#005A9BCC"}}>{section.label}</Typography>
+                        </Divider>
+                        <Box sx={{...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 }}>
+                            <Typography component="span" variant="body1">
+                                {section.data.description}
+                            </Typography>
+                            <Box sx={{...flexColumn, alignItems: 'flex-start', mt: 1, gap: '10px' }}>
+                                <Box sx={{...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                                    <Typography component="span" variant="body2" color="primary">
+                                        Horarios:
+                                    </Typography>
+                                    <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
+                                </Box>
+                                <Box sx={{...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                                    <Typography component="span" variant="body2" color="primary">
+                                        Teléfonos:
+                                    </Typography>
+                                    <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
+                                </Box>
+                                <Box sx={{...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                                    <Typography component="span" variant="body2" color="primary">
+                                        Email:
+                                    </Typography>
+                                    <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Box>
                 </TabPanel>
             ))
         }
@@ -120,7 +150,10 @@ const ContactoInterno: React.FC = () => {
     );
 
     return (
-        <Contents />
+        isMobile ? 
+            <Contents />
+        :
+            <ContainerDesktop title="" ></ContainerDesktop>
     );
 }
 

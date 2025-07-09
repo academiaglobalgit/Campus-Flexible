@@ -77,8 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const handleLogin = async(email: string, password: string) => {
         try {
-            setIsLoading(true);
-            setError(null);
+            initValues();
 
             const username = email;
             const response = await loginMutation.mutateAsync({ password, username });
@@ -117,6 +116,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const clearError = () => {
         setError(null);
     };
+
+    const initValues = () => {
+        setUser(null);
+        setIsLoading(true);
+        setIsAuthenticated(false);
+        setError(null);
+        setIsTokenExpired(false);        
+    }
 
     const value = {
         user,
