@@ -32,6 +32,7 @@ export const AppRoutingPaths = {
     TERMINOS_CONDICIONES: "/terminos-condiciones",
     VIDEOTECA_DETALLE: "/videoteca",
     APRENDE_MAS: "aprende-mas",
+    CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
 
 } as const;
 

@@ -28,7 +28,8 @@ export const formatWithIMask = (value: string, typeMask: TypeMask): string => {
 export const ShowBackMenuRoutes = [
     `${AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace("/:id","")}`,
     AppRoutingPaths.PLAN_ESTUDIO_INFORMACION,
-    AppRoutingPaths.VIDEOTECA_DETALLE
+    AppRoutingPaths.VIDEOTECA_DETALLE,
+    AppRoutingPaths.CALIFICACIONES_DETALLE.replace("/:id",""),
 ];
 
 export const numerosOrdinales = (numero: number) => {
