@@ -8,12 +8,17 @@ import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Loading } from '../../../assets/icons';
+import CheckIcon from '@mui/icons-material/Check';
+import LockIcon from '@mui/icons-material/Lock';
 import DsSvgIcon from "../../atoms/Icon/Icon";
 
 const cursosDatas = [
     {
         titulo: "Práctica y Colaboración Ciudadana I",
         fechaActivo: "Agosto 23 , 2025",
+        fechaFin: "Agosto 23 , 2025",
+        tutor: "Juan Antonio Perez Hernandez",
+        correo: "correo@academiaglobal.mx",
         proceso: 80,
         status: "Cursando",
         idcurso: 800,
@@ -22,9 +27,23 @@ const cursosDatas = [
     {
         titulo: "Ciencias sociales I",
         fechaActivo: "Agosto 23 , 2025",
+        fechaFin: "Agosto 23 , 2025",
+        tutor: "Juan Antonio Perez Hernandez",
+        correo: "correo@academiaglobal.mx",
         proceso: 100,
-        status: "Cursando",
+        status: "Finalizado",
         idcurso: 800,
+        tareas: "",
+    },
+    {
+        titulo: "Ciencias Naturales I",
+        fechaActivo: "Agosto 23 , 2025",
+        fechaFin: "Agosto 23 , 2025",
+        tutor: "Juan Antonio Perez Hernandez",
+        correo: "correo@academiaglobal.mx",
+        proceso: 0,
+        status: "Sin iniciar",
+        idcurso: 900,
         tareas: "",
     }
 
@@ -37,23 +56,113 @@ const CursoActivo: React.FC = () => {
     const navigate = useNavigate();
     const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", "1"));
 
-    const materiaItem = (status: 'Finalizada' | 'Cursando' | 'Inscribirme') => {
-        let color: "success" | "primary" | "info" | "warning" | undefined;
-        if (status === 'Finalizada') {
+    const materiaItem = (item: any, index: number) => {
+
+        let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
+        let icon: any;
+
+        if (item.status === 'Finalizado') {
             color = "success";
-        } else if (status === "Cursando") {
+            icon = CheckIcon;
+        } else if (item.status === "Cursando") {
             color = "warning";
+            icon = Loading;
+        } else if (item.status === "Sin iniciar") {
+            color = "disabled";
+            icon = LockIcon;
         } else {
             color = undefined;
         }
 
-        return (
-
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', justifyContent: 'center', alignContent: 'center', alignItems: 'center', width: '100%' }}>
-                <Box sx={{ paddingTop: '8px', display: 'flex', gap: 'px', justifyContent: 'center', width: '100%', marginBottom: '20px' }}>
-                    <Button onClick={goToInformacion} fullWidth variant="contained">Ir al Curso</Button>
-                </Box>
+        const materialBox = (
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '1.5rem' }}>
+                <Typography
+                    component="span"
+                    variant="subtitle1"
+                    color={color}
+                >{item.status}
+                </Typography>
+                <DsSvgIcon component={icon} color={color} />
             </Box>
+        );
+
+        return (
+            <Accordion key={index} title={item.titulo} sxProps={{
+                backgroundColor: "#F8F8F9",
+                boxShadow: "0px 2px 4px 0px #6BBBE44D",
+                border: "1px solid #BABABA0D",
+            }}
+                opcion={materialBox}>
+
+                <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column wrap' }}>
+
+                    <Box sx={isMobile ? { display: 'flex', flexWrap: 'wrap', width: '100%', paddingInline: 'clamp(0rem, 5vw, 2rem)', gap: '1rem', } : { display: 'flex', flexWrap: 'wrap', width: '100%', paddingInline: 'clamp(0rem, 5vw, 2rem)', gap: '1rem', justifyContent: 'space-between' }}>
+
+                        <Box sx={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+
+                            <Box sx={{ display: 'flex' }}>
+                                <Typography component="span" variant="body1">
+                                    Inicio:
+                                </Typography>
+                                <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
+                                    {item.fechaActivo}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ display: 'flex' }}>
+                                <Typography component="span" variant="body1">
+                                    Fin:
+                                </Typography>
+                                <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
+                                    {item.fechaFin}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+
+                            <Box sx={{ display: 'flex' }}>
+                                <Typography component="span" variant="body1">
+                                    Tutor Asignado:
+                                </Typography>
+                                <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
+                                    {item.tutor}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ display: 'flex' }}>
+                                <Typography component="span" variant="body1">
+                                    Correo:
+                                </Typography>
+                                <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
+                                    {item.correo}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    <Typography component="span" variant="h5" sxProps={{ color: theme.palette.primary.main, marginTop: '44px', paddingInline: 'clamp(0rem, 5vw, 2rem)' }}>
+                        Tu Progreso
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+
+                        <Box sx={isMobile ? { width: '100%', maxWidth: '320px' } : { display: 'flex', flexDirection: 'column', gap: '24px', width: '50%' }}>
+                            <Box sx={{ padding: '5px 0 5px 0' }}>
+                                <LinearProgressWithLabel
+                                    value={item.proceso}
+                                    barColor={item.proceso == 100 ? '#2e7d32' : '#7B8186'}
+                                    trackColor="#D9A514" />
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '320px' }}>
+                            <Button onClick={goToInformacion} fullWidth variant="contained">Ir al Curso</Button>
+                        </Box>
+
+                    </Box>
+                </Box>
+
+            </Accordion>
         )
     };
 
@@ -66,70 +175,7 @@ const CursoActivo: React.FC = () => {
 
                 cursosDatas &&
                 cursosDatas.map((item, index) => (
-
-                    <Accordion key={index} title={item.titulo} sxProps={{
-                        backgroundColor: "#F8F8F9",
-                        boxShadow: "0px 2px 4px 0px #6BBBE44D",
-                        border: "1px solid #BABABA0D"
-                    }}>
-
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-
-                                <Box sx={{ justifyContent: 'start', alignItems: 'center' }}>
-                                    <Typography component="span" variant="h4">
-                                        Curso Activo Hasta:
-                                    </Typography>
-                                    <Typography component="span" variant="h4" sxProps={{ color: theme.palette.grey[100], marginLeft: '10px' }}>
-                                        {item.fechaActivo}
-                                    </Typography>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'white !important', padding: '10px 50px 10px 50px', }}>
-                                    <Typography component="span" variant="h4">
-                                        Estatus:
-                                    </Typography>
-
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-                                        <Typography component="span" variant="h4" sxProps={{ color: theme.palette.warning.main, margin: '0 10px 0 10px' }}>
-                                            Cursando
-                                        </Typography>
-                                        <DsSvgIcon component={Loading} color='warning' />
-                                    </Box>
-
-                                </Box>
-                            </Box>
-
-
-                            <Typography component="span" variant="h5" sxProps={{ color: theme.palette.primary.main }}>
-                                Tu Progeso
-                            </Typography>
-                            <Box sx={{ padding: '5px 0 5px 0' }}>
-
-                                <LinearProgressWithLabel
-                                    value={item.proceso}
-                                    barColor={item.proceso == 100 ? '#2e7d32' : '#7B8186'}
-                                    trackColor="#D9A514" />
-
-                            </Box>
-                        </Box>
-
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            <Typography component="span" variant="h5" sxProps={{ color: theme.palette.primary.main }}>
-                                Acciones
-                            </Typography>
-                            {materiaItem(item.status as 'Finalizada' | 'Cursando' | 'Inscribirme')}
-                        </Box>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '24px', justifyContent: 'start', alignItems: 'center' }}>
-                            <Typography component="span" variant="h4" sxProps={{ color: theme.palette.primary.main }}>
-                                Tutor Asignado:
-                            </Typography>
-                            <Typography component="span" variant="h4" sxProps={{ color: theme.palette.grey[100] }}>
-                                Nombre largo
-                            </Typography>
-                        </Box>
-                    </Accordion>
+                    materiaItem(item, index)
                 ))
             }
         </>
