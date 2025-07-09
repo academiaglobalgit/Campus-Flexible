@@ -8,6 +8,7 @@ export { default as Calificaciones } from './pages/Calificaciones/Calificaciones
 export { default as CalificacionesDetalle } from './pages/CalificacionesDetalle/CalificacionesDetalle';
 export { default as Certificaciones } from './pages/Certificaciones/Certificaciones';
 export { default as Consejeria } from './pages/Consejeria/Consejeria';
+export { default as ContactoInterno } from './pages/ContactoInterno/ContactoInterno';
 export { default as CurosCertificaciones } from './pages/CurosCertificaciones/CurosCertificaciones';
 export { default as CursoActivo } from './pages/CursosActivos/CursosActivos';
 export { default as CursosActivosDetalles } from './pages/CursosActivosDetalles/CursosActivosDetalles';

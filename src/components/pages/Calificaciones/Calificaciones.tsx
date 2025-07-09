@@ -5,7 +5,7 @@ import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from '@constants
 import { Calificaciones as CalificacionesIcon, Loading } from "@iconsCustomizeds";
 import { Typography } from '../../atoms/Typography/Typography';
 import Button from '../../atoms/Button/Button';
-import { GlosarioTerminosDialog } from '../../molecules/GlosarioTerminosDialog/GlosarioTerminosDialog';
+import { GlosarioTerminosDialog } from '../../molecules/Dialogs/GlosarioTerminosDialog/GlosarioTerminosDialog';
 import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesktop';
 import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';

@@ -9,6 +9,8 @@ const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 class httpClient {
   private readonly instance: AxiosInstance;
 
+  private unauthorizedSubscribers: Array<() => void> = [];
+
   constructor() {
     this.instance = axios.create({
       baseURL: BASE_URL,
@@ -40,16 +42,31 @@ class httpClient {
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => response,
       (error) => {
-        if (error.response) {
-          console.error('Error response:', error.response.status, error.response.data);
-        } else if (error.request) {
-          console.error('Error request:', error.request);
-        } else {
-          console.error('Error message:', error.message);
+        if (error.response?.status === 401) {
+          console.warn("Token expirado. Notificando suscriptores...");
+          this.unauthorizedSubscribers.forEach((cb) => cb());
+        }else{
+          if (error.response) {
+            console.error('Error response:', error.response.status, error.response.data);
+          } else if (error.request) {
+            console.error('Error request:', error.request);
+          } else {
+            console.error('Error message:', error.message);
+          }
         }
+        
         return Promise.reject(error);
       }
     );
+  }
+
+  // Método para registrar handlers
+  public subscribeUnauthorized(callback: () => void): () => void {
+    this.unauthorizedSubscribers.push(callback);
+    // Retorna función para cancelar la suscripción
+    return () => {
+      this.unauthorizedSubscribers = this.unauthorizedSubscribers.filter(cb => cb !== callback);
+    };
   }
 
   /**

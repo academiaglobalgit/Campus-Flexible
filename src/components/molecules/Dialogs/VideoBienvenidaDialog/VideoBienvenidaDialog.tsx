@@ -1,8 +1,8 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
-import Button from "../../atoms/Button/Button";
-import { Dialog } from "../../atoms/Dialog/Dialog";
-import { VideoCard } from "../VideoCard/VideoCard";
+import Button from "../../../atoms/Button/Button";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
+import { VideoCard } from "../../VideoCard/VideoCard";
 
 type DialogProps = {
     urlVideo: string;

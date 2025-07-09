@@ -113,6 +113,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.CALIFICACIONES_DETALLE,
                 Component: Component.CalificacionesDetalle
               },
+              {
+                path: AppRoutingPaths.CONTACTO_INTERNO,
+                Component: Component.ContactoInterno
+              },
             ]
           }
         ]

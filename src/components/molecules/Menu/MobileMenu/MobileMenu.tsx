@@ -6,7 +6,7 @@ import { MenuRoutes as MenuItems, MenuInformacion, type MenuType, TitleScreen } 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
-import ContactoDialog from "../../ContactoDialog/ContactoDialog";
+import ContactoDialog from "../../Dialogs/ContactoDialog/ContactoDialog";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 // import { ForosDialog } from "../../Dialogs/ForosDialog/ForosDialog";
 

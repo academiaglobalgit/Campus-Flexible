@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const checkAuth = async () => {
             try {
                 const authStatus = await checkAuthStatus();
-
                 if(!authStatus.isAuth) {
                     setIsAuthenticated(false);
                 }else if (authStatus.tokenExpired) {
@@ -71,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             cleanStorage();
             setUser(null);
             setIsAuthenticated(false);
+            setIsTokenExpired(false);
             queryClient.clear();
         }
     });
@@ -109,6 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const handleLogout = async () => {
+        setIsAuthenticated(false);
+        setIsTokenExpired(false);
         await logoutMutation.mutate();
     };
     

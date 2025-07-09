@@ -1,8 +1,8 @@
 import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
-import Button from "../../atoms/Button/Button";
-import { Dialog } from "../../atoms/Dialog/Dialog";
-import { Typography } from "../../atoms/Typography/Typography";
+import Button from "../../../atoms/Button/Button";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
+import { Typography } from "../../../atoms/Typography/Typography";
 
 type GlosarioDialogProps = {
     isOpen?: boolean;

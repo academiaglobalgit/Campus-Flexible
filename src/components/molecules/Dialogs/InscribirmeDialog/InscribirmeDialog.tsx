@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Box, DialogContent } from "@mui/material";
-import Button from "../../atoms/Button/Button";
-import { Dialog } from "../../atoms/Dialog/Dialog";
-import { Avatar } from "../../atoms/Avatar/Avatar";
-import check_circle from "../../../assets/check_circle.png";
-import { Typography } from "../../atoms/Typography/Typography";
+import Button from "../../../atoms/Button/Button";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
+import { Avatar } from "../../../atoms/Avatar/Avatar";
+import { Typography } from "../../../atoms/Typography/Typography";
+import check_circle from "../../../../assets/check_circle.png";
 
 type DialogProps = {
     isOpen?: boolean;

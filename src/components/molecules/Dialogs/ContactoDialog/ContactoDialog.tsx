@@ -1,10 +1,10 @@
 
-import { Avatar } from "../../atoms/Avatar/Avatar";
-import { Dialog } from "../../atoms/Dialog/Dialog";
+import { Avatar } from "../../../atoms/Avatar/Avatar";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Box, DialogActions, DialogContent, useMediaQuery, useTheme } from "@mui/material";
-import { Typography } from "../../atoms/Typography/Typography";
-import Button from "../../atoms/Button/Button";
-import contactanos from '../../../assets/contactanos.png';
+import { Typography } from "../../../atoms/Typography/Typography";
+import Button from "../../../atoms/Button/Button";
+import contactanos from '../../../../assets/contactanos.png';
 import React, { useEffect } from "react";
 
 type ContactoDialogProps = {

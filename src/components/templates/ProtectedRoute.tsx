@@ -1,25 +1,34 @@
 import React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../hooks';
 import { AppRoutingPaths } from '@constants';
-import { useNotification } from '../../providers/NotificationProvider';
+import { apiClient } from '../../services/ApiConfiguration/httpClient';
 
 export const ProtectedRoute: React.FC = () => {
-    const { isAuthenticated, isInitializing, isTokenExpired } = useAuth();
+    const { isAuthenticated, isInitializing, isTokenExpired, logout } = useAuth();
     const location = useLocation();
-    const { showNotification } = useNotification();
+    const navigate = useNavigate();
+    
+    React.useEffect(() => {
+        const unsubscribe = apiClient.subscribeUnauthorized(() => {
+            console.log("Unauthorized access detected, redirecting to login.");
+            logout();
+            return <Navigate to={AppRoutingPaths.LOGIN} state={{ from: location }} replace />;
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [navigate]);
+
 
     if (isInitializing) {
-        return ''; // show un spinner mientras verifica
+        return null; // show un spinner mientras verifica
     }
 
-    if (!isAuthenticated) {
-        return <Navigate to={AppRoutingPaths.LOGIN} state={{ from: location }} replace />;
-    }
-
-    if (isTokenExpired) {
-        showNotification('Tu sesión ha expirado, por favor inicia sesión nuevamente.', 'error');
+    if (!isAuthenticated || isTokenExpired) {
+        console.log(isAuthenticated, isTokenExpired);
         return <Navigate to={AppRoutingPaths.LOGIN} state={{ from: location }} replace />;
     }
 
