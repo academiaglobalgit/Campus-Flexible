@@ -4,7 +4,7 @@ import type { SvgIconPropsColorOverrides } from "@mui/material/SvgIcon";
 import SvgIcon from "@mui/material/SvgIcon";
 
 type IconColor = OverridableStringUnion<
-  'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'white',
+  'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'white' | 'disabled',
   SvgIconPropsColorOverrides
 >;
 
