@@ -10,6 +10,7 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 import { Loading } from '../../../assets/icons';
 import CheckIcon from '@mui/icons-material/Check';
 import LockIcon from '@mui/icons-material/Lock';
+import DsSvgIcon from "../../atoms/Icon/Icon";
 
 const cursosDatas = [
     {
@@ -73,15 +74,25 @@ const CursoActivo: React.FC = () => {
             color = undefined;
         }
 
+        const materialBox = (
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '1.5rem' }}>
+                <Typography
+                    component="span"
+                    variant="subtitle1"
+                    color={color}
+                >{item.status}
+                </Typography>
+                <DsSvgIcon component={icon} color={color} />
+            </Box>
+        );
+
         return (
-            <Accordion key={index} title={item.titulo} status={item.status} sxProps={{
+            <Accordion key={index} title={item.titulo} sxProps={{
                 backgroundColor: "#F8F8F9",
                 boxShadow: "0px 2px 4px 0px #6BBBE44D",
                 border: "1px solid #BABABA0D",
             }}
-                color={color}
-                icon={icon}>
-
+                opcion={materialBox}>
 
                 <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column wrap' }}>
 
@@ -133,7 +144,7 @@ const CursoActivo: React.FC = () => {
                     <Typography component="span" variant="h5" sxProps={{ color: theme.palette.primary.main, marginTop: '44px', paddingInline: 'clamp(0rem, 5vw, 2rem)' }}>
                         Tu Progreso
                     </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' ,gap:'10px'}}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
 
                         <Box sx={isMobile ? { width: '100%', maxWidth: '320px' } : { display: 'flex', flexDirection: 'column', gap: '24px', width: '50%' }}>
                             <Box sx={{ padding: '5px 0 5px 0' }}>
