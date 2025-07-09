@@ -8,7 +8,6 @@ import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Loading } from '../../../assets/icons';
-import DsSvgIcon from "../../atoms/Icon/Icon";
 import CheckIcon from '@mui/icons-material/Check';
 import LockIcon from '@mui/icons-material/Lock';
 
