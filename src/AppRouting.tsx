@@ -117,6 +117,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.CONTACTO,
                 Component: Component.ContactoInterno
               },
+              {
+                path: AppRoutingPaths.FOROS,
+                Component: Component.Foros
+              },
             ]
           }
         ]

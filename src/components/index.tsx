@@ -12,6 +12,7 @@ export { default as ContactoInterno } from './pages/ContactoInterno/ContactoInte
 export { default as CurosCertificaciones } from './pages/CurosCertificaciones/CurosCertificaciones';
 export { default as CursoActivo } from './pages/CursosActivos/CursosActivos';
 export { default as CursosActivosDetalles } from './pages/CursosActivosDetalles/CursosActivosDetalles';
+export { default as Foros } from './pages/Foros/Foros';
 export { default as Home } from './pages/Home/Home';
 export { default as LoginPage } from './pages/Login/Login';
 export { default as MainTemplate } from './templates/MainTemplate/MainTemplate';

@@ -31,8 +31,9 @@ export const AppRoutingPaths = {
     MI_TRAYECTO: "/mi-trayecto",
     TERMINOS_CONDICIONES: "/terminos-condiciones",
     VIDEOTECA_DETALLE: "/videoteca",
-    APRENDE_MAS: "aprende-mas",
+    APRENDE_MAS: "/aprende-mas",
     CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
+    FOROS: "/foros",
 
 } as const;
 

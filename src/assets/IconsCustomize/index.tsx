@@ -18,6 +18,7 @@ export { default as Disruptor } from './Disruptor.svg?react';
 export { default as Edit } from './Edit.svg?react';
 export { default as Edit1 } from './Edit1.svg?react';
 export { default as Faqs } from './Faqs.svg?react';
+export { default as Foros } from './Foros.svg?react';
 export { default as Github } from './Github.svg?react';
 export { default as Home } from './Home.svg?react';
 export { default as Kardex } from './Kardex.svg?react';
