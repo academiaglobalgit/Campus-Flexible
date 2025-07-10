@@ -12,6 +12,7 @@ export { default as Contacto } from './Contacto.svg?react';
 export { default as Copy } from './Copy.svg?react';
 export { default as Danger } from './Danger.svg?react';
 export { default as WhatsApp } from './Whatsapp.svg?react';
+export { default as Foros } from './Foros.svg?react';
 
 // Iconos de documentos
 export { default as Document } from './Document.svg?react';
