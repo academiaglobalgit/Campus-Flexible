@@ -23,7 +23,19 @@ const cursosDatas = [
             { titulo: "Unidad IV", proceso: 80, status: "No iniciado" },
         ],
         actividades: [
-            { actividad: "Actividad Integradora 1", nombre: 'Desafío - Elaboración de un informe con Power BI', contenido: "" },
+            { titulo: "Actividad Integradora 1", nombre: 'Desafío - Elaboración de un informe con Power BI', contenido: "" },
+        ],
+        foros: [
+            { titulo: "Actividad Integradora 1", nombre: 'Desafío - Elaboración de un informe con Power BI', contenido: "" },
+        ],
+        tutorias: [
+            { titulo: "Actividad Integradora 1", nombre: 'Desafío - Elaboración de un informe con Power BI', contenido: "" },
+        ],
+        evaluaciones: [
+            { titulo: "Actividad Integradora 1", nombre: 'Desafío - Elaboración de un informe con Power BI', contenido: "" },
+        ],
+        lista: [
+            { titulo: "Tutoria", fecha: 'Junio 25, 2025 - 16:00 -hrs', status: "Sin iniciar", desc: "", recuros: "Titulo del recurso", link: "link aqui", grabacion: "lin aqui x2" },
         ]
     },
 ];
@@ -192,11 +204,6 @@ const CursosActivosDetalles: React.FC = () => {
                     </ul>
                     <Button onClick={() => { }} variant="outlined" fullWidth iconPosition={'end'} icon={<EastIcon />}>Entrar al foro</Button>
                 </TabPanel>
-
-
-
-
-
             </Box>
         ))
     );
