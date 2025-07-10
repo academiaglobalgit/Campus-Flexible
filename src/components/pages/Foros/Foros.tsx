@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, FormControl, InputLabel, MenuItem, Pagination, Select, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import {Foros as ForosIcon, Edit1 } from "@iconsCustomizeds";
@@ -10,14 +11,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar } from "../../atoms/Avatar/Avatar";
 import { flexColumn, flexRows } from "@styles";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { ForosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDialog";
-import React from "react";
+import { ComentariosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDialog";
+import { EliminarComentarioDialog } from "../../molecules/Dialogs/EliminarComentarioDialog/EliminarComentarioForosDialog";
 
 const Foros: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const [typeDialog, setTypeDialog] = React.useState<'Comentar' | 'Editar' | 'Responder'>("Comentar");
     const [isOpenForosDialog, setIsOpenForosDialog] = React.useState(false);
+    const [isOpenEliminarComentarioDialog, setIsOpenEliminarComentarioDialog] = React.useState(false);
 
     const comentarios = [{ id: 0, label: 'Todos los comentarios' }];
     const ordenar = [{ id: 0, label: 'Más actuales' }];
@@ -45,7 +48,7 @@ const Foros: React.FC = () => {
                 <Box sx={{ width: '100%', mt: '32px' }}>
                     <Button 
                         fullWidth
-                        onClick={() => setIsOpenForosDialog(true)}
+                        onClick={() => handleOpenComentariosDialog()}
                         icon={<Edit1 />}
                     >
                         Comentar
@@ -55,6 +58,10 @@ const Foros: React.FC = () => {
         );
     }
 
+    const handleOpenComentariosDialog = (type: 'Comentar' | 'Editar' | 'Responder' = 'Comentar') => {
+        setTypeDialog(type);
+        setIsOpenForosDialog(true)
+    };
 
     const ComentariosCard = () => {
         return (
@@ -85,11 +92,11 @@ const Foros: React.FC = () => {
                     <Box sx={{ display:'flex', gap: '15px', width: '100%' }}>
                         <><Button 
                             fullWidth
-                            onClick={() => {}} 
+                            onClick={() => handleOpenComentariosDialog('Editar')} 
                             variant="outlined"
                             sxProps={{ height: '26px' }}
                         >Editar</Button></>
-                        <><Button fullWidth onClick={() => {}} variant="outlined" color="error" sxProps={{ height: '26px' }}>Eliminar</Button></>
+                        <><Button fullWidth onClick={() => setIsOpenEliminarComentarioDialog(true)} variant="outlined" color="error" sxProps={{ height: '26px' }}>Eliminar</Button></>
                     </Box>
                 </Box>
             </Box>
@@ -205,7 +212,8 @@ const Foros: React.FC = () => {
                         <PaginationSection />
                     </ContainerDesktop>
         }
-        <ForosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type="Comentar" />
+        <ComentariosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type={typeDialog} />
+        <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={() => setIsOpenEliminarComentarioDialog(false)} />
     </>
     
   );

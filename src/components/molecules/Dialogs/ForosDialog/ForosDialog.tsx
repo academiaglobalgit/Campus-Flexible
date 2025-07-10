@@ -7,7 +7,7 @@ import { Edit1 } from "@iconsCustomizeds";
 import { flexColumn } from "@styles";
 import RichText from "../../RichText/RichText";
 
-type ForosDialogProps = {
+type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
     data?: {tema: string, comentario: string} | null;
     isOpen?: boolean;
@@ -15,7 +15,7 @@ type ForosDialogProps = {
     save?: () => string;
 }
 
-export const ForosDialog: React.FC<ForosDialogProps> = ({type, data, isOpen, close, save}) => {
+export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({type, data, isOpen, close, save}) => {
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
 
