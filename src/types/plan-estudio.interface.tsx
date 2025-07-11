@@ -58,9 +58,12 @@ export interface Informacion {
 }
 
 export interface Tutor {
-    id_usuario:       number;
-    nombre:           string;
-    apellido_paterno: string;
-    apellido_materno: string;
-    correo:           string;
+    id_usuario:         number;
+    apellido_materno:   string;
+    apellido_paterno:   string;
+    correo:             string;
+    descripcion_perfil: string;
+    foto_perfil_url:    string;
+    grado_estudio:      string;
+    nombre:             string;
 }
