@@ -493,12 +493,8 @@ const CursosActivosDetalles: React.FC = () => {
                     </Tabs>
                 </Box>
                 <TabPanel key={0} value={value} index={0}>
-                    <Box sx={{ mt: 5 }}>
-
-                        {Contenido(item.temas)}
-                        {Felicidades()}
-
-                    </Box>
+                    {Contenido(item.temas)}
+                    {Felicidades()}
                 </TabPanel>
 
                 <TabPanel key={1} value={value} index={1}>
