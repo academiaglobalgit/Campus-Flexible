@@ -29,8 +29,8 @@ const RichText: React.FC = () => {
     placeholder: "",
   });
   const rteRef = useRef<RichTextEditorRef>(null);
-  const [isEditable, setIsEditable] = useState(true);
-  const [showMenuBar, setShowMenuBar] = useState(true);
+  const [isEditable, _setIsEditable] = useState(true);
+  const [showMenuBar, _setShowMenuBar] = useState(true);
 
   const handleNewImageFiles = useCallback(
     (files: File[], insertPosition?: number): void => {

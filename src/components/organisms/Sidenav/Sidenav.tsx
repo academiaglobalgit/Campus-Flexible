@@ -13,7 +13,7 @@ import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
-import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
+import { AppRoutingPaths, MenuRoutes as MenuItems } from '@constants';
 
 import Logo from '../../../assets/logo_ag.svg';
 import miniLogo from '../../../assets/miniLogo.png';

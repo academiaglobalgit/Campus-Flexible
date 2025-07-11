@@ -15,7 +15,7 @@ type ComentariosDialogProps = {
     save?: () => string;
 }
 
-export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({type, data, isOpen, close, save}) => {
+export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({type, isOpen, close, save}) => {
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
 

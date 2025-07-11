@@ -26,7 +26,7 @@ const Foros: React.FC = () => {
     const ordenar = [{ id: 0, label: 'Más actuales' }];
     const limite = [{ id: 0, label: '2' }];
 
-    const { control, register, handleSubmit, formState: { errors } } = useForm<ForoData>({
+    const { control, formState: { errors } } = useForm<ForoData>({
             resolver: zodResolver(foroSchema(comentarios.map((m) => m.id), ordenar.map((t) => t.id), limite.map((t) => t.id))),
             defaultValues: {
                 comentarios: 0,
