@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { Box, Divider, Link, Tab, Tabs, tabsClasses, TextField } from "@mui/material";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { CursosActivosDetalle } from "@iconsCustomizeds";
 import Button from "../../atoms/Button/Button";
@@ -11,12 +12,9 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { Foros } from '../../../assets/icons';
 import EastIcon from '@mui/icons-material/East';
 import { CheckBoxLabel } from "../../atoms/Checkbox/Checkbox";
-import { Loading } from '../../../assets/icons';
 import { Tutotria } from '../../../assets/icons';
 import { ListaTareas } from '../../../assets/icons';
 import { Users } from '../../../assets/icons';
-import CheckIcon from '@mui/icons-material/Check';
-import LockIcon from '@mui/icons-material/Lock';
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 //import { useParams } from "react-router-dom";
@@ -117,7 +115,7 @@ const CursosActivosDetalles: React.FC = () => {
 
     const Contenido = (cursosDatas: any) => (
 
-        cursosDatas.map((temas: string, i: number) => (
+        cursosDatas.map((temas: any, i: number) => (
             <Accordion key={i} title={temas.titulo} sxProps={{
                 backgroundColor: "#F8F8F9",
                 boxShadow: "0px 2px 4px 0px #6BBBE44D",
@@ -176,23 +174,6 @@ const CursosActivosDetalles: React.FC = () => {
                     <Button onClick={() => { }} variant="contained" fullWidth >Manual de Actividades Integradoras</Button>
                 </Box>
                 {cursosDatas.map((temas, i) => {
-                    // Definir color e ícono según el estado
-                    let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
-                    let icon: any;
-
-                    if (temas.status === "Finalizado") {
-                        color = "success";
-                        icon = CheckIcon;
-                    } else if (temas.status === "Cursando") {
-                        color = "warning";
-                        icon = Loading;
-                    } else if (temas.status === "Sin iniciar") {
-                        color = "disabled";
-                        icon = LockIcon;
-                    } else {
-                        color = undefined;
-                    }
-
                     return (
                         <Accordion
                             key={i}
@@ -212,12 +193,7 @@ const CursosActivosDetalles: React.FC = () => {
                                     {temas.nombre}
                                 </Typography>
 
-                                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'space-between' }}>
-                                    <Typography component="span" variant="subtitle1" color={color} >
-                                        {temas.status}
-                                    </Typography>
-                                    <DsSvgIcon component={icon} color={color} />
-                                </Box>
+                                <StatusIcon estado={temas.status} sxProps={{ color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'space-between' }} />
 
                                 <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
                                     Descripción de tu actividad
@@ -291,7 +267,7 @@ const CursosActivosDetalles: React.FC = () => {
                 <TituloIcon key={1} Titulo={'Tutorias'} Icon={Tutotria} />
             </Box>
 
-            {tutorias.map((tutoria: string, i: number) => (
+            {tutorias.map((tutoria: any, i: number) => (
                 <Accordion key={i} title={tutoria.titulo} sxProps={{
                     backgroundColor: "#F8F8F9",
                     boxShadow: "0px 2px 4px 0px #6BBBE44D",
@@ -341,7 +317,7 @@ const CursosActivosDetalles: React.FC = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center', gap: '18px' }}>
                 <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />
             </Box>
-            {ForosDatas.map((temas: string, i: number) => (
+            {ForosDatas.map((temas: any, i: number) => (
 
                 <Accordion key={i} title={temas.titulo} sxProps={{
                     backgroundColor: "#F8F8F9",
@@ -366,7 +342,7 @@ const CursosActivosDetalles: React.FC = () => {
     )
 
     const Evaluaciones = (cursosDatas: any) => (
-        cursosDatas.map((temas: string, i: number) => (
+        cursosDatas.map((temas: any, i: number) => (
             <Accordion key={i} title={temas.titulo} sxProps={{
                 backgroundColor: "#F8F8F9",
                 boxShadow: "0px 2px 4px 0px #6BBBE44D",
@@ -389,7 +365,7 @@ const CursosActivosDetalles: React.FC = () => {
                 <TituloIcon key={5} Titulo={'Lista de pendientes'} Icon={ListaTareas} />
             </Box>
 
-            {lista.map((listado: string, i: number) => (
+            {lista.map((listado: { lista: string; total: number; hechas: number }) => (
                 <>
                     <Divider textAlign="center">
                         <Typography component="span" variant="body2" color="primary">{listado.lista}</Typography>
@@ -422,7 +398,7 @@ const CursosActivosDetalles: React.FC = () => {
                                 <CheckBoxLabel
                                     key={index}
                                     text={`${auxTitulo} ${index + 1}`}
-                                    place="start"
+                                    place="end"
                                     disabled={auxChec}
                                     defaultChecked={auxDisabled}
                                     sxProps={{
