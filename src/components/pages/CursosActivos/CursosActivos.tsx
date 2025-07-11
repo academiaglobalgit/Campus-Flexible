@@ -4,13 +4,11 @@ import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { LinearProgressWithLabel } from "../../molecules/LinearProgress/LinearProgress";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { Loading } from '../../../assets/icons';
-import CheckIcon from '@mui/icons-material/Check';
-import LockIcon from '@mui/icons-material/Lock';
-import DsSvgIcon from "../../atoms/Icon/Icon";
+
 
 const cursosDatas = [
     {
@@ -57,42 +55,13 @@ const CursoActivo: React.FC = () => {
     const goToInformacion = () => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", "1"));
 
     const materiaItem = (item: any, index: number) => {
-
-        let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
-        let icon: any;
-
-        if (item.status === 'Finalizado') {
-            color = "success";
-            icon = CheckIcon;
-        } else if (item.status === "Cursando") {
-            color = "warning";
-            icon = Loading;
-        } else if (item.status === "Sin iniciar") {
-            color = "disabled";
-            icon = LockIcon;
-        } else {
-            color = undefined;
-        }
-
-        const materialBox = (
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '1.5rem' }}>
-                <Typography
-                    component="span"
-                    variant="subtitle1"
-                    color={color}
-                >{item.status}
-                </Typography>
-                <DsSvgIcon component={icon} color={color} />
-            </Box>
-        );
-
         return (
             <Accordion key={index} title={item.titulo} sxProps={{
                 backgroundColor: "#F8F8F9",
                 boxShadow: "0px 2px 4px 0px #6BBBE44D",
                 border: "1px solid #BABABA0D",
             }}
-                opcion={materialBox}>
+                opcion={<StatusIcon estado={item.status} sxProps={{ color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'start' }} />}>
 
                 <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column wrap' }}>
 
