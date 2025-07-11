@@ -1,7 +1,8 @@
-import { Box } from "@mui/material";
+import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { flexRows, flexColumn } from "@styles";
+import type { Informacion as IInformacion } from "../../../types/plan-estudio.interface";
 
 export const CardDuracion = ({ label, description, sxProps }: { label: string; description: string; sxProps: any }) => {
     return (
@@ -21,32 +22,56 @@ export const CardDuracion = ({ label, description, sxProps }: { label: string; d
     )
 };
 
-export const Informacion: React.FC = () => {
+type InformacionProps = {
+    data: IInformacion;
+}
 
+export const Informacion: React.FC<InformacionProps> = ({data}) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const duracion = [
-        {label: "Logitud:", description: "50 Horas"},
-        {label: "Nivel:", description: "Medio"},
-        {label: "Idioma:", description: "Español"},
+        {label: "Logitud:", description: `${data.longitud.toString()} Horas`},
+        {label: "Nivel:", description: data.nivel},
+        {label: "Idioma:", description: data.idioma},
     ];
 
-    return(
-        <Box>
-            <TituloIcon Titulo="Seguridad informática I" fontSize="h4" />
-            <Box sx={{ display: "flex", flexDirection:"column", gap: "15px", pb: "30px" }}>                
+    const PonderacionSection = () => {
+        return(
+            <Box sx={[
+                { display: "flex", flexDirection:"column", gap: "15px", pb: "30px" },
+                !isMobile && { width: '100%', height: '100%'}
+            ]}>
                 {
                     duracion.map((item, index) => (
                         <CardDuracion key={index} label={item.label} description={item.description} sxProps={undefined}/>
                     ))
                 }
             </Box>
-            <Box sx={{...flexColumn, alignItems: "flex-start", pb: "30px"}}>
+        )
+    }
+
+    const TipoInformacionSection = () => {
+        return(
+            <Box sx={[
+                {...flexColumn, alignItems: "flex-start", pb: "30px"},
+                !isMobile && {alignItems: "center", gap: "20px"}
+            ]}>
                 <Typography component="h4" variant="h4" color="primary">Tipo de información:</Typography>
                 <Typography component="span" variant="body1">
                     Con instructor, de auto-inscripción en línea.<br /><br />
                     Es necesario que cuentes con un correo electrónico, si aún no lo tienes, te recomendamos que lo generes lo antes posible, ya que lo utilizarás a lo largo de tu carrera profesional
                 </Typography>
             </Box>
-            <Box sx={{...flexColumn, alignItems: "flex-start", gap: '10px'}}>
+        )
+    }
+
+    const DescripcionSection = () => {
+        return(
+            <Box sx={[
+                    {...flexColumn, alignItems: "flex-start", gap: '10px'},
+                    !isMobile && {pt:'20px'}
+                ]}>
                 <Typography component="h4" variant="h4" color="primary">Descripción:</Typography>
                 <Typography component="p" variant="body1">
                     Desde términos tan básicos como “contraseña”, “usuario”, hasta términos avanzados como “Sistemas de detección”, cobran sentido en cualquier empresa, y es que hoy por hoy ya no son solo términos deseables de conocer, sino indispensables , pues sin ellos se recae en un estado “débil” y en “peligro”, ante las amenazas que cada día crecen respecto a operaciones no autorizadas con nuestra información.
@@ -81,6 +106,34 @@ export const Informacion: React.FC = () => {
                     </ul>
                 </Typography>
             </Box>
+        )
+    }
+
+    return(
+        isMobile
+        ?
+        <Box>
+            <TituloIcon Titulo={data.nombre_curso} fontSize="h4" />
+            <PonderacionSection />
+            <TipoInformacionSection />
+            <DescripcionSection />
+        </Box>
+        :
+        <Box>
+            <Grid container spacing={4}>
+                <Grid size={{ md: 8 }}>
+                    <Box>
+                        <DescripcionSection />
+                    </Box>
+                </Grid>
+                <Grid size={{ md: 4 }} sx={{ display: 'flex', alignItems: 'center'}}>
+                    <Box sx={{...flexColumn, width: '100%'}}>
+                        <TituloIcon Titulo={data.nombre_curso} fontSize="h4" />
+                        <PonderacionSection />
+                        <TipoInformacionSection />
+                    </Box>
+                </Grid>
+            </Grid>
         </Box>
     );
 }

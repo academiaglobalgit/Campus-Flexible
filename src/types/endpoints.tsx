@@ -14,6 +14,7 @@ export const PERFIL_ENDPOINTS = {
 
 export const PLAN_ESTUDIO_ENDPOINTS = {
     GET_MATERIAS: { path:'/plan-estudios', key: 'materias' },
+    GET_INFORMACION_MATERIAS: { path:'/plan-estudios/cursos/informacion', key: 'informacion' },
 }
 
 export const CURSOS_ACTIVOS_ENDPOINTS = {

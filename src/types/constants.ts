@@ -22,7 +22,7 @@ export const AppRoutingPaths = {
     SERVICIOS_ESCOLORES: "/serv-esco",
     CONTACTO: "/contact",
     MANUAL_INDUCCION: "/manual",
-    PLAN_ESTUDIO_INFORMACION: "/plan-estudios/info",
+    PLAN_ESTUDIO_INFORMACION: "/plan-estudios/info/:id",
     CONSEJERIA: "/consejeria",
     BOLETIN_EDUCATIVO: "/boletin",
     CERTIFICACIONES: "/cert",

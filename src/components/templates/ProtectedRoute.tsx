@@ -4,6 +4,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks';
 import { AppRoutingPaths } from '@constants';
 import { apiClient } from '../../services/ApiConfiguration/httpClient';
+import { LoadingCircular } from '../molecules/LoadingCircular/LoadingCircular';
 
 export const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isInitializing, isTokenExpired, logout } = useAuth();
@@ -24,7 +25,7 @@ export const ProtectedRoute: React.FC = () => {
 
 
     if (isInitializing) {
-        return null; // show un spinner mientras verifica
+        return <LoadingCircular Text='' />; // show un spinner mientras verifica
     }
 
     if (!isAuthenticated || isTokenExpired) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Skeleton, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -15,6 +15,7 @@ import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudi
 import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const PlanEstudio: React.FC = () => {
 
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
 
-    const goToInformacion = () => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION);
+    const goToInformacion = (id_curso: number) => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION.replace(":id",`${id_curso}`));
 
     const [value, setValue] = React.useState(0);
     
@@ -50,10 +51,10 @@ const PlanEstudio: React.FC = () => {
             window.open(mapaCurricular.data?.url, "_blank");
     };
 
-    const InformacionStatusButtons = (status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
+    const InformacionStatusButtons = (id_curso: number, status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
-                <Button onClick={goToInformacion} fullWidth variant="outlined">Información</Button>
+                <Button onClick={() => goToInformacion(id_curso)} fullWidth variant="outlined">Información</Button>
             </>
             <>
                 <Button 
@@ -65,7 +66,7 @@ const PlanEstudio: React.FC = () => {
         </Box>
     );
 
-    const materiaItem = (materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {
+    const materiaItem = (id_curso: number, materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {
         let color: "success" | "primary" | "info" | "warning" | undefined;
         if(status === 'Finalizada') {
             color = "success";
@@ -85,7 +86,7 @@ const PlanEstudio: React.FC = () => {
                             </Typography>
                         </Grid>
                         <Grid size={{md: 6}}>
-                            {InformacionStatusButtons(status, color)}
+                            {InformacionStatusButtons(id_curso, status, color)}
                         </Grid>
                     </Grid>
                 </Box>
@@ -94,7 +95,7 @@ const PlanEstudio: React.FC = () => {
                 <Typography component="span" variant="body2">
                     {materia}
                 </Typography>
-                {InformacionStatusButtons(status, color)}
+                {InformacionStatusButtons(id_curso, status, color)}
             </Box>
         )
     };
@@ -135,7 +136,7 @@ const PlanEstudio: React.FC = () => {
                                 <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                     {item.materias.map((materia: Materia, idx: number) => (
                                         <Box key={idx}>
-                                            {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', false)}
+                                            {materiaItem(materia.id_curso, materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', false)}
                                         </Box>
                                     ))}
                                 </Box>
@@ -166,7 +167,7 @@ const PlanEstudio: React.FC = () => {
                                                 <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
                                                     {item.materias.map((materia: Materia, idx: number) => (
                                                         <Box key={idx}>
-                                                            {materiaItem(materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
+                                                            {materiaItem(materia.id_curso, materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
                                                         </Box>
                                                     ))}
                                                 </Box>
@@ -184,46 +185,11 @@ const PlanEstudio: React.FC = () => {
         </Grid>
     );
 
-    const SkeletonDesktop = () => (
-        <>
-            <Box sx={{ display: 'flex', gap: '20px', mt:'6px'}}>
-                {
-                    Array.from({length: 5}).map((_, index) => <Skeleton key={index} variant="rounded" width={108} height={40} />)
-                }
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', pt: '28px', pl:'32px'}}>
-                <Skeleton variant="rounded" width={300} height={30} />
-                {
-                    Array.from({length: 3}).map((_, index) => (
-                        <Box key={index} sx={{ borderBottom: '2px solid #AAB1B6'}}>
-                            <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}} spacing={2}>
-                                <Grid size={{md: 6}}>
-                                    <Skeleton variant="rounded" width={400} height={30} />
-                                </Grid>
-                                <Grid size={{md: 6}}>
-                                    <Box sx={{ display: 'flex', gap: '15px'}}>
-                                        <Skeleton variant="rounded" width={258} height={40} />
-                                        <Skeleton variant="rounded" width={258} height={40} />
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Box>
-                    )
-                    )
-                }
-            </Box>
-        </>
-    );
-
     const Listado = () => {
         const data = materiaData || [];
         
         if(isLoading) {
-            if(isMobile) {
-                return ("");
-            }else{
-                return SkeletonDesktop();
-            }
+            return <LoadingCircular Text="Cargando Plan de Estudio..."/>;
         }else{
             if(data.length > 0) {
                 if(isMobile) {

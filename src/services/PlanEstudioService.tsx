@@ -1,6 +1,6 @@
 import React from "react";
 import { apiClient } from "./ApiConfiguration/httpClient";
-import type { PlanEstudio, PlanEstudioMateriasResponse, PlanEstudioResponse } from "../types/plan-estudio.interface";
+import type { PlanEstudio, PlanEstudioInformacionResponse, PlanEstudioMateriasResponse, PlanEstudioResponse } from "../types/plan-estudio.interface";
 import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
 import { useQuery } from "@tanstack/react-query";
 
@@ -35,6 +35,7 @@ export const useGetPlanEstudio = (id_plan_estudio: number) => {
                     };
                 }
                 acc[periodoKey].materias.push({
+                    id_curso: curso.id_curso,
                     titulo: curso.nombre_curso,
                     status: statusMap[estado_inscripcion],
                 });
@@ -52,6 +53,15 @@ export const useGetPlanEstudio = (id_plan_estudio: number) => {
             [query.data]
         )
     }
+}
+
+export const useGetInformacion = (idCurso: number) => {
+    return useQuery<PlanEstudioInformacionResponse, Error>({
+         queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_INFORMACION_MATERIAS.key, idCurso],
+         queryFn: async () => await apiClient.get<PlanEstudioInformacionResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_INFORMACION_MATERIAS.path}?id_curso=${idCurso}`),
+         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+     });
+    
 }
 
 export const useGetVideoMapa = () => {
