@@ -2,7 +2,7 @@ import { Checkbox, FormControlLabel, type SxProps, type Theme } from "@mui/mater
 
 type TypographyProps = {
     text?: string,
-    place?: "end" | "bottom";
+    place?: "end" | "bottom" | "start";
     defaultChecked?: boolean;
     disabled ?: boolean;
     sxProps?: SxProps<Theme>;
