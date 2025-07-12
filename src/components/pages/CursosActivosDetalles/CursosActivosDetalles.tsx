@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Box, Divider, Link, Tab, Tabs, tabsClasses, TextField } from "@mui/material";
+import { Box, Divider, Link, Tab, Tabs, tabsClasses, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
@@ -17,6 +17,7 @@ import { ListaTareas } from '../../../assets/icons';
 import { Users } from '../../../assets/icons';
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+
 //import { useParams } from "react-router-dom";
 //import { useGetCursos, useGetCursosById } from "../../../services/CursosActivosService";
 
@@ -53,6 +54,8 @@ const cursosDatas = [
 
 
 const CursosActivosDetalles: React.FC = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -116,6 +119,7 @@ const CursosActivosDetalles: React.FC = () => {
     const Contenido = (cursosDatas: any) => (
 
         cursosDatas.map((temas: any, i: number) => (
+
             <Accordion key={i} title={temas.titulo} sxProps={{
                 backgroundColor: "#F8F8F9",
                 boxShadow: "0px 2px 4px 0px #6BBBE44D",
@@ -133,7 +137,6 @@ const CursosActivosDetalles: React.FC = () => {
             </Accordion>
         ))
     )
-
 
     const UploadButton = () => {
         const fileInputRef = useRef<HTMLInputElement>(null);
@@ -167,7 +170,7 @@ const CursosActivosDetalles: React.FC = () => {
     const Actividades = (cursosDatas: any[]) => {
         return (
             <>
-                <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'center', justifyContent: 'center', gap: '18px', marginBottom: '52px' }}>
+                <Box sx={!isMobile ? { display: 'flex', flexDirection: 'row', gap: '18px', marginTop: '40px', marginBottom: '65px' } : { display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'center', justifyContent: 'center', gap: '18px', marginBottom: '52px' }}>
                     <Button onClick={() => { }} variant="contained" fullWidth >Instrumento de Evaluación</Button>
                     <Button onClick={() => { }} variant="contained" fullWidth >Portada</Button>
                     <Button onClick={() => { }} variant="contained" fullWidth >Manual de Formato APA</Button>
@@ -186,14 +189,19 @@ const CursosActivosDetalles: React.FC = () => {
                         >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily }}>
-                                    {temas.actividad}
-                                </Typography>
-                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
-                                    {temas.nombre}
-                                </Typography>
+                                <Box sx={!isMobile ? { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' } : { display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-                                <StatusIcon estado={temas.status} sxProps={{ color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'space-between' }} />
+                                    <Box sx={!isMobile ? { display: 'flex', flexDirection: 'column' } : {}}>
+                                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily }}>
+                                            {temas.actividad}
+                                        </Typography>
+                                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
+                                            {temas.nombre}
+                                        </Typography>
+                                    </Box>
+
+                                    <StatusIcon estado={temas.status} sxProps={{ color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'space-between' }} />
+                                </Box>
 
                                 <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
                                     Descripción de tu actividad
@@ -274,36 +282,53 @@ const CursosActivosDetalles: React.FC = () => {
                     border: "1px solid #BABABA0D"
                 }}>
 
-
                     <Box sx={{ display: 'flex', flexDirection: 'column', color: theme.palette.primary.dark, justifyContent: "start", alignItems: "start", textAlign: "start", gap: '10px' }}>
-                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily }}>
-                            {tutoria.titulo}
-                        </Typography>
-                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
-                            {tutoria.fecha}
-                        </Typography>
-                        <Typography component="p" variant="body2" color='text.primary'>
-                            {tutoria.status}
-                        </Typography>
 
-                        <Button onClick={() => { }} variant="contained" fullWidth >Agregar a mi calendario</Button>
+                        <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
 
-                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>                        Descripción
-                        </Typography>
+                            <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'column', width: '50%' }}>
+                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily }}>
+                                    {tutoria.titulo}
+                                </Typography>
+                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
+                                    {tutoria.fecha}
+                                </Typography>
+                                <Typography component="p" variant="body2" color='text.primary'>
+                                    {tutoria.status}
+                                </Typography>
+                            </Box>
 
-                        <Typography component="p" variant="body2" color='text.primary'>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                        </Typography>
+                            <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'row', width: '40%' }}>
+                                <Button onClick={() => { }} variant="contained" fullWidth >Agregar a mi calendario</Button>
+                            </Box>
 
-                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
-                            Recursos Compartidos
-                        </Typography>
-                        <Typography component="p" variant="body2" sxProps={{ color: theme.palette.info.main }}>
-                            {tutoria.recursoTitulo}
-                        </Typography>
-                        <Button onClick={() => { }} variant="contained" fullWidth >Acceder Aquí</Button>
+                        </Box>
 
-                        <Button onClick={() => { }} variant="outlined" fullWidth sxProps={{ color: theme.palette.grey[200] }} >Grabación</Button>
+                        <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'start' }}>
+
+                            <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'column', width: '50%' }}>
+                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
+                                    Descripción
+                                </Typography>
+
+                                <Typography component="p" variant="body2" color='text.primary'>
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                </Typography>
+
+                                <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
+                                    Recursos Compartidos
+                                </Typography>
+                                <Typography component="p" variant="body2" sxProps={{ color: theme.palette.info.main }}>
+                                    {tutoria.recursoTitulo}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={isMobile ? { display: 'flex', flexDirection: 'column', gap: '10px' } : { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '40%', gap: '20px' }}>
+                                <Button onClick={() => { }} variant="contained" fullWidth >Acceder Aquí</Button>
+                                <Button onClick={() => { }} variant="outlined" fullWidth sxProps={{ color: theme.palette.grey[200] }} >Grabación</Button>
+                            </Box>
+
+                        </Box>
 
                     </Box>
                 </Accordion>
@@ -314,9 +339,18 @@ const CursosActivosDetalles: React.FC = () => {
     const ForosOp = (ForosDatas: any) => (
 
         <>
-            <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center', gap: '18px' }}>
-                <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />
+
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '18px', marginBottom: '65px' }}>
+
+                <Box sx={isMobile ? { display: 'none', width: '100%' } : { display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center', gap: '18px' }}>
+                    <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />
+                </Box>
+                <Box sx={isMobile ? { marginTop: '40px ', width: '100%' } : {}}>
+                    <Button onClick={() => { }} fullWidth={isMobile ? true : false} variant="contained" >Instrumento de Evaluación</Button>
+                </Box>
             </Box>
+
+
             {ForosDatas.map((temas: any, i: number) => (
 
                 <Accordion key={i} title={temas.titulo} sxProps={{
@@ -324,8 +358,9 @@ const CursosActivosDetalles: React.FC = () => {
                     boxShadow: "0px 2px 4px 0px #6BBBE44D",
                     border: "1px solid #BABABA0D"
                 }}>
-
-                    <Button onClick={() => { }} variant="outlined" fullWidth >Instrumento de Evaluación</Button>
+                    <Box sx={isMobile ? { display: 'block', width: '100%' } : { display: 'none' }}>
+                        <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />
+                    </Box>
                     <Divider textAlign="center">
                         <Typography component="span" variant="body2" color="primary">Unidad</Typography>
                     </Divider>
@@ -365,59 +400,67 @@ const CursosActivosDetalles: React.FC = () => {
                 <TituloIcon key={5} Titulo={'Lista de pendientes'} Icon={ListaTareas} />
             </Box>
 
-            {lista.map((listado: { lista: string; total: number; hechas: number }) => (
-                <>
-                    <Divider textAlign="center">
-                        <Typography component="span" variant="body2" color="primary">{listado.lista}</Typography>
-                    </Divider>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center' }}>
+            <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'row', mt: 5, alignItems: 'start', justifyContent: 'space-around' }}>
 
-                        {[...Array(4)].map((_, index) => {
-                            let auxTitulo = '';
-                            let auxChec = false;
-                            let auxDisabled = false;
-                            if (listado.lista == 'Contenido') {
-                                auxTitulo = 'Unidad'
-                            } else if (listado.lista == 'Actividades') {
-                                auxTitulo = 'Actividad'
-                            } else if (listado.lista == 'Foros') {
-                                auxTitulo = 'Foros'
-                            } else if (listado.lista == 'Evaluaciones') {
-                                auxTitulo = 'Evaluaciones'
-                            }
+                {lista.map((listado: { lista: string; total: number; hechas: number }) => (
+                    <>
 
-                            if (index + 1 <= [...Array(listado.hechas)].length) {
-                                auxChec = true;
-                                auxDisabled = true;
-                            } else {
-                                auxChec = false;
-                                auxDisabled = false;
-                            }
+                        <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center' }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center' }}>
+                                <Divider textAlign="center">
+                                    <Typography component="span" variant="body2" color="primary">{listado.lista}</Typography>
+                                </Divider>
+                            </Box>
 
-                            return (
-                                <CheckBoxLabel
-                                    key={index}
-                                    text={`${auxTitulo} ${index + 1}`}
-                                    place="end"
-                                    disabled={auxChec}
-                                    defaultChecked={auxDisabled}
-                                    sxProps={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        width: '100%',
-                                        color: theme.palette.primary.main,
-                                    }}
-                                />
-                            );
-                        })}
+                            <Box sx={{ display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'start', justifyContent: 'center' }}>
+                                {[...Array(4)].map((_, index) => {
+                                    let auxTitulo = '';
+                                    let auxChec = false;
+                                    let auxDisabled = false;
+                                    if (listado.lista == 'Contenido') {
+                                        auxTitulo = 'Unidad'
+                                    } else if (listado.lista == 'Actividades') {
+                                        auxTitulo = 'Actividad'
+                                    } else if (listado.lista == 'Foros') {
+                                        auxTitulo = 'Foros'
+                                    } else if (listado.lista == 'Evaluaciones') {
+                                        auxTitulo = 'Evaluaciones'
+                                    }
 
+                                    if (index + 1 <= [...Array(listado.hechas)].length) {
+                                        auxChec = true;
+                                        auxDisabled = true;
+                                    } else {
+                                        auxChec = false;
+                                        auxDisabled = false;
+                                    }
 
-                    </Box>
-                </>
-            ))}
+                                    return (
+
+                                        <CheckBoxLabel
+                                            key={index}
+                                            text={`${auxTitulo} ${index + 1}`}
+                                            place="start"
+                                            disabled={auxChec}
+                                            defaultChecked={auxDisabled}
+                                            sxProps={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                width: '100%',
+                                                color: theme.palette.primary.main,
+                                            }}
+                                        />
+                                    );
+                                })}
+
+                            </Box>
+                        </Box>
+                    </>
+                ))}
+            </Box>
+
         </>
     )
-
 
     return (
         cursosDatas &&
@@ -469,8 +512,10 @@ const CursosActivosDetalles: React.FC = () => {
                     </Tabs>
                 </Box>
                 <TabPanel key={0} value={value} index={0}>
-                    {Contenido(item.temas)}
-                    {Felicidades()}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', marginTop: '30px' }}>
+                        {Contenido(item.temas)}
+                        {Felicidades()}
+                    </Box>
                 </TabPanel>
 
                 <TabPanel key={1} value={value} index={1}>
