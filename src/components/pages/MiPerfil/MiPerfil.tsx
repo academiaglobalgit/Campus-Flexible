@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Divider, Grid, InputAdornment, TextField, useMediaQuery, useTheme } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 
 import { Avatar } from "../../atoms/Avatar/Avatar";
-import perfil from '../../../assets/perfil.jpg';
 import { Typography } from "../../atoms/Typography/Typography";
 import Button from "../../atoms/Button/Button";
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
@@ -21,26 +21,34 @@ import { AppRoutingPaths, TitleScreen } from "@constants";
 import { Calendar, Mail, User, Contacto, WhatsApp, Right } from "../../../assets/icons";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { formatWithIMask } from "../../../utils/Helpers";
-
-const initialData = {
-    email: 'joseornelaz@gmail.com', 
-    telefono: '(669) 116-6107',
-    telefonoContacto: '(669) 116-6107',
-    whatsApp: '',
-};
+import { useGetPerfilUsuario } from "../../../services/AuthService";
 
 const MiPerfil: React.FC = () => {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
+
+    const { refetch } = useGetPerfilUsuario({ enabled: false });
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
-    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<PerfilFormData>({
+    const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<PerfilFormData>({
         resolver: zodResolver(perfilSchema),
         mode: "onChange",
     });
+
+    const [initialData, setInitialData] = React.useState<{email: string, telefono: string, telefonoContacto: string, whatsApp: string }>({
+      email: '', 
+      telefono: '',
+      telefonoContacto: '',
+      whatsApp: '',
+    });
+
+    const [avatar, setAvatar] = React.useState(user?.photo);
+    const [nombre, setNombre] = React.useState(user?.name);
+    const [email, setEmail] = React.useState(user?.email);
+    const [ciudad, setCiudad] = React.useState(user?.city);
 
     const currentValues = watch();
     
@@ -61,14 +69,27 @@ const MiPerfil: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = initialData;
-                // const userData: FormData = await response;
-                
-                // Actualizar los inputs con los datos de la API
-                setValue("email", response.email);
-                setValue("telefono", formatWithIMask(response.telefono, "phone"));
-                setValue("whatsApp", formatWithIMask(response.whatsApp, "phone"));
-                setValue("telefonoContacto", formatWithIMask(response.telefonoContacto, "phone"));
+                const response = await refetch();
+                const perfil = response.data?.data;
+
+                setNombre(`${perfil?.nombre} ${perfil?.apellido_paterno} ${perfil?.apellido_materno}`);
+                setEmail(perfil?.correo ?? '');
+                setCiudad(`${perfil?.nombre_ciudad}, ${perfil?.nombre_pais}`);
+
+                const telefono = formatWithIMask(perfil?.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "", "phone");
+                const whatsApp = formatWithIMask(perfil?.telefonos?.find((item) => item.tipo === "Whatsapp")?.numero ?? "", "phone");
+                const telefonoContacto = formatWithIMask(perfil?.telefonos?.find((item) => item.tipo === "Emergencia")?.numero ?? "", "phone");
+
+                setValue("email", email ?? '');
+                setValue("matricula", perfil?.matricula ?? '');
+                setValue("fechaNacimiento", format(new Date(perfil?.fecha_nacimiento ?? ''), "dd/MM/yyyy"));
+                setValue("telefono", telefono);
+                setValue("whatsApp", whatsApp);
+                setValue("telefonoContacto", telefonoContacto);
+
+                setInitialData({email: email ?? '',telefono,whatsApp,telefonoContacto});
+
+                setAvatar(perfil?.foto_perfil_url ?? "");
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -137,122 +158,166 @@ const MiPerfil: React.FC = () => {
         <Divider textAlign="center">
           <Typography component="span" variant="body2" color="primary">Datos Personales</Typography>
         </Divider>
-        <TextField
-            id="fechaNacimiento"
-            label="Fecha Nacimiento"
-            placeholder="Ingresa tu Fecha Nacimiento"
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Calendar />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            disabled
+        <Controller
+          name="fechaNacimiento"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              id="fechaNacimiento"
+              label="Fecha Nacimiento"
+              error={!!errors.fechaNacimiento}
+              helperText={errors.fechaNacimiento?.message}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Calendar />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              disabled
+            />
+          )}
         />
-        <TextField
-            id="email"
-            label="Correo Electronico"
-            placeholder="Ingresa tu Correo Electronico"
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Mail />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register("email")}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              id="email"
+              label="Correo Electrónico"
+              placeholder="Ingresa tu Correo Electrónico"
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Mail />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
         />
-        <TextField
-            id="idAlumno"
-            label="ID Alumno"
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <User />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            disabled
+        <Controller
+          name="matricula"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              id="matricula"
+              label="ID Alumno"
+              error={!!errors.matricula}
+              helperText={errors.matricula?.message}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <User />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              disabled
+            />
+          )}
         />
-        <TextField
-            id="telefono"
-            label="Teléfono"
-            placeholder="Ingresa tu Teléfono"
-            inputMode="numeric"
-            slotProps={{
+        <Controller
+          name="telefono"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Teléfono"
+              placeholder="Teléfono"
+              inputMode="numeric"
+              error={!!errors.telefono}
+              helperText={errors.telefono?.message}
+              slotProps={{
               input: {
-                inputComponent: TextMaskCustom as any,
-                endAdornment: (
-                  <InputAdornment position="end">                    
-                      <Contacto />                     
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register("telefono")}
-            error={!!errors.telefono}
-            helperText={errors.telefono?.message}
+                  inputComponent: TextMaskCustom as any,
+                  endAdornment: (
+                    <InputAdornment position="end">                    
+                        <Contacto />                     
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
         />
-        <TextField
-            id="whatsApp"
-            label="WhatsApp"
-            placeholder="WhatsApp"
-            inputMode="numeric"
-            slotProps={{
+        <Controller
+          name="whatsApp"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="WhatsApp"
+              placeholder="WhatsApp"
+              inputMode="numeric"
+              error={!!errors.whatsApp}
+              helperText={errors.whatsApp?.message}
+              slotProps={{
               input: {
-                inputComponent: TextMaskCustom as any,
-                endAdornment: (
-                  <InputAdornment position="end">
-                      <WhatsApp />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register("whatsApp")}
-            error={!!errors.whatsApp}
-            helperText={errors.whatsApp?.message}
+                  inputComponent: TextMaskCustom as any,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                        <WhatsApp />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
         />
         <Divider textAlign="center">
           <Typography component="span" variant="body2" color="primary">Contacto Familiar</Typography>
         </Divider>
-        <TextField
-            id="telefonoContacto"
-            label="Teléfono Contacto"
-            placeholder="Ingresa Teléfono de Contacto"
-            inputMode="numeric"
-            slotProps={{
+        <Controller
+          name="telefonoContacto"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Teléfono Contacto"
+              placeholder="Ingresa Teléfono de Contacto"
+              inputMode="numeric"
+              error={!!errors.telefonoContacto}
+              helperText={errors.telefonoContacto?.message}
+              slotProps={{
               input: {
-                inputComponent: TextMaskCustom as any,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Contacto />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register("telefonoContacto")}
-            error={!!errors.telefonoContacto}
-            helperText={errors.telefonoContacto?.message}
+                  inputComponent: TextMaskCustom as any,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                        <Contacto />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
         />
       </>
     );
 
     const AvatarSection = (widthAvatar: number) => (
       <>
-        <Avatar src={perfil} width={widthAvatar} height={widthAvatar} isEdit={true} onClick={handleEdit} />
+        <Avatar src={avatar} alt={nombre} width={widthAvatar} height={widthAvatar} isEdit={true} onClick={handleEdit} />
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '7px'}}>
-            <Typography component="h4" variant="h4">Martin Suarez Mora</Typography>
-            {TextIcon("Albertflores@gmail.com", CheckCircle)}
-            {TextIcon("Aguascalientes, Mexico", LocationIcon)}
+            <Typography component="h4" variant="h4">{nombre}</Typography>
+            {TextIcon(email ?? '', CheckCircle)}
+            {TextIcon(ciudad ?? '', LocationIcon)}
         </Box>
       </>
     )

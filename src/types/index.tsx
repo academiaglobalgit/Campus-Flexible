@@ -8,3 +8,4 @@ export * from './tipoManuales';
 
 export type { BibliotecaVideotecaResponse, BibliotecaVideoteca, BibliotecaResponse, Biblioteca } from './BibliotecaVideoteca.interface';
 export type { PlanEstudioInformacionResponse, InformacionData, Cursamiento, Ponderacion, Tutor } from './plan-estudio.interface';
+export type { PerfilResponse, Perfil, TelefonoPerfil } from './Perfil.interface';

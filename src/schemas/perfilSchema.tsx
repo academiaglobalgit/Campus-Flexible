@@ -6,6 +6,8 @@ const messageTelefono = "Deben ser 10 dígitos";
 
 
 export const perfilSchema = z.object({
+    fechaNacimiento: z.string(),
+    matricula: z.string(),
     email: z.string().nonempty("El Email es requerido").email("Debe ser un email válido"),
     telefono: z.string().nonempty("El Teléfono es requerido").refine(isValidPhone, {
          message: messageTelefono,

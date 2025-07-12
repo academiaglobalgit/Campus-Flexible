@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthLogin as loginApi, useLogout as logoutApi } from '../services/AuthService';
+import { useAuthLogin as loginApi, useLogout as logoutApi, useGetPerfilUsuario } from '../services/AuthService';
 import type { User } from '@constants';
-import { checkAuthStatus, cleanStorage, getAuthModel, setToken } from '../hooks/useLocalStorage';
+import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -26,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
 
+    const { refetch } = useGetPerfilUsuario({ enabled: false });
 
     const queryClient = useQueryClient();
     
@@ -87,10 +88,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsLoading(false);
 
             if (response?.token) {
-                // setUser(response.data);
-                // setAuthModel(response.data);
                 setToken(response?.token);
                 setIsAuthenticated(true);
+
+                const perfil = await refetch();
+                
+                if (perfil.data) {
+                    const auth = {
+                            name: `${perfil.data.data.nombre} ${perfil.data.data.apellido_paterno} ${perfil.data.data.apellido_materno}`,
+                            email: perfil.data.data.correo,
+                            photo: perfil.data.data.foto_perfil_url,
+                            city: `${perfil.data.data.nombre_ciudad}, ${perfil.data.data.nombre_pais}`
+                        };
+                    setUser(auth);
+                    setAuthModel(auth);
+                } else {
+                    setUser(null);
+                }
+
                 return { success: true, data: null };
             } else {
                 const errorMessage = response?.message || 'Autenticación fallida';

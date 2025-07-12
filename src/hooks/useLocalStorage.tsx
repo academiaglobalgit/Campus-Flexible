@@ -1,3 +1,4 @@
+import type { User } from '@constants';
 import { jwtDecode } from 'jwt-decode';
 
 const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
@@ -32,14 +33,14 @@ export const setToken = (token: string): void => {
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
 };
 
-export const getAuthModel = (): any => {
+export const getAuthModel = (): User => {
     const authModel = JSON.parse(
         localStorage.getItem(AUTH_MODEL_STORAGE_KEY) || '{}'
     );
     return authModel;
 }
 
-export const setAuthModel = (auth: any): void => {
+export const setAuthModel = (auth: User): void => {
     localStorage.setItem(AUTH_MODEL_STORAGE_KEY, JSON.stringify(auth));
     // setToken(auth.token);
 }

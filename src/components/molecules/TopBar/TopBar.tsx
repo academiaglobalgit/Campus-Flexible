@@ -1,6 +1,5 @@
-import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import { Avatar } from "../../atoms/Avatar/Avatar";
-import { Typography } from "../../atoms/Typography/Typography";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { LeftCircle } from "../../../assets/icons";
 
@@ -21,6 +20,9 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
   const location = useLocation();
   const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const name = user?.name;
+  const avatar = user?.photo;
 
   const showBackMenuRoutes = ShowBackMenuRoutes;
     
@@ -49,7 +51,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
       <IconButton onClick={handleBack}>
         <DsSvgIcon component={LeftCircle} color='primary' />
       </IconButton>
-      <Typography component="h4" variant="h4" sxProps={{ ml: '2px' }}>
+      <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
         { titleScreen }
       </Typography>
     </Toolbar>
@@ -69,9 +71,9 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
             ?
               <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Avatar alt={ user?.name } src="" width={48} height={48} onClick={(event) => handleMenuClick(event)} />
-                  <Typography component="h4" variant="h4" sxProps={{ ml: 1 }}>
-                    { user?.name }
+                  <Avatar alt={ name } src={avatar} width={48} height={48} onClick={(event) => handleMenuClick(event)} />
+                  <Typography component="h4" variant="h4" color="textPrimary" sx={{ ml: 1, width: '170px' }} className="truncate-text">
+                    { name }
                   </Typography>
                 </Box>
                 <IconsTopBar />
