@@ -58,4 +58,5 @@ export const MANUALES_ENDPOINTS = {
 export const BIBLIOTECA_ENDPOINTS = {
     GET_BIBLIOTECA: { path: '/modulos-campus/detalle', key: 'biblioteca' },
     GET_BIBLIOTECA_BY_ID: { path: '/modulos-campus/submodulos', key: 'biblioteca_by_id' },
+    GET_LISTADO_VIDEOTECA: { path: '/biblioteca', key: 'listado-videoteca' },
 }

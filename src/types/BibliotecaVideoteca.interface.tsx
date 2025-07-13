@@ -29,3 +29,20 @@ export interface Biblioteca {
     visible_en_menu:  number;
     orden:            number;
 }
+
+export interface ListadoVideotecaResponse {
+    success: boolean;
+    data:    ListadoVideoteca[];
+}
+
+export interface ListadoVideoteca {
+    id_recurso:      number;
+    titulo:          string;
+    descripcion:     string;
+    url_recurso:     string;
+    periodo:         number;
+    orden:           number;
+    id_tipo_recurso: number;
+    id_curso:        number;
+    nombre_curso:    string;
+}
