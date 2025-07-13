@@ -6,7 +6,6 @@ import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { CursosActivosDetalle } from "@iconsCustomizeds";
 import Button from "../../atoms/Button/Button";
-import theme from "../../../theme";
 
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { Foros } from '../../../assets/icons';
@@ -419,7 +418,7 @@ const CursosActivosDetalles: React.FC = () => {
                                 {[...Array(4)].map((_, index) => {
                                     let auxTitulo = '';
                                     let auxChec = false;
-                                    let auxDisabled = false;
+                                    // let auxDisabled = false;
                                     if (listado.lista == 'Contenido') {
                                         auxTitulo = 'Unidad'
                                     } else if (listado.lista == 'Actividades') {
@@ -432,10 +431,10 @@ const CursosActivosDetalles: React.FC = () => {
 
                                     if (index + 1 <= [...Array(listado.hechas)].length) {
                                         auxChec = true;
-                                        auxDisabled = true;
+                                        // auxDisabled = true;
                                     } else {
                                         auxChec = false;
-                                        auxDisabled = false;
+                                        // auxDisabled = false;
                                     }
 
                                     return (

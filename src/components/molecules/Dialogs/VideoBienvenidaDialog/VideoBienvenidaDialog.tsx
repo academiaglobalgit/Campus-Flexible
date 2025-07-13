@@ -49,6 +49,7 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({urlVideo, isOpen, 
                     muted={false} 
                     title="Bienvenido / a" 
                     description="Una pequeña explicación aparecerá aquí"
+                    type="Video"
                 />
                 {closeButton}
             </Box>
