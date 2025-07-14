@@ -33,7 +33,7 @@ export const CALIFICACIONES_ENDPOINTS = {
 }
 
 export const MAS_INFORMACION_ENDPOINTS = {
-    GET_SERVICIOS_ESCOLARES: { path:'/mas-informacion/servicios-escolares/auth', key: 'servicios-escolares' },
+    GET_SERVICIOS_ESCOLARES: { path:'/serviciosescolares', key: 'servicios-escolares' },
     GET_CONTACTO: { path:'/mas-informacion/contacto', key: 'contacto' },
     GET_LINEAMIENTOS: { path:'/mas-informacion/lineamientos', key: 'lineamientos' },
     GET_MANUAL_INDUCCION: { path:'/mas-informacion/manual-induccion', key: 'manual-induccion' },

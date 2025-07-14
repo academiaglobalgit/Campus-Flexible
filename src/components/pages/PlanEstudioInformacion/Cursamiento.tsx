@@ -1,8 +1,8 @@
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
-import { CardDuracion } from "./Informacion";
 import { Typography } from "../../atoms/Typography/Typography";
 import { flexColumn } from "@styles";
 import type { Cursamiento as ICursamiento } from "@constants";
+import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
 
 type CursamientoProps = {
     data: ICursamiento;

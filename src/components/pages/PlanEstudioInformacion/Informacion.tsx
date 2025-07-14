@@ -1,26 +1,9 @@
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
-import { flexRows, flexColumn } from "@styles";
+import { flexColumn } from "@styles";
 import type { Informacion as IInformacion } from "../../../types/plan-estudio.interface";
-
-export const CardDuracion = ({ label, description, sxProps }: { label: string; description: string; sxProps: any }) => {
-    return (
-        <Box sx={{
-                ...flexRows,
-                ...sxProps,
-                backgroundColor: "#F8F8F9", 
-                gap: "10px",
-                boxShadow: "0px 2px 4px 0px #6BBBE44D", 
-                border: "1px solid #BABABA0D",
-                height: "57px",
-                borderRadius: "3px",
-        }}>
-            <Typography component="span" variant="body3">{label}</Typography>
-            <Typography component="span" variant="h4" color="primary">{description}</Typography>
-        </Box>
-    )
-};
+import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
 
 type InformacionProps = {
     data: IInformacion;
