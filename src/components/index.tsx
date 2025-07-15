@@ -29,3 +29,4 @@ export { default as ServiciosEscolares } from './pages/ServiciosEscolares/Servic
 export { default as TerminosCondiciones } from './pages/terminosCondiciones/terminosCondiciones';
 export { default as ToDo } from './pages/ToDo/ToDo';
 export { default as VideotecaDetalle } from './pages/VideotecaDetalle/VideotecaDetalle';
+export { default as consejeriaNosotros } from './pages/Consejeria/nosotros';
