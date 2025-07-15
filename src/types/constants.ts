@@ -35,6 +35,8 @@ export const AppRoutingPaths = {
     CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
     FOROS: "/foros",
     NOSOTROS: "/nosotros",
+    AGENDA_CITA: "/agenda-cita",
+    CONSEJERIA_BLOG: "/blog",
 
 } as const;
 
