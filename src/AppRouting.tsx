@@ -127,7 +127,7 @@ export const AppRouting = createHashRouter([
               },
               {
                 path: AppRoutingPaths.AGENDA_CITA,
-                Component: Component.Cita
+                Component: Component.ConsejeriaCita
               },
               {
                 path: AppRoutingPaths.CONSEJERIA_BLOG,
