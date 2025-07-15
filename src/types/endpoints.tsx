@@ -49,6 +49,12 @@ export const CONTACTO_ENDPOINTS = {
 
 export const AYUDA_ENDPOINTS = {
     POST_AYUDA: { path:'/tickets-ayuda' },
+    POST_AYUDA_ALUMNOS: { path:'/tickets-ayuda/alumnos' },
+    POST_AYUDA_TUTOR: { path:'/tickets-ayuda/tutor' },
+    GET_AYUDA: { path:'/tickets-ayuda', key: 'tickets' },
+    GET_MATERIAS: { path:'/tickets-ayuda/materias', key: 'materias' },
+    GET_TUTORES: { path:'/tickets-ayuda/tutores', key: 'tutores' },
+    GET_ASUNTOS_TEMAS: { path:'/tickets-ayuda/temas-ayuda', key: 'temas-ayuda' },
 }
 
 export const MANUALES_ENDPOINTS = {

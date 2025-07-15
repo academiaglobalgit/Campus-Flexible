@@ -1,35 +1,28 @@
-import { Box, Grid, Tab, Tabs, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Stack, Tab, Tabs, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { LogoBox } from "../../atoms/logo/LogoBox";
 
 import Logo from '../../../assets/logo_ag.svg';
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import { TitleScreen } from "@constants";
+import { TitleScreen, type EstadoTicket } from "@constants";
 import Button from "../../atoms/Button/Button";
 import React, { useRef } from "react";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { FormAyuda } from "./FormAyuda";
 import { FormTutor } from "./FormTutor";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import { useGetAyudaTickets } from "../../../services/AyudaService";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 const Ayuda: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const sectionRef = useRef<HTMLDivElement>(null);
 
+    const { data: Tickets, isLoading } = useGetAyudaTickets();
+
     const handleScroll = () => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
-
-    const solicitudesProceso = [
-        {folio: 20147, asunto: 'Certificado', descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'},
-        {folio: 20148, asunto: 'Credencial', descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'},
-        {folio: 20149, asunto: 'Extraordinario', descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'},
-    ];
-    const solicitudesFinalizadas = [
-        {folio: 20147, asunto: 'Certificado', descripcion: 'Completado'},
-        {folio: 20148, asunto: 'Credencial', descripcion: 'Completado'},
-        {folio: 20149, asunto: 'Extraordinario', descripcion: 'Completado'},
-    ];
 
     const LogoSection = (
         <LogoBox
@@ -62,7 +55,7 @@ const Ayuda: React.FC = () => {
                 </Tabs>
                 <Box sx={{paddingTop: '20px'}}>
                     <TabPanel value={value} index={0}>
-                        <FormAyuda />
+                        <FormAyuda isLogin={false} />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <FormTutor />
@@ -72,8 +65,8 @@ const Ayuda: React.FC = () => {
         )
     };
 
-    const EstatusTabContent = (titulo: string, items: any[]) => (
-        <Box sx={{display: 'flex', flexDirection:'column', gap:'20px', paddingTop: '20px' }}>
+    const EstatusTabContent = (titulo: string, items: EstadoTicket[]) => (
+        <Box sx={{display: 'flex', flexDirection:'column', gap:'20px', paddingTop: '20px', overflow: 'auto', height: '600px', overflowX: 'hidden' }}>
             <Typography component="h4" variant="h4">
                 {titulo}
             </Typography>
@@ -83,17 +76,24 @@ const Ayuda: React.FC = () => {
         </Box>
     );
 
-    const CardStatus: React.FC<{ folio: number, asunto: string, descripcion: string }> = (item) => {
+    const CardStatus: React.FC<EstadoTicket> = (item) => {
         return(
             <Box sx={{borderBottom: '1px solid #AAB1B6', minHeight: '149px'}}>
                 <Typography component="span" variant="body2">
-                    {item.folio}
+                    {item.folio_seguimiento}
                 </Typography>
                 <Typography component="h4" variant="h4" color="primary">
-                    {item.asunto}
+                    {
+                        item.estado === "resuelto" ? <Stack>
+                            <Typography component="h4" variant="h4" color="primary">{item.tema_ayuda}</Typography>
+                            <Typography component="span" variant="body1" color="success">COMPLETO</Typography>
+                        </Stack>
+                        :
+                            item.tema_ayuda
+                    }
                 </Typography>
                 <Typography component="span" variant="body2">
-                    {item.descripcion}
+                    {item.mensaje}
                 </Typography>
             </Box>
         );
@@ -130,10 +130,14 @@ const Ayuda: React.FC = () => {
                     }
                 </Tabs>
                 <TabPanel value={value} index={0}>
-                    {EstatusTabContent('No. de Solicitud y titulo', solicitudesProceso)}
+                    {
+                       !isLoading ? EstatusTabContent('No. de Solicitud y titulo', Tickets?.data.abierto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
+                    }
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    {EstatusTabContent('Solicitudes Pasadas', solicitudesFinalizadas)}
+                    {
+                       !isLoading ? EstatusTabContent('Solicitudes Pasadas', Tickets?.data.resuelto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
+                    }
                 </TabPanel>
             </Box>
         )

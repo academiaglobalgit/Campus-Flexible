@@ -1,116 +1,185 @@
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Button from "../../atoms/Button/Button";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ayudaTutorSchema, type AyudaTutorFormData } from "../../../schemas/ayudaTutorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { useMutation } from "@tanstack/react-query";
-// import { useCreateAyuda } from "../../../services/AyudaService";
+import { useCreateAyudaTutor, useGetMaterias, useGetTemas, useGetTutores } from "../../../services/AyudaService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AYUDA_ENDPOINTS } from "../../../types/endpoints";
+import { useNotification } from "../../../providers/NotificationProvider";
 
 export const FormTutor: React.FC = () => {
-    const [loading, _setLoading] = React.useState(false);
-    const materias = [{ id: 0, label: 'Seleccionar' }, { id: 1, label: 'matemáticas' }];
-    const tutores = [{ id: 0, label: 'Seleccionar' },{ id: 10, label: 'Juan Pérez' }];
-    
-    const { control, register, handleSubmit, formState: { errors } } = useForm<AyudaTutorFormData>({
-            resolver: zodResolver(ayudaTutorSchema(materias.map((m) => m.id), tutores.map((t) => t.id))),
+    const { showNotification } = useNotification();
+    const [loading, setLoading] = React.useState(false);
+    const { data: asuntoData }= useGetTemas();
+    const { data: materias, isLoading: isLoadingMateria } = useGetMaterias();
+    const [selectedMateria, setSelectedMateria] = React.useState<number>(0);
+    const queryClient = useQueryClient();
+
+    const { data: tutores, refetch: fetchTutores, isLoading: isLoadingTutores } = useGetTutores(selectedMateria, {enabled: false});
+
+    const { control, handleSubmit, formState: { errors, isValid }, reset } = useForm<AyudaTutorFormData>({
+            resolver: zodResolver(
+                ayudaTutorSchema(
+                    (materias?.map((m) => m.id_curso)) ?? [],
+                    (tutores?.map((t) => t.id_tutor)) ?? [],
+                    (asuntoData?.map((m) => m.id_tema_ayuda)) ?? [0],
+                )
+            ),
             defaultValues: {
-                materia: 0,
-                tutor: 0,
-                message: '',
+                id_curso: 0,
+                id_profesor: 0,
+                id_tema_ayuda: 0,
+                correo: '',
+                mensaje: '',
             },
     });
 
     const onSubmit = async (data: AyudaTutorFormData) => {
-        console.log(data);
-        // setLoading(true);
-        // createMutation.mutate({...data, id_plan_estudios: "1"});
+        setLoading(true);
+        createMutation.mutate({...data, nombre: '123'});
     };
 
-    // const createMutation = useMutation({
-    //     mutationFn: useCreateAyuda,
-    //     onSuccess: () => {            
+    useEffect(() => {
+        if(selectedMateria > 0) {
+            fetchTutores();
+        }
+    },[selectedMateria, fetchTutores]);
 
-    //         // Resetear el formulario
-    //         reset();
-    //         setLoading(false);
-    //     },
-    //     onError: (error) => {
-    //         alert(`Error al registrar: ${error.message}`);
-    //     },
-    //     onSettled: () => {
-    //         console.log('La mutación ha finalizado');
-    //     }
-    // });
+    const createMutation = useMutation({
+        mutationFn: useCreateAyudaTutor,
+        onSuccess: () => {            
+            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
+            // Resetear el formulario
+            reset();
+            setLoading(false);
+            queryClient.invalidateQueries({ queryKey: [AYUDA_ENDPOINTS.GET_AYUDA.key] });
+        },
+        onError: (error) => {
+            alert(`Error al registrar: ${error.message}`);
+        },
+        onSettled: () => {
+            console.log('La mutación ha finalizado');
+        }
+    });
 
     return(
         <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', pb: '20px' }}>
                 <Controller
-                    name="materia"
+                    name="id_curso"
                     control={control}
                     render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.materia}>
+                        <FormControl fullWidth error={!!errors.id_curso}>
                         <InputLabel id="materia-label">Materia</InputLabel>
                         <Select
+                            disabled={isLoadingMateria}
                             labelId="materia-label"
                             label="Materia"
                             {...field}
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                field.onChange(value);
+                                setSelectedMateria(value);
+                            }}
                         >
-                            {materias.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>
-                                {item.label}
-                            </MenuItem>
-                            ))}
+                            {
+                               materias && materias.map((item) => (
+                                    <MenuItem key={item.id_curso} value={item.id_curso}>
+                                        {item.nombre_curso}
+                                    </MenuItem>
+                                ))
+                            }
                         </Select>
                         </FormControl>
                     )}
                 />
 
                 <Controller
-                    name="tutor"
+                    name="id_profesor"
                     control={control}
                     render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.tutor}>
+                        <FormControl fullWidth error={!!errors.id_profesor}>
                         <InputLabel id="tutor-label">Tutor</InputLabel>
                         <Select
+                            disabled={isLoadingTutores}
                             labelId="tutor-label"
                             label="Tutor"
                             {...field}
                         >
                             {tutores.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>
-                                {item.label}
+                            <MenuItem key={item.id_tutor} value={item.id_tutor}>
+                                {item.nombre_tutor}
                             </MenuItem>
                             ))}
                         </Select>
                         </FormControl>
                     )}
                 />
+                <Controller
+                    name="correo"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            id="email"
+                            label="Correo del alumno"
+                            placeholder="Ingresa tu Correo electrónico"
+                            error={!!errors.correo}
+                            helperText={errors.correo?.message}
+                            sx={{
+                                mb: (errors.correo?.message) ? '1rem' : '0px'
+                            }}
+                        />
+                    )}
+                />
+                <Controller
+                    name="id_tema_ayuda"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControl fullWidth error={!!errors.id_tema_ayuda}>
+                            <InputLabel id="asunto-label">Asunto</InputLabel>
+                            <Select
+                                labelId="asunto-label"
+                                label="Asunto"
+                                {...field}
+                            >
+                                {
+                                    asuntoData && asuntoData.map((item) => (
+                                        <MenuItem key={item.id_tema_ayuda} value={item.id_tema_ayuda}>
+                                            {item.nombre_tema}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    )}
+                />
+                <Controller
+                    name="mensaje"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label="Mensaje"
+                            placeholder="Mensaje"
+                            multiline
+                            rows={5}
+                            error={!!errors.mensaje}
+                            helperText={errors.mensaje?.message}
+                        />
+                    )}
+                />
             </Box>
-            <TextField
-                id="email"
-                label="Correo del alumno"
-                placeholder="Ingresa tu Correo electrónico"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-                sx={{pb:'4px'}}
-            />
-            <TextField
-                placeholder="Mensaje"
-                label="Mensaje"
-                multiline
-                rows={5}
-                {...register("message")}
-                error={!!errors.message}
-                helperText={errors.message?.message}
-                sx={{pb:'4px'}}
-            />
+            
             <Button
                 fullWidth
                 onClick={handleSubmit(onSubmit)}
                 isLoading={loading}
+                disabled={!isValid}
             >
                 ENVIAR
             </Button>

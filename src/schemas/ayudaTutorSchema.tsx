@@ -1,21 +1,27 @@
 import { z } from "zod";
 
-export const ayudaTutorSchema = (materias: number[], tutores: number[]) =>
+export const ayudaTutorSchema = (materias: number[], tutores: number[], asuntos: number[]) =>
     z.object({
-        materia: z
-            .number()
+        id_curso: z
+            .number() 
             .min(1, { message: "Selecciona una materia válida" })
             .refine((id) => materias.includes(id), {
                 message: "Selecciona una materia válida",
             }),
-        tutor: z
+        id_profesor: z
             .number()
             .min(1, { message: "Selecciona un tutor válido" })
             .refine((id) => tutores.includes(id), {
                 message: "Selecciona un tutor válido",
             }),
-        email: z.string().nonempty("Correo del alumno es requerido").email("Debe ser un email válido"),
-        message: z.string().nonempty("Mensaje es requerido"),
+        id_tema_ayuda: z
+            .number()
+            .min(1, { message: "Asunto es requerido" })
+            .refine((id) => asuntos.includes(id), {
+                message: "Asunto es requerido",
+            }),
+        correo: z.string().nonempty("Correo del alumno es requerido").email("Debe ser un email válido"),
+        mensaje: z.string().nonempty("Mensaje es requerido"),
 });
 
 

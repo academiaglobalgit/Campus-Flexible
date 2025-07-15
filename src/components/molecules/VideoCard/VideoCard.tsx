@@ -10,7 +10,7 @@ type VideoCardProps = {
     title: string;
     description?: string;
     fontSizeTitle?: any;
-    type: 'Video' | 'PDF';
+    type?: 'Video' | 'PDF';
 }
 
 export const VideoCard: React.FC<VideoCardProps> = ({ urlVideo, controls, autoPlay, muted, title, description, fontSizeTitle = "h3", type = 'Video' }) => {
