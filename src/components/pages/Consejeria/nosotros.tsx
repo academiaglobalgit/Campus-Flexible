@@ -3,7 +3,7 @@ import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { TitleScreen } from '@constants';
 import { Typography } from "../../atoms/Typography/Typography";
 import { Users as ConsejeriaEstudiantil } from "@iconsCustomizeds";
-import { Box, Grid, docked, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Paper, styled, useMediaQuery, useTheme } from "@mui/material";
 import nosotros from "../../../assets/ILUSTRACION-SOMOS.png";
 import btnEstres from "../../../assets/BOTON-ESTRES.png";
 import btnGestion from "../../../assets/BOTON-GESTION.png";
@@ -16,7 +16,7 @@ const ConsejeriaNosotros: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const Item = styled(docked)(({ theme }) => ({
+    const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: '#fff',
         padding: theme.spacing(1),
         maxWidth: '200px',
