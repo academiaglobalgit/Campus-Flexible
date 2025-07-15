@@ -3,19 +3,12 @@ import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { TitleScreen } from '@constants';
 import { Typography } from "../../atoms/Typography/Typography";
 import { Users as ConsejeriaEstudiantil } from "@iconsCustomizeds";
-import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, useMediaQuery, useTheme, type SelectChangeEvent } from "@mui/material";
-import Button from '../../atoms/Button/Button';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  useMediaQuery, useTheme} from "@mui/material";
 
 
 const ConsejeriaBlog: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-    const [age, setAge] = React.useState('');
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value as string);
-    };
 
     function createData(
         name: string,

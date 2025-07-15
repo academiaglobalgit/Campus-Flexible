@@ -63,6 +63,7 @@ const ConsejeriaAgendaCita: React.FC = () => {
                             <FormControl fullWidth>
                                 <InputLabel id="motivo-label">Age</InputLabel>
                                 <Select
+                                    value={age}
                                     labelId="motivo-label"
                                     id="demo-simple-select"
                                     label="Selecciona una opción"
