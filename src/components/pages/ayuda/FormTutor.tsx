@@ -31,7 +31,6 @@ export const FormTutor: React.FC = () => {
                 id_curso: 0,
                 id_profesor: 0,
                 id_tema_ayuda: 0,
-                correo: '',
                 mensaje: '',
             },
     });
@@ -115,24 +114,6 @@ export const FormTutor: React.FC = () => {
                             ))}
                         </Select>
                         </FormControl>
-                    )}
-                />
-                <Controller
-                    name="correo"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            id="email"
-                            label="Correo del alumno"
-                            placeholder="Ingresa tu Correo electrónico"
-                            error={!!errors.correo}
-                            helperText={errors.correo?.message}
-                            sx={{
-                                mb: (errors.correo?.message) ? '1rem' : '0px'
-                            }}
-                        />
                     )}
                 />
                 <Controller

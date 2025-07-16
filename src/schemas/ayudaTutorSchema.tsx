@@ -20,7 +20,6 @@ export const ayudaTutorSchema = (materias: number[], tutores: number[], asuntos:
             .refine((id) => asuntos.includes(id), {
                 message: "Asunto es requerido",
             }),
-        correo: z.string().nonempty("Correo del alumno es requerido").email("Debe ser un email válido"),
         mensaje: z.string().nonempty("Mensaje es requerido"),
 });
 

@@ -15,7 +15,7 @@ export interface AyudaTutorPayload {
     id_curso:  number;
     id_profesor: number;
     nombre: string;
-    correo: string;
+    correo?: string;
     mensaje: string;
     id_tema_ayuda: number;
 }

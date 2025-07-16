@@ -98,7 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                             name: `${perfil.data.data.nombre} ${perfil.data.data.apellido_paterno} ${perfil.data.data.apellido_materno}`,
                             email: perfil.data.data.correo,
                             photo: perfil.data.data.foto_perfil_url,
-                            city: `${perfil.data.data.nombre_ciudad}`
+                            city: `${perfil.data.data.nombre_ciudad}`,
+                            phone: perfil?.data.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000"
                         };
                     setUser(auth);
                     setAuthModel(auth);

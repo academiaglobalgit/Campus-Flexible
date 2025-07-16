@@ -9,7 +9,6 @@ import { useCreateAyuda, useCreateAyudaAlumnos, useGetTemas } from "../../../ser
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { AYUDA_ENDPOINTS } from "../../../types/endpoints";
-import type { TicketsAyudaTutorResponse } from "@constants";
 
 type FormAyudaProps = {
     isLogin?: boolean;
@@ -18,13 +17,14 @@ type FormAyudaProps = {
 export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
     const { showNotification } = useNotification();
     const [loading, setLoading] = React.useState(false);
-    const { data: asuntoData }= useGetTemas();
+    const { data: asuntoData, isLoading }= useGetTemas();
     const queryClient = useQueryClient();
 
     const { control, handleSubmit, formState: { errors, isValid }, reset } = useForm<AyudaFormData>({
         resolver: zodResolver(
             ayudaSchema(
                 (asuntoData?.map((m) => m.id_tema_ayuda)) ?? [0],
+                isLogin
             )
         ),
         defaultValues: {
@@ -92,6 +92,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
                         error={!!errors.nombre}
                         helperText={errors.nombre?.message}
                         fullWidth
+                        sx={[!isLogin && { display: 'none'}]}
                     />
                 )}
             />
@@ -108,6 +109,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
                         error={!!errors.correo}
                         helperText={errors.correo?.message}
                         fullWidth
+                        sx={[!isLogin && { display: 'none'}]}
                     />
                 )}
             />
@@ -129,6 +131,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
                         error={!!errors.telefono}
                         helperText={errors.telefono?.message}
                         fullWidth
+                        sx={[!isLogin && { display: 'none'}]}
                     />
                 )}
             />
@@ -143,6 +146,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
                             labelId="asunto-label"
                             label="Asunto"
                             {...field}
+                            disabled={isLoading}
                         >
                             {
                                 asuntoData && asuntoData.map((item) => (
@@ -166,7 +170,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
                             placeholder="Mensaje"
                             label="Mensaje"
                             multiline
-                            rows={5}
+                            rows={isLogin ? 5 : 10}
                             error={!!errors.mensaje}
                             helperText={errors.mensaje?.message}
                             fullWidth

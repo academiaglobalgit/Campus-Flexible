@@ -8,6 +8,7 @@ export interface User {
   email: string;
   photo: string;
   city:  string;
+  phone:  string;
 }
 
 export interface AuthResponse {
