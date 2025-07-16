@@ -34,6 +34,9 @@ export const AppRoutingPaths = {
     APRENDE_MAS: "/aprende-mas",
     CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
     FOROS: "/foros",
+    NOSOTROS: "/nosotros",
+    AGENDA_CITA: "/agenda-cita",
+    CONSEJERIA_BLOG: "/blog",
 
 } as const;
 
@@ -60,7 +63,7 @@ export const TitleScreen = {
     FAQS: "Faqs",
     BACK_HOME_EXT: "Regresar a inicio",
     NUEVA_SOLICITUD: "Nueva Solicitud",
-    CONSEJERIA: "Consejería",
+    CONSEJERIA: "Consejería estudiantil",
     BOLETIN_EDUCATIVO: "Boletín Educativo",
     CERTIFICACIONES: "Certificaciones",
     BOLSA_TRABAJO: "Bolsa de Trabajo",
