@@ -12,17 +12,22 @@ import { flexRows } from "@styles";
 type GlosarioDialogProps = {
     isOpen?: boolean;
     close: () => void;
+    menutype: string;
 }
 
-export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({isOpen, close}) => {
+export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({isOpen, close, menutype}) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
     const manuales = [
-        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => {}},
-        { id: 'video', icon: Videoteca, label: 'Preguntas frecuentes', action: () => {} },
-        { id: 'formato', icon: Document2, label: 'Contacto', action: () => {} },
-        { id: 'manual-actividades', icon: Paperclip, label: 'Ayuda', action: () => {} },
+        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => {}, type: 'manuales'},
+        { id: 'video', icon: Videoteca, label: 'Preguntas frecuentes', action: () => {}, type: 'manuales' },
+        { id: 'formato', icon: Document2, label: 'Contacto', action: () => {}, type: 'manuales' },
+        { id: 'manual-actividades', icon: Paperclip, label: 'Ayuda', action: () => {}, type: 'manuales' },
+        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar', action: () => {}, type: 'lineamientos'},
+        { id: 'aviso-privacidad', icon: Videoteca, label: 'Aviso de Privacidad', action: () => {}, type: 'lineamientos' },
+        { id: 'terminos', icon: Document2, label: 'Terminos y Condiciones', action: () => {}, type: 'lineamientos' },
+        { id: 'lineamiento-responsable', icon: Paperclip, label: 'Lineamientos Para el uso Responsable de la IA', action: () => {}, type: 'lineamientos' },
     ];
 
     useEffect(() => {
@@ -66,19 +71,19 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({isOpen, cl
                 { height: '580px', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px' },
             ]}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '30px', textAlign: 'center' }}>
-                    <Typography component="h3" variant="h3" color="primary">MANUALES DE USUARIO</Typography>
+                    <Typography component="h3" variant="h3" color="primary">{menutype === 'manuales' ? 'MANUALES DE USUARIO' : 'LINEAMIENTOS'}</Typography>
                 </Box>
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '44px'}}>
                     <Grid container spacing={2} >
                         {
-                            manuales.slice(0,2).map((item) => (
+                            manuales.filter((item) => item.type === menutype).slice(0,2).map((item) => (
                                 <IconBox key={item.id} {...item} />
                             ))
                         }
                     </Grid>
                     <Grid container spacing={2}>
                         {
-                            manuales.slice(-2).map((item) => (
+                            manuales.filter((item) => item.type === menutype).slice(-2).map((item) => (
                                 <IconBox key={item.id} {...item} />
                             ))
                         }

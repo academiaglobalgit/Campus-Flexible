@@ -27,6 +27,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     // const [isOpenContactoDialog, setIsOpenContactoDialog] = React.useState(false);
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
+    const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
     const menuRoutes = [...MenuItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -34,10 +35,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
 
     const handleNavigation = (item: any) => {
-        if (item.text === TitleScreen.MANUALES_USUARIOS) {
+        if (item.text === TitleScreen.MANUALES_USUARIOS || item.text === TitleScreen.LINEAMIENTOS) {
+            setMenuTypeDialog(item.text === TitleScreen.LINEAMIENTOS ? 'lineamientos' : 'manuales');
             setIsOpenManualesDialog(true);
-        } else if (item.text === TitleScreen.LINEAMIENTOS) { 
-            window.open('https://academiaglobal.mx/resources/assets/files/lineamientos/lineamientosPrueba.pdf', '_blank');
         } else {
             navigate(item.path);
         }
@@ -134,8 +134,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 }
             </Menu>
             {/* <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{ telefono: ["(667) 712 41 72"], email: ["daniela.cazares@umi.edu.mx"] }} /> */}
-            <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} />
-            {/* <ForosDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} /> */}
+            <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} menutype={menuTypeDialog} />
         </>
     );
 }

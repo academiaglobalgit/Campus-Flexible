@@ -153,7 +153,9 @@ const ContactoInterno: React.FC = () => {
         isMobile ? 
             <Contents />
         :
-            <ContainerDesktop title="" ></ContainerDesktop>
+            <ContainerDesktop title="Contacto de tu plataforma">
+                
+            </ContainerDesktop>
     );
 }
 
