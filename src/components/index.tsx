@@ -32,3 +32,4 @@ export { default as VideotecaDetalle } from './pages/VideotecaDetalle/VideotecaD
 export { default as consejeriaNosotros } from './pages/Consejeria/Nosotros';
 export { default as ConsejeriaCita } from './pages/Consejeria/Cita';
 export { default as ConsejeriaBlog } from './pages/Consejeria/Blog';
+export { default as Notificaciones } from './pages/Notificaciones/Notificaciones';
