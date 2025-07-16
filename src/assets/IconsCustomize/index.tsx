@@ -22,6 +22,7 @@ export { default as Foros } from './Foros.svg?react';
 export { default as Github } from './Github.svg?react';
 export { default as Home } from './Home.svg?react';
 export { default as Kardex } from './Kardex.svg?react';
+export { default as Lectura } from './Lectura.svg?react';
 export { default as Lineamientos } from './Lineamientos.svg?react';
 export { default as Loading } from './Loading.svg?react';
 export { default as Location } from './Location.svg';

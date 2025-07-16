@@ -6,6 +6,10 @@ import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { Typography } from "../../atoms/Typography/Typography";
 import { useGetListadoVideoteca } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
+import { Lectura } from "@iconsCustomizeds";
+import type { ListadoVideoteca } from "../../../types/BibliotecaVideoteca.interface";
+import { flexColumn } from "@styles";
 
 const VideotecaDetalle: React.FC = () => {
     const theme = useTheme();
@@ -17,6 +21,17 @@ const VideotecaDetalle: React.FC = () => {
     
     const handleValue = (val: number) => {
         setValue(val);
+    }
+
+    const Documento = (item: ListadoVideoteca) => {
+        return(
+            <Box sx={{...flexColumn, alignItems: 'flex-start', height: '120px', borderTop: '1px solid #AAB1B6', borderBottom: '1px solid #AAB1B6'}}>
+                <TituloIcon Titulo={item.titulo} Icon={Lectura} />
+                <Typography component="span" variant="body1" >
+                    { item.descripcion }
+                </Typography>
+            </Box>
+        )
     }
 
     const ListadoVideoteca = () => {
@@ -38,7 +53,7 @@ const VideotecaDetalle: React.FC = () => {
                                             {showDivider && (
                                                 <Divider textAlign="center" sx={{ my: 2 }}>
                                                     <Typography component="span" variant="subtitle1" color="primary" >
-                                                        {item.nombre_curso}
+                                                        {item.nombre_curso.replace("Descripción del curso de ", "")}
                                                     </Typography>
                                                 </Divider>
                                             )}
@@ -56,34 +71,40 @@ const VideotecaDetalle: React.FC = () => {
                                                             gap={2}
                                                         >
                                                             {item.recursos.map((materia, i) => (
-                                                                <VideoCard
-                                                                    key={i}
-                                                                    urlVideo={materia.url_recurso}
-                                                                    controls={true}
-                                                                    autoPlay={false}
-                                                                    muted={false}
-                                                                    title={`Panel ${indexPanel + 1} - Video ${index + 1}`}
-                                                                    description={`Descripción del video ${index + 1}`}
-                                                                    fontSizeTitle="h4"
-                                                                    type={materia.id_tipo_recurso === 2 ? 'Video' : 'PDF'}
-                                                                />
+                                                                materia.id_tipo_recurso === 2
+                                                                ?
+                                                                    <VideoCard
+                                                                        key={i}
+                                                                        urlVideo={materia.url_recurso}
+                                                                        controls={true}
+                                                                        autoPlay={false}
+                                                                        muted={false}
+                                                                        title={materia.titulo}
+                                                                        description={materia.descripcion}
+                                                                        fontSizeTitle="h4"
+                                                                    />
+                                                                :
+                                                                <Documento {...materia } key={i} />
                                                             ))}
                                                         </Box>
                                                     </Box>
                                                 :
                                                     <>
                                                         {item.recursos.map((materia, i) => (
-                                                                <VideoCard
-                                                                    key={i}
-                                                                    urlVideo={materia.url_recurso}
-                                                                    controls={true}
-                                                                    autoPlay={false}
-                                                                    muted={false}
-                                                                    title={`Panel ${indexPanel + 1} - Video ${index + 1}`}
-                                                                    description={`Descripción del video ${index + 1}`}
-                                                                    fontSizeTitle="h4"
-                                                                    type={materia.id_tipo_recurso === 2 ? 'Video' : 'PDF'}
-                                                                />
+                                                                materia.id_tipo_recurso === 2
+                                                                ?
+                                                                    <VideoCard
+                                                                        key={i}
+                                                                        urlVideo={materia.url_recurso}
+                                                                        controls={true}
+                                                                        autoPlay={false}
+                                                                        muted={false}
+                                                                        title={materia.titulo}
+                                                                        description={materia.descripcion}
+                                                                        fontSizeTitle="h4"
+                                                                    />
+                                                                :
+                                                                <Documento {...materia } key={i} />
                                                             ))}
                                                     </>
                                             }
