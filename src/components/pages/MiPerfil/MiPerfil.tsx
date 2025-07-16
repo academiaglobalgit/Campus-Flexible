@@ -16,24 +16,31 @@ import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema
 import {Location as LocationIcon, CheckCircle} from "@iconsCustomizeds";
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import { AppRoutingPaths, TitleScreen } from "@constants";
+import { AppRoutingPaths, TitleScreen, type PerfilResponse } from "@constants";
 
 import { Calendar, Mail, User, Contacto, WhatsApp, Right } from "../../../assets/icons";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { formatWithIMask } from "../../../utils/Helpers";
 import { useGetPerfilUsuario } from "../../../services/AuthService";
+import { useMutation } from "@tanstack/react-query";
+import { useNotification } from "../../../providers/NotificationProvider";
+import { useCreatePerfil } from "../../../services/PerfilService";
 
 const MiPerfil: React.FC = () => {
     const { logout, user } = useAuth();
+    const { showNotification } = useNotification();
     const navigate = useNavigate();
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const [loading, setLoading] = React.useState(false);
+    const [perfil, setPerfil] = React.useState<PerfilResponse | undefined>(undefined);
 
     const { refetch } = useGetPerfilUsuario({ enabled: false });
 
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
-    const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<PerfilFormData>({
+    const { control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<PerfilFormData>({
         resolver: zodResolver(perfilSchema),
         mode: "onChange",
     });
@@ -72,6 +79,8 @@ const MiPerfil: React.FC = () => {
                 const response = await refetch();
                 const perfil = response.data?.data;
 
+                setPerfil(response.data);
+
                 setNombre(`${perfil?.nombre} ${perfil?.apellido_paterno} ${perfil?.apellido_materno}`);
                 setEmail(perfil?.correo ?? '');
                 setCiudad(`${perfil?.nombre_ciudad}, ${perfil?.nombre_pais}`);
@@ -97,7 +106,7 @@ const MiPerfil: React.FC = () => {
         };
 
         fetchData();
-    }, [setValue]);
+    }, [setValue, email, refetch]);
 
     const handleEdit = () => {
         alert("Hey");
@@ -109,8 +118,49 @@ const MiPerfil: React.FC = () => {
     }
 
     const onSubmit = async (data: PerfilFormData) => {
-        console.log(data);
+        setLoading(true);
+        const telefono = perfil?.data.telefonos?.find((item) => item.tipo === "Celular");
+        const whatsApp = perfil?.data.telefonos?.find((item) => item.tipo === "Whatsapp");
+        const telefonoContacto = perfil?.data.telefonos?.find((item) => item.tipo === "Emergencia");
+
+        const telefonos = [
+          {
+            id_telefono: telefono?.id_telefono, //Actualizar Telefono
+            numero: data.telefono.replace(/\D/g, "")
+          },
+          {
+            id_telefono: whatsApp?.id_telefono, //Actualizar Telefono
+            numero: data.whatsApp.replace(/\D/g, "")
+          },
+          {
+            id_telefono: telefonoContacto?.id_telefono, //Actualizar Telefono
+            numero: data.telefonoContacto.replace(/\D/g, "")
+          }
+        ];
+
+        const payload = {
+            correo: data.email,
+            foto_perfil_url: "",
+            telefonos: telefonos
+        }
+
+        createMutation.mutate(payload);
     };
+
+    const createMutation = useMutation({
+            mutationFn: useCreatePerfil,
+            onSuccess: () => {
+                showNotification(`Perfil actualizado satisfactorimente`,"success");
+                setLoading(false);
+            },
+            onError: (error) => {
+                showNotification(`Error al registrar: ${error.message}`, "error");
+                setLoading(false);
+            },
+            onSettled: () => {
+                console.log('La mutación ha finalizado');
+            }
+        });
 
     const TextIcon = (text: string, icon: string) => (
         <Typography component="span" variant="body1">
@@ -135,6 +185,7 @@ const MiPerfil: React.FC = () => {
           onClick={handleSubmit(onSubmit)} 
           fullWidth 
           icon={ <DsSvgIcon component={Right} color={!hasChanges() ? "inherit" : "white"} /> }
+          isLoading={loading}
       >Guardar Cambios</Button>
     );
 

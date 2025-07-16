@@ -20,7 +20,14 @@ export interface Perfil {
 }
 
 export interface TelefonoPerfil {
+    id_telefono:   number;
     tipo:          string;
     numero:        string;
     observaciones: string;
+}
+
+export interface PerfilPayload {
+    correo:             string;
+    foto_perfil_url:    string;
+    telefonos:          any[];
 }

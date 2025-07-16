@@ -32,8 +32,8 @@ export interface AyudaInteriorResponse {
 }
 
 export interface AyudaTickets {
-    resuelto: EstadoTicket[];
-    abierto:  EstadoTicket[];
+    Resuelto: EstadoTicket[];
+    Abierto:  EstadoTicket[];
 }
 
 export interface EstadoTicket {
@@ -78,4 +78,9 @@ export interface AyudaTemasResponse {
 export interface Temas {
     id_tema_ayuda: number;
     nombre_tema:   string;
+}
+
+export interface TicketsAyudaTutorResponse {
+    success: boolean;
+    data:    EstadoTicket[];
 }

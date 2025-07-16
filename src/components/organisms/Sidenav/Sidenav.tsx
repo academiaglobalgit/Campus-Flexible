@@ -277,7 +277,7 @@ const Sidenav: React.FC = () => {
                     horizontal: 'right',
                   }}
                   badgeContent={
-                    <ArrowCircleUpOutlinedIcon color='primary' sx={{ transform: 'rotate(40deg)'}} />
+                    <ArrowCircleUpOutlinedIcon color='primary' sx={{ transform: 'rotate(40deg)', ml:5}} />
                   }
                 >
                   <Box>

@@ -9,7 +9,8 @@ export const NOTIFICATIONS_ENDPOINTS = {
 }
 
 export const PERFIL_ENDPOINTS = {
-    GET_PERFIL: { path: '/perfil', key: 'perfil' }
+    GET_PERFIL: { path: '/perfil', key: 'perfil' },
+    POST_PERFIL: { path: '/actualizar', key: 'actualizar' }
 }
 
 export const PLAN_ESTUDIO_ENDPOINTS = {

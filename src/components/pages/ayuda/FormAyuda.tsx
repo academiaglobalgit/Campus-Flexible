@@ -9,6 +9,7 @@ import { useCreateAyuda, useCreateAyudaAlumnos, useGetTemas } from "../../../ser
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { AYUDA_ENDPOINTS } from "../../../types/endpoints";
+import type { TicketsAyudaTutorResponse } from "@constants";
 
 type FormAyudaProps = {
     isLogin?: boolean;
@@ -37,11 +38,31 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
 
     const onSubmit = async (data: AyudaFormData) => {
         setLoading(true);
-        createMutation.mutate({...data, id_plan_estudio: 1});
+        if(isLogin){
+            createMutationLogin.mutate({...data, id_plan_estudio: 1});
+        }else{
+            createMutationAlumnos.mutate({...data, id_plan_estudio: 1});
+        }
     };
 
-    const createMutation = useMutation({
-        mutationFn: isLogin ? useCreateAyuda : useCreateAyudaAlumnos,
+    const createMutationLogin = useMutation({
+        mutationFn: useCreateAyuda,
+        onSuccess: () => {
+            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
+            reset();
+            setLoading(false);
+        },
+        onError: (error) => {
+            showNotification(`Error al registrar: ${error.message}`, "error");
+            setLoading(false);
+        },
+        onSettled: () => {
+            console.log('La mutación ha finalizado');
+        }
+    });
+
+    const createMutationAlumnos = useMutation({
+        mutationFn: useCreateAyudaAlumnos,
         onSuccess: () => {
             showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
             reset();

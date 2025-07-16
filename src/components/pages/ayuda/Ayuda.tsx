@@ -84,7 +84,7 @@ const Ayuda: React.FC = () => {
                 </Typography>
                 <Typography component="h4" variant="h4" color="primary">
                     {
-                        item.estado === "resuelto" ? <Stack>
+                        item.estado === "Resuelto" ? <Stack>
                             <Typography component="h4" variant="h4" color="primary">{item.tema_ayuda}</Typography>
                             <Typography component="span" variant="body1" color="success">COMPLETO</Typography>
                         </Stack>
@@ -131,12 +131,12 @@ const Ayuda: React.FC = () => {
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     {
-                       !isLoading ? EstatusTabContent('No. de Solicitud y titulo', Tickets?.data.abierto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
+                       !isLoading ? EstatusTabContent('No. de Solicitud y titulo', Tickets?.data.Abierto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
                     }
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     {
-                       !isLoading ? EstatusTabContent('Solicitudes Pasadas', Tickets?.data.resuelto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
+                       !isLoading ? EstatusTabContent('Solicitudes Pasadas', Tickets?.data.Resuelto ?? []) : <LoadingCircular Text="Cargando Solicitudes..." />
                     }
                 </TabPanel>
             </Box>
