@@ -89,9 +89,9 @@ const Calificaciones: React.FC = () => {
         </Box>
     );
 
-    const TabsSection = (periodos: number[]) => (
-        <PeriodosTabs periodos={periodos.length} tabChange={(newValue) => setTabValue(newValue)} />
-    );
+    // const TabsSection = (periodos: number[]) => (
+    //     <PeriodosTabs periodos={periodos.length} tabChange={(newValue) => setTabValue(newValue)} />
+    // );
 
     return (
         <>

@@ -40,7 +40,7 @@ const MiPerfil: React.FC = () => {
 
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
-    const { control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<PerfilFormData>({
+    const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<PerfilFormData>({
         resolver: zodResolver(perfilSchema),
         mode: "onChange",
     });

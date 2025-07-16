@@ -4,8 +4,8 @@ import { Users } from "@iconsCustomizeds";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import CustomizedTable from "../../molecules/CustomizedTable/CustomizedTable";
 import { Typography } from "../../atoms/Typography/Typography";
-import { flexColumn, flexRows } from "@styles";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import { flexRows } from "@styles";
 
 const CalificacionesDetalle: React.FC = () => {
     const theme = useTheme();
