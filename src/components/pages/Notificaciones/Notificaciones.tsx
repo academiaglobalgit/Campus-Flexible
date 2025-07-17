@@ -105,6 +105,29 @@ const SalaConversacion: React.FC = () => {
         )
     }
 
+    function obtenerNotificacionesRecientesOrdenadas(data: any[]): any[] {
+        const ahora = new Date();
+        const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
+
+        return data
+            .filter(noti => {
+                const fechaEnvio = new Date(noti.fecha_envio);
+                return ahora.getTime() - fechaEnvio.getTime() < unaSemanaEnMs;
+            })
+            .sort((a, b) => {
+                const fechaA = new Date(a.fecha_envio).getTime();
+                const fechaB = new Date(b.fecha_envio).getTime();
+
+                // Primero por fecha (más reciente primero)
+                if (fechaB !== fechaA) {
+                    return fechaB - fechaA;
+                }
+
+                // Luego por estado de lectura (leídos primero)
+                return b.leida - a.leida;
+            });
+    }
+
     function obtenerNotificacionesAntiguasOrdenadas(data: any[]): any[] {
         const ahora = new Date();
         const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
@@ -130,6 +153,7 @@ const SalaConversacion: React.FC = () => {
 
     const notificaciones = (notiData: any) => {
         const totalNoLeidas = notiData.filter((n: { leida: number; }) => n.leida === 1).length;
+        const notificacionesRecientes = obtenerNotificacionesRecientesOrdenadas(notiData);
         const notificacionesAntiguas = obtenerNotificacionesAntiguasOrdenadas(notiData);
 
         return (
@@ -170,7 +194,7 @@ const SalaConversacion: React.FC = () => {
 
                             <TabPanel key={0} value={value} index={0}>
                                 {
-                                    isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : dataNoti(notiData)
+                                    isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : dataNoti(notificacionesRecientes)
                                 }
                             </TabPanel>
                             <TabPanel key={1} value={value} index={1}>
