@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
@@ -166,8 +166,14 @@ const SalaConversacion: React.FC = () => {
                     </Box>
                         : <>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', mt: '20px' }}>
-                                <Typography component="h3" variant="h3" sxProps={{ color: theme.palette.primary.main }}>Inbox({totalNoLeidas})</Typography>
-                                <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>Tienes {totalNoLeidas} notificaciones no leídas</Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '15px', mt: '20px', justifyContent: 'space-between',alignItems:'center' }}>
+
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', mt: '20px' }}>
+                                        <Typography component="h3" variant="h3" sxProps={{ color: theme.palette.primary.main }}>Inbox({totalNoLeidas})</Typography>
+                                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>Tienes {totalNoLeidas} notificaciones no leídas</Typography>
+                                    </Box>
+                                    <Button onClick={() => { }} variant="contained" >Limpiar todas las notificaciones</Button>
+                                </Box>
                             </Box>
 
                             <Box
