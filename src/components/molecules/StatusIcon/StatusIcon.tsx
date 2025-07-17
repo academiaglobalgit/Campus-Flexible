@@ -1,5 +1,5 @@
 import React from 'react';
-import { type SxProps, type Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { Typography } from '../../atoms/Typography/Typography';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import { Box } from '@mui/material';
@@ -8,11 +8,11 @@ import DoneIcon from '@mui/icons-material/Done';
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
 
 export interface StatusIconProps {
-    estado?: string;
-    sxProps?: SxProps<Theme>;
+    estado: string;
 }
 
-const StatusIcon: React.FC<StatusIconProps> = ({ estado, sxProps }) => {
+const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
+    const theme = useTheme();
 
     let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
     let icon: any;
@@ -32,7 +32,9 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado, sxProps }) => {
 
     return (
         <>
-            <Box sx={sxProps}>
+            <Box sx={[
+                { color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'flex-start'},
+            ]}>
                 <Typography component="span" variant="subtitle1" color={color} >
                     {estado}
                 </Typography>

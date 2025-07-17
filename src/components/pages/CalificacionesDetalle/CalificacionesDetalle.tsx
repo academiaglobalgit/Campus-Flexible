@@ -5,7 +5,7 @@ import { Accordion } from "../../molecules/Accordion/Accordion";
 import CustomizedTable from "../../molecules/CustomizedTable/CustomizedTable";
 import { Typography } from "../../atoms/Typography/Typography";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { flexRows } from "@styles";
+import { accordionStyle, flexRows } from "@styles";
 
 const CalificacionesDetalle: React.FC = () => {
     const theme = useTheme();
@@ -16,12 +16,15 @@ const CalificacionesDetalle: React.FC = () => {
     const PeriodosAccordion = () => {
         return(
            Accordions.map((item, index) => (
-                <Accordion key={index} title={item} sxProps={{ 
-                    width: '100%',
-                    backgroundColor: "#F8F8F9", 
-                    boxShadow: "0px 2px 4px 0px #6BBBE44D", 
-                    border: "1px solid #BABABA0D"
-                }}>
+                <Accordion 
+                    key={index} 
+                    title={item} 
+                    sxProps={{
+                        ...accordionStyle, 
+                        width: '100%',
+                    }}
+                    backgroundDetails={{backgroundColor: "#FFFFFF !important", }}
+                >
                         <CustomizedTable />
                         <Box 
                             sx={{ 

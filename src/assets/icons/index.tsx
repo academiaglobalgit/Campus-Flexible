@@ -13,7 +13,7 @@ export { default as Copy } from './Copy.svg?react';
 export { default as Danger } from './Danger.svg?react';
 export { default as WhatsApp } from './Whatsapp.svg?react';
 export { default as Foros } from './Foros.svg?react';
-export { default as Tutotria } from './Tutorias.svg?react';
+export { default as Tutorias } from './Tutorias.svg?react';
 export { default as ListaTareas } from './listaTareas.svg?react';
 
 // Iconos de documentos

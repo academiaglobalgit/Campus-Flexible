@@ -11,3 +11,5 @@ export type { BibliotecaVideotecaResponse, BibliotecaVideoteca, BibliotecaRespon
 export type { PlanEstudioInformacionResponse, InformacionData, Cursamiento, Ponderacion, Tutor } from './plan-estudio.interface';
 export type { PerfilResponse, Perfil, TelefonoPerfil, PerfilPayload } from './Perfil.interface';
 export type { ServiciosEscolaresResponse, ServiciosEscolares } from './ServiciosEscolares.interface';
+
+export type { CursosActivosResponse, CursoActivo, CursosContenidoResponse, Contenido } from './Cursos.interface';

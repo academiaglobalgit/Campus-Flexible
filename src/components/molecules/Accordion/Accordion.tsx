@@ -9,10 +9,11 @@ type AccordionProps = {
   opcion?: React.ReactNode;
   children: React.ReactNode;
   sxProps?: SxProps<Theme> | undefined;
-  customSummary?: React.ReactNode;
+  customHeader?: React.ReactNode;
+  backgroundDetails?: SxProps<Theme> | undefined;
 };
 
-export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customSummary }) => {
+export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {
@@ -46,7 +47,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
           </Box>
         }
       </AccordionSummary>
-      <AccordionDetails sx={{ backgroundColor: '#FFFFFF !important'}}>
+      <AccordionDetails sx={backgroundDetails}>
         {children}
       </AccordionDetails>
     </AccordionMui>

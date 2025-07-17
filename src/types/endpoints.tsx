@@ -19,8 +19,8 @@ export const PLAN_ESTUDIO_ENDPOINTS = {
 }
 
 export const CURSOS_ACTIVOS_ENDPOINTS = {
-    GET_MATERIAS: { path:'/cursos-activos/materias', key: 'cursos-act-materias' },
-    GET_MATERIAS_BY_ID: { path:'/cursos-activos/materias', key: 'cursos-act-materias-id' },
+    GET_MATERIAS: { path:'/cursos-activos', key: 'cursos-act-materias' },
+    GET_CURSOS_CONTENIDO_BY_ID: { path:'/cursos-activos/contenido', key: 'cursos-contenido-id' },
     GET_MAPA_CURRICULAR: { path:'/cursos-activos/mapa-curricular', key: 'cursos-act-mapa-curricular' },
     POST_AUTH: { path: '/cursos-activos/auth' }
 }
