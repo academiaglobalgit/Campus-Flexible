@@ -133,6 +133,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.CONSEJERIA_BLOG,
                 Component: Component.ConsejeriaBlog
               },
+              {
+                path: AppRoutingPaths.NOTIFICACIONES,
+                Component: Component.Notificaciones
+              },
             ]
           }
         ]
