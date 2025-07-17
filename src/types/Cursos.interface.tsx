@@ -36,3 +36,8 @@ export interface Contenido {
     activo:             number;
     eliminado:          number;
 }
+
+export interface CursosActividadesResponse {
+    success: boolean;
+    data:    Contenido[];
+}

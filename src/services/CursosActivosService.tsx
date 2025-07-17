@@ -15,7 +15,7 @@ export const useGetCursos = () => {
 export const useGetCursosContenidoById = (id: number) => {
     const query = useQuery<CursosContenidoResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key],
-        queryFn: () => apiClient.get<CursosContenidoResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}`),
+        queryFn: () => apiClient.get<CursosContenidoResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=3`),
     });
 
     const mapData = (data: Contenido[]) => {

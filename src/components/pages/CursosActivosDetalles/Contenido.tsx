@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useGetCursosContenidoById } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { Accordion } from "../../molecules/Accordion/Accordion";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { toRoman } from "../../../utils/Helpers";
 import { accordionStyle } from "@styles";
 
@@ -20,10 +20,13 @@ export const Contenido: React.FC = () => {
                 {
                     contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
                         <Box key={i}>
-                            <Typography 
-                                variant="body1"
-                                component="div"
-                                dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} 
+                            <iframe
+                                src={item?.url}
+                                style={{
+                                    width: "100%",
+                                    height: "100vh",
+                                    border: "none",
+                                }}
                             />
                         </Box>
                     ))
