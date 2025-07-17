@@ -190,11 +190,15 @@ const SalaConversacion: React.FC = () => {
                 isMobile
                     ?
                     <>
-                        {notificaciones(notiData?.data)}
+                        {
+                            isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : notificaciones(notiData?.data)
+                        }
                     </>
                     :
                     <>
-                        {notificaciones(notiData?.data)}
+                        {
+                            isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : notificaciones(notiData?.data)
+                        }
                     </>
             }
         </>
