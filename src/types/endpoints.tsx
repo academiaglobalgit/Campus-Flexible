@@ -67,3 +67,7 @@ export const BIBLIOTECA_ENDPOINTS = {
     GET_BIBLIOTECA_BY_ID: { path: '/modulos-campus/submodulos', key: 'biblioteca_by_id' },
     GET_LISTADO_VIDEOTECA: { path: '/biblioteca', key: 'listado-videoteca' },
 }
+
+export const SALA_CONVERSACION = {
+    GET_MENSAJES: { path: '/sala-conversacion/mensajes', key: 'sala-conversacion' },
+}
