@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetCursosContenidoById } from "../../../services/CursosActivosService";
+import { useGetCursosTabs } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { Box } from "@mui/material";
@@ -8,7 +8,7 @@ import { accordionStyle } from "@styles";
 
 export const Contenido: React.FC = () => {
     const {id} = useParams<{id:string}>();    
-    const {data: contenido, isLoading} = useGetCursosContenidoById(Number(id!))
+    const {data: contenido, isLoading} = useGetCursosTabs(Number(id!), "Contenido");
 
     return(
         isLoading ?

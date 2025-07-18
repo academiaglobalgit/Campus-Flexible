@@ -13,30 +13,12 @@ import { Tutorias } from "./Tutorias";
 import { ListaPendientes } from "./ListaPendientes";
 
 const CursosTabs = [
-    { 
-        tab: 'Contenido',
-        content: <Contenido />
-    },
-    { 
-        tab: 'Actividades',
-        content: <Actividades />
-    },
-    {
-        tab: 'Foros',
-        content: <ForosCursos />
-    },
-    {
-        tab: 'Tutorias',
-        content: <Tutorias />
-    },
-    {
-        tab: 'Evaluaciones',
-        content: <Evaluaciones />
-    },
-    {
-        tab: 'Lista de pendientes',
-        content: <ListaPendientes />
-    },
+    { tab: 'Contenido', content: <Contenido /> },
+    { tab: 'Actividades', content: <Actividades /> },
+    { tab: 'Foros', content: <ForosCursos /> },
+    { tab: 'Tutorias', content: <Tutorias /> },
+    { tab: 'Evaluaciones', content: <Evaluaciones /> },
+    { tab: 'Lista de pendientes', content: <ListaPendientes /> },
 ];
 
 const CursosActivosDetalles: React.FC = () => {

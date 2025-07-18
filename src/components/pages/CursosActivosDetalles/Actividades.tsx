@@ -1,25 +1,54 @@
-import { useRef } from "react";
-import { Box, Link, TextField, useMediaQuery, useTheme } from "@mui/material";
+import { useRef, useState } from "react";
+import { Box, TextField, useMediaQuery, useTheme } from "@mui/material";
 import Button from "../../atoms/Button/Button";
 import { Accordion } from "../../molecules/Accordion/Accordion";
-import { Typography } from "../../atoms/Typography/Typography";
-import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { accordionStyle } from "@styles";
+import { accordionStyle, flexColumn, flexRows } from "@styles";
+import { useParams } from "react-router-dom";
+import { useGetCursosTabs } from "../../../services/CursosActivosService";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { toRoman } from "../../../utils/Helpers";
+import { Typography } from "../../atoms/Typography/Typography";
+import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 
-const cursosDatas = [
-    
-    { titulo: "Unidad I", proceso: 80, status: "Finalizado", actividad: "", nombre: "", contenido: "" },
-    { titulo: "Unidad II", proceso: 80, status: "Cursando", actividad: "", nombre: "", contenido: "" },
-    { titulo: "Unidad III", proceso: 80, status: "No iniciado", actividad: "", nombre: "", contenido: "" },
-    { titulo: "Unidad IV", proceso: 80, status: "No iniciado", actividad: "", nombre: "", contenido: "" },
-        
-];
+
+type PreviewFile = {
+  file: File;
+  preview?: string;
+};
 
 export const Actividades: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+    const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
+    const {id} = useParams<{id:string}>();    
+    const { data: actividad, isLoading } = useGetCursosTabs(Number(id!), "Actividades");
+    const [archivos, setArchivos] = useState<PreviewFile[]>([]);
+
+    const [archivosPorId, setArchivosPorId] = useState<Record<number, PreviewFile[]>>({});
+
+    const handleFilesChange = (id: number, files: PreviewFile[]) => {
+        setArchivosPorId((prev) => ({
+        ...prev,
+        [id]: files,
+        }));
+    };
+
+    const handleSaveActivity = (id: number, ) => {
+        const archivos = archivosPorId[id] || [];
+    // Aquí puedes hacer una llamada a la API con archivos
+    console.log(`Guardando archivos del Accordion ${id}`, archivos);
+        // const formData = new FormData();
+        // archivos.forEach((archivo) => formData.append('files', archivo.file));
+
+        // Envíalo a tu backend
+        // await fetch('/api/upload', {
+        // method: 'POST',
+        // body: formData,
+        // });
+    }
+
     const UploadButton = () => {
         const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,98 +78,127 @@ export const Actividades: React.FC = () => {
         );
     };
     
+    const ButtonSection = (isDesktop: boolean = true) => (
+        <Box
+            sx={
+                [
+                    { width: '100%' },
+                    isDesktop && {...flexRows, gap: '30px', mb: '25px' },
+                    !isDesktop && {...flexColumn, gap: '18px', pb: 4 }
+                ]
+            }
+        >
+            <Box sx={{ width: isDesktop ? '300px' : '100%'}}>
+                    <Button onClick={() => { }} fullWidth >Instrumento de Evaluación</Button>
+            </Box>
+            <Box sx={{ width: isDesktop ? '150px' : '100%'}}>
+                <Button onClick={() => { }} fullWidth >Portada</Button>
+            </Box>
+            <Box sx={{ width: isDesktop ? '300px' : '100%'}}>
+                <Button onClick={() => { }} fullWidth >Manual de Formato APA</Button>
+            </Box>
+            <Box sx={{ width: isDesktop ? '340px' : '100%'}}>
+                <Button onClick={() => { }} fullWidth >Manual de Actividades Integradoras</Button>
+            </Box>
+        </Box>
+    );
+
     return (
         <>
-            <Box sx={!isMobile ? { display: 'flex', flexDirection: 'row', gap: '18px', marginBottom: '65px' } : { display: 'flex', flexDirection: 'column', mt: 5, alignItems: 'center', justifyContent: 'center', gap: '18px', marginBottom: '52px' }}>
-                <Button onClick={() => { }} variant="contained" fullWidth >Instrumento de Evaluación</Button>
-                <Button onClick={() => { }} variant="contained" fullWidth >Portada</Button>
-                <Button onClick={() => { }} variant="contained" fullWidth >Manual de Formato APA</Button>
-                <Button onClick={() => { }} variant="contained" fullWidth >Manual de Actividades Integradoras</Button>
-            </Box>
-            {cursosDatas.map((temas, i) => {
-                return (
-                    <Accordion
-                        key={`Act_${i}`}
-                        title={temas.titulo}
-                        sxProps={accordionStyle}
-                    >
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {
+                isMobile
+                ?
+                    ButtonSection(!isMobile)
+                :
+                    ButtonSection(betweenDevice ? false : true)
+            }
+            {
+                isLoading 
+                ?
+                <LoadingCircular Text="Cargando Actividades..." />
+                :
+                Object.entries(actividad).map(([unidad, contenidos], index) =>
+                    <Accordion key={index} title={`Unidad ${toRoman(Number(unidad))}`} sxProps={accordionStyle}>
+                        {
+                            contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
+                                <Box 
+                                        key={i}>
+                                    <Box                                         
+                                        dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} 
+                                        sx={{
+                                            '& h1, h2':{
+                                                font: theme.typography.h4
+                                            },
+                                            '& h1, h2, h3': {
+                                                color: 'primary.main',
+                                            },
+                                            '& p': {
+                                                marginBottom: '1rem',
+                                                lineHeight: 1.6,
+                                                color: 'text.primary'
+                                            },
+                                            '& ul': {
+                                                paddingLeft: '1.5rem',
+                                                listStyleType: 'disc',
+                                            },
+                                            pl: 3, pr: 3
+                                        }}
+                                    />
+                                    <Box sx={{pl: 3, pr: 3, pb: 3}}>
+                                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
+                                            Entrega de actividad
+                                        </Typography>
+                                        <Box sx={{pt: 2}}>
+                                            <TextField                                                                                        
+                                                placeholder="Text"
+                                                label="Comentario"
+                                                multiline
+                                                rows={3}
+                                                slotProps={{
+                                                    input: {
+                                                        inputProps: {
+                                                            maxLength: 200
+                                                        },
+                                                    },
+                                                }}
+                                            />
+                                            <Typography component="p" variant="body1" sxProps={{ color: theme.palette.grey[200], fontFamily: theme.typography.fontFamily, textAlign: 'right' }}>
+                                                0/200
+                                            </Typography>
+                                        </Box>
 
-                            <Box sx={!isMobile ? { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' } : { display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                        <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
+                                            <Typography component="p" variant="body1" color="primary">
+                                                Sube tu archivo aquí
+                                            </Typography>
+                                            <Typography component="p" variant="body1">
+                                                    (pdf. xml. word, ppt)
+                                            </Typography>
+                                        </Box>
 
-                                <Box sx={!isMobile ? { display: 'flex', flexDirection: 'column' } : {}}>
-                                    <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily }}>
-                                        {temas.actividad}
-                                    </Typography>
-                                    <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
-                                        {temas.nombre}
-                                    </Typography>
+                                        {/* {
+                                            UploadButton()
+                                        } */}
+
+                                        <FileUploader                                              
+                                            files={archivosPorId[item.id_curso] || []}
+                                            onFilesChange={(files) => handleFilesChange(item.id_curso, files)}
+                                            maxFiles={3} maxFileSizeMb={3}/>
+
+                                        <Button
+                                            fullWidth
+                                            onClick={() => handleSaveActivity(item.id_curso)}
+                                        >
+                                            Finalizar Actividad
+                                        </Button>
+                                    </Box>
                                 </Box>
-
-                                <StatusIcon estado={temas.status} />
-                            </Box>
-
-                            <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}>
-                                Descripción de tu actividad
-                            </Typography>
-
-                            <Typography component="p" variant="body2" sxProps={{ color: theme.palette.text.primary }}>
-                                {temas.contenido}
-                            </Typography>
-                            <Typography component="p" variant="body2" sxProps={{ color: theme.palette.text.primary }}>
-                                Antes de elaborar tu producto, es necesario que consultes los siguientes archivos:
-                            </Typography>
-
-                            <Link href="http://agcollege.edu.mx/literaturas/18/6/Actividad_2_Sistemas_Operativos_I_V4.docx.pdf" target="_blank" rel="noopener" sx={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                width: '100%', // o el ancho deseado
-                            }}>
-                                http://agcollege.edu.mx/literaturas/18/6/Actividad_2_Sistemas_Operativos_I_V4.docx.pdf
-                            </Link>
-
-                            <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
-                                Entrega de actividad
-                            </Typography>
-
-                            <Box sx={{ gap: '8px' }}>
-                                <TextField
-                                    placeholder="Text"
-                                    label="Comentario"
-                                    multiline
-                                    rows={5}
-                                />
-
-                                <Typography component="p" variant="body1" sxProps={{ color: theme.palette.grey[200], fontFamily: theme.typography.fontFamily, textAlign: 'right' }}>
-                                    0/200
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-
-                                <Typography component="p" variant="body1" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
-                                    Sube tu archivo aquí
-                                </Typography>
-
-                                <Typography component="p" variant="body1" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, marginLeft: '5px' }}>(pdf. xml. word, ppt)
-                                </Typography>
-                            </Box>
-
-                            {UploadButton()}
-
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                onClick={() => { }}
-                            >
-                                Finalizar Actividad
-                            </Button>
-
-                        </Box>
-                    </Accordion>
-                );
-            })}
+                            ))
+                        }
+                        
+                    </Accordion>      
+                )
+            }
         </>
     );
 };

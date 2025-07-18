@@ -16,12 +16,12 @@ export interface CursoActivo {
 }
 
 
-export interface CursosContenidoResponse {
+export interface CursosTabsResponse {
     success: boolean;
-    data:    Contenido[];
+    data:    CursosTabs[];
 }
 
-export interface Contenido {
+export interface CursosTabs {
     id_curso:           number;
     id_modulo:          number;
     modulo:             string;
@@ -35,9 +35,4 @@ export interface Contenido {
     url:                string;
     activo:             number;
     eliminado:          number;
-}
-
-export interface CursosActividadesResponse {
-    success: boolean;
-    data:    Contenido[];
 }

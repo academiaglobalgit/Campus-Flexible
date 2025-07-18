@@ -12,4 +12,4 @@ export type { PlanEstudioInformacionResponse, InformacionData, Cursamiento, Pond
 export type { PerfilResponse, Perfil, TelefonoPerfil, PerfilPayload } from './Perfil.interface';
 export type { ServiciosEscolaresResponse, ServiciosEscolares } from './ServiciosEscolares.interface';
 
-export type { CursosActivosResponse, CursoActivo, CursosContenidoResponse, Contenido } from './Cursos.interface';
+export type { CursosActivosResponse, CursoActivo, CursosTabsResponse, CursosTabs } from './Cursos.interface';
