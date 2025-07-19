@@ -9,7 +9,7 @@ import {
   insertImages,
   type RichTextEditorRef,
 } from "mui-tiptap";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useExtensions from "./useExtensions";
 import EditorMenuControls from "./EditorMenuControls";
 
@@ -23,14 +23,34 @@ function fileListToImageFiles(fileList: FileList): File[] {
   });
 }
 
+interface RichTextProps {
+  onChange?: (html: string) => void;
+}
 
-const RichText: React.FC = () => {
+const RichText: React.FC<RichTextProps> = ({ onChange }) => {
   const extensions = useExtensions({
     placeholder: "",
   });
   const rteRef = useRef<RichTextEditorRef>(null);
   const [isEditable, _setIsEditable] = useState(true);
   const [showMenuBar, _setShowMenuBar] = useState(true);
+
+
+  useEffect(() => {
+    const editor = rteRef.current?.editor;
+    if (!editor || !onChange) return;
+
+    const handler = () => {
+      const html = editor.getHTML();
+      onChange(html);
+    };
+
+    editor.on("update", handler);
+
+    return () => {
+      editor.off("update", handler);
+    };
+  }, [onChange]);
 
   const handleNewImageFiles = useCallback(
     (files: File[], insertPosition?: number): void => {
@@ -115,57 +135,57 @@ const RichText: React.FC = () => {
       [handleNewImageFiles],
     );
 
-    // const [submittedContent, setSubmittedContent] = useState("");
+  // const [submittedContent, setSubmittedContent] = useState("");
 
-    return (
-        <Box
-            sx={{
-                // An example of how editor styles can be overridden. In this case,
-                // setting where the scroll anchors to when jumping to headings. The
-                // scroll margin isn't built in since it will likely vary depending on
-                // where the editor itself is rendered (e.g. if there's a sticky nav
-                // bar on your site).
-                // "& .ProseMirror": {
-                //     "& h1, & h2, & h3, & h4, & h5, & h6": {
-                //     scrollMarginTop: showMenuBar ? 50 : 0,
-                //     },
-                // },
-                "& .ProseMirror": {
-                  minHeight: "207px",
-                  maxHeight: "207px",
-                  overflowY: "auto",
-                },
-            }}
+  return (
+    <Box
+      sx={{
+        // An example of how editor styles can be overridden. In this case,
+        // setting where the scroll anchors to when jumping to headings. The
+        // scroll margin isn't built in since it will likely vary depending on
+        // where the editor itself is rendered (e.g. if there's a sticky nav
+        // bar on your site).
+        // "& .ProseMirror": {
+        //     "& h1, & h2, & h3, & h4, & h5, & h6": {
+        //     scrollMarginTop: showMenuBar ? 50 : 0,
+        //     },
+        // },
+        "& .ProseMirror": {
+          minHeight: "207px",
+          maxHeight: "207px",
+          overflowY: "auto",
+        },
+      }}
+    >
+      <RichTextEditor
+        ref={rteRef}
+        extensions={extensions}
+        // content={exampleContent}
+        editable={isEditable}
+        editorProps={{
+          handleDrop: handleDrop,
+          handlePaste: handlePaste,
+        }}
+        renderControls={() => <EditorMenuControls />}
+        RichTextFieldProps={{
+          // The "outlined" variant is the default (shown here only as
+          // example), but can be changed to "standard" to remove the outlined
+          // field border from the editor
+          variant: "outlined",
+          MenuBarProps: {
+            hide: !showMenuBar,
+          },
+        }}
       >
-        <RichTextEditor
-          ref={rteRef}
-          extensions={extensions}
-          // content={exampleContent}
-          editable={isEditable}
-          editorProps={{
-            handleDrop: handleDrop,
-            handlePaste: handlePaste,
-          }}
-          renderControls={() => <EditorMenuControls />}
-          RichTextFieldProps={{
-            // The "outlined" variant is the default (shown here only as
-            // example), but can be changed to "standard" to remove the outlined
-            // field border from the editor
-            variant: "outlined",
-            MenuBarProps: {
-              hide: !showMenuBar,
-            },
-          }}
-        >
-          {() => (
-            <>
-              <LinkBubbleMenu />
-              <TableBubbleMenu />
-            </>
-          )}
-        </RichTextEditor>
-      </Box>
-    );
+        {() => (
+          <>
+            <LinkBubbleMenu />
+            <TableBubbleMenu />
+          </>
+        )}
+      </RichTextEditor>
+    </Box>
+  );
 }
 
 export default RichText;
