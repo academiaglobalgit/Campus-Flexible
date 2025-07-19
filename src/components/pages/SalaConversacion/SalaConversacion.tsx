@@ -1,9 +1,9 @@
 import React from 'react';
 import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesktop';
 import { TitleScreen, DescripcionesPantallas } from '@constants';
-import { Typography } from "../../atoms/Typography/Typography";
+
 import RichText from '../../molecules/RichText/RichText';
-import { Box, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Tab, Tabs, tabsClasses, useMediaQuery, useTheme, Typography } from "@mui/material";
 import Button from '../../atoms/Button/Button';
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { Avatar } from "../../atoms/Avatar/Avatar";
@@ -11,29 +11,100 @@ import { SalaConversacion as sala } from "@iconsCustomizeds";
 import { ComentariosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDialog";
 import { EliminarComentarioDialog } from "../../molecules/Dialogs/EliminarComentarioDialog/EliminarComentarioForosDialog";
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useGetSalaConversacion } from "../../../services/SalaConversacionService";
+import { useDeleteMensaje, useGetSalaConversacion, useSetMensaje } from "../../../services/SalaConversacionService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { useNotification } from "../../../providers/NotificationProvider";
+import { SALA_CONVERSACION } from "../../../types/endpoints";
 
 
-const SalaConversacion: React.FC = () => {
+type salaConversacionLoading = {
+    isLogin?: boolean;
+}
+
+const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true }) => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+    const { showNotification } = useNotification();
     const [typeDialog, setTypeDialog] = React.useState<'Comentar' | 'Editar' | 'Responder'>("Comentar");
     const [isOpenForosDialog, setIsOpenForosDialog] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const [isOpenEliminarComentarioDialog, setIsOpenEliminarComentarioDialog] = React.useState(false);
+    const [comentarioEliminar, idComentarioEliminar] = React.useState(0);
     const { data: conversationData, isLoading } = useGetSalaConversacion(4);
+    const queryClient = useQueryClient();
+    const [value, setValue] = React.useState(0);
+
+    const [htmlContent, setHtmlContent] = React.useState("");
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
     const handleOpenComentariosDialog = (type: 'Comentar' | 'Editar' | 'Responder' = 'Comentar') => {
         setTypeDialog(type);
         setIsOpenForosDialog(true)
     };
-    const [value, setValue] = React.useState(0);
+
+    const handleEliminarComentario = (id_mensaje: number) => {
+        setIsOpenEliminarComentarioDialog(true)
+        idComentarioEliminar(id_mensaje)
+    };
+
+    const handleConfirmarEliminarComentario = (opcion: boolean) => {
+        setLoading(true);
+
+        if (opcion) {
+            if (isLogin) {
+                createMutationDelete.mutate({ id_mensaje: comentarioEliminar });
+            }
+        } else {
+            setLoading(false);
+            setIsOpenEliminarComentarioDialog(false)
+        }
+    }
+
+    const handleEnviarMensaje = (mensaje: { id_mensaje: null; id_conversacion: number; mensaje: string; id_mensaje_respuesta: null; }) => {
+        console.log(mensaje)
+        setLoading(true);
+        if (isLogin) {
+            createMutationSetMensaje.mutate(mensaje);
+        }
+    };
+
+    const createMutationDelete = useMutation({
+        mutationFn: useDeleteMensaje,
+        onSuccess: () => {
+            showNotification(`El comentario ha sido eliminado correctamente`, "success");
+            setLoading(false);
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.DELETE_MENSAJES.key] });
+        },
+        onError: (error) => {
+            showNotification(`Error al eliminar comentario: ${error.message}`, "error");
+            setLoading(false);
+        },
+        onSettled: () => {
+            console.log('La mutación ha finalizado');
+        }
+    });
+
+    const createMutationSetMensaje = useMutation({
+        mutationFn: useSetMensaje,
+        onSuccess: () => {
+            showNotification(`El comentario ha sido registrado correctamente`, "success");
+            setLoading(false);
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.SET_MENSAJES.key] });
+        },
+        onError: (error) => {
+            showNotification(`Error al registrar comentario: ${error.message}`, "error");
+            setLoading(false);
+        },
+        onSettled: () => {
+            console.log('La mutación ha finalizado');
+        }
+    });
 
     const SalaConversacion = () => {
 
@@ -42,18 +113,18 @@ const SalaConversacion: React.FC = () => {
 
                 <Box sx={isMobile ? {} : { width: '90%' }}>
 
-                    <Typography component="p" variant="body1" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, width: '90%' }}>
+                    <Typography component="span" variant="body1" sx={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, width: '90%' }}>
                         La Sala es de uso libre, el único requisito para participar en ella, es estar inscrito(a) y activo(a) en alguno de los programas de Academia Global, así como expresarse siempre con respeto hacia todos sus compañeros y compañeras.
                     </Typography>
 
-                    <Typography component="p" variant="body1" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, mt: '20px', width: '90%' }}>
+                    <Typography component="span" variant="body1" sx={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, mt: '20px', width: '90%' }}>
                         Si tienes alguna duda o inquietud respecto del programa en el que estás participando, comunícala a través de los demás medios diseñados para ello.
                     </Typography>
 
                     <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'row', mt: '50px', ml: '50px', gap: '84px' }} >
 
                         <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'column', width: '50%', backgroundColor: '#F8F8F9', paddingInline: '38px', borderRadius: '20px' }}>
-                            <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily, mt: '32px' }}>
+                            <Typography component="h4" variant="h4" sx={{ color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily, mt: '32px' }}>
                                 Inicia un nuevo chat
                             </Typography>
 
@@ -65,7 +136,7 @@ const SalaConversacion: React.FC = () => {
                                     mt: '20px'
                                 }}
                             >
-                                <RichText />
+                                <RichText onChange={(html) => setHtmlContent(html)} />
                             </Box>
 
                             <Box
@@ -80,9 +151,11 @@ const SalaConversacion: React.FC = () => {
                                 <Button
                                     fullWidth
                                     variant="contained"
-                                    onClick={() => { }}
+                                    isLoading={loading}
+                                    onClick={() => { handleEnviarMensaje({ id_mensaje: null, id_conversacion: 1, mensaje: htmlContent, id_mensaje_respuesta: null }) }}
                                 >
-                                    Enviar                </Button>
+                                    Enviar
+                                </Button>
 
                                 <Button
                                     fullWidth
@@ -154,8 +227,6 @@ const SalaConversacion: React.FC = () => {
             return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds}${ampm}`;
         };
 
-        const isCurrentUserAuthor = message.id_usuario === 1;
-
         return (
             <Box key={message.id_mensaje} sx={{
                 display: 'flex',
@@ -205,12 +276,12 @@ const SalaConversacion: React.FC = () => {
                         borderRadius: '0px 0px 4px 4px'
                     }}
                 >
-                    <Typography component="span" variant="body1">
-                        {message.mensaje}
+                    <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: message.mensaje }}>
+
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '15px', width: '100%', mt: 'auto' }}> {/* mt: 'auto' empuja los botones hacia abajo */}
                         {/* Los botones de Editar y Eliminar pueden mostrarse condicionalmente según el usuario logueado */}
-                        {isCurrentUserAuthor ? (
+                        {message.creador === 0 ? (
                             <>
                                 <Button
                                     fullWidth
@@ -221,7 +292,7 @@ const SalaConversacion: React.FC = () => {
 
                                 <Button
                                     fullWidth
-                                    onClick={() => setIsOpenEliminarComentarioDialog(true)}
+                                    onClick={() => handleEliminarComentario(message.id_mensaje)}
                                     variant="outlined"
                                     color="error"
                                     size="small"
@@ -271,8 +342,8 @@ const SalaConversacion: React.FC = () => {
                 borderRadius: '8px',
                 fontFamily: 'Roboto, sans-serif',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                height:'500px',
-                overflowY:'auto'
+                height: '500px',
+                overflowY: 'auto'
             }}>
 
                 {topLevelMessages.length > 0 ? (
@@ -312,7 +383,9 @@ const SalaConversacion: React.FC = () => {
                     </ContainerDesktop>
             }
             <ComentariosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type={typeDialog} />
-            <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={() => setIsOpenEliminarComentarioDialog(false)} />
+            <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={(opcion) => {
+                opcion ? handleConfirmarEliminarComentario(opcion) : setIsOpenEliminarComentarioDialog(false)
+            }} />
         </>
     );
 };

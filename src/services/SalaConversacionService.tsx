@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { SALA_CONVERSACION } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
-import type { SalaConversaCionResponse }  from '../types/salaConversacion';
+import type { SalaConversaCionResponse, SalaConversacionEliminarMensaje, SalaConversacionEnviarMensaje } from '../types/salaConversacion';
 
 export const useGetSalaConversacion = (id_tipo_sala: number) => {
     return useQuery<SalaConversaCionResponse, Error>({
@@ -10,3 +10,13 @@ export const useGetSalaConversacion = (id_tipo_sala: number) => {
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 }
+
+export const useSetMensaje = async (payload: SalaConversacionEnviarMensaje) => {
+    const encryptedPayload = await apiClient.encryptData({ ...payload });
+    return await apiClient.post(SALA_CONVERSACION.SET_MENSAJES.path, { data: encryptedPayload });
+}
+
+export const useDeleteMensaje = async (payload: SalaConversacionEliminarMensaje) => {
+    const encryptedPayload = await apiClient.encryptData({ ...payload });
+    return await apiClient.post(SALA_CONVERSACION.DELETE_MENSAJES.path, { data: encryptedPayload });
+};
