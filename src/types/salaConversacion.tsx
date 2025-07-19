@@ -12,3 +12,12 @@ export interface SalaConversacion {
     autor: any;
     respuestas: any;
 }
+export interface SalaConversacionEnviarMensaje {
+    id_mensaje?: null | number;
+    id_conversacion: number;
+    mensaje: string;
+    id_mensaje_respuesta?: null | number;
+}
+export interface SalaConversacionEliminarMensaje {
+    id_mensaje: number;
+}
