@@ -6,30 +6,35 @@ import { Typography } from "../../../atoms/Typography/Typography";
 
 type DialogProps = {
     isOpen?: boolean;
-    close: () => void;
+    close: (value: boolean) => void;
 }
 
-export const EliminarComentarioDialog: React.FC<DialogProps> = ({isOpen, close}) => {
+export const EliminarComentarioDialog: React.FC<DialogProps> = ({ isOpen, close }) => {
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         setOpen(isOpen ?? false);
-    },[isOpen]);
+    }, [isOpen]);
 
     const handleClose = () => {
         setOpen(false);
-        close(); 
+        close(false);
     };
-    
-    return(
-        <Dialog isOpen={open} sxProps={{ margin: '5px', width: '350px'}} >
+
+    const eliminarComentario = () => {
+        setOpen(false);
+        close(true);
+    };
+
+    return (
+        <Dialog isOpen={open} sxProps={{ margin: '5px', width: '350px' }} >
             <DialogContent>
-                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexDirection: 'column'}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexDirection: 'column' }}>
                     <Typography component="h4" variant="h4" color="primary">Eliminar comentario</Typography>
                     <Typography component="span" variant="body3">¿Deseas eliminar este comentario?</Typography>
-                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%'}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%' }}>
                         <>
-                            <Button onClick={handleClose} fullWidth color="error">
+                            <Button onClick={eliminarComentario} fullWidth color="error">
                                 Sí, Borrar
                             </Button>
                         </>
