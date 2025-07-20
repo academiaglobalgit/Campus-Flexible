@@ -47,7 +47,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
           </Box>
         }
       </AccordionSummary>
-      <AccordionDetails sx={backgroundDetails}>
+      <AccordionDetails sx={{...backgroundDetails}}>
         {children}
       </AccordionDetails>
     </AccordionMui>
