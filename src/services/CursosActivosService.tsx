@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
-import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse } from '@constants';
+import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse, ListaPendientes } from '@constants';
 import React from 'react';
-import type { ManualesActividad } from '../types/Cursos.interface';
+import type { CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
 
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
@@ -19,7 +19,6 @@ export const TabsCursos = [
     { id_tipo_recurso: 5, tipo: "Foros" },
     { id_tipo_recurso: 6, tipo: "Tutorias" },
     { id_tipo_recurso: 2, tipo: "Evaluaciones" },
-    { id_tipo_recurso: 1, tipo: "ListaPendientes" },    
 ];
 
 export const useGetCursosTabs = (id: number, tab: string) => {
@@ -74,15 +73,16 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
         const manuales = query.data.data.manuales_actividades ?? [];
 
         const agrupadoPorUnidad = actividades.reduce<Record<string, Actividad[]>>((acc, contenido) => {
-        if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
-        acc[contenido.unidad].push(contenido);
-        return acc;
+            if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
+            acc[contenido.unidad].push(contenido);
+            return acc;
         }, {});
 
         return {
-        agrupadoPorUnidad,
-        manuales,
+            agrupadoPorUnidad,
+            manuales,
         };
+
     }, [query.data]);
 
     return {
@@ -91,8 +91,8 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
     };
 };
 
-export const updateActividad = async (data: { id_recurso: number, contenido: string, archivos: File[], archivos_eliminar: any[] }): Promise<ActividadEntregadaResponse> => {
-  const payload = { id_recurso: data.id_recurso, contenido: data.contenido, archivos_eliminar: data.archivos_eliminar };
+export const updateActividad = async (data: { id_recurso: number, contenido: string, archivos: File[], archivos_eliminar: any[], id_entrega:number | null }): Promise<ActividadEntregadaResponse> => {
+  const payload = { id_recurso: data.id_recurso, contenido: data.contenido, archivos_eliminar: data.archivos_eliminar, id_entrega: data.id_entrega };
   console.log(payload);
   const encryptedPayload = await apiClient.encryptData(payload);
 
@@ -116,4 +116,39 @@ export const useGetTutorias = (id: number, tab: string) => {
         queryKey: [tab],
         queryFn: () => apiClient.get<CursosTutoriasResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
     });
+}
+
+export const useGetListaPendientes = (id: number) => {
+    const query = useQuery<CursosListaPendientesResponse, Error>({
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.key],
+        queryFn: () => apiClient.get<CursosListaPendientesResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.path}?id_curso=${id}`),
+    });
+
+    const mapData = (data: ListaPendientes[]) => {
+        const agrupado = data.reduce<Record<string, ListaPendientes[]>>((acc, item) => {
+            if (!acc[item.tipo_recurso]) {
+                acc[item.tipo_recurso] = [];
+            }
+
+            acc[item.tipo_recurso].push(item);
+            return acc;
+        }, {});
+
+        // Ordenar cada grupo por 'orden'
+        Object.keys(agrupado).forEach((tipo) => {
+            agrupado[tipo].sort((a, b) => a.orden - b.orden);
+        });
+
+        console.log(agrupado);
+
+        return agrupado;
+    };
+
+    return {
+        ...query,
+        data: React.useMemo(
+            () => mapData(query.data?.data ?? []),
+            [query.data]
+        )
+    }
 }

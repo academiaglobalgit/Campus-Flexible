@@ -12,7 +12,6 @@ import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNotification } from "../../../providers/NotificationProvider";
-import type { ActividadEntregadaResponse } from "@constants";
 
 type PreviewFile = {
   file: File;
@@ -55,6 +54,8 @@ export const Actividades: React.FC = () => {
         const archivosOriginales: any[] = [];
         let id_entrega: number | null = null;
 
+        setIsSaving(true);
+
         await Promise.all(
             Object.entries(dataMapped?.agrupadoPorUnidad ?? {}).map(async ([_, contenidos]) => {
                 const curso = contenidos.filter((item) => item.id_recurso === id_recurso);
@@ -85,60 +86,21 @@ export const Actividades: React.FC = () => {
         
         const contenidoText = contenido[id_recurso] || '';
         const files = filesArray.map((item) => item.file);
-        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar });
+        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar, id_entrega });
     };
 
-    const handleSaveActivity = (id_recurso: number, archivos_eliminar: any[] = [], id_entrega: number | null = null) => {
+    const handleSaveActivity = (id_recurso: number) => {
         setIsSaving(true);
         const contenidoText = contenido[id_recurso] || '';
         const archivos = archivosPorId[id_recurso] || [];
         const files = archivos.map((item) => item.file);
-        console.log({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar, id_entrega });
-        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar });
-        // const currentData = queryClient.getQueryData(['Actividades']);
-        // console.log(currentData);
+        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar: [], id_entrega: null });        
     }
 
     const createMutationActivity = useMutation({
         mutationFn: updateActividad,
-        onSuccess: async (res: ActividadEntregadaResponse) => {
-            // console.log("Todo salio bien");
+        onSuccess: async () => {
             showNotification(`La actividades se guardo satisfactoriamente`,"success");
-            
-            // queryClient.setQueryData(['Actividades'], (old: any[] | undefined) => 
-            //     old ? [...old, data] : [data]
-            // );
-
-            // queryClient.setQueryData(['Actividades'], (old: ActividadesCacheData | undefined) => {
-            //     if (!old) return old;
-
-            //     const newEntrega = res.data.entrega;
-            //     const nuevosArchivos = res.data.archivos;
-
-            //     const updated = {
-            //         ...old,
-            //         agrupadoPorUnidad: Object.fromEntries(
-            //         Object.entries(old.agrupadoPorUnidad ?? {}).map(([unidad, actividades]) => {
-            //             const updatedActividades = actividades.map((actividad) => {
-            //             if (actividad.id_recurso === newEntrega.id_recurso) {
-            //                 return {
-            //                 ...actividad,
-            //                 entrega: {
-            //                     ...newEntrega,
-            //                     archivos: nuevosArchivos
-            //                 }
-            //                 };
-            //             }
-            //             return actividad;
-            //             });
-
-            //             return [unidad, updatedActividades];
-            //         })
-            //         )
-            //     };
-
-            //     return updated;
-            // });
 
             await queryClient.invalidateQueries({ queryKey: ["Actividades"] });
             setIsSaving(false);

@@ -28,5 +28,7 @@ export type {
     ActividadEntregadaResponse,
     ActividadEntregada,
     ActividadEntregadaArchivo,
-    ManualesActividad
+    ManualesActividad,
+    CursosListaPendientesResponse,
+    ListaPendientes
 } from './Cursos.interface';

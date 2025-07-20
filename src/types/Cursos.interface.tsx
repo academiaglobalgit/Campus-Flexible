@@ -153,3 +153,18 @@ export interface ActividadEntrega {
     activo:              number;
     eliminado:           number;
 }
+
+
+export interface CursosListaPendientesResponse {
+    success: boolean;
+    data:    ListaPendientes[];
+}
+
+export interface ListaPendientes {
+    id_recurso:      number;
+    id_tipo_recurso: number;
+    titulo:          string;
+    tipo_recurso:    string;
+    entregado:       number;
+    orden:           number;
+}

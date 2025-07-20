@@ -22,6 +22,7 @@ export const CURSOS_ACTIVOS_ENDPOINTS = {
     GET_MATERIAS: { path:'/cursos-activos', key: 'cursos-act-materias' },
     GET_CURSOS_CONTENIDO_BY_ID: { path:'/cursos-activos/contenido', key: 'cursos-contenido-id' },
     GET_MAPA_CURRICULAR: { path:'/cursos-activos/mapa-curricular', key: 'cursos-act-mapa-curricular' },
+    GET_LISTA_PROGRESO: { path:'/cursos-activos/lista-progreso', key: 'lista-progreso' },
     POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' }
 }
 

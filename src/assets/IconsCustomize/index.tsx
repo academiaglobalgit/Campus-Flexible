@@ -6,6 +6,8 @@ export { default as Calendario } from './Calendario.svg?react';
 export { default as Calificaciones } from './Calificaciones.svg?react';
 export { default as CallCalling } from './CallCalling.svg?react';
 export { default as Certificaciones } from './Certificaciones.svg?react';
+export { default as CheckboxAzul } from './CheckboxAzul.svg?react';
+export { default as CheckboxVacio } from './CheckboxVacio.svg?react';
 export { default as CheckCircle } from './CheckCircle.svg';
 export { default as ConsejeriaEstudiantil } from './ConsejeriaEstudiantil.svg?react';
 export { default as ConstanciaDeEstudios } from './ConstanciaDeEstudios.svg?react';
