@@ -72,4 +72,5 @@ export const SALA_CONVERSACION = {
     GET_MENSAJES: { path: '/sala-conversacion/mensajes', key: 'sala-conversacion' },
     SET_MENSAJES: { path: 'sala-conversacion/mensajes/guardar', key: 'sala-conversacion-guardar' },
     DELETE_MENSAJES: { path: '/sala-conversacion/mensajes/eliminar', key: 'sala-conversacion-eliminar' },
+    RESPONDER_MENSAJES: { path: '/sala-conversacion/mensajes/guardar', key: 'sala-conversacion-responder' },
 }

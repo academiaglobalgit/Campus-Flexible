@@ -33,6 +33,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     const [loading, setLoading] = React.useState(false);
     const [isOpenEliminarComentarioDialog, setIsOpenEliminarComentarioDialog] = React.useState(false);
     const [comentarioEliminar, idComentarioEliminar] = React.useState(0);
+    const [MensajeRespuesta, idMensajeRespuesta] = React.useState(0);
     const { data: conversationData, isLoading } = useGetSalaConversacion(4);
     const queryClient = useQueryClient();
     const [value, setValue] = React.useState(0);
@@ -56,6 +57,8 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     const handleConfirmarEliminarComentario = (opcion: boolean) => {
         setLoading(true);
 
+        console.log(comentarioEliminar)
+
         if (opcion) {
             if (isLogin) {
                 createMutationDelete.mutate({ id_mensaje: comentarioEliminar });
@@ -71,6 +74,19 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         setLoading(true);
         if (isLogin) {
             createMutationSetMensaje.mutate(mensaje);
+        }
+    };
+
+    const handleResponderMensaje = (mensaje: any) => {
+        console.log(mensaje)
+        setLoading(true);
+        if (isLogin) {
+
+            if (mensaje.type === 'Responder') {
+                responderMutationMensaje.mutate({ "id_mensaje": null, "id_conversacion": 1, "mensaje": mensaje.htmlContent, "id_mensaje_respuesta": MensajeRespuesta });
+            } else if (mensaje.type === 'Editar') {
+                responderMutationMensaje.mutate({ "id_mensaje": MensajeRespuesta, "id_conversacion": 1, "mensaje": mensaje.htmlContent, "id_mensaje_respuesta": null });
+            }
         }
     };
 
@@ -105,6 +121,23 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
             console.log('La mutación ha finalizado');
         }
     });
+
+    const responderMutationMensaje = useMutation({
+        mutationFn: useSetMensaje,
+        onSuccess: () => {
+            showNotification(`La respuesta ha sido registrada correctamente`, "success");
+            setLoading(false);
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.RESPONDER_MENSAJES.key] });
+        },
+        onError: (error) => {
+            showNotification(`Error al registrar comentario: ${error.message}`, "error");
+            setLoading(false);
+        },
+        onSettled: () => {
+            console.log('La mutación ha finalizado');
+        }
+    });
+
 
     const SalaConversacion = () => {
 
@@ -281,11 +314,14 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '15px', width: '100%', mt: 'auto' }}> {/* mt: 'auto' empuja los botones hacia abajo */}
                         {/* Los botones de Editar y Eliminar pueden mostrarse condicionalmente según el usuario logueado */}
-                        {message.creador === 0 ? (
+                        {message.creador === 1 ? (
                             <>
                                 <Button
                                     fullWidth
-                                    onClick={() => handleOpenComentariosDialog('Editar')}
+                                    onClick={() => {
+                                        handleOpenComentariosDialog('Editar')
+                                        idMensajeRespuesta(message.id_mensaje)
+                                    }}
                                     variant="outlined"
                                     sxProps={{ height: '26px' }}
                                 >Editar</Button>
@@ -305,7 +341,10 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
 
                                 <Button
                                     fullWidth
-                                    onClick={() => handleOpenComentariosDialog('Responder')}
+                                    onClick={() => {
+                                        handleOpenComentariosDialog('Responder')
+                                        idMensajeRespuesta(message.id_mensaje,)
+                                    }}
                                     variant="outlined"
                                     sxProps={{ height: '26px' }}
                                 >Reponder
@@ -331,7 +370,11 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     // Componente principal de la sala de conversación
     const ConversationRoomMUI = () => {
         // Filtra los mensajes de nivel superior (aquellos sin id_mensaje_respuesta)
-        const topLevelMessages = conversationData.data.filter(msg => msg.id_mensaje_respuesta === null);
+        let topLevelMessages: any[] = []
+
+        if (conversationData) {
+            topLevelMessages = conversationData.data.filter(msg => msg.id_mensaje_respuesta === null);
+        }
 
         return (
             <Box sx={{
@@ -368,7 +411,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                     ?
                     <>
                         <TituloIcon Titulo={TitleScreen.SALA_CONVERSACIONES} Icon={sala} />
-                        <Typography component="p" variant="body1" sxProps={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, mb: '20px' }}>
+                        <Typography component="p" variant="body1" sx={{ color: theme.palette.text.primary, fontFamily: theme.typography.fontFamily, mb: '20px' }}>
                             Esta Sala de Conversación es un espacio que ponemos a disposición de todas y todos nuestros estudiantes, con el propósito de que entables diálogos productivos, generen redes de contactos y amigos, compartan información, experiencias y aporten ideas que enriquezcan sus conocimientos.
                         </Typography>
                         {
@@ -382,7 +425,9 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                         }
                     </ContainerDesktop>
             }
-            <ComentariosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type={typeDialog} />
+            <ComentariosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
+                text.htmlContent != '' ? handleResponderMensaje(text) : setIsOpenForosDialog(false)
+            }} />
             <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={(opcion) => {
                 opcion ? handleConfirmarEliminarComentario(opcion) : setIsOpenEliminarComentarioDialog(false)
             }} />
