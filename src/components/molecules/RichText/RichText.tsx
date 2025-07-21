@@ -24,10 +24,11 @@ function fileListToImageFiles(fileList: FileList): File[] {
 }
 
 interface RichTextProps {
+  value?: string;
   onChange?: (html: string) => void;
 }
 
-const RichText: React.FC<RichTextProps> = ({ onChange }) => {
+const RichText: React.FC<RichTextProps> = ({ onChange, value }) => {
   const extensions = useExtensions({
     placeholder: "",
   });
@@ -35,22 +36,27 @@ const RichText: React.FC<RichTextProps> = ({ onChange }) => {
   const [isEditable, _setIsEditable] = useState(true);
   const [showMenuBar, _setShowMenuBar] = useState(true);
 
-
+  // Cargar el contenido cuando cambia value
   useEffect(() => {
     const editor = rteRef.current?.editor;
-    if (!editor || !onChange) return;
+    if (editor && value !== undefined && value !== editor.getHTML()) {
+      editor.commands.setContent(value);
+    }
+  }, [value]);
 
-    const handler = () => {
-      const html = editor.getHTML();
-      onChange(html);
-    };
+  // Escuchar cambios del editor
+  useEffect(() => {
+  const editor = rteRef.current?.editor;
+  if (!editor || !onChange) return;
 
-    editor.on("update", handler);
+  const handler = () => onChange(editor.getHTML());
+  editor.on("update", handler);
 
-    return () => {
-      editor.off("update", handler);
-    };
-  }, [onChange]);
+  // ✅ Limpiar correctamente el listener al desmontar o actualizar
+  return () => {
+    editor.off("update", handler);
+  };
+}, [onChange]);
 
   const handleNewImageFiles = useCallback(
     (files: File[], insertPosition?: number): void => {
@@ -160,7 +166,7 @@ const RichText: React.FC<RichTextProps> = ({ onChange }) => {
       <RichTextEditor
         ref={rteRef}
         extensions={extensions}
-        // content={exampleContent}
+        content={value || ''}
         editable={isEditable}
         editorProps={{
           handleDrop: handleDrop,
