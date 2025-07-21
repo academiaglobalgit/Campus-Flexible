@@ -34,6 +34,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     const [isOpenEliminarComentarioDialog, setIsOpenEliminarComentarioDialog] = React.useState(false);
     const [comentarioEliminar, idComentarioEliminar] = React.useState(0);
     const [MensajeRespuesta, idMensajeRespuesta] = React.useState(0);
+    const [textComentario, setTextComentario] = React.useState('');
     const { data: conversationData, isLoading } = useGetSalaConversacion(4);
     const queryClient = useQueryClient();
     const [value, setValue] = React.useState(0);
@@ -57,8 +58,6 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     const handleConfirmarEliminarComentario = (opcion: boolean) => {
         setLoading(true);
 
-        console.log(comentarioEliminar)
-
         if (opcion) {
             if (isLogin) {
                 createMutationDelete.mutate({ id_mensaje: comentarioEliminar });
@@ -70,15 +69,16 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     }
 
     const handleEnviarMensaje = (mensaje: { id_mensaje: null; id_conversacion: number; mensaje: string; id_mensaje_respuesta: null; }) => {
-        console.log(mensaje)
         setLoading(true);
         if (isLogin) {
             createMutationSetMensaje.mutate(mensaje);
         }
+
+        setLoading(false);
+        setIsOpenForosDialog(false)
     };
 
     const handleResponderMensaje = (mensaje: any) => {
-        console.log(mensaje)
         setLoading(true);
         if (isLogin) {
 
@@ -88,6 +88,9 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                 responderMutationMensaje.mutate({ "id_mensaje": MensajeRespuesta, "id_conversacion": 1, "mensaje": mensaje.htmlContent, "id_mensaje_respuesta": null });
             }
         }
+
+        setLoading(false);
+        setIsOpenForosDialog(false)
     };
 
     const createMutationDelete = useMutation({
@@ -95,7 +98,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         onSuccess: () => {
             showNotification(`El comentario ha sido eliminado correctamente`, "success");
             setLoading(false);
-            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.DELETE_MENSAJES.key] });
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
         },
         onError: (error) => {
             showNotification(`Error al eliminar comentario: ${error.message}`, "error");
@@ -111,7 +114,8 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         onSuccess: () => {
             showNotification(`El comentario ha sido registrado correctamente`, "success");
             setLoading(false);
-            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.SET_MENSAJES.key] });
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
+            setHtmlContent("")
         },
         onError: (error) => {
             showNotification(`Error al registrar comentario: ${error.message}`, "error");
@@ -127,7 +131,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         onSuccess: () => {
             showNotification(`La respuesta ha sido registrada correctamente`, "success");
             setLoading(false);
-            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.RESPONDER_MENSAJES.key] });
+            queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
         },
         onError: (error) => {
             showNotification(`Error al registrar comentario: ${error.message}`, "error");
@@ -138,8 +142,68 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         }
     });
 
+    // Botón para limpiar
+    const handleClear = () => {
+        setHtmlContent(""); // 🔄 Vacía el contenido del editor
+    };
+
+    function obtenerNotificacionesAntiguasOrdenadas(data: any[]): any[] {
+        const ahora = new Date();
+        const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
+
+        return data
+            .filter(noti => {
+                const fechaEnvio = new Date(noti.fecha_envio);
+                return ahora.getTime() - fechaEnvio.getTime() > unaSemanaEnMs;
+            })
+            .sort((a, b) => {
+                const fechaA = new Date(a.fecha_envio).getTime();
+                const fechaB = new Date(b.fecha_envio).getTime();
+
+                // Primero por fecha (más reciente primero)
+                if (fechaB !== fechaA) {
+                    return fechaB - fechaA;
+                }
+
+                // Luego por estado de lectura (leídos primero)
+                return b.fechaB - a.fechaA;
+            });
+    }
+
+    function obtenerNotificacionesRecientesOrdenadas(data: any[]): any[] {
+        const ahora = new Date();
+        const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
+
+        return data
+            .filter(noti => {
+                const fechaEnvio = new Date(noti.fecha_envio);
+                return ahora.getTime() - fechaEnvio.getTime() < unaSemanaEnMs;
+            })
+            .sort((a, b) => {
+                const fechaA = new Date(a.fecha_envio).getTime();
+                const fechaB = new Date(b.fecha_envio).getTime();
+
+                // Primero por fecha (más reciente primero)
+                if (fechaB !== fechaA) {
+                    return fechaB - fechaA;
+                }
+
+                // Luego por estado de lectura (leídos primero)
+                return b.fechaB - a.fechaA;
+            });
+    }
+
 
     const SalaConversacion = () => {
+
+        let topLevelMessages: any[] = []
+
+        if (conversationData) {
+            topLevelMessages = conversationData.data.filter(msg => msg.id_mensaje_respuesta === null);
+        }
+        const notificacionesAntiguas = obtenerNotificacionesAntiguasOrdenadas(topLevelMessages);
+        const notificacionesRecientes = obtenerNotificacionesRecientesOrdenadas(topLevelMessages);
+
 
         return (
             <>
@@ -169,7 +233,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                                     mt: '20px'
                                 }}
                             >
-                                <RichText onChange={(html) => setHtmlContent(html)} />
+                                <RichText value={htmlContent} onChange={setHtmlContent} />
                             </Box>
 
                             <Box
@@ -193,7 +257,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                                 <Button
                                     fullWidth
                                     variant="outlined"
-                                    onClick={() => { }}
+                                    onClick={handleClear}
                                 >
                                     Cancelar
                                 </Button>
@@ -218,10 +282,10 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                             </Tabs>
 
                             <TabPanel key={0} value={value} index={0}>
-                                {ConversationRoomMUI()}
+                                {ConversationRoomMUI(notificacionesRecientes)}
                             </TabPanel>
                             <TabPanel key={1} value={value} index={1}>
-                                {ConversationRoomMUI()}
+                                {ConversationRoomMUI(notificacionesAntiguas)}
                             </TabPanel>
                         </Box>
                     </Box >
@@ -321,6 +385,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                                     onClick={() => {
                                         handleOpenComentariosDialog('Editar')
                                         idMensajeRespuesta(message.id_mensaje)
+                                        setTextComentario(message.mensaje)
                                     }}
                                     variant="outlined"
                                     sxProps={{ height: '26px' }}
@@ -343,7 +408,8 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                                     fullWidth
                                     onClick={() => {
                                         handleOpenComentariosDialog('Responder')
-                                        idMensajeRespuesta(message.id_mensaje,)
+                                        idMensajeRespuesta(message.id_mensaje)
+                                        setTextComentario(message.mensaje)
                                     }}
                                     variant="outlined"
                                     sxProps={{ height: '26px' }}
@@ -368,13 +434,9 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     };
 
     // Componente principal de la sala de conversación
-    const ConversationRoomMUI = () => {
+    const ConversationRoomMUI = (data) => {
         // Filtra los mensajes de nivel superior (aquellos sin id_mensaje_respuesta)
-        let topLevelMessages: any[] = []
 
-        if (conversationData) {
-            topLevelMessages = conversationData.data.filter(msg => msg.id_mensaje_respuesta === null);
-        }
 
         return (
             <Box sx={{
@@ -389,8 +451,8 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                 overflowY: 'auto'
             }}>
 
-                {topLevelMessages.length > 0 ? (
-                    topLevelMessages.map((message) => (
+                {data.length > 0 ? (
+                    data.map((message: any) => (
                         <Message key={message.id_mensaje} message={message} />
                     ))
                 ) : (
@@ -425,7 +487,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                         }
                     </ContainerDesktop>
             }
-            <ComentariosDialog isOpen={isOpenForosDialog} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
+            <ComentariosDialog isOpen={isOpenForosDialog} textAcccion={textComentario} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
                 text.htmlContent != '' ? handleResponderMensaje(text) : setIsOpenForosDialog(false)
             }} />
             <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={(opcion) => {
