@@ -84,3 +84,20 @@ export const toRoman = (num: number): string => {
   }
   return result;
 };
+
+type PreviewFile = {
+  file: File;
+  preview?: string;
+};
+
+export async function convertRemoteToPreviewFile(remote: {nombre_original: string; ruta_archivo: string; tipo_mime: string;}): Promise<PreviewFile> {
+  const response = await fetch(remote.ruta_archivo);
+  const blob = await response.blob();
+
+  const file = new File([blob], remote.nombre_original, { type: remote.tipo_mime });
+
+  return {
+    file,
+    preview: remote.tipo_mime.startsWith('image/') ? remote.ruta_archivo : undefined,
+  };
+}

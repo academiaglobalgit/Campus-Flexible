@@ -13,30 +13,12 @@ import { Tutorias } from "./Tutorias";
 import { ListaPendientes } from "./ListaPendientes";
 
 const CursosTabs = [
-    { 
-        tab: 'Contenido',
-        content: <Contenido />
-    },
-    { 
-        tab: 'Actividades',
-        content: <Actividades />
-    },
-    {
-        tab: 'Foros',
-        content: <ForosCursos />
-    },
-    {
-        tab: 'Tutorias',
-        content: <Tutorias />
-    },
-    {
-        tab: 'Evaluaciones',
-        content: <Evaluaciones />
-    },
-    {
-        tab: 'Lista de pendientes',
-        content: <ListaPendientes />
-    },
+    { tab: 'Contenido', content: <Contenido /> },
+    { tab: 'Actividades', content: <Actividades /> },
+    { tab: 'Foros', content: <ForosCursos /> },
+    { tab: 'Tutorias', content: <Tutorias /> },
+    { tab: 'Evaluaciones', content: <Evaluaciones /> },
+    { tab: 'Lista de pendientes', content: <ListaPendientes /> },
 ];
 
 const CursosActivosDetalles: React.FC = () => {
@@ -103,11 +85,7 @@ const CursosActivosDetalles: React.FC = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <TituloIcon Titulo={"Práctica y Colaboración Ciudadana I"} Icon={CursosActivosDetalle} />
-            <Box sx={{
-                paddingLeft: '30px', fontFamily: 'Gotham', fontSize: '28px',
-                fontStyle: 'normal',
-                fontWeight: 700,
-            }} >
+            <Box sx={{ pl: '30px' }} >
                 <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Click para descargar contenido</Typography>
             </Box>
 

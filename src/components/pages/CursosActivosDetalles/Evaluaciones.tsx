@@ -1,26 +1,39 @@
-import { accordionStyle } from "@styles"
-import { Accordion } from "../../molecules/Accordion/Accordion"
-import { Typography } from "../../atoms/Typography/Typography"
-import { Box, useTheme } from "@mui/material"
-
-const data = [
-    { titulo: "Evaluación 1", contenido: 'Desafío - Elaboración de un informe con Power BI' },
-];
+import { accordionStyle } from "@styles";
+import { Accordion } from "../../molecules/Accordion/Accordion";
+import { Box } from "@mui/material"
+import { useGetCursosTabs } from "../../../services/CursosActivosService";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { useParams } from "react-router-dom";
+import { toRoman } from "../../../utils/Helpers";
 
 export const Evaluaciones: React.FC = () => {
-    const theme = useTheme();
+    const {id} = useParams<{id:string}>();    
+    const {data: contenido, isLoading} = useGetCursosTabs(Number(id!), "Evaluaciones");
     
+
     return(
-        data.map((temas: any, i: number) => (
-            <Accordion key={i} title={temas.titulo} sxProps={accordionStyle}>
-                <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.primary.dark, justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-                    Titulo
-                </Typography>
-                <Box sx={{ color: theme.palette.primary.dark, justifyContent: "center", alignItems: "center", textAlign: "center", padding: '31px' }}>
-                    Aquí se debe mostrar el
-                    contenido de la unidad
-                </Box>
-            </Accordion>
-        ))
+        isLoading ?
+            <LoadingCircular Text="Cargando Evaluaciones..." />
+        :
+
+         Object.entries(contenido).map(([unidad, contenidos], index) =>
+            <Accordion key={index} title={`Unidad ${toRoman(Number(unidad))}`} sxProps={accordionStyle}>
+                {
+                    contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
+                        <Box key={i}>
+                            <iframe
+                                src={item?.url}
+                                style={{
+                                    width: "100%",
+                                    height: "100vh",
+                                    border: "none",
+                                }}
+                            />
+                        </Box>
+                    ))
+                }
+                
+            </Accordion>      
+        )
     )
 }

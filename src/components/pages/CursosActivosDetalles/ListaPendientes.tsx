@@ -1,94 +1,105 @@
+import { useParams } from "react-router-dom";
 import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { ListaTareas } from "../../../assets/icons";
 import { Typography } from "../../atoms/Typography/Typography";
-import { CheckBoxLabel } from "../../atoms/Checkbox/Checkbox";
+import { flexColumn, flexRows } from "@styles";
+import { useGetListaPendientes } from "../../../services/CursosActivosService";
 
-const lista = [
-            { lista: 'Contenido', total: 4, hechas: 2 },
-            { lista: 'Actividades', total: 4, hechas: 2 },
-            { lista: 'Foros', total: 4, hechas: 2 },
-            { lista: 'Evaluaciones', total: 4, hechas: 2 },
-        ];
-        
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import type { ListaPendientes as IListaPendientes } from "@constants";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+
 export const ListaPendientes: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
-    return(
 
+    const {id} = useParams<{id:string}>();
+
+    const { data: lista, isLoading } = useGetListaPendientes(Number(id!))
+    
+    const getTitleDivider = (opcion: string) => {
+        switch(opcion) {
+            case 'actividad': return 'Actividades';
+            case 'foro': return 'Foros';
+            case 'contenido': return 'Contenido';
+            case 'evaluacion': return 'Evaluaciones';
+            default: return 'Otros';
+        }
+    }
+
+    const Sections = (items: IListaPendientes[]) => {
+        return(
+            <Box sx={{...flexColumn, alignItems: 'normal', gap: '10px' }}>
+                {
+                    items.map((item, i) => (
+                        <Box key={i} sx={{...flexRows, justifyContent: 'space-between'}}>
+                            <Typography component="span" variant="body2" color="primary">{item.titulo}</Typography>
+                            {
+                                item.entregado === 1 ? <CheckBoxIcon color="primary" /> : <CheckBoxOutlineBlankIcon color="disabled" />
+                            }
+                        </Box>
+                    ))
+                }
+            </Box>
+        )
+    }
+
+    return(
+        isLoading
+        ?
+            <LoadingCircular Text="Cargando Lista de pendientes..." />
+        :
         <>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', gap: '18px' }}>
+            <Box sx={{...flexColumn, alignItems: 'flex-start', gap: '18px' }}>
                 <TituloIcon key={5} Titulo={'Lista de pendientes'} Icon={ListaTareas} />
             </Box>
-
-            <Box sx={isMobile ? { display: 'flex', flexDirection: 'column' } : { display: 'flex', flexDirection: 'row', alignItems: 'start', justifyContent: 'space-around', overflowX: 'scroll', marginTop: '20px', width: '100%', gap: '40px' }}>
-
-                {lista.map((listado: { lista: string; total: number; hechas: number }) => (
-                    <>
-
-                        <Box sx={isMobile ? {} : { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-
-
-                            <Box sx={{ width: '100%' }}>
-                                <Divider textAlign="center">
-                                    <Typography component="span" variant="body2" color="primary">{listado.lista}</Typography>
-                                </Divider>
-                            </Box>
-
-
-                            <Box sx={isMobile ? { display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'space-around' } : { display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', width: '250px' }}>
-                                {[...Array(4)].map((_, index) => {
-                                    let auxTitulo = '';
-                                    let auxChec = false;
-                                    // let auxDisabled = false;
-                                    if (listado.lista == 'Contenido') {
-                                        auxTitulo = 'Unidad'
-                                    } else if (listado.lista == 'Actividades') {
-                                        auxTitulo = 'Actividad'
-                                    } else if (listado.lista == 'Foros') {
-                                        auxTitulo = 'Foros'
-                                    } else if (listado.lista == 'Evaluaciones') {
-                                        auxTitulo = 'Evaluaciones'
-                                    }
-
-                                    if (index + 1 <= [...Array(listado.hechas)].length) {
-                                        auxChec = true;
-                                        // auxDisabled = true;
-                                    } else {
-                                        auxChec = false;
-                                        // auxDisabled = false;
-                                    }
-
-                                    return (
-                                        <CheckBoxLabel
-                                            key={index}
-                                            text={`${auxTitulo} ${index + 1}`}
-                                            place="start"
-                                            defaultChecked={auxChec}
-                                            sxProps={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                width: '100%',
-                                                color: theme.palette.primary.main,
-                                                gap: '15px',
-                                                marginRight: '20px'
-                                            }}
-                                        />
-                                    );
-                                })}
-
-
-                            </Box>
+            
+                {
+                    isMobile
+                    ?
+                        <Box>
+                            {
+                                lista && Object.entries(lista).map(([title, items], index) => (
+                                    <Box key={index} sx={{width: '100%'}}>
+                                        <Divider textAlign="center">
+                                            <Typography component="span" variant="body2" color="primary">{getTitleDivider(title)}</Typography>
+                                        </Divider>
+                                        { 
+                                            Sections(items)
+                                        }
+                                    </Box>
+                                ))
+                            }
                         </Box>
-                        <Box sx={isMobile ? {} : {
-                            height: '215px', border: 'solid 1px', color: theme.palette.primary.main, marginTop: '30px'
-                        }}></Box >
+                    :
 
-                    </>
-                ))}
-            </Box>
-
+                    <Box sx={{ overflowY: 'auto' }}>
+                        <Box
+                            display="grid"
+                            gridTemplateColumns={{
+                                xs: '1fr',
+                                sm: '1fr 1fr',
+                                md: '1fr 1fr 1fr'
+                            }}
+                            gap={2}
+                        >
+                            {
+                                lista && Object.entries(lista).map(([title, items], index) => (
+                                    <Box key={index} sx={{pr: 2, borderRight: `1px solid ${theme.palette.grey[300]}`, minHeight: '200px', pb: 3}}>
+                                        <Divider textAlign="center" sx={{mt: '0px'}}>
+                                            <Typography component="span" variant="body2" color="primary">{getTitleDivider(title)}</Typography>
+                                        </Divider>
+                                            { 
+                                                Sections(items)
+                                            }
+                                    </Box>
+                                ))
+                            }
+                        </Box>
+                    </Box>
+                }
         </>
     )
 }

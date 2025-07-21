@@ -1,8 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
-import type { Contenido, CursosActivosResponse, CursosContenidoResponse } from '@constants';
+import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse, ListaPendientes } from '@constants';
 import React from 'react';
+import type { CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
 
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
@@ -12,14 +13,24 @@ export const useGetCursos = () => {
     });
 };
 
-export const useGetCursosContenidoById = (id: number) => {
-    const query = useQuery<CursosContenidoResponse, Error>({
-        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key],
-        queryFn: () => apiClient.get<CursosContenidoResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}`),
+export const TabsCursos = [
+    { id_tipo_recurso: 3, tipo: "Contenido" },
+    { id_tipo_recurso: 1, tipo: "Actividades" },
+    { id_tipo_recurso: 5, tipo: "Foros" },
+    { id_tipo_recurso: 6, tipo: "Tutorias" },
+    { id_tipo_recurso: 2, tipo: "Evaluaciones" },
+];
+
+export const useGetCursosTabs = (id: number, tab: string) => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    const query = useQuery<CursosTabsResponse, Error>({
+        queryKey: [tab],
+        queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
     });
 
-    const mapData = (data: Contenido[]) => {
-        const agrupadoPorUnidad = data.reduce<Record<string, Contenido[]>>((acc, contenido) => {
+    const mapData = (data: CursosTabs[]) => {
+        const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
             if (!acc[contenido.unidad]) {
                 acc[contenido.unidad] = [];
             }
@@ -30,7 +41,6 @@ export const useGetCursosContenidoById = (id: number) => {
         return agrupadoPorUnidad;
     }
 
-
     return {
         ...query,
         data: React.useMemo(
@@ -39,3 +49,106 @@ export const useGetCursosContenidoById = (id: number) => {
         )
     }
 };
+
+export type ActividadesCacheData = {
+  agrupadoPorUnidad: Record<string, Actividad[]>;
+  manuales: ManualesActividad[];
+};
+
+export const useGetActividades = (id: number, tab: string): UseQueryResult<CursosActividadesResponse> & { dataMapped?: ActividadesCacheData;} => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    const query = useQuery<CursosActividadesResponse, Error>({
+        queryKey: [tab],
+        queryFn: () =>
+        apiClient.get<CursosActividadesResponse>(
+            `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
+        ),
+    });
+
+    const dataMapped = React.useMemo<ActividadesCacheData | undefined>(() => {
+        if (!query.data) return undefined;
+
+        const actividades = query.data.data.actividades ?? [];
+        const manuales = query.data.data.manuales_actividades ?? [];
+
+        const agrupadoPorUnidad = actividades.reduce<Record<string, Actividad[]>>((acc, contenido) => {
+            if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
+            acc[contenido.unidad].push(contenido);
+            return acc;
+        }, {});
+
+        return {
+            agrupadoPorUnidad,
+            manuales,
+        };
+
+    }, [query.data]);
+
+    return {
+        ...query,
+        dataMapped,
+    };
+};
+
+export const updateActividad = async (data: { id_recurso: number, contenido: string, archivos: File[], archivos_eliminar: any[], id_entrega:number | null }): Promise<ActividadEntregadaResponse> => {
+  const payload = { id_recurso: data.id_recurso, contenido: data.contenido, archivos_eliminar: data.archivos_eliminar, id_entrega: data.id_entrega };
+  console.log(payload);
+  const encryptedPayload = await apiClient.encryptData(payload);
+
+  const formData = new FormData();
+  formData.append("data", encryptedPayload);
+
+  data.archivos.forEach((archivo) => {
+    formData.append("archivos", archivo);
+  });
+
+  return await apiClient.post<ActividadEntregadaResponse>(
+    CURSOS_ACTIVOS_ENDPOINTS.POST_ACTIVIDADES.path,
+    formData
+  );
+};
+
+export const useGetTutorias = (id: number, tab: string) => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    return useQuery<CursosTutoriasResponse, Error>({
+        queryKey: [tab],
+        queryFn: () => apiClient.get<CursosTutoriasResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
+    });
+}
+
+export const useGetListaPendientes = (id: number) => {
+    const query = useQuery<CursosListaPendientesResponse, Error>({
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.key],
+        queryFn: () => apiClient.get<CursosListaPendientesResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.path}?id_curso=${id}`),
+    });
+
+    const mapData = (data: ListaPendientes[]) => {
+        const agrupado = data.reduce<Record<string, ListaPendientes[]>>((acc, item) => {
+            if (!acc[item.tipo_recurso]) {
+                acc[item.tipo_recurso] = [];
+            }
+
+            acc[item.tipo_recurso].push(item);
+            return acc;
+        }, {});
+
+        // Ordenar cada grupo por 'orden'
+        Object.keys(agrupado).forEach((tipo) => {
+            agrupado[tipo].sort((a, b) => a.orden - b.orden);
+        });
+
+        console.log(agrupado);
+
+        return agrupado;
+    };
+
+    return {
+        ...query,
+        data: React.useMemo(
+            () => mapData(query.data?.data ?? []),
+            [query.data]
+        )
+    }
+}

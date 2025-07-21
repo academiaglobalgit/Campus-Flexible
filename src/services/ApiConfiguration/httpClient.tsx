@@ -101,11 +101,19 @@ class httpClient {
    * @returns Promise con los datos tipados
    */
   public post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    // return this.request<T>({
+    //   ...config,
+    //   method: 'POST',
+    //   url,
+    //   data,
+    // });
+    const headers = data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {};
     return this.request<T>({
       ...config,
       method: 'POST',
       url,
       data,
+      headers: { ...headers, ...(config?.headers || {}) },
     });
   }
 
