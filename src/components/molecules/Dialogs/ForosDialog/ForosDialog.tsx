@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
-import { Typography } from "../../../atoms/Typography/Typography";
 import { Edit1 } from "@iconsCustomizeds";
 import { flexColumn } from "@styles";
 import RichText from "../../RichText/RichText";
@@ -11,11 +10,12 @@ type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
     data?: { tema: string, comentario: string } | null;
     isOpen?: boolean;
+    textAcccion?: string;
     close: () => void;
     save?: (data: { htmlContent: string, type: string }) => void;
 }
 
-export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save }) => {
+export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save, textAcccion }) => {
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
     const [htmlContent, setHtmlContent] = React.useState("");
@@ -69,7 +69,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     const handleSave = () => {
         setOpen(false);
         if (save) {
-            save({htmlContent, type});
+            save({ htmlContent, type });
         }
     };
 
@@ -81,11 +81,9 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 ]}
             >
                 <Typography component="h4" variant="h4" children={title} color="primary" />
-                <Typography component="span" variant="body1" >
-                    Participa en el foro enviando imágenes que demuestren que ya tienes acceso a las siguientes herramientas en su versión de prueba:
-                    <ul>
-                        <li>Sistema operativo Linux</li>
-                    </ul>
+
+                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: textAcccion }}>
+
                 </Typography>
                 <Box
                     sx={{
