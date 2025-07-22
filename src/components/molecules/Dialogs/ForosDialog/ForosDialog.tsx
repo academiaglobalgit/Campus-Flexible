@@ -10,7 +10,7 @@ type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
     data?: { tema: string, comentario: string } | null;
     isOpen?: boolean;
-    textAcccion?: string;
+    textAcccion?: { autor: string; mensaje?: string };
     close: () => void;
     save?: (data: { htmlContent: string, type: string }) => void;
 }
@@ -19,6 +19,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
     const [htmlContent, setHtmlContent] = React.useState("");
+    const [value, setHtmlContentEdit] = React.useState("");
 
     useEffect(() => {
         setOpen(isOpen ?? false);
@@ -33,10 +34,23 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 setTitle('Editar Comentario');
                 break;
             case 'Responder':
-                setTitle('Responder a: comentario');
+                setTitle(`Responder a: ${textAcccion?.autor}`);
                 break;
         }
     }, [type]);
+
+    useEffect(() => {
+        if (isOpen && textAcccion && type === 'Editar') {
+            setHtmlContentEdit(textAcccion.mensaje ?? "");
+        }
+    }, [isOpen, textAcccion]);
+
+    useEffect(() => {
+        if (!isOpen && textAcccion) {
+            setHtmlContentEdit("");
+        }
+    }, [isOpen, textAcccion]);
+
 
     const typeButton = () => {
         switch (type) {
@@ -82,7 +96,8 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
             >
                 <Typography component="h4" variant="h4" children={title} color="primary" />
 
-                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: textAcccion }}>
+                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' ? String(textAcccion?.mensaje || '') : '' }}
+                >
 
                 </Typography>
                 <Box
@@ -92,7 +107,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                         backgroundColor: '#FFF',
                     }}
                 >
-                    <RichText onChange={(html) => setHtmlContent(html)} />                </Box>
+                    <RichText value={value} onChange={(html) => setHtmlContent(html)} />                </Box>
                 <Box sx={{ ...flexColumn, gap: '16px', width: '100%' }}>
                     {typeButton()}
                     <Button

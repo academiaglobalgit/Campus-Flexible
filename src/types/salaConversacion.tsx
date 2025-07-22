@@ -14,7 +14,7 @@ export interface SalaConversacion {
 }
 export interface SalaConversacionEnviarMensaje {
     id_mensaje?: null | number;
-    id_conversacion: number;
+    id_recurso: number;
     mensaje: string;
     id_mensaje_respuesta?: null | number;
 }
