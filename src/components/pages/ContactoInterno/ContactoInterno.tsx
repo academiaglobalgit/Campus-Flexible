@@ -36,7 +36,7 @@ const ContactoInterno: React.FC = () => {
             value: 1,
             imgSrc: ServiciosEscolares,
             data: {
-                description: "En caso de dudas sobre Constancia de estudios, kardex, credenciales, información de fecha de certificado y requisitos, pagos (certificados, credenciales, kardex, credenciales)",
+                description: "¿Tienes dudas sobre constancias, kardex, credenciales, certificados o pagos relacionados? Aquí te ayudamos.",
                 horarios: "Lunes a viernes de 08:00 a 20:00<br />Sábados de 10:00 a 14:00",
                 telefonos: "55 5259 8120/55 5259 8121",
                 email: "contacto@academiaglobal.mx"
