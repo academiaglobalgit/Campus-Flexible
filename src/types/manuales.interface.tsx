@@ -9,3 +9,9 @@ export interface ManualesUsuarioResponse {
     descripcion: string;
     url_archivo?: string;
 }
+export interface LineamientosUsuarioResponse {
+    id_manual: number;
+    titulo?: string;
+    descripcion: string;
+    url_archivo?: string;
+}
