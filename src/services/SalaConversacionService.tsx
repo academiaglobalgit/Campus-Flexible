@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { SALA_CONVERSACION } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
-import type { SalaConversaCionResponse, SalaConversacionEliminarMensaje, SalaConversacionEnviarMensaje } from '../types/salaConversacion';
+import type { SalaConversacionResponse, SalaConversacionEliminarMensaje, SalaConversacionEnviarMensaje } from '../types/SalaConversacion.interface';
 
 export const useGetSalaConversacion = (id_tipo_sala: number) => {
-    return useQuery<SalaConversaCionResponse, Error>({
+    return useQuery<SalaConversacionResponse, Error>({
         queryKey: [SALA_CONVERSACION.GET_MENSAJES.key],
-        queryFn: async () => await apiClient.get<SalaConversaCionResponse>(`${SALA_CONVERSACION.GET_MENSAJES.path}?id_tipo_sala=${id_tipo_sala}`),
+        queryFn: async () => await apiClient.get<SalaConversacionResponse>(`${SALA_CONVERSACION.GET_MENSAJES.path}?id_tipo_sala=${id_tipo_sala}`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 }

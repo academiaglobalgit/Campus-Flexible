@@ -3,7 +3,7 @@ import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
 import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse, ListaPendientes } from '@constants';
 import React from 'react';
-import type { CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
+import type { CursosForosResponse, CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
 
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
@@ -152,3 +152,79 @@ export const useGetListaPendientes = (id: number) => {
         )
     }
 }
+
+export const useGetForosManuales = (id: number, tab: string) => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    const query = useQuery<CursosForosResponse, Error>({
+        queryKey: [tab],
+        queryFn: () =>
+        apiClient.get<CursosForosResponse>(
+            `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
+        ),
+    });
+
+    const mapData = (data: CursosTabs[], manuales: ManualesActividad[]) => {
+        
+        const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
+            if (!acc[contenido.unidad]) {
+                acc[contenido.unidad] = [];
+            }
+            acc[contenido.unidad].push(contenido);
+            return acc;
+            }, {});
+        
+        return {agrupadoPorUnidad, manuales };
+    }
+
+    return {
+        ...query,
+        data: React.useMemo(
+            () => mapData(query.data?.data.foros ?? [], query.data?.data.manual ?? []),
+            [query.data]
+        )
+    }
+
+    // const dataMapped = React.useMemo<ActividadesCacheData | undefined>(() => {
+    //     if (!query.data) return undefined;
+
+    //     const actividades = query.data.data.foros ?? [];
+    //     const manuales = query.data.data.manual ?? [];
+
+    //     const agrupadoPorUnidad = actividades.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
+    //         if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
+    //         acc[contenido.unidad].push(contenido);
+    //         return acc;
+    //     }, {});
+
+    //     return {
+    //         agrupadoPorUnidad,
+    //         manuales,
+    //     };
+
+    // }, [query.data]);
+
+    // const dataMapped = React.useMemo<ActividadesCacheData | undefined>(() => {
+    //     if (!query.data) return undefined;
+
+    //     const foros = query.data.data.foros ?? [];
+    //     const manuales = query.data.data.manual ?? [];
+
+    //     const agrupadoPorUnidad = foros.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
+    //         if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
+    //         acc[contenido.unidad].push(contenido);
+    //         return acc;
+    //     }, {});
+
+    //     return {
+    //         agrupadoPorUnidad,
+    //         manuales,
+    //     };
+
+    // }, [query.data]);
+
+    // return {
+    //     ...query,
+    //     dataMapped,
+    // };
+};

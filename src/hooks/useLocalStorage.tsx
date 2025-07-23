@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
 const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH;
+const FORO_KEY = import.meta.env.VITE_APP_FORO;
 
 export const checkAuthStatus = async (): Promise<{ isAuth: boolean; tokenExpired: boolean }> => {
   const token = getToken();
@@ -51,4 +52,12 @@ export const cleanStorage = (): void => {
 
     // Remove Authentication model
     localStorage.removeItem(AUTH_MODEL_STORAGE_KEY);
+}
+
+export const setForoSelected = (foro: string) => {
+  localStorage.setItem(FORO_KEY, foro);
+}
+
+export const getForoSelected = (): string => {
+  return localStorage.getItem(FORO_KEY) || '';
 }

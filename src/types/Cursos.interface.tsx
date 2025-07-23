@@ -168,3 +168,13 @@ export interface ListaPendientes {
     entregado:       number;
     orden:           number;
 }
+
+export interface CursosForosResponse {
+    success:    boolean;
+    data:       CursosForos;
+}
+
+export interface CursosForos {
+    foros:  CursosTabs[];
+    manual: ManualesActividad[];
+}

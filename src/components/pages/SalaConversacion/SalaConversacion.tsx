@@ -484,7 +484,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                         }
                     </ContainerDesktop>
             }
-            <ComentariosDialog isOpen={isOpenForosDialog} textAcccion={textComentario} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
+            <ComentariosDialog isOpen={isOpenForosDialog} textAccion={textComentario} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
                 text.htmlContent != '' ? handleResponderMensaje(text) : setIsOpenForosDialog(false)
             }} />
             <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={(opcion) => {

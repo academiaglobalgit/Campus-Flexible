@@ -33,7 +33,7 @@ export const AppRoutingPaths = {
     VIDEOTECA_DETALLE: "/videoteca",
     APRENDE_MAS: "/aprende-mas",
     CALIFICACIONES_DETALLE: "/calificacion/detalle/:id",
-    FOROS: "/foros",
+    FOROS: "/foros/:id",
     NOSOTROS: "/nosotros",
     AGENDA_CITA: "/agenda-cita",
     CONSEJERIA_BLOG: "/blog",

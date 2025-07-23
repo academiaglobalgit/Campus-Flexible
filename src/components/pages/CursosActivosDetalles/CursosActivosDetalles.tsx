@@ -16,7 +16,7 @@ const CursosTabs = [
     { tab: 'Contenido', content: <Contenido /> },
     { tab: 'Actividades', content: <Actividades /> },
     { tab: 'Foros', content: <ForosCursos /> },
-    { tab: 'Tutorias', content: <Tutorias /> },
+    { tab: 'Clases', content: <Tutorias /> },
     { tab: 'Evaluaciones', content: <Evaluaciones /> },
     { tab: 'Lista de pendientes', content: <ListaPendientes /> },
 ];

@@ -32,3 +32,11 @@ export type {
     CursosListaPendientesResponse,
     ListaPendientes
 } from './Cursos.interface';
+
+export type {
+    TemaForoByIdResponse,
+    TemaForo,
+    ForosSaveResponse,
+    ForosSave,
+    Mensaje,
+} from './SalaConversacion.interface';

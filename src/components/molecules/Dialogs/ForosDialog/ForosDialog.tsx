@@ -10,12 +10,12 @@ type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
     data?: { tema: string, comentario: string } | null;
     isOpen?: boolean;
-    textAcccion?: { autor: string; mensaje?: string };
+    textAccion?: { autor: string; mensaje?: string };
     close: () => void;
     save?: (data: { htmlContent: string, type: string }) => void;
 }
 
-export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save, textAcccion }) => {
+export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save, textAccion }) => {
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
     const [htmlContent, setHtmlContent] = React.useState("");
@@ -34,23 +34,18 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 setTitle('Editar Comentario');
                 break;
             case 'Responder':
-                setTitle(`Responder a: ${textAcccion?.autor}`);
+                setTitle(`Responder a: ${textAccion?.autor}`);
                 break;
         }
-    }, [type]);
+    }, [type, textAccion]);
 
     useEffect(() => {
-        if (isOpen && textAcccion && type === 'Editar') {
-            setHtmlContentEdit(textAcccion.mensaje ?? "");
-        }
-    }, [isOpen, textAcccion]);
-
-    useEffect(() => {
-        if (!isOpen && textAcccion) {
+        if (isOpen && textAccion && type === 'Editar') {
+            setHtmlContentEdit(textAccion.mensaje ?? "");
+        } else if (!isOpen && textAccion) {
             setHtmlContentEdit("");
         }
-    }, [isOpen, textAcccion]);
-
+    }, [isOpen, textAccion, type]);
 
     const typeButton = () => {
         switch (type) {
@@ -96,7 +91,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
             >
                 <Typography component="h4" variant="h4" children={title} color="primary" />
 
-                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' ? String(textAcccion?.mensaje || '') : '' }}
+                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' ? String(textAccion?.mensaje || '') : '' }}
                 >
 
                 </Typography>
