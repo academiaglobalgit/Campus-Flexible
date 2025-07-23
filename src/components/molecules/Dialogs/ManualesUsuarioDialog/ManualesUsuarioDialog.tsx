@@ -5,9 +5,8 @@ import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Typography } from "../../../atoms/Typography/Typography";
 import { ManualInduccion, Videoteca } from "@iconsCustomizeds";
 import { Document2, Paperclip } from "../../../../assets/icons";
-import { IconLabel } from "../../IconLabel/IconLabel";
 import { flexRows } from "@styles";
-import { useGetManualesUsuario } from '../../../../services/ManualesService';
+import { useGetManualesUsuario,useGetLineamientossUsuario } from '../../../../services/ManualesService';
 import DsSvgIcon from "../../../atoms/Icon/Icon";
 
 
@@ -21,17 +20,19 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const { data: manualesDocs = [] } = useGetManualesUsuario();
-    console.log(manualesDocs.data)
+    const { data: manualesLineamientos = [] } = useGetLineamientossUsuario();
+
+    console.log(manualesLineamientos)
 
     const manuales = [
         { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manualesDocs.data[0].url_archivo, '_blank'), type: 'manuales' },
         { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => window.open(manualesDocs.data[1].url_archivo, '_blank'), type: 'manuales' },
         { id: 'formato', icon: Document2, label: 'Manual Formato APA', action: () => window.open(manualesDocs.data[2].url_archivo, '_blank'), type: 'manuales' },
         { id: 'manual-actividades', icon: Paperclip, label: 'Manual de Actividades', action: () => window.open(manualesDocs.data[3].url_archivo, '_blank'), type: 'manuales' },
-        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar', action: () => { }, type: 'lineamientos' },
-        { id: 'aviso-privacidad', icon: ManualInduccion, label: 'Aviso de Privacidad', action: () => { }, type: 'lineamientos' },
-        { id: 'terminos', icon: ManualInduccion, label: 'Terminos y Condiciones', action: () => { }, type: 'lineamientos' },
-        { id: 'lineamiento-responsable', icon: ManualInduccion, label: 'Lineamientos Para el uso Responsable de la IA', action: () => { }, type: 'lineamientos' },
+        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar',action: () => window.open(manualesLineamientos.data[0].url_archivo, '_blank'), type: 'lineamientos' },
+        { id: 'aviso-privacidad', icon: ManualInduccion, label: 'Aviso de Privacidad', action: () => window.open(manualesLineamientos.data[0].url_archivo, '_blank'), type: 'lineamientos' },
+        { id: 'terminos', icon: ManualInduccion, label: 'Terminos y Condiciones', action: () => window.open(manualesLineamientos.data[0].url_archivo, '_blank'), type: 'lineamientos' },
+        { id: 'lineamiento-responsable', icon: ManualInduccion, label: 'Lineamientos Para el uso Responsable de la IA', action: () => window.open(manualesLineamientos.data[0].url_archivo, '_blank'), type: 'lineamientos' },
     ];
 
     useEffect(() => {
