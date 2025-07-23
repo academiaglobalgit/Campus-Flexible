@@ -22,8 +22,6 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
     const { data: manualesDocs = [] } = useGetManualesUsuario();
     const { data: manualesLineamientos = [] } = useGetLineamientossUsuario();
 
-    console.log(manualesLineamientos)
-
     const manuales = [
         { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manualesDocs.data[0].url_archivo, '_blank'), type: 'manuales' },
         { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => window.open(manualesDocs.data[1].url_archivo, '_blank'), type: 'manuales' },
