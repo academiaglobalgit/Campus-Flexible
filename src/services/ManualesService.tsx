@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { ManualesResponse } from "../types/manuales.interface";
+import type { ManualesResponse, ManualesUsuarioResponse } from "../types/manuales.interface";
 import { MANUALES_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import { TipoManuales } from '../types/tipoManuales';
@@ -18,6 +18,16 @@ export const useGetManuales = (nombre_tipo: string, type: 'alumnos' | '' = '', i
     return useQuery<ManualesResponse, Error>({
         queryKey: [MANUALES_ENDPOINTS.GET_MANUALES.key, idInduccion],
         queryFn: async () => await apiClient.get<ManualesResponse>(url),
+        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+    });
+
+}
+
+export const useGetManualesUsuario = () => {
+    const url = `${MANUALES_ENDPOINTS.GET_MANUALES_USUARIO.path}`;
+    return useQuery<ManualesUsuarioResponse, Error>({
+        queryKey: [MANUALES_ENDPOINTS.GET_MANUALES_USUARIO.key],
+        queryFn: async () => await apiClient.get<ManualesUsuarioResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 

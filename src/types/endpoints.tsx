@@ -60,7 +60,8 @@ export const AYUDA_ENDPOINTS = {
 }
 
 export const MANUALES_ENDPOINTS = {
-    GET_MANUALES: { path: '/documentos', key: 'manuales' }
+    GET_MANUALES: { path: '/documentos', key: 'manuales' },
+    GET_MANUALES_USUARIO: { path: '/mas-informacion/manuales-usuario', key: 'manuales-usuario' }
 }
 
 export const BIBLIOTECA_ENDPOINTS = {
