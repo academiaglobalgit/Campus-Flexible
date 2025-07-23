@@ -8,10 +8,12 @@ export interface ManualesUsuarioResponse {
     titulo?: string;
     descripcion: string;
     url_archivo?: string;
+    data?: [];
 }
 export interface LineamientosUsuarioResponse {
     id_manual: number;
     titulo?: string;
     descripcion: string;
     url_archivo?: string;
+    data?: [];
 }

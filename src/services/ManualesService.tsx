@@ -26,7 +26,7 @@ export const useGetManualesUsuario = () => {
         queryKey: [MANUALES_ENDPOINTS.GET_MANUALES_USUARIO.key],
         queryFn: async () => await apiClient.get<ManualesUsuarioResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
-    });
+    }).data;
 }
 
 export const useGetLineamientossUsuario = () => {
@@ -35,5 +35,5 @@ export const useGetLineamientossUsuario = () => {
         queryKey: [MANUALES_ENDPOINTS.GET_LINEAMIENTOS_USUARIO.key],
         queryFn: async () => await apiClient.get<LineamientosUsuarioResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
-    });
+    }).data;
 }
