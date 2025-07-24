@@ -9,65 +9,67 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { flexColumn } from "@styles";
+import { useContactoInterno } from "../../../services/ContactoService";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+
 
 const ContactoInterno: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [value, setValue] = React.useState(0);
+    const { data: interno, isLoading } = useContactoInterno();
+
+    const seccionesMap = new Map();
+
+    if (interno?.data) {
+
+        const images = {
+            "Admisiones": CampusDigital,
+            "Académica": ServiciosEscolares,
+            "Prospectos": Prospectos
+        }
+
+        interno.data.forEach((item: { nombre_seccion: any; id_tipo_contacto: any; descripcion_seccion: any; valor_contacto: any; }) => {
+            if (!seccionesMap.has(item.nombre_seccion)) {
+                seccionesMap.set(item.nombre_seccion, {
+                    label: item.nombre_seccion,
+                    value: item.id_tipo_contacto,
+                    imgSrc: images[item.nombre_seccion],
+                    data: {
+                        description: item.descripcion_seccion,
+                        horarios: null,
+                        telefonos: null,
+                        email: null,
+                    },
+                });
+            }
+
+            const seccion = seccionesMap.get(item.nombre_seccion);
+
+            switch (item.id_tipo_contacto) {
+                case 1:
+                    seccion.data.telefonos = seccion.data.telefonos
+                        ? `${seccion.data.telefonos}/${item.valor_contacto}`
+                        : item.valor_contacto;
+                    break;
+                case 2:
+                    seccion.data.email = item.valor_contacto;
+                    break;
+                case 3:
+                    seccion.data.horarios = item.valor_contacto;
+                    break;
+            }
+        });
+    }
+
+    const resultadoFinal = Array.from(seccionesMap.values());
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
-    const TabsSections = [
-        {
-            label: "Campus Digital",
-            value: 0,
-            imgSrc: CampusDigital,
-            data: {
-                description: "Resuelve tus dudas académicas y administrativas aquí.",
-                horarios: "Lunes a viernes de 08:00 a 20:00<br />Sábados de 10:00 a 14:00",
-                telefonos: "55 5259 8120/55 5259 8121",
-                email: "contacto@academiaglobal.mx"
-            }
-        },
-        {
-            label: "Servicios Escolares",
-            value: 1,
-            imgSrc: ServiciosEscolares,
-            data: {
-                description: "¿Tienes dudas sobre constancias, kardex, credenciales, certificados o pagos relacionados? Aquí te ayudamos.",
-                horarios: "Lunes a viernes de 08:00 a 20:00<br />Sábados de 10:00 a 14:00",
-                telefonos: "55 5259 8120/55 5259 8121",
-                email: "contacto@academiaglobal.mx"
-            }
-        },
-        {
-            label: "Prospectos",
-            value: 2,
-            imgSrc: Prospectos,
-            data: {
-                description: "¿Dudas sobre el campus, exámenes, inscripción, estatus o fechas importantes? Aquí encuentras la información.",
-                horarios: "Lunes a viernes de 08:00 a 20:00<br />Sábados de 10:00 a 14:00",
-                telefonos: "55 5259 8120/55 5259 8121",
-                email: "contacto@academiaglobal.mx"
-            }
-        },
-        {
-            label: "Asesorias",
-            value: 3,
-            imgSrc: Asesorias,
-            data: {
-                description: "¿Dudas sobre constancias, certificados, credenciales, kardex o pagos? Encuentra aquí la información.            ",
-                horarios: "Lunes a Viernes de 09:00 a 18:00 Horas",
-                telefonos: "55 5259 8120/55 5259 8121",
-                email: "contacto@academiaglobal.mx"
-            }
-        }
-    ];
-
     const Image = () => {
-        const src = TabsSections[value].imgSrc;
+        const src = resultadoFinal[value].imgSrc;
 
         return (
             <Box
@@ -99,7 +101,7 @@ const ContactoInterno: React.FC = () => {
                     }}
                 >
                     {
-                        TabsSections.map((section, index) => (
+                        resultadoFinal.map((section, index) => (
                             <Tab
                                 key={index}
                                 label={section.label}
@@ -111,7 +113,7 @@ const ContactoInterno: React.FC = () => {
                 </Tabs>
             </Box>
             {
-                TabsSections.map((section, index) => (
+                resultadoFinal.map((section, index) => (
                     <TabPanel key={index} value={value} index={section.value}>
                         <Box sx={{ mt: 5 }}>
                             <Divider textAlign="center">
@@ -149,71 +151,82 @@ const ContactoInterno: React.FC = () => {
         </>
     );
 
+    const ConstentsDesktop = () => (
+        <Box sx={{ display: 'flex', flexDirection: 'row', width: '260px', gap: '52px' }}>
+            {
+                resultadoFinal.map((section, index) => (
+
+                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '55px' }}>
+
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '285px', objectFit: 'cover' }}>
+
+                            <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
+                            </Box>
+                            <Divider textAlign="center">
+                                <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>
+                                    {section.label}
+                                </Typography>
+                            </Divider>
+                            <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.text.primary }}>
+                                {section.data.description}
+                            </Typography>
+
+                        </Box>
+
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '1000%', gap: '17px' }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography component="h5" variant="h5" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
+                                    Horarios de atención:
+                                </Typography>
+                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
+
+
+                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
+                                    Tiempo del Centro.
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
+                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
+                                    Teléfonos:
+                                </Typography>
+                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
+
+                            </Box>
+
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
+                                    Correo:
+                                </Typography>
+
+                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
+                            </Box>
+                        </Box>
+                    </Box>
+                ))
+            }
+        </Box>
+    )
+
     return (
         <>
-            {isMobile ?
-                <>
-                    <Contents />
-                </>
-                :
-                <ContainerDesktop title="Contacto de tu plataforma">
-
-                    <Box sx={{ display: 'flex', flexDirection: 'row', width: '260px', gap: '52px' }}>
+            {
+                isMobile
+                    ?
+                    <>
                         {
-                            TabsSections.map((section, index) => (
-
-                                <Box key={index} sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '55px' }}>
-
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '350px', objectFit: 'cover' }}>
-
-                                        <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
-                                        </Box>
-                                        <Divider textAlign="center">
-                                            <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>
-                                                {section.label}
-                                            </Typography>
-                                        </Divider>
-                                        <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.text.primary }}>
-                                            {section.data.description}
-                                        </Typography>
-
-                                    </Box>
-
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '1000%', gap: '17px' }}>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                            <Typography component="h5" variant="h5" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                                Horarios de atención:
-                                            </Typography>
-                                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
-
-
-                                            <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                                Tiempo del Centro.
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-
-                                            <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                                Teléfonos:
-                                            </Typography>
-                                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
-
-                                        </Box>
-
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                            <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                                Correo:
-                                            </Typography>
-
-                                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            ))
+                            isLoading ? <LoadingCircular Text="Cargando contactos" /> : <Contents />
                         }
-                    </Box>
-                </ContainerDesktop>
+                    </>
+                    :
+                    <ContainerDesktop title="Contacto de tu plataforma">
+                        {
+                            isLoading ? <LoadingCircular Text="Cargando contactos" /> :
+                                <ConstentsDesktop />
+                        }
+                    </ContainerDesktop>
             }
+
         </>
     );
 }
