@@ -144,63 +144,73 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         setHtmlContent(""); //Vacía el contenido del editor
     };
 
-    function obtenerNotificacionesAntiguasOrdenadas(data: any[]): any[] {
+    function separarNotificacionesPorFecha(data: { fecha_envio: string }[]): {
+        recientes: { fecha_envio: string }[],
+        antiguas: { fecha_envio: string }[]
+    } {
         const ahora = new Date();
         const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
 
-        return data
-            .filter(noti => {
-                const fechaEnvio = new Date(noti.fecha_envio);
-                return ahora.getTime() - fechaEnvio.getTime() > unaSemanaEnMs;
-            })
-            .sort((a, b) => {
-                const fechaA = new Date(a.fecha_envio).getTime();
-                const fechaB = new Date(b.fecha_envio).getTime();
+        const meses: { [key: string]: number } = {
+            Enero: 0, Febrero: 1, Marzo: 2, Abril: 3, Mayo: 4, Junio: 5,
+            Julio: 6, Agosto: 7, Septiembre: 8, Octubre: 9, Noviembre: 10, Diciembre: 11
+        };
 
-                // Primero por fecha (más reciente primero)
-                if (fechaB !== fechaA) {
-                    return fechaB - fechaA;
-                }
+        const parseFecha = (fechaStr: string): Date | null => {
+            const regex = /^(\d{1,2})\/([A-Za-zñÑ]+)\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})(AM|PM)$/;
+            const match = fechaStr.match(regex);
+            if (!match) return null;
 
-                // Luego por estado de lectura (leídos primero)
-                return b.fechaB - a.fechaA;
-            });
-    }
+            const [, diaStr, mesStr, anioStr, horaStr, minStr, segStr, ampm] = match;
 
-    function obtenerNotificacionesRecientesOrdenadas(data: any[]): any[] {
-        const ahora = new Date();
-        const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
+            const dia = parseInt(diaStr, 10);
+            const mes = meses[mesStr];
+            const anio = parseInt(anioStr, 10);
+            let hora = parseInt(horaStr, 10);
+            const minuto = parseInt(minStr, 10);
+            const segundo = parseInt(segStr, 10);
 
-        return data
-            .filter(noti => {
-                const fechaEnvio = new Date(noti.fecha_envio);
-                return ahora.getTime() - fechaEnvio.getTime() < unaSemanaEnMs;
-            })
-            .sort((a, b) => {
-                const fechaA = new Date(a.fecha_envio).getTime();
-                const fechaB = new Date(b.fecha_envio).getTime();
+            if (mes === undefined) return null;
 
-                // Primero por fecha (más reciente primero)
-                if (fechaB !== fechaA) {
-                    return fechaB - fechaA;
-                }
+            if (ampm === 'PM' && hora !== 12) hora += 12;
+            if (ampm === 'AM' && hora === 12) hora = 0;
 
-                // Luego por estado de lectura (leídos primero)
-                return b.fechaB - a.fechaA;
-            });
+            return new Date(anio, mes, dia, hora, minuto, segundo);
+        };
+
+        const recientes: { fecha_envio: string }[] = [];
+        const antiguas: { fecha_envio: string }[] = [];
+
+        data.forEach(noti => {
+            const fecha = parseFecha(noti.fecha_envio);
+            if (!fecha) return;
+
+            const diferencia = ahora.getTime() - fecha.getTime();
+
+            if (diferencia < unaSemanaEnMs) {
+                recientes.push(noti);
+            } else {
+                antiguas.push(noti);
+            }
+        });
+
+        // Ordenar ambos arreglos por fecha (más reciente primero)
+        const sortByFechaDesc = (a: { fecha_envio: string }, b: { fecha_envio: string }) => {
+            const fechaA = parseFecha(a.fecha_envio)?.getTime() ?? 0;
+            const fechaB = parseFecha(b.fecha_envio)?.getTime() ?? 0;
+            return fechaB - fechaA;
+        };
+
+        return {
+            recientes: recientes.sort(sortByFechaDesc),
+            antiguas: antiguas.sort(sortByFechaDesc),
+        };
     }
 
 
     const SalaConversacion = () => {
 
-        let topLevelMessages: any[] = []
-
-        if (conversationData) {
-            topLevelMessages = conversationData.data.filter(msg => msg.id_mensaje_respuesta === null);
-        }
-        const notificacionesAntiguas = obtenerNotificacionesAntiguasOrdenadas(topLevelMessages);
-        const notificacionesRecientes = obtenerNotificacionesRecientesOrdenadas(topLevelMessages);
-
+        const { recientes, antiguas } = separarNotificacionesPorFecha(conversationData.data['mensajes']);
 
         return (
             <>
@@ -279,10 +289,10 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                             </Tabs>
 
                             <TabPanel key={0} value={value} index={0}>
-                                {ConversationRoomMUI(notificacionesRecientes)}
+                                {ConversationRoomMUI(recientes)}
                             </TabPanel>
                             <TabPanel key={1} value={value} index={1}>
-                                {ConversationRoomMUI(notificacionesAntiguas)}
+                                {ConversationRoomMUI(antiguas)}
                             </TabPanel>
                         </Box>
                     </Box >
@@ -353,7 +363,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                             {message.autor || `Usuario ${message.id_usuario}`}
                         </Typography>
                         <Typography component="span" variant="body1" color="disabled">
-                            {formatDate(message.fecha_envio)}
+                            {message.fecha_envio}
                         </Typography>
                     </Box>
                 </Box>
