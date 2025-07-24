@@ -1,6 +1,11 @@
 export interface SalaConversacionResponse {
     success: boolean;
-    data: SalaConversacion[];
+    data:    DataSala;
+}
+
+export interface DataSala {
+    totalPaginas: number;
+    mensajes:     SalaConversacion[];
 }
 
 export interface SalaConversacion {

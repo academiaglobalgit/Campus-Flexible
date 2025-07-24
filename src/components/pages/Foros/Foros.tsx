@@ -142,7 +142,7 @@ const Foros: React.FC = () => {
 
     const deleteMutation = useMutation({
         mutationFn: DeleteMensaje,
-        onSuccess: async (data) => {
+        onSuccess: async (_data) => {
             // await queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, Number(id!), paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
             await queryClient.cancelQueries({ queryKey: keys });
@@ -406,7 +406,7 @@ const Foros: React.FC = () => {
         )
     }
 
-    const handlePagination = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePagination = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPaginaActual(value);
     };
 

@@ -1,5 +1,5 @@
 import { Box, Button, Divider, useMediaQuery, useTheme } from "@mui/material";
-import { AppRoutingPaths, DescripcionesPantallas, TitleScreen, type CursoActivo } from "@constants";
+import { AppRoutingPaths, DescripcionesPantallas, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -36,7 +36,7 @@ const CursoActivo: React.FC = () => {
         <Box sx={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>{ children }</Box>
     );
 
-    const AccordionHeader = (item: CursoActivo) => (
+    const AccordionHeader = (item: ICursoActivo) => (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%'  }}>
             <Typography component="span" variant="subtitle1">
               {item.titulo_curso}
@@ -47,7 +47,7 @@ const CursoActivo: React.FC = () => {
         </Box>
     );
 
-    const materiaItem = (item: CursoActivo, index: number) => {
+    const materiaItem = (item: ICursoActivo, index: number) => {
         return (
             <Accordion 
                 key={index} 

@@ -101,3 +101,40 @@ export async function convertRemoteToPreviewFile(remote: {nombre_original: strin
     preview: remote.tipo_mime.startsWith('image/') ? remote.ruta_archivo : undefined,
   };
 }
+
+
+const meses: { [key: string]: string } = {
+  Enero: '0',
+  Febrero: '1',
+  Marzo: '2',
+  Abril: '3',
+  Mayo: '4',
+  Junio: '5',
+  Julio: '6',
+  Agosto: '7',
+  Septiembre: '8',
+  Octubre: '9',
+  Noviembre: '10',
+  Diciembre: '11',
+};
+
+export const parseFechaPersonalizada = (fechaStr: string): Date => {
+  const regex = /(\d{2})\/(\w+)\/(\d{4}) (\d{2}):(\d{2}):(\d{2})(AM|PM)/;
+  const match = fechaStr.match(regex);
+
+  if (!match) return new Date(0); // fallback
+
+  const [_, dia, mesTexto, anio, horaRaw, minuto, segundo, meridiano] = match;
+  let hora = parseInt(horaRaw, 10);
+  if (meridiano === "PM" && hora !== 12) hora += 12;
+  if (meridiano === "AM" && hora === 12) hora = 0;
+
+  return new Date(
+    parseInt(anio, 10),
+    parseInt(meses[mesTexto], 10),
+    parseInt(dia, 10),
+    hora,
+    parseInt(minuto, 10),
+    parseInt(segundo, 10)
+  );
+};

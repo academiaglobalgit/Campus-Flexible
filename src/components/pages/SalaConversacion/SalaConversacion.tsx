@@ -17,6 +17,7 @@ import { useDeleteMensaje, useGetSalaConversacion, useSetMensaje } from "../../.
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { SALA_CONVERSACION } from "../../../types/endpoints";
+import { parseFechaPersonalizada } from '../../../utils/Helpers';
 
 
 type salaConversacionLoading = {
@@ -37,7 +38,10 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     const [comentarioEliminar, idComentarioEliminar] = React.useState(0);
     const [MensajeRespuesta, idMensajeRespuesta] = React.useState(0);
     const [textComentario, setTextComentario] = React.useState<{ mensaje: string; autor: string } | null>(null);
+    
+
     const { data: conversationData, isLoading } = useGetSalaConversacion(4);
+    
     const queryClient = useQueryClient();
     const [value, setValue] = React.useState(0);
 
@@ -59,6 +63,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
 
     const handleConfirmarEliminarComentario = (opcion: boolean) => {
         setLoadingEliminar(true);
+        setIsOpenEliminarComentarioDialog(false);
 
         if (opcion) {
             if (isLogin) {
@@ -67,7 +72,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         }
     }
 
-    const handleEnviarMensaje = (mensaje: { id_mensaje: null; id_recurso: number; mensaje: string; id_mensaje_respuesta: null; }) => {
+    const handleEnviarMensaje = (mensaje: { id_mensaje: null; id_conversacion: number; mensaje: string; id_mensaje_respuesta: null; }) => {
         setLoading(true);
         if (isLogin) {
             createMutationSetMensaje.mutate(mensaje);
@@ -76,12 +81,13 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
 
     const handleResponderMensaje = (mensaje: any) => {
         setLoadingEditar(true);
+        setIsOpenForosDialog(false);
         if (isLogin) {
 
             if (mensaje.type === 'Responder') {
-                responderMutationMensaje.mutate({ "id_mensaje": null, "id_recurso": 1, "mensaje": mensaje.htmlContent, "id_mensaje_respuesta": MensajeRespuesta });
+                responderMutationMensaje.mutate({ id_mensaje: null, id_conversacion: 1, "mensaje": mensaje.htmlContent, id_mensaje_respuesta: MensajeRespuesta });
             } else if (mensaje.type === 'Editar') {
-                responderMutationMensaje.mutate({ "id_mensaje": MensajeRespuesta, "id_recurso": 1, "mensaje": mensaje.htmlContent, "id_mensaje_respuesta": null });
+                responderMutationMensaje.mutate({ id_mensaje: MensajeRespuesta, id_conversacion: 1, "mensaje": mensaje.htmlContent, id_mensaje_respuesta: null });
             }
         }
 
@@ -144,73 +150,16 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
         setHtmlContent(""); //Vacía el contenido del editor
     };
 
-    function separarNotificacionesPorFecha(data: { fecha_envio: string }[]): {
-        recientes: { fecha_envio: string }[],
-        antiguas: { fecha_envio: string }[]
-    } {
-        const ahora = new Date();
-        const unaSemanaEnMs = 7 * 24 * 60 * 60 * 1000;
-
-        const meses: { [key: string]: number } = {
-            Enero: 0, Febrero: 1, Marzo: 2, Abril: 3, Mayo: 4, Junio: 5,
-            Julio: 6, Agosto: 7, Septiembre: 8, Octubre: 9, Noviembre: 10, Diciembre: 11
-        };
-
-        const parseFecha = (fechaStr: string): Date | null => {
-            const regex = /^(\d{1,2})\/([A-Za-zñÑ]+)\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})(AM|PM)$/;
-            const match = fechaStr.match(regex);
-            if (!match) return null;
-
-            const [, diaStr, mesStr, anioStr, horaStr, minStr, segStr, ampm] = match;
-
-            const dia = parseInt(diaStr, 10);
-            const mes = meses[mesStr];
-            const anio = parseInt(anioStr, 10);
-            let hora = parseInt(horaStr, 10);
-            const minuto = parseInt(minStr, 10);
-            const segundo = parseInt(segStr, 10);
-
-            if (mes === undefined) return null;
-
-            if (ampm === 'PM' && hora !== 12) hora += 12;
-            if (ampm === 'AM' && hora === 12) hora = 0;
-
-            return new Date(anio, mes, dia, hora, minuto, segundo);
-        };
-
-        const recientes: { fecha_envio: string }[] = [];
-        const antiguas: { fecha_envio: string }[] = [];
-
-        data.forEach(noti => {
-            const fecha = parseFecha(noti.fecha_envio);
-            if (!fecha) return;
-
-            const diferencia = ahora.getTime() - fecha.getTime();
-
-            if (diferencia < unaSemanaEnMs) {
-                recientes.push(noti);
-            } else {
-                antiguas.push(noti);
-            }
-        });
-
-        // Ordenar ambos arreglos por fecha (más reciente primero)
-        const sortByFechaDesc = (a: { fecha_envio: string }, b: { fecha_envio: string }) => {
-            const fechaA = parseFecha(a.fecha_envio)?.getTime() ?? 0;
-            const fechaB = parseFecha(b.fecha_envio)?.getTime() ?? 0;
-            return fechaB - fechaA;
-        };
-
-        return {
-            recientes: recientes.sort(sortByFechaDesc),
-            antiguas: antiguas.sort(sortByFechaDesc),
-        };
-    }
-
-
     const SalaConversacion = () => {
 
-        const { recientes, antiguas } = separarNotificacionesPorFecha(conversationData.data['mensajes']);
+        // const { recientes, antiguas } = separarNotificacionesPorFecha(conversationData && conversationData.data.mensajes );
+        const recientes = conversationData?.data.mensajes.sort((a, b) =>
+            parseFechaPersonalizada(b.fecha_envio).getTime() - parseFechaPersonalizada(a.fecha_envio).getTime()
+        );
+
+        const antiguas = conversationData?.data.mensajes.sort((a, b) =>
+                parseFechaPersonalizada(a.fecha_envio).getTime() - parseFechaPersonalizada(b.fecha_envio).getTime()
+        );
 
         return (
             <>
@@ -256,7 +205,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                                     fullWidth
                                     variant="contained"
                                     isLoading={loading}
-                                    onClick={() => { handleEnviarMensaje({ id_mensaje: null, id_recurso: 1, mensaje: htmlContent, id_mensaje_respuesta: null }) }}
+                                    onClick={() => { handleEnviarMensaje({ id_mensaje: null, id_conversacion: 1, mensaje: htmlContent, id_mensaje_respuesta: null }) }}
                                 >
                                     Enviar
                                 </Button>
@@ -289,10 +238,10 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                             </Tabs>
 
                             <TabPanel key={0} value={value} index={0}>
-                                {ConversationRoomMUI(recientes)}
+                                {ConversationRoomMUI(recientes ?? [])}
                             </TabPanel>
                             <TabPanel key={1} value={value} index={1}>
-                                {ConversationRoomMUI(antiguas)}
+                                {ConversationRoomMUI(antiguas ?? [])}
                             </TabPanel>
                         </Box>
                     </Box >
@@ -303,33 +252,33 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
     }
 
     // Componente para renderizar un solo mensaje y sus respuestas
-    const Message = ({ message, depth = 0 }) => {
+    const Message = (message: any, depth = 0) => {
         // Ajusta el margen para anidar las respuestas
         const marginLeft = depth * 20; // 20px por cada nivel de anidamiento
 
-        const formatDate = (dateString: string | number | Date) => {
-            const date = new Date(dateString);
+        // const formatDate = (dateString: string | number | Date) => {
+        //     const date = new Date(dateString);
 
-            const day = String(date.getDate()).padStart(2, '0');
-            const year = date.getFullYear();
+        //     const day = String(date.getDate()).padStart(2, '0');
+        //     const year = date.getFullYear();
 
-            const monthNames = [
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-            ];
-            const month = monthNames[date.getMonth()];
+        //     const monthNames = [
+        //         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        //         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        //     ];
+        //     const month = monthNames[date.getMonth()];
 
-            let hours = date.getHours();
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
+        //     let hours = date.getHours();
+        //     const minutes = String(date.getMinutes()).padStart(2, '0');
+        //     const seconds = String(date.getSeconds()).padStart(2, '0');
+        //     const ampm = hours >= 12 ? 'PM' : 'AM';
 
-            hours = hours % 12;
-            hours = hours ? hours : 12; // La hora '0' debe ser '12'
-            const formattedHours = String(hours).padStart(2, '0'); // Asegura dos dígitos para las horas
+        //     hours = hours % 12;
+        //     hours = hours ? hours : 12; // La hora '0' debe ser '12'
+        //     const formattedHours = String(hours).padStart(2, '0'); // Asegura dos dígitos para las horas
 
-            return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds}${ampm}`;
-        };
+        //     return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds}${ampm}`;
+        // };
 
         return (
             <Box key={message.id_mensaje} sx={{
@@ -353,7 +302,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                     }}
                 >
                     <Avatar
-                        src={`https://i.pravatar.cc/150?img=${message.id_usuario}`} // Avatar dinámico por ID de usuario
+                        src={`${message.foto_perfil_url}`} // Avatar dinámico por ID de usuario
                         alt="Avatar"
                         width={48}
                         height={48}
@@ -434,7 +383,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                     message.respuestas && message.respuestas.length > 0 && (
                         <Box sx={{ mt: '10px' }}> {/* Margen superior para separar las respuestas del mensaje padre */}
                             {message.respuestas.map((reply: any) => (
-                                <Message key={reply.id_mensaje} message={reply} depth={depth + 1} />
+                                <Message key={reply.id_mensaje} {...reply} depth={depth + 1} />
                             ))}
                         </Box>
                     )
@@ -461,7 +410,7 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
 
                 {data.length > 0 ? (
                     data.map((message: any) => (
-                        <Message key={message.id_mensaje} message={message} />
+                        <Message key={message.id_mensaje} {...message} />
                     ))
                 ) : (
                     <Typography component="span" variant="body2">
@@ -494,12 +443,18 @@ const SalaConversacion: React.FC<salaConversacionLoading> = ({ isLogin = true })
                         }
                     </ContainerDesktop>
             }
-            <ComentariosDialog isOpen={isOpenForosDialog} textAccion={textComentario} close={() => setIsOpenForosDialog(false)} type={typeDialog} save={(text: any) => {
-                text.htmlContent != '' ? handleResponderMensaje(text) : setIsOpenForosDialog(false)
-            }} />
-            <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={(opcion) => {
-                opcion ? handleConfirmarEliminarComentario(opcion) : setIsOpenEliminarComentarioDialog(false)
-            }} />
+
+            <ComentariosDialog 
+                isOpen={isOpenForosDialog} 
+                close={() => setIsOpenForosDialog(false)} 
+                type={typeDialog} 
+                save={(val) => handleResponderMensaje(val)}
+                textAccion={textComentario ?? undefined}
+            />
+            <EliminarComentarioDialog 
+                isOpen={isOpenEliminarComentarioDialog} 
+                close={(val: boolean) => handleConfirmarEliminarComentario(val)} 
+            />
         </>
     );
 };

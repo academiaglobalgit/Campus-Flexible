@@ -1,6 +1,6 @@
 
 import { Dialog } from "../../../atoms/Dialog/Dialog";
-import { DialogContent, useMediaQuery, useTheme } from "@mui/material";
+import { DialogContent } from "@mui/material";
 import React, { useEffect } from "react";
 import { LoadingCircular } from "../../LoadingCircular/LoadingCircular";
 

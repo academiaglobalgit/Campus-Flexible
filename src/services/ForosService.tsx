@@ -34,8 +34,8 @@ export const SaveComentarioForo = async (payload:
     return await apiClient.post<ForosSaveResponse>(SALA_CONVERSACION.SET_MENSAJES.path, { data: encryptedPayload });
 };
 
-export const DeleteMensaje = async (id_mensaje: number): any => {
+export const DeleteMensaje = async (id_mensaje: number) => {
     const payload = {id_mensaje};
     const encryptedPayload = await apiClient.encryptData({ ...payload });
-    return await apiClient.post<any>(SALA_CONVERSACION.DELETE_MENSAJES.path, { data: encryptedPayload });
+    return await apiClient.post(SALA_CONVERSACION.DELETE_MENSAJES.path, { data: encryptedPayload });
 };
