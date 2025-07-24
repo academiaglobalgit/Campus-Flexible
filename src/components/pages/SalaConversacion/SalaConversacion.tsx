@@ -13,7 +13,7 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 
 const tabsMessages = [
     {id: 0, label: 'Más Recientes'},
-    {id: 1, label: 'Más Antigüos'},
+    {id: 1, label: 'Más Antiguos'},
 ];
 
 const SalaConversacion: React.FC = () => {

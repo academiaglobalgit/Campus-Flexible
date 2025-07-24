@@ -30,7 +30,7 @@ type ChatForoSalaConversacionProps = {
 
 const Filtros = {
     comentarios: [{ id: 0, label: 'Todos los comentarios' }, { id: 1, label: 'Mis comentarios' }],
-    order: [{ id: 0, label: 'Más actuales' }, { id: 1, label: 'Más antigüos' }],
+    order: [{ id: 0, label: 'Más actuales' }, { id: 1, label: 'Más antiguos' }],
     limite: [{ id: 5, label: '5' }, { id: 10, label: '10' }, { id: 15, label: '15' }]
 }
 
