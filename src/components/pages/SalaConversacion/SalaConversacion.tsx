@@ -144,8 +144,7 @@ const SalaConversacion: React.FC = () => {
                                 <Box
                                     sx={{ height: '520px', maxHeight: '520px', overflow: 'scroll', overflowX: 'hidden', pt: 1 }}
                                 >
-                                    <ChatForoSalaConversacion 
-                                        key={0}
+                                    <ChatForoSalaConversacion
                                         idTipoSala={idTipoSala}
                                         idRecurso={idConversacion} 
                                         showFiltros={false} 
