@@ -8,7 +8,7 @@ import Asesorias from "../../../assets/asesorias.jpg";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import { flexColumn } from "@styles";
+import { flexColumn, flexRows } from "@styles";
 import { useContactoInterno } from "../../../services/ContactoService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
@@ -33,8 +33,8 @@ const ContactoInterno: React.FC = () => {
             if (!seccionesMap.has(item.nombre_seccion)) {
                 seccionesMap.set(item.nombre_seccion, {
                     label: item.nombre_seccion,
-                    value: item.id_tipo_contacto,
-                    imgSrc: images[item.nombre_seccion],
+                    valor: null,
+                    imgSrc: images[item.nombre_seccion] ?? Asesorias,
                     data: {
                         description: item.descripcion_seccion,
                         horarios: null,
@@ -51,12 +51,16 @@ const ContactoInterno: React.FC = () => {
                     seccion.data.telefonos = seccion.data.telefonos
                         ? `${seccion.data.telefonos}/${item.valor_contacto}`
                         : item.valor_contacto;
+                    seccion.data.valor = 0;
                     break;
                 case 2:
                     seccion.data.email = item.valor_contacto;
+                    seccion.data.valor = 1;
                     break;
                 case 3:
                     seccion.data.horarios = item.valor_contacto;
+                    seccion.data.valor = 2;
+
                     break;
             }
         });
@@ -84,127 +88,111 @@ const ContactoInterno: React.FC = () => {
 
     const Contents = () => (
         <>
-            <Image />
-            <TituloIcon Titulo="CONTACTO DE TU PLATAFORMA" fontSize="h4" />
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons
-                    allowScrollButtonsMobile
-                    aria-label="basic tabs example"
-                    sx={{
-                        [`& .${tabsClasses.scrollButtons}`]: {
-                            "&.Mui-disabled": { opacity: 0.3 },
-                        },
-                    }}
-                >
-                    {
-                        resultadoFinal.map((section, index) => (
-                            <Tab
-                                key={index}
-                                label={section.label}
-                                value={section.value}
-                                sx={{ minWidth: '150px', padding: '0px' }}
-                            />
-                        ))
-                    }
-                </Tabs>
-            </Box>
+
             {
-                resultadoFinal.map((section, index) => (
-                    <TabPanel key={index} value={value} index={section.value}>
-                        <Box sx={{ mt: 5 }}>
-                            <Divider textAlign="center">
-                                <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
-                            </Divider>
-                            <Box sx={{ ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 }}>
-                                <Typography component="span" variant="body1">
-                                    {section.data.description}
-                                </Typography>
-                                <Box sx={{ ...flexColumn, alignItems: 'flex-start', mt: 1, gap: '10px' }}>
-                                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
-                                        <Typography component="span" variant="body2" color="primary">
-                                            Horarios:
-                                        </Typography>
-                                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
-                                    </Box>
-                                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
-                                        <Typography component="span" variant="body2" color="primary">
-                                            Teléfonos:
-                                        </Typography>
-                                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
-                                    </Box>
-                                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
-                                        <Typography component="span" variant="body2" color="primary">
-                                            Email:
-                                        </Typography>
-                                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
-                                    </Box>
+
+                <>
+                    {
+                        isMobile
+                            ?
+                            <>
+                                <Image />
+                                <TituloIcon Titulo="CONTACTO DE TU PLATAFORMA" fontSize="h4" />
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        variant="scrollable"
+                                        scrollButtons
+                                        allowScrollButtonsMobile
+                                        aria-label="basic tabs example"
+                                        sx={{
+                                            [`& .${tabsClasses.scrollButtons}`]: {
+                                                "&.Mui-disabled": { opacity: 0.3 },
+                                            },
+                                        }}
+                                    >
+                                        {
+                                            resultadoFinal.map((section, index) => (
+                                                <Tab
+                                                    key={index}
+                                                    label={section.label}
+                                                    value={section.valor}
+                                                    sx={{ minWidth: '150px', padding: '0px' }}
+                                                />
+                                            ))
+                                        }
+                                    </Tabs>
                                 </Box>
-                            </Box>
-                        </Box>
-                    </TabPanel>
-                ))
+                                {resultadoFinal.map((section, index) => (
+                                    <TabPanel key={index} value={index} index={section.valor} >
+
+                                        {ConstentsDesktop(section)}
+
+
+                                    </TabPanel>))}
+                            </>
+                            :
+                            <>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+                                    {resultadoFinal.map((section) => (
+                                        ConstentsDesktop(section)
+                                    ))}
+                                </Box>
+                            </>
+                    }
+                </>
+
             }
         </>
     );
 
-    const ConstentsDesktop = () => (
-        <Box sx={{ display: 'flex', flexDirection: 'row', width: '260px', gap: '52px' }}>
-            {
-                resultadoFinal.map((section, index) => (
+    const ConstentsDesktop = (section: any) => (
+        <Box sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '55px' }}>
 
-                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '55px' }}>
 
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '285px', objectFit: 'cover' }}>
+            <Box sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '17px' }}>
 
-                            <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
-                            </Box>
-                            <Divider textAlign="center">
-                                <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>
-                                    {section.label}
-                                </Typography>
-                            </Divider>
-                            <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.text.primary }}>
-                                {section.data.description}
-                            </Typography>
-
+                {isMobile ?
+                    <>
+                        <Divider textAlign="center">
+                            <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
+                        </Divider>
+                        <Typography component="span" variant="body1">
+                            {section.data.description}
+                        </Typography>
+                    </>
+                    :
+                    <>
+                        <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
                         </Box>
+                        <Divider textAlign="center">
+                            <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
+                        </Divider>
+                    </>
+                }
 
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: '1000%', gap: '17px' }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <Typography component="h5" variant="h5" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                    Horarios de atención:
-                                </Typography>
-                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
-
-
-                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                    Tiempo del Centro.
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-
-                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                    Teléfonos:
-                                </Typography>
-                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
-
-                            </Box>
-
-                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <Typography component="span" variant="subtitle2" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
-                                    Correo:
-                                </Typography>
-
-                                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
-                            </Box>
-                        </Box>
+                <Box sx={{ ...flexColumn, alignItems: 'flex-start', mt: 1, gap: '10px' }}>
+                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                        <Typography component="span" variant="body2" color="primary">
+                            Horarios:
+                        </Typography>
+                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
                     </Box>
-                ))
-            }
+                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                        <Typography component="span" variant="body2" color="primary">
+                            Teléfonos:
+                        </Typography>
+                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.telefonos }} />
+                    </Box>
+                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
+                        <Typography component="span" variant="body2" color="primary">
+                            Email:
+                        </Typography>
+                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
+                    </Box>
+                </Box>
+            </Box>
         </Box>
     )
 
@@ -221,8 +209,7 @@ const ContactoInterno: React.FC = () => {
                     :
                     <ContainerDesktop title="Contacto de tu plataforma">
                         {
-                            isLoading ? <LoadingCircular Text="Cargando contactos" /> :
-                                <ConstentsDesktop />
+                            isLoading ? <LoadingCircular Text="Cargando contactos" /> : <Contents />
                         }
                     </ContainerDesktop>
             }
