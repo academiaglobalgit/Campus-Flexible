@@ -20,6 +20,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     const [title, setTitle] = React.useState('');
     const [htmlContent, setHtmlContent] = React.useState("");
     const [value, setHtmlContentEdit] = React.useState("");
+    const [isDisabled, setIsDisabled] = React.useState(true);
 
     useEffect(() => {
         setOpen(isOpen ?? false);
@@ -47,23 +48,28 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
         }
     }, [isOpen, textAccion, type]);
 
+    useEffect(() => {
+        setIsDisabled(htmlContent === "");
+    },[htmlContent]);
+
+
     const typeButton = () => {
         switch (type) {
             case 'Comentar':
                 return (
-                    <Button fullWidth onClick={handleSave} icon={<Edit1 />}>
+                    <Button fullWidth onClick={handleSave} icon={<Edit1 />} disabled={isDisabled}>
                         Comentar
                     </Button>
                 );
             case 'Editar':
                 return (
-                    <Button fullWidth onClick={handleSave}>
+                    <Button fullWidth onClick={handleSave} disabled={isDisabled}>
                         Guardar
                     </Button>
                 );
             case 'Responder':
                 return (
-                    <Button fullWidth onClick={handleSave}>
+                    <Button fullWidth onClick={handleSave} disabled={isDisabled}>
                         Responder
                     </Button>
                 );
@@ -76,11 +82,16 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     };
 
     const handleSave = () => {
+        if(htmlContent === "") return;
         setOpen(false);
         if (save) {
             save({ htmlContent, type });
         }
     };
+
+    const handleHTMLContent = (html: string) => {
+        setHtmlContent(html !== '<p></p>' ? html : '');
+    }
 
     return (
         <Dialog isOpen={open} sxProps={{ width: '350px' }} >
@@ -102,7 +113,8 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                         backgroundColor: '#FFF',
                     }}
                 >
-                    <RichText value={value} onChange={(html) => setHtmlContent(html)} />                </Box>
+                    <RichText value={value} onChange={(html) => handleHTMLContent(html)} />
+                </Box>
                 <Box sx={{ ...flexColumn, gap: '16px', width: '100%' }}>
                     {typeButton()}
                     <Button
