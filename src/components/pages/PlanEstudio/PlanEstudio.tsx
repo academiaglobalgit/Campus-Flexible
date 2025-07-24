@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
@@ -16,6 +16,7 @@ import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
@@ -33,7 +34,14 @@ const PlanEstudio: React.FC = () => {
     const goToInformacion = (id_curso: number) => navigate(AppRoutingPaths.PLAN_ESTUDIO_INFORMACION.replace(":id",`${id_curso}`));
 
     const [value, setValue] = React.useState(0);
-    
+    const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
+
+    useEffect(() => {
+        const indexTab = getTabSelected('plan-estudio');
+        setValue(indexTab);
+        setPreviewTabSelected(indexTab);
+    },[]);
+
 
     const handleVideoBienvenida = () => {
         setUrlVideo(video.data?.url ?? "");
@@ -118,8 +126,13 @@ const PlanEstudio: React.FC = () => {
         </Box>
     );
 
+    const handleTabChange = (val: number) => {
+        setValue(val);
+        setTabSelected({tab: 'plan-estudio', index: val});
+    }
+
     const TabsSection = (periodos: number[]) => (
-        <PeriodosTabs periodos={periodos.length} tabChange={(newValue) => setValue(newValue)} />
+        <PeriodosTabs periodos={periodos.length} tabChange={handleTabChange} tabSelected={tabPreviewSelected} />
     );
 
     const ListadoMateriaVistaMobil = (data: PlanEstudioMateriasResponse[], periodos: number[]) => (

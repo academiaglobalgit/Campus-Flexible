@@ -16,14 +16,9 @@ export const EliminarComentarioDialog: React.FC<DialogProps> = ({ isOpen, close 
         setOpen(isOpen ?? false);
     }, [isOpen]);
 
-    const handleClose = () => {
+    const handleClose = (val: boolean) => {
         setOpen(false);
-        close(false);
-    };
-
-    const eliminarComentario = () => {
-        setOpen(false);
-        close(true);
+        close(val);
     };
 
     return (
@@ -34,12 +29,12 @@ export const EliminarComentarioDialog: React.FC<DialogProps> = ({ isOpen, close 
                     <Typography component="span" variant="body3">¿Deseas eliminar este comentario?</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%' }}>
                         <>
-                            <Button onClick={eliminarComentario} fullWidth color="error">
+                            <Button onClick={() => handleClose(true)} fullWidth color="error">
                                 Sí, Borrar
                             </Button>
                         </>
                         <>
-                            <Button onClick={handleClose} fullWidth variant="outlined" color="primary">
+                            <Button onClick={() => handleClose(false)} fullWidth variant="outlined" color="primary">
                                 No borrar
                             </Button>
                         </>

@@ -1,5 +1,5 @@
-import { Box, CircularProgress, type SxProps, type Theme } from "@mui/material";
-import { Typography } from "../../atoms/Typography/Typography";
+import { Box, CircularProgress, Typography, type SxProps, type Theme } from "@mui/material";
+// import { Typography } from "../../atoms/Typography/Typography";
 
 type LoadingCircularProps = {
     Text?: string;
@@ -23,9 +23,7 @@ export const LoadingCircular: React.FC<LoadingCircularProps> = ({ Text = "Cargan
                 }
             }>
             <CircularProgress />
-            <Typography component="h4" variant="h4" color="primary">
-                {Text}
-            </Typography>
+            <Typography component="h4" variant="h4" color="primary" dangerouslySetInnerHTML={{__html: Text}} sx={{textAlign: 'center'}} />
         </Box>
     )
 }

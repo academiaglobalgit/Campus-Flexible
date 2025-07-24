@@ -25,10 +25,10 @@ export const Dialog: React.FC<ResponsiveDialogProps> = ({children, isOpen, sxPro
                 slotProps={{
                     paper: {
                         sx: {
-                            ...sxProps,
                             backgroundColor: '#f0f0f0',
                             borderRadius: '20px', 
                             overflow: 'hidden',
+                            ...sxProps,
                         },
                     },
                 }}

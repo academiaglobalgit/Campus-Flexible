@@ -13,19 +13,25 @@ import { flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { ComentariosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDialog";
 import { EliminarComentarioDialog } from "../../molecules/Dialogs/EliminarComentarioDialog/EliminarComentarioForosDialog";
-import { GetMensajesForo, GetTemaForoById, SaveComentarioForo } from "../../../services/ForosService";
+import { DeleteMensaje, GetMensajesForo, GetTemaForoById, SaveComentarioForo } from "../../../services/ForosService";
 import { useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ForosSaveResponse } from "@constants";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { getForoSelected } from "../../../hooks/useLocalStorage";
+import { SALA_CONVERSACION } from "../../../types/endpoints";
+import LoadingDialog from "../../molecules/Dialogs/LoadingDialog/LoadingDialog";
+import { useNotification } from "../../../providers/NotificationProvider";
 
 const comentarios = [{ id: 0, label: 'Todos los comentarios' }, { id: 1, label: 'Mis comentarios' }];
 const ordenar = [{ id: 0, label: 'Más actuales' }, { id: 1, label: 'Más antigüos' }];
 const limite = [{ id: 5, label: '5' }, { id: 10, label: '10' }, { id: 15, label: '15' }];
 
+const GetTipoOrden = (orden: number): string => (orden === 0 ? 'DESC' : 'ASC');
+
 const Foros: React.FC = () => {
     const theme = useTheme();
+    const { showNotification } = useNotification();
     
     const { id } = useParams<{id:string}>();
     const { refetch } = GetTemaForoById(Number(id!), {enabled: false});
@@ -37,9 +43,9 @@ const Foros: React.FC = () => {
     const [todosComentarios, setTodosComentarios] = React.useState(1);
     const [orden, setOrden] = React.useState(0);
     const [paginaSize, setPaginaSize] = React.useState(5);
-    const GetTipoOrden = (orden: number): string => (orden === 0 ? 'DESC' : 'ASC');
+    
     const [textComentario, setTextComentario] = React.useState<{ autor: string, mensaje: string } | null>(null);
-    const [idMensajeRespuesta, setIdMensajeRespuesta] = React.useState(0);
+    const [idMensaje, setIdMensaje] = React.useState(0);
 
     const { data: Mensajes, isLoading } = GetMensajesForo(Number(id!), paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize);
 
@@ -47,6 +53,9 @@ const Foros: React.FC = () => {
     const [isOpenForosDialog, setIsOpenForosDialog] = React.useState(false);
     const [isOpenEliminarComentarioDialog, setIsOpenEliminarComentarioDialog] = React.useState(false);
     const [temaData, setTemaData] = React.useState<any>();    
+
+    const [isOpenLoading, setIsOpenLoading] = React.useState(false);
+    const [textoLoading, setTextoLoading] = React.useState("");
 
     const { control, formState: { errors } } = useForm<ForoData>({
             resolver: zodResolver(foroSchema(comentarios.map((m) => m.id), ordenar.map((t) => t.id), limite.map((t) => t.id))),
@@ -82,26 +91,79 @@ const Foros: React.FC = () => {
         }
     }, [Mensajes]);
 
-    const handleComentar = (val: any) => {
-        console.log(val);
+    const handleComentar = (val: { htmlContent: string, type: string }) => {
         setIsOpenForosDialog(false);
-        createMutation.mutate({ id_mensaje: null, id_recurso: Number(id!), mensaje: val.htmlContent, id_mensaje_respuesta: null });
+
+        setIsOpenLoading(true);
+        setTextoLoading("Guardando...");
+        if(val.type === 'Editar' || val.type === 'Comentar') {
+            createMutation.mutate({ id_mensaje: val.type === 'Comentar' ? null : idMensaje, id_recurso: Number(id!), mensaje: val.htmlContent, id_mensaje_respuesta: null });
+        }else{
+            createMutation.mutate({ id_mensaje: null, id_recurso: Number(id!), mensaje: val.htmlContent, id_mensaje_respuesta: idMensaje });
+        }
     }
 
     const createMutation = useMutation({
         mutationFn: SaveComentarioForo,
-        onSuccess: (newComment: ForosSaveResponse) => {
+        onSuccess: async (newComment: ForosSaveResponse) => {
             console.log(newComment);
-            // showNotification(`Perfil actualizado satisfactorimente`,"success");
+            setIdMensaje(0);
+
+            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, Number(id!), paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
+            
+            await queryClient.invalidateQueries({
+                queryKey: keys,
+                exact: true
+            });
+
+            showNotification(`Comentario guardado satisfactorimente`,"success");
+            setIsOpenLoading(false);
             // setLoading(false);
         },
         onError: (error) => {
             console.log(error)
-            // showNotification(`Error al registrar: ${error.message}`, "error");
+            setIsOpenLoading(false);
+            showNotification(`Error al registrar: ${error.message}`, "error");
             // setLoading(false);
         },
         onSettled: () => {
             console.log('La mutación ha finalizado');
+        }
+    });
+
+    const handleEliminarComentario = (isDelete: boolean) => {
+         setIsOpenEliminarComentarioDialog(false);
+        if(isDelete) {
+            setIsOpenLoading(true);
+            setTextoLoading("Eliminando comentario");
+            deleteMutation.mutate(idMensaje);
+        }
+    }
+
+    const deleteMutation = useMutation({
+        mutationFn: DeleteMensaje,
+        onSuccess: async (data) => {
+            // await queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
+            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, Number(id!), paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
+            await queryClient.cancelQueries({ queryKey: keys });
+            
+            await queryClient.invalidateQueries({
+                queryKey: keys,
+                exact: true
+            });
+            
+            showNotification(`Comentario eliminado satisfactorimente`,"success");
+            setIsOpenLoading(false);
+            
+            setIdMensaje(0);
+        },
+        onError: (error) => {
+            showNotification(`Error al registrar: ${error.message}`, "error");
+            setIsOpenLoading(false);
+        },
+        onSettled: () => {
+            // Invalidar para asegurar datos frescos
+            // queryClient.invalidateQueries({ queryKey: ['todos'] });
         }
     });
 
@@ -113,7 +175,7 @@ const Foros: React.FC = () => {
                 <Box sx={{ width: '100%', mt: '32px' }}>
                     <Button 
                         fullWidth
-                        onClick={() => handleOpenComentariosDialog()}
+                        onClick={() => handleOpenComentariosDialog('Comentar', undefined)}
                         icon={<Edit1 />}
                     >
                         Comentar
@@ -123,9 +185,19 @@ const Foros: React.FC = () => {
         );
     }
 
-    const handleOpenComentariosDialog = (type: 'Comentar' | 'Editar' | 'Responder' = 'Comentar') => {
+    const handleOpenComentariosDialog = (type: 'Comentar' | 'Editar' | 'Responder' = 'Comentar', mensaje: any) => {
         setTypeDialog(type);
-        setIsOpenForosDialog(true)
+        setIsOpenForosDialog(true);
+
+        if(mensaje) {
+            setTextComentario({ mensaje: mensaje.mensaje, autor: mensaje.autor || '' });
+            setIdMensaje(mensaje.id_mensaje);
+        }
+    };
+
+    const handleOpenEliminarComentarioDialog = (mensaje: any) => {
+        setIsOpenEliminarComentarioDialog(true);
+        setIdMensaje(mensaje.id_mensaje);
     };
 
     const ComentariosCard = () => {
@@ -186,18 +258,20 @@ const Foros: React.FC = () => {
                                     <Button 
                                         fullWidth
                                         onClick={() => {
-                                            console.log(item);
-                                            setTextComentario({ mensaje: item.mensaje, autor: item.autor || '' });
-                                            setIdMensajeRespuesta(item.id_mensaje);
-                                            handleOpenComentariosDialog('Editar');
+                                            handleOpenComentariosDialog('Editar', item);
                                         }}
                                         variant="outlined"
                                         sxProps={{ height: '26px' }}
                                     >Editar</Button>
                                 </>
                                 <>
-                                    <Button fullWidth onClick={() => setIsOpenEliminarComentarioDialog(true)} 
-                                    variant="outlined" color="error" sxProps={{ height: '26px' }}>Eliminar</Button>
+                                    <Button 
+                                        fullWidth 
+                                        variant="outlined" 
+                                        color="error" 
+                                        sxProps={{ height: '26px' }}
+                                        onClick={() => handleOpenEliminarComentarioDialog(item)} 
+                                    >Eliminar</Button>
                                 </>
                             </>
                         :
@@ -205,15 +279,10 @@ const Foros: React.FC = () => {
                             <>
                                     <Button 
                                         fullWidth
-                                        onClick={() => {
-                                            console.log(item);
-                                            setTextComentario({ mensaje: item.mensaje, autor: item.autor || '' });
-                                            setIdMensajeRespuesta(item.id_mensaje);
-                                            handleOpenComentariosDialog('Editar');
-                                        }}
+                                        onClick={() => handleOpenComentariosDialog('Responder', item)}
                                         variant="outlined"
                                         sxProps={{ height: '26px' }}
-                                    >Editar</Button>
+                                    >Responder</Button>
                                 </>
                         </>
                     }
@@ -381,7 +450,11 @@ const Foros: React.FC = () => {
             save={(val) => handleComentar(val)}
             textAccion={textComentario ?? undefined}
         />
-        <EliminarComentarioDialog isOpen={isOpenEliminarComentarioDialog} close={() => setIsOpenEliminarComentarioDialog(false)} />
+        <EliminarComentarioDialog 
+            isOpen={isOpenEliminarComentarioDialog} 
+            close={(val: boolean) => handleEliminarComentario(val)} 
+        />
+        <LoadingDialog isOpen={isOpenLoading} Text={textoLoading} />
     </>
     
   );

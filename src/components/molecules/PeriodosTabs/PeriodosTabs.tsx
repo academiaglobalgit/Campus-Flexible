@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Tab, Tabs, tabsClasses } from "@mui/material";
 import { toRoman } from "../../../utils/Helpers";
 
 type PeriodosTabsProps = {
     periodos: number;
+    tabSelected?: number;
     tabChange?: (newValue: number) => void;
 }
 
-const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabChange}) => {
+const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabSelected = 0, tabChange}) => {
     const [value, setValue] = React.useState(0);
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -15,6 +16,10 @@ const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabChange}) => {
             tabChange(newValue);
         }
     };
+
+    useEffect(() => {
+        setValue(tabSelected);
+    }, [tabSelected]);
     
     return(
         <Box sx={{ width: "100%" }}>
