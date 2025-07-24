@@ -8,7 +8,7 @@ import Asesorias from "../../../assets/asesorias.jpg";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import { flexColumn, flexRows } from "@styles";
+import { flexColumn } from "@styles";
 import { useContactoInterno } from "../../../services/ContactoService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
@@ -26,7 +26,8 @@ const ContactoInterno: React.FC = () => {
         const images = {
             "Admisiones": CampusDigital,
             "Académica": ServiciosEscolares,
-            "Prospectos": Prospectos
+            "Prospectos": Prospectos,
+            "Asesorias": Asesorias
         }
 
         interno.data.forEach((item: { nombre_seccion: any; id_tipo_contacto: any; descripcion_seccion: any; valor_contacto: any; }) => {
@@ -123,14 +124,14 @@ const ContactoInterno: React.FC = () => {
                                 </Box>
                                 {resultadoFinal.map((section, index) => (
                                     <TabPanel key={index} value={value} index={index}>
-                                        {ConstentsDesktop(section)}
+                                        {Contenido(section)}
                                     </TabPanel>))}
                             </>
                             :
                             <>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                                     {resultadoFinal.map((section) => (
-                                        ConstentsDesktop(section)
+                                        Contenido(section)
                                     ))}
                                 </Box>
                             </>
@@ -141,35 +142,35 @@ const ContactoInterno: React.FC = () => {
         </>
     );
 
-    const ConstentsDesktop = (section: any) => (
-        <Box sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '55px' }}>
-
-
-            <Box sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '17px' }}>
-
+    const Contenido = (section: any) => (
+        <Box sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '57px' }}>
+            <Box sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '20pxpx' }}>
                 {isMobile ?
                     <>
-                        <Divider textAlign="center">
-                            <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
-                        </Divider>
                         <Typography component="span" variant="body1">
                             {section.data.description}
                         </Typography>
                     </>
                     :
                     <>
-                        <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '350px', objectFit: 'cover' }}>
+
+                            <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
+                            </Box>
+                            <Divider textAlign="center">
+                                <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
+                            </Divider>
+                            <Typography component="span" variant="body1">
+                                {section.data.description}
+                            </Typography>
                         </Box>
-                        <Divider textAlign="center">
-                            <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
-                        </Divider>
                     </>
                 }
 
-                <Box sx={{ ...flexColumn, alignItems: 'flex-start', mt: 1, gap: '10px' }}>
+                <Box sx={{ ...flexColumn, alignItems: 'flex-start', mt: 1, gap: '17px' }}>
                     <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1 }}>
-                        <Typography component="span" variant="body2" color="primary">
-                            Horarios:
+                        <Typography component="h5" variant="h5" color="primary" sx={{ fontWeight: 400, color: theme.palette.primary.light }}>
+                            Horarios de atención:
                         </Typography>
                         <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
                     </Box>
