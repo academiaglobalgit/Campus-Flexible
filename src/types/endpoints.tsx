@@ -73,6 +73,7 @@ export const BIBLIOTECA_ENDPOINTS = {
 }
 
 export const SALA_CONVERSACION = {
+    GET_SALA_CONVERSACION: { path: '/sala-conversacion', key: 'get-id-conversacion' },
     GET_MENSAJES: { path: '/sala-conversacion/mensajes', key: 'sala-conversacion' },
     SET_MENSAJES: { path: 'sala-conversacion/mensajes/guardar', key: 'sala-conversacion-guardar' },
     DELETE_MENSAJES: { path: '/sala-conversacion/mensajes/eliminar', key: 'sala-conversacion-eliminar' },

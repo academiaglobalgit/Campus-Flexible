@@ -19,7 +19,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
     const [htmlContent, setHtmlContent] = React.useState("");
-    const [value, setHtmlContentEdit] = React.useState("");
+    const [htmlContentEdit, setHtmlContentEdit] = React.useState("");
     const [isDisabled, setIsDisabled] = React.useState(true);
 
     useEffect(() => {
@@ -113,7 +113,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                         backgroundColor: '#FFF',
                     }}
                 >
-                    <RichText value={value} onChange={(html) => handleHTMLContent(html)} />
+                    <RichText value={htmlContentEdit} onChange={(html) => handleHTMLContent(html)} />
                 </Box>
                 <Box sx={{ ...flexColumn, gap: '16px', width: '100%' }}>
                     {typeButton()}

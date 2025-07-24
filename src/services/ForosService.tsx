@@ -2,23 +2,37 @@ import type { ForosSaveResponse, TemaForoByIdResponse } from "@constants";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import { SALA_CONVERSACION } from "../types/endpoints";
-import type { ForoMensajesResponse } from "../types/SalaConversacion.interface";
+import type { DatosSalaConversacionResponse, ForoMensajesResponse } from "../types/SalaConversacion.interface";
 
+
+export const GetIdConversacion = (idTipoSala: number) => {
+    return useQuery<DatosSalaConversacionResponse, Error>({
+        queryKey: [SALA_CONVERSACION.GET_SALA_CONVERSACION.key, idTipoSala],
+        queryFn: () => apiClient.get<DatosSalaConversacionResponse>(`${SALA_CONVERSACION.GET_SALA_CONVERSACION.path}?id_tipo_sala=${idTipoSala}`),
+    });
+}
 
 export const GetTemaForoById = (idRecurso: number, options?: { enabled?: boolean }) => {
     return useQuery<TemaForoByIdResponse, Error>({
-        queryKey: [SALA_CONVERSACION.GET_TEMA_FORO_BY_ID.key],
+        queryKey: [SALA_CONVERSACION.GET_TEMA_FORO_BY_ID.key, idRecurso],
         queryFn: () => apiClient.get<TemaForoByIdResponse>(`${SALA_CONVERSACION.GET_TEMA_FORO_BY_ID.path}?id_recurso=${idRecurso}`),
         ...options
     });
 }
 
-export const GetMensajesForo = (idRecurso: number, pagina: number, todos: number, orden: string, paginasize: number) => {
+export const GetMensajesForo = (id_tipo_sala: number, idRecurso: number, pagina: number, todos: number, orden: string, paginasize: number) => {
+
+    const url = `${SALA_CONVERSACION.GET_MENSAJES.path}?id_tipo_sala=${id_tipo_sala}&id_recurso=${idRecurso}&pagina=${pagina}&todos=${todos}&orden=${orden}${id_tipo_sala !== 4 ? `&paginasize=${paginasize}` : ''}`;
+
+    const keys = [SALA_CONVERSACION.GET_MENSAJES.key, id_tipo_sala, idRecurso, pagina, todos, orden, paginasize];
+
+    if(id_tipo_sala !== 4) {
+        keys.pop();
+    }
+
     return useQuery<ForoMensajesResponse, Error>({
-        queryKey: [SALA_CONVERSACION.GET_MENSAJES.key, idRecurso, pagina, todos, orden, paginasize],
-        queryFn: async () => await apiClient.get<ForoMensajesResponse>(
-            `${SALA_CONVERSACION.GET_MENSAJES.path}?id_tipo_sala=3&id_recurso=${idRecurso}&pagina=${pagina}&todos=${todos}&orden=${orden}&paginasize=${paginasize}`
-        ),
+        queryKey: keys,
+        queryFn: async () => await apiClient.get<ForoMensajesResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 }

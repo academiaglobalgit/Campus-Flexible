@@ -9,7 +9,7 @@ import {
   // MenuButtonEditLink,
   // MenuButtonHighlightColor,
   // MenuButtonHorizontalRule,
-  MenuButtonImageUpload,
+  // MenuButtonImageUpload,
   // MenuButtonIndent,
   MenuButtonItalic,
   // MenuButtonOrderedList,
@@ -20,7 +20,7 @@ import {
   // MenuButtonSuperscript,
   // MenuButtonTaskList,
   // MenuButtonTextColor,
-  // MenuButtonUnderline,
+  MenuButtonUnderline,
   // MenuButtonUndo,
   // MenuButtonUnindent,
   MenuControlsContainer,
@@ -59,7 +59,7 @@ export default function EditorMenuControls() {
 
       <MenuButtonItalic />
 
-      {/* <MenuButtonUnderline /> */}
+      <MenuButtonUnderline />
 
       {/* <MenuButtonStrikethrough />
 
@@ -137,7 +137,7 @@ export default function EditorMenuControls() {
 
       <MenuDivider /> */}
 
-      <MenuButtonImageUpload
+      {/* <MenuButtonImageUpload
         onUploadFiles={(files) =>
           // For the sake of a demo, we don't have a server to upload the files
           // to, so we'll instead convert each one to a local "temporary" object
@@ -151,7 +151,7 @@ export default function EditorMenuControls() {
             alt: file.name,
           }))
         }
-      />
+      /> */}
 
       {/* <MenuDivider />
 
