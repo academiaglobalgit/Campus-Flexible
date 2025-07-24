@@ -26,7 +26,7 @@ export const GetMensajesForo = (id_tipo_sala: number, idRecurso: number, pagina:
 
     const keys = [SALA_CONVERSACION.GET_MENSAJES.key, id_tipo_sala, idRecurso, pagina, todos, orden, paginasize];
 
-    if(id_tipo_sala !== 4) {
+    if(id_tipo_sala === 4) {
         keys.pop();
     }
 
