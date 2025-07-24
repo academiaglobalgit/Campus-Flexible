@@ -51,29 +51,26 @@ const ContactoInterno: React.FC = () => {
                     seccion.data.telefonos = seccion.data.telefonos
                         ? `${seccion.data.telefonos}/${item.valor_contacto}`
                         : item.valor_contacto;
-                    seccion.data.valor = 0;
                     break;
                 case 2:
                     seccion.data.email = item.valor_contacto;
-                    seccion.data.valor = 1;
                     break;
                 case 3:
                     seccion.data.horarios = item.valor_contacto;
-                    seccion.data.valor = 2;
-
                     break;
             }
         });
     }
 
     const resultadoFinal = Array.from(seccionesMap.values());
-
+    console.log(resultadoFinal)
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
     const Image = () => {
         const src = resultadoFinal[value].imgSrc;
+        console.log(value)
 
         return (
             <Box
@@ -113,7 +110,7 @@ const ContactoInterno: React.FC = () => {
                                         }}
                                     >
                                         {
-                                            TabsSections.map((section, index) => (
+                                            resultadoFinal.map((section, index) => (
                                                 <Tab
                                                     key={index}
                                                     label={section.label}
@@ -125,11 +122,8 @@ const ContactoInterno: React.FC = () => {
                                     </Tabs>
                                 </Box>
                                 {resultadoFinal.map((section, index) => (
-                                    <TabPanel key={index} value={index} index={section.valor} >
-
+                                    <TabPanel key={index} value={value} index={index}>
                                         {ConstentsDesktop(section)}
-
-
                                     </TabPanel>))}
                             </>
                             :
