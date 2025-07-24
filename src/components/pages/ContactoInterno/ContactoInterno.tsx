@@ -113,11 +113,11 @@ const ContactoInterno: React.FC = () => {
                                         }}
                                     >
                                         {
-                                            resultadoFinal.map((section, index) => (
+                                            TabsSections.map((section, index) => (
                                                 <Tab
                                                     key={index}
                                                     label={section.label}
-                                                    value={section.valor}
+                                                    value={section.value}
                                                     sx={{ minWidth: '150px', padding: '0px' }}
                                                 />
                                             ))
