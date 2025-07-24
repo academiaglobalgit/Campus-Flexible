@@ -1,3 +1,15 @@
+export interface DatosSalaConversacionResponse {
+    success: boolean;
+    data:    DatosSalaConversacion[];
+}
+
+export interface DatosSalaConversacion {
+    id_conversacion: number;
+    titulo:          string;
+    fecha_creacion:  Date;
+    plan_estudio:    string;
+}
+
 export interface SalaConversacionResponse {
     success: boolean;
     data:    DataSala;

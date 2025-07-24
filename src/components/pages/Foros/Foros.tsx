@@ -20,6 +20,7 @@ const Foros: React.FC = () => {
     
     const [isOpenComentarDialog, setIsOpenComentarDialog] = React.useState(false);
     const [temaData, setTemaData] = React.useState<any>();
+    const idTipoSala = 3;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,6 +68,7 @@ const Foros: React.FC = () => {
                         <TituloIcon Titulo="Foros" Icon={ForosIcon} />
                         <ComentarButtonSection />
                         <ChatForoSalaConversacion 
+                            idTipoSala={idTipoSala}
                             idRecurso={Number(id!)} 
                             showFiltros={true} 
                             showPagination={true} 
@@ -78,6 +80,7 @@ const Foros: React.FC = () => {
                     <ContainerDesktop title="Foros">
                         <ComentarButtonSection />
                         <ChatForoSalaConversacion 
+                            idTipoSala={idTipoSala}
                             idRecurso={Number(id!)} 
                             showFiltros={true} 
                             showPagination={true} 

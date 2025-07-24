@@ -2,7 +2,7 @@ import React from "react";
 import { DeleteMensaje, GetMensajesForo, SaveComentarioForo } from "../../../services/ForosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { CardMensajeForoSala } from "../../molecules/CardMensajeForoSala/CardMensajeForoSala";
-import { Box, FormControl, InputLabel, MenuItem, Pagination, Select } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Pagination, Select, useMediaQuery, useTheme } from "@mui/material";
 import { DividerSection } from "../../molecules/DividerSection/DividerSection";
 import { Controller, useForm } from "react-hook-form";
 import { foroSchema, type ForoData } from "../../../schemas/foroSchema";
@@ -17,11 +17,15 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import LoadingDialog from "../../molecules/Dialogs/LoadingDialog/LoadingDialog";
 
 type ChatForoSalaConversacionProps = {
-    idRecurso: number;
-    showFiltros: boolean;
-    showPagination: boolean;
+    idTipoSala:         number;
+    idRecurso:          number;
+    showFiltros:        boolean;
+    showPagination:     boolean;
     showComentarDialog: boolean;
+    saveComentarioExterno?: { htmlContent: string, type: string };
+    orderMessages?:     number | undefined;
     onCloseComentarDialog?: () => void;
+    onSaveComentarioExterno?: () => void;
 }
 
 const Filtros = {
@@ -32,8 +36,22 @@ const Filtros = {
 
 const GetTipoOrden = (orden: number): string => (orden === 0 ? 'DESC' : 'ASC');
 
-
-export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> = ({idRecurso, showFiltros, showPagination, showComentarDialog, onCloseComentarDialog}) => {
+export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> = (
+    {
+        idTipoSala, 
+        idRecurso, 
+        showFiltros, 
+        showPagination, 
+        showComentarDialog, 
+        saveComentarioExterno, 
+        orderMessages,
+        onCloseComentarDialog, 
+        onSaveComentarioExterno,
+    }
+) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const { showNotification } = useNotification();
     const queryClient = useQueryClient();
     
@@ -41,10 +59,10 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     const [totalPaginas, setTotalPaginas] = React.useState(1);
     const [todosComentarios, setTodosComentarios] = React.useState(1);
     const [orden, setOrden] = React.useState(0);
-    const [paginaSize, setPaginaSize] = React.useState(5);
+    const [paginaSize, setPaginaSize] = React.useState<number>(5);
     const [idMensaje, setIdMensaje] = React.useState(0);
 
-    const { data: Mensajes, isLoading } = GetMensajesForo(idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize);
+    const { data: Mensajes, isLoading } = GetMensajesForo(idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize);
 
     const [textComentario, setTextComentario] = React.useState<{ autor: string, mensaje: string } | null>(null);
 
@@ -62,6 +80,18 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             limite: 5,
         },
     });
+
+    React.useEffect(() => {
+        if (orderMessages) {
+            setOrden(orderMessages);
+        }
+    }, [orderMessages]);
+
+    React.useEffect(() => {
+        if (saveComentarioExterno) {
+            handleComentar(saveComentarioExterno);
+        }
+    }, [saveComentarioExterno]);
 
     React.useEffect(() => {
         if (showComentarDialog) {
@@ -95,8 +125,8 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             console.log(newComment);
             setIdMensaje(0);
 
-            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
-            
+            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
+
             await queryClient.invalidateQueries({
                 queryKey: keys,
                 exact: true
@@ -104,6 +134,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
             showNotification(`Comentario guardado satisfactorimente`,"success");
             setIsOpenLoading(false);
+            if(onSaveComentarioExterno) onSaveComentarioExterno();
         },
         onError: (error) => {
             console.log(error)
@@ -127,8 +158,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     const deleteMutation = useMutation({
         mutationFn: DeleteMensaje,
         onSuccess: async (_data) => {
-            // await queryClient.invalidateQueries({ queryKey: [SALA_CONVERSACION.GET_MENSAJES.key] });
-            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
+            const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
             await queryClient.cancelQueries({ queryKey: keys });
             
             await queryClient.invalidateQueries({
@@ -146,8 +176,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             setIsOpenLoading(false);
         },
         onSettled: () => {
-            // Invalidar para asegurar datos frescos
-            // queryClient.invalidateQueries({ queryKey: ['todos'] });
+            console.log('La mutación ha finalizado');
         }
     });
 
@@ -335,7 +364,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     return(
         <>
             <>
-                { showFiltros && FiltrosSection('row') }
+                { showFiltros && FiltrosSection(!isMobile ? 'row' : 'column') }
                 <ComentariosCard />
                 { showPagination && PaginationSection() }
             </>
