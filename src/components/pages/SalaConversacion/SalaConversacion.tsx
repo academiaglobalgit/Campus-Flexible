@@ -138,42 +138,28 @@ const SalaConversacion: React.FC = () => {
             <Grid size={{ xs: 12, md: 6 }}>
                 <Box >
                     {tabsSection()}
-                    <TabPanel key={0} value={tabValue} index={0}>
-                        <Box
-                            sx={{ height: '520px', maxHeight: '520px', overflow: 'scroll', overflowX: 'hidden', pt: 1 }}
-                        >
-                            <ChatForoSalaConversacion 
-                                key={0}
-                                idTipoSala={idTipoSala}
-                                idRecurso={idConversacion} 
-                                showFiltros={false} 
-                                showPagination={false} 
-                                showComentarDialog={false}
-                                saveComentarioExterno={saveComentarioExterno}
-                                orderMessages={0}
-                                onSaveComentarioExterno={handleSaveComentarioExterno}
-                            />
-                        </Box>
-                    </TabPanel>
-                    <TabPanel key={1} value={tabValue} index={1}>
-                        <Box
-                            sx={{ height: '520px', maxHeight: '520px', overflow: 'scroll', overflowX: 'hidden', pt: 1 }}
-                        >
-                            <ChatForoSalaConversacion 
-                                key={1}
-                                idTipoSala={idTipoSala}
-                                idRecurso={idConversacion} 
-                                showFiltros={false} 
-                                showPagination={false} 
-                                showComentarDialog={false}
-                                saveComentarioExterno={saveComentarioExterno}
-                                orderMessages={1}
-                                onSaveComentarioExterno={handleSaveComentarioExterno}
-                            />
-                        </Box>
-                    </TabPanel>
+                    {
+                        tabsMessages.map((_, index) => (
+                            <TabPanel key={index} value={tabValue} index={index}>
+                                <Box
+                                    sx={{ height: '520px', maxHeight: '520px', overflow: 'scroll', overflowX: 'hidden', pt: 1 }}
+                                >
+                                    <ChatForoSalaConversacion 
+                                        key={0}
+                                        idTipoSala={idTipoSala}
+                                        idRecurso={idConversacion} 
+                                        showFiltros={false} 
+                                        showPagination={false} 
+                                        showComentarDialog={false}
+                                        saveComentarioExterno={saveComentarioExterno}
+                                        orderMessages={index} //0 DESC, 1 ASC
+                                        onSaveComentarioExterno={handleSaveComentarioExterno}
+                                    />
+                                </Box>
+                            </TabPanel>
+                        ))
+                    }
                 </Box>
-                
             </Grid>
         </Grid>
     );
