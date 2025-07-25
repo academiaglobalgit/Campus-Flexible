@@ -27,7 +27,7 @@ export const GetMensajesForo = (id_tipo_sala: number, idRecurso: number, pagina:
     const keys = [SALA_CONVERSACION.GET_MENSAJES.key, id_tipo_sala, idRecurso, pagina, todos, orden, paginasize];
 
     if(id_tipo_sala === 4) {
-        keys.pop();
+        keys.pop(); //quitamos paginasize para SalaConversacion
     }
 
     return useQuery<ForoMensajesResponse, Error>({
@@ -41,8 +41,6 @@ export const SaveComentarioForo = async (payload:
     { 
         id_mensaje: number | null, id_recurso: number, mensaje: string, id_mensaje_respuesta: number | null
     }): Promise<ForosSaveResponse> => {
-
-        console.log(payload);
 
     const encryptedPayload = await apiClient.encryptData({...payload});
     return await apiClient.post<ForosSaveResponse>(SALA_CONVERSACION.SET_MENSAJES.path, { data: encryptedPayload });

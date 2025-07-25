@@ -5,6 +5,7 @@ import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Edit1 } from "@iconsCustomizeds";
 import { flexColumn } from "@styles";
 import RichText from "../../RichText/RichText";
+import type { RichTextEditorRef } from "mui-tiptap";
 
 type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
@@ -18,9 +19,11 @@ type ComentariosDialogProps = {
 export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save, textAccion }) => {
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
-    const [htmlContent, setHtmlContent] = React.useState("");
-    const [htmlContentEdit, setHtmlContentEdit] = React.useState("");
+
+    const [initialContent, setInitialContent] = React.useState<string | null>(null);
     const [isDisabled, setIsDisabled] = React.useState(true);
+
+    const editorRef = React.useRef<RichTextEditorRef>(null);
 
     useEffect(() => {
         setOpen(isOpen ?? false);
@@ -36,22 +39,19 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 break;
             case 'Responder':
                 setTitle(`Responder a: ${textAccion?.autor}`);
+                setIsDisabled(true);
                 break;
         }
     }, [type, textAccion]);
 
     useEffect(() => {
         if (isOpen && textAccion && type === 'Editar') {
-            setHtmlContentEdit(textAccion.mensaje ?? "");
+            setInitialContent(textAccion.mensaje ?? "");
+            setIsDisabled(false);
         } else if (!isOpen && textAccion) {
-            setHtmlContentEdit("");
+            setInitialContent("");
         }
     }, [isOpen, textAccion, type]);
-
-    useEffect(() => {
-        setIsDisabled(htmlContent === "");
-    },[htmlContent]);
-
 
     const typeButton = () => {
         switch (type) {
@@ -82,15 +82,15 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     };
 
     const handleSave = () => {
-        if(htmlContent === "") return;
+        const html = editorRef.current?.editor?.getHTML() || "";
+        if(html === "") return;
         setOpen(false);
         if (save) {
-            save({ htmlContent, type });
+            save({ htmlContent: html, type });
         }
     };
-
     const handleHTMLContent = (html: string) => {
-        setHtmlContent(html !== '<p></p>' ? html : '');
+        setTimeout(() => setIsDisabled(html === '<p></p>'), 50);
     }
 
     return (
@@ -113,7 +113,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                         backgroundColor: '#FFF',
                     }}
                 >
-                    <RichText value={htmlContentEdit} onChange={(html) => handleHTMLContent(html)} />
+                    <RichText ref={editorRef} value={initialContent} onChange={handleHTMLContent} />
                 </Box>
                 <Box sx={{ ...flexColumn, gap: '16px', width: '100%' }}>
                     {typeButton()}
