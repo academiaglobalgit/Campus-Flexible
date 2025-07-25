@@ -29,14 +29,14 @@ export const Tutorias: React.FC = () => {
             </Typography>
     )
 
-    const AgregarButton = () => (
-        <Button onClick={() => { }} fullWidth >Agregar a mi calendario</Button>
+    const AgregarButton = (url: string) => (
+        <Button onClick={() => window.open(url)} fullWidth >Agregar a mi calendario</Button>
     )
 
-    const AccederButtons = (acceder: string) => (
+    const AccederButtons = (acceder: string, grabacion: string) => (
         <>
             <Button onClick={() => window.open(acceder)} fullWidth>Acceder Aquí</Button>
-            <Button onClick={() => { }} variant="outlined" fullWidth sxProps={{ color: theme.palette.grey[200] }} >Grabación</Button>
+            <Button onClick={() => window.open(grabacion)} variant="outlined" fullWidth sxProps={{ color: theme.palette.grey[200] }} >Grabación</Button>
         </>
     )
 
@@ -53,11 +53,11 @@ export const Tutorias: React.FC = () => {
     return(
         isLoading
         ?
-            <LoadingCircular Text="Cargando Tutorias..." />
+            <LoadingCircular Text="Cargando Clases..." />
         :
             <>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', gap: '18px' }}>
-                    <TituloIcon key={1} Titulo={'Tutorias'} Icon={TutoriasIcon} />
+                    <TituloIcon key={1} Titulo={'Clases'} Icon={TutoriasIcon} />
                 </Box>
 
                 {
@@ -72,14 +72,14 @@ export const Tutorias: React.FC = () => {
                                             {text(tutoria.fecha_inicio)}
                                             {text("(Hora Centro)", theme.palette.text)}
                                         </Box>
-                                        {AgregarButton()}
+                                        {AgregarButton(tutoria.calendario_url)}
                                         {text("Descripción")}
                                         <Typography component="p" variant="body2">
                                             { tutoria.descripcion }
                                         </Typography>
                                         {text("Recursos Compartidos")}
                                         {recursosCompartidos(tutoria.recursos)}
-                                        {AccederButtons(tutoria.reunion_url)}
+                                        {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url)}
                                     </Box>
                                 :
                                     <Grid container spacing={2}>
@@ -100,9 +100,9 @@ export const Tutorias: React.FC = () => {
                                         </Grid>
                                         <Grid size={{md:4}}>
                                             <Box sx={{...flexColumn, gap: '40px'}}>
-                                                {AgregarButton()}
+                                                {AgregarButton(tutoria.calendario_url)}
                                                 <Box sx={{...flexColumn, width: '100%', gap: '10px'}}>
-                                                    {AccederButtons(tutoria.reunion_url)}
+                                                    {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url)}
                                                 </Box>
                                             </Box>
                                         </Grid>
