@@ -14,11 +14,30 @@ export interface Contacto {
     id_usuario_modifico: number;
     eliminado: number;
 }
+
+export interface ContactoInternoResponse {
+    success: boolean;
+    data: ContactoInterno[];
+}
 export interface ContactoInterno {
     id_tipo_contacto: number;
     valor_contacto: string;
+    label?: string;
     descripcion: string;
     id_seccion_contacto: number;
     nombre_seccion: string;
     descripcion_seccion: string;
+    valor: number;
 }
+
+export type ContactoData = {
+    label: string;
+    imgSrc: string;
+    valor: number;
+    data: {
+        description: string | null;
+        horarios: string | null;
+        telefonos: string | null;
+        email: string | null;
+    };
+};

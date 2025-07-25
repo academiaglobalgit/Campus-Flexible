@@ -16,63 +16,24 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 const ContactoInterno: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const [value, setValue] = React.useState(0);
-    const { data: interno, isLoading } = useContactoInterno();
+    const [value, setValue] = React.useState(1);
+    const { data: interno, isLoading } = useContactoInterno(1);
 
-    const seccionesMap = new Map();
+    console.log(interno)
 
-    if (interno?.data) {
-
-        const images = {
-            "Admisiones": CampusDigital,
-            "Académica": ServiciosEscolares,
-            "Prospectos": Prospectos,
-            "Asesorias": Asesorias
-        }
-
-        interno.data.forEach((item: { nombre_seccion: any; id_tipo_contacto: any; descripcion_seccion: any; valor_contacto: any; }) => {
-            if (!seccionesMap.has(item.nombre_seccion)) {
-                seccionesMap.set(item.nombre_seccion, {
-                    label: item.nombre_seccion,
-                    valor: null,
-                    imgSrc: images[item.nombre_seccion] ?? Asesorias,
-                    data: {
-                        description: item.descripcion_seccion,
-                        horarios: null,
-                        telefonos: null,
-                        email: null,
-                    },
-                });
-            }
-
-            const seccion = seccionesMap.get(item.nombre_seccion);
-
-            switch (item.id_tipo_contacto) {
-                case 1:
-                    seccion.data.telefonos = seccion.data.telefonos
-                        ? `${seccion.data.telefonos}/${item.valor_contacto}`
-                        : item.valor_contacto;
-                    break;
-                case 2:
-                    seccion.data.email = item.valor_contacto;
-                    break;
-                case 3:
-                    seccion.data.horarios = item.valor_contacto;
-                    break;
-            }
-        });
-    }
-
-    const resultadoFinal = Array.from(seccionesMap.values());
-    console.log(resultadoFinal)
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
-    const Image = () => {
-        const src = resultadoFinal[value].imgSrc;
-        console.log(value)
+    const images: { [key: number]: string } = {
+        0: CampusDigital,
+        1: Prospectos,
+        2: ServiciosEscolares,
+        3: Asesorias
+    }
 
+    const Image = () => {
+        const src = images[value];
         return (
             <Box
                 component="img"
@@ -85,8 +46,8 @@ const ContactoInterno: React.FC = () => {
     };
 
     const Contents = () => (
-        <>
 
+        <>
             {
 
                 <>
@@ -111,26 +72,26 @@ const ContactoInterno: React.FC = () => {
                                         }}
                                     >
                                         {
-                                            resultadoFinal.map((section, index) => (
+                                            interno.map((section, index) => (
                                                 <Tab
                                                     key={index}
                                                     label={section.label}
-                                                    value={section.value}
+                                                    value={section.valor}
                                                     sx={{ minWidth: '150px', padding: '0px' }}
                                                 />
                                             ))
                                         }
                                     </Tabs>
                                 </Box>
-                                {resultadoFinal.map((section, index) => (
-                                    <TabPanel key={index} value={value} index={index}>
+                                {interno.map((section, index) => (
+                                    <TabPanel key={index + 1} value={value} index={index + 1}>
                                         {Contenido(section)}
                                     </TabPanel>))}
                             </>
                             :
                             <>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-                                    {resultadoFinal.map((section) => (
+                                    {interno.map((section) => (
                                         Contenido(section)
                                     ))}
                                 </Box>
@@ -143,8 +104,8 @@ const ContactoInterno: React.FC = () => {
     );
 
     const Contenido = (section: any) => (
-        <Box sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '57px' }}>
-            <Box sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '20pxpx' }}>
+        <Box key={section.valor} sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '57px' }}>
+            <Box key={section.valor} sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '20pxpx' }}>
                 {isMobile ?
                     <>
                         <Typography component="span" variant="body1">
@@ -153,9 +114,9 @@ const ContactoInterno: React.FC = () => {
                     </>
                     :
                     <>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '350px', objectFit: 'cover' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: 'auto', objectFit: 'cover' }}>
 
-                            <Box component="img" src={section.imgSrc} sx={{ width: '260px', height: '138px' }}>
+                            <Box component="img" src={images[section.valor]} sx={{ width: '260px', height: '138px' }}>
                             </Box>
                             <Divider textAlign="center">
                                 <Typography component="span" variant="subtitle1" color="primary" sx={{ fontWeight: 400, color: "#005A9BCC" }}>{section.label}</Typography>
