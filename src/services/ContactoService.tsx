@@ -48,7 +48,7 @@ export const useContactoInterno = (id_plan_estudios: number) => {
             };
         }>();
 
-        data.forEach((item) => {
+        data.map((item) => {
             if (!seccionesMap.has(item.nombre_seccion)) {
                 seccionesMap.set(item.nombre_seccion, {
                     label: item.nombre_seccion,

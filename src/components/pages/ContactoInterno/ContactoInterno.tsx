@@ -102,8 +102,8 @@ const ContactoInterno: React.FC = () => {
     );
 
     const Contenido = (section: any) => (
-        <Box sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '57px' }}>
-            <Box sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '20pxpx' }}>
+        <Box key={section.valor} sx={isMobile ? { mt: 5 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '57px' }}>
+            <Box key={section.valor} sx={isMobile ? { ...flexColumn, alignItems: 'flex-start', gap: '20px', mt: 2, mb: 2 } : { display: 'flex', flexDirection: 'column', width: '260px', height: '100%', gap: '20pxpx' }}>
                 {isMobile ?
                     <>
                         <Typography component="span" variant="body1">

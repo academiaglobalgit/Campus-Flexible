@@ -20,7 +20,6 @@ export interface ContactoInternoResponse {
     data: ContactoInterno[];
 }
 export interface ContactoInterno {
-    forEach(arg0: (item: any) => void): unknown;
     id_tipo_contacto: number;
     valor_contacto: string;
     descripcion: string;
