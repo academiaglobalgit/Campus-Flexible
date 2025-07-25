@@ -10,6 +10,7 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { SalaConversacion as IconSalaConversacion } from "@iconsCustomizeds";
 import { GetIdConversacion } from "../../../services/ForosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import type { RichTextEditorRef } from "mui-tiptap";
 
 const tabsMessages = [
     {id: 0, label: 'Más Recientes'},
@@ -25,14 +26,15 @@ const SalaConversacion: React.FC = () => {
     const {data: DatosSalaConversacion, isLoading } = GetIdConversacion(idTipoSala);
     
     const [idConversacion, setIdConversacion] = React.useState(0);
-    const [htmlContent, setHtmlContent] = React.useState("");
     const [isDisabled, setIsDisabled] = React.useState(true);
     const [isSending, setIsSending] = React.useState(false);
-    const [saveComentarioExterno, setSaveComentarioExterno] = React.useState<{htmlContent: string, type: string} | undefined>(undefined);
+    const [saveComentarioExterno, setSaveComentarioExterno] = React.useState<{htmlContent: string, type: string} | null>(null);
     const [tabValue, setTabValue] = React.useState(0);
 
+    const editorRef = React.useRef<RichTextEditorRef>(null);
+
     const handleHTMLContent = (html: string) => {
-        setHtmlContent(html !== '<p></p>' ? html : '');
+        setTimeout(() => setIsDisabled(html === '<p></p>'), 50);
     }
 
     React.useEffect(() => {
@@ -42,18 +44,24 @@ const SalaConversacion: React.FC = () => {
         }
     },[DatosSalaConversacion]);
 
-    React.useEffect(() => {
-        setIsDisabled(htmlContent === "");
-    },[htmlContent]);
-
     const handleEnviarMensaje = () => {
+        const html = editorRef.current?.editor?.getHTML() || "";
+        
         setIsSending(true);
-        setSaveComentarioExterno({htmlContent, type: 'Comentar'});
+        setSaveComentarioExterno({htmlContent: html, type: 'Comentar'});
     };
     
     const handleSaveComentarioExterno = () => {
         setIsSending(false);
-        setHtmlContent("");
+        setIsDisabled(true);
+        setSaveComentarioExterno(null);
+        editorRef.current?.editor?.commands.setContent("");
+    }
+
+    const handleCancelar = () => {
+        setIsDisabled(true);
+        setSaveComentarioExterno(null);
+        editorRef.current?.editor?.commands.setContent("");
     }
 
     const tabsSection = () => (
@@ -103,7 +111,7 @@ const SalaConversacion: React.FC = () => {
                             mt: '20px'
                         }}
                     >
-                        <RichText value={htmlContent} onChange={(html) => handleHTMLContent(html)} />
+                        <RichText ref={editorRef} onChange={handleHTMLContent} />
                     </Box>
 
                     <Box
@@ -120,7 +128,7 @@ const SalaConversacion: React.FC = () => {
                             variant="contained"
                             isLoading={isSending}
                             disabled={isDisabled}
-                            onClick={() => { handleEnviarMensaje() }}
+                            onClick={handleEnviarMensaje}
                         >
                             Enviar
                         </Button>
@@ -128,7 +136,7 @@ const SalaConversacion: React.FC = () => {
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => setHtmlContent("")}
+                            onClick={handleCancelar}
                         >
                             Cancelar
                         </Button>

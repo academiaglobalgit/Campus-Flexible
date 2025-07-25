@@ -22,7 +22,7 @@ type ChatForoSalaConversacionProps = {
     showFiltros:        boolean;
     showPagination:     boolean;
     showComentarDialog: boolean;
-    saveComentarioExterno?: { htmlContent: string, type: string };
+    saveComentarioExterno?: { htmlContent: string, type: string } | null;
     orderMessages?:     number | undefined;
     onCloseComentarDialog?: () => void;
     onSaveComentarioExterno?: () => void;
@@ -43,7 +43,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
         showFiltros, 
         showPagination, 
         showComentarDialog, 
-        saveComentarioExterno, 
+        saveComentarioExterno,
         orderMessages,
         onCloseComentarDialog, 
         onSaveComentarioExterno,
@@ -88,7 +88,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     }, [orderMessages]);
 
     React.useEffect(() => {
-        if (saveComentarioExterno) {
+        if (saveComentarioExterno?.type === 'Comentar' && saveComentarioExterno.htmlContent !== '') {
             handleComentar(saveComentarioExterno);
         }
     }, [saveComentarioExterno]);
@@ -121,11 +121,13 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     
     const createMutation = useMutation({
         mutationFn: SaveComentarioForo,
-        onSuccess: async (newComment: ForosSaveResponse) => {
-            console.log(newComment);
+        onSuccess: async (_newComment: ForosSaveResponse) => {
             setIdMensaje(0);
 
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
+            if(idTipoSala === 4) {
+                keys.pop(); //quitamos paginasize para SalaConversacion
+            }
 
             await queryClient.invalidateQueries({
                 queryKey: keys,
@@ -159,8 +161,13 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
         mutationFn: DeleteMensaje,
         onSuccess: async (_data) => {
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
-            await queryClient.cancelQueries({ queryKey: keys });
             
+            if(idTipoSala === 4) {
+                keys.pop(); //quitamos paginasize para SalaConversacion
+            }
+
+            await queryClient.cancelQueries({ queryKey: keys });
+
             await queryClient.invalidateQueries({
                 queryKey: keys,
                 exact: true
