@@ -47,6 +47,7 @@ export const FAQS_ENDPOINTS = {
 
 export const CONTACTO_ENDPOINTS = {
     GET_CONTACTO: { path: '/contacto', key: 'contacto' },
+    GET_CONTACTO_INTERNO: { path: '/contacto', key: 'contacto-interno' },
 }
 
 export const AYUDA_ENDPOINTS = {
