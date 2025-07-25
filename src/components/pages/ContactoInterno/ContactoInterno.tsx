@@ -19,6 +19,8 @@ const ContactoInterno: React.FC = () => {
     const [value, setValue] = React.useState(1);
     const { data: interno, isLoading } = useContactoInterno(1);
 
+    console.log(interno)
+
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };

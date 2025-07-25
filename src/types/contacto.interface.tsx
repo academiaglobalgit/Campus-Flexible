@@ -22,9 +22,22 @@ export interface ContactoInternoResponse {
 export interface ContactoInterno {
     id_tipo_contacto: number;
     valor_contacto: string;
+    label?: string;
     descripcion: string;
     id_seccion_contacto: number;
     nombre_seccion: string;
     descripcion_seccion: string;
     valor: number;
 }
+
+export type ContactoData = {
+    label: string;
+    imgSrc: string;
+    valor: number;
+    data: {
+        description: string | null;
+        horarios: string | null;
+        telefonos: string | null;
+        email: string | null;
+    };
+};

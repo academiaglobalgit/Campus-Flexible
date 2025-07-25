@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Contacto, ContactoResponse, ContactoInternoResponse, ContactoInterno } from "../types/contacto.interface";
+import type { Contacto, ContactoResponse, ContactoInternoResponse, ContactoInterno, ContactoData } from "../types/contacto.interface";
 import { CONTACTO_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import { formatWithIMask } from "../utils/Helpers";
@@ -36,52 +36,47 @@ export const useContactoInterno = (id_plan_estudios: number) => {
     });
 
     const mapData = (data: ContactoInterno[]) => {
-        const seccionesMap = new Map<string, {
-            label: string;
-            imgSrc: string;
-            valor: number | null;
-            data: {
-                description: string;
-                horarios: string | null;
-                telefonos: string | null;
-                email: string | null;
-            };
-        }>();
 
-        data.map((item) => {
-            if (!seccionesMap.has(item.nombre_seccion)) {
-                seccionesMap.set(item.nombre_seccion, {
-                    label: item.nombre_seccion,
-                    imgSrc: item.nombre_seccion,
-                    valor: item.id_seccion_contacto,
-                    data: {
-                        description: item.descripcion_seccion,
-                        horarios: null,
-                        telefonos: null,
-                        email: null,
-                    },
-                });
-            }
+        const transformedData = Object.values(
+            data.reduce<Record<number, ContactoData>>((acc, currentItem) => {
+                const { id_seccion_contacto, nombre_seccion, descripcion_seccion, id_tipo_contacto, valor_contacto } = currentItem;
 
-            const seccion = seccionesMap.get(item.nombre_seccion)!;
+                if (!acc[id_seccion_contacto]) {
+                    acc[id_seccion_contacto] = {
+                        label: nombre_seccion,
+                        imgSrc: '',
+                        valor: id_seccion_contacto,
+                        data: {
+                            description: descripcion_seccion,
+                            horarios: null,
+                            telefonos: null,
+                            email: null,
+                        },
+                    };
+                }
 
-            switch (item.id_tipo_contacto) {
-                case 1:
-                    seccion.data.telefonos = seccion.data.telefonos
-                        ? `${seccion.data.telefonos}/${item.valor_contacto}`
-                        : item.valor_contacto;
-                    break;
-                case 2:
-                    seccion.data.email = item.valor_contacto;
-                    break;
-                case 3:
-                    seccion.data.horarios = item.valor_contacto;
-                    break;
-            }
-        });
+                switch (id_tipo_contacto) {
+                    case 1:
+                        acc[id_seccion_contacto].data.telefonos = valor_contacto;
+                        break;
+                    case 2:
+                        acc[id_seccion_contacto].data.email = valor_contacto;
+                        break;
+                    case 3:
+                        acc[id_seccion_contacto].data.horarios = valor_contacto;
+                        break;
+                    default:
+                        // Handle other types if necessary
+                        break;
+                }
 
-        return Array.from(seccionesMap.values());
+                return acc;
+            }, {})
+        );
+
+        return transformedData;
     };
+
     return {
         ...query,
         data: React.useMemo(
