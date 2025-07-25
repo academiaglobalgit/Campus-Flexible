@@ -112,7 +112,7 @@ const ContactoInterno: React.FC = () => {
                     </>
                     :
                     <>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', minHeight: '350px', objectFit: 'cover' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '260px', height: 'auto', objectFit: 'cover' }}>
 
                             <Box component="img" src={images[section.valor]} sx={{ width: '260px', height: '138px' }}>
                             </Box>
