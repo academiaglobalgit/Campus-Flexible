@@ -3,6 +3,7 @@ import AvatarMui from '@mui/material/Avatar';
 import { Badge, styled } from '@mui/material';
 
 import EditPerfil from '../../../assets/IconsCustomize/Edit.svg';
+import CancelEditPerfil from '../../../assets/IconsCustomize/CancelEdit.svg';
 
 type AvatarProps = {
   alt?: string;
@@ -10,10 +11,12 @@ type AvatarProps = {
   width?: number;
   height?: number;
   isEdit?: boolean;
+  showCancelEdit?: boolean;
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  onCancelEdit?: () => void;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit, onClick }) => {
+export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit, showCancelEdit, onClick, onCancelEdit }) => {
   const [error, setError] = React.useState(false);
   const getInitials = (name: string) => {
     if (!name) return '';
@@ -28,6 +31,10 @@ export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit,
     width: 22,
     height: 22,
   }));
+
+  const handleCancelEdit = () => {
+    if(onCancelEdit) onCancelEdit();
+  }
 
   return (
     !isEdit 
@@ -46,7 +53,11 @@ export const Avatar: React.FC<AvatarProps> = ({ alt, src, width, height, isEdit,
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           badgeContent={
-            <SmallAvatar src={EditPerfil} onClick={(event) => onClick && onClick(event)} />
+            !showCancelEdit 
+            ?
+              <SmallAvatar src={EditPerfil} onClick={(event) => onClick && onClick(event)} />
+            :
+              <SmallAvatar src={CancelEditPerfil} onClick={handleCancelEdit} />
           }
         >
           <AvatarMui

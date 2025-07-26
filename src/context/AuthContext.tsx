@@ -13,6 +13,7 @@ interface AuthContextType {
   clearError: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
+  setUser: (user: User) => void;
   isTokenExpired: boolean;
 }
 
@@ -151,7 +152,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login: handleLogin,
         logout: handleLogout,
         clearError,
-        isTokenExpired
+        isTokenExpired,
+        setUser
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

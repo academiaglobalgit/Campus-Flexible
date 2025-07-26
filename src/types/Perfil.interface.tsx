@@ -28,6 +28,11 @@ export interface TelefonoPerfil {
 
 export interface PerfilPayload {
     correo:             string;
-    foto_perfil_url:    string;
+    foto_perfil_url:    File | null;
     telefonos:          any[];
 }
+
+export type PreviewFile = {
+  file: File;
+  preview?: string;
+};
