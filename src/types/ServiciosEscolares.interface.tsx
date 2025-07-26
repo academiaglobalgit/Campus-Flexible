@@ -8,5 +8,7 @@ export interface ServiciosEscolares {
     nombre_servicio:     string;
     descripcion:         string;
     precio:              string;
-    image:               string;
+    imagen:              string;
+    id_seccion_servicio: number;
+    nombre_seccion:      string;
 }

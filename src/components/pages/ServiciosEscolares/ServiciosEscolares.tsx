@@ -14,6 +14,8 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { useGetServiciosEscolares } from "../../../services/ServiciosEscolares";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
+import type { ServiciosEscolares as IServiciosEscolares} from "@constants";
+
 const ServiciosEscolares: React.FC = () => {
     // const navigate = useNavigate();
     const theme = useTheme();
@@ -50,7 +52,7 @@ const ServiciosEscolares: React.FC = () => {
 
     const ButtonsSection = () => (
         <Box sx={[
-                { width: '100%', gap: '10px' },
+                { width: '100%', gap: '10px', pt: isMobile ? 2 : 5 },
                 isMobile && {...flexColumn },
                 !isMobile && {...flexRows, flexDirection: 'row-reverse' },
             ]}>
@@ -68,7 +70,7 @@ const ServiciosEscolares: React.FC = () => {
         </Box>
     );
 
-    const InformationSection = (item: any) => (
+    const InformationSection = (item: IServiciosEscolares) => (
         <Box sx={{ display: 'flex', flexDirection:'column', gap: '30px' }}>
             {
                 isMobile && <>
@@ -87,47 +89,25 @@ const ServiciosEscolares: React.FC = () => {
                 { item.descripcion }
             </Typography>
             <CardDuracion label="Costo" description={`$${item.precio} MNX`} />
-            <Box>
-                <Typography 
-                    component="span" 
-                    variant="body2"
-                    color="primary"
-                >
-                    Para más información:
-                </Typography>
-                <Typography 
-                    component="span" 
-                    variant="body1"
-                >
-                    <ul>
-                        <li>
-                            Horarios de atención: Lunes a viernes de 08:00 a 20:00 Horas (Tiempo del centro) y sábados de 10:00 a 14:00 Horas (Tiempo del Centro.)    
-                        </li>    
-                        <li>
-                            Teléfonos: 667 716 3059/ 667 713 6996<br />Correo: contacto@academiaglobal.mx       
-                        </li>    
-                    </ul> 
-                </Typography>
-            </Box>
             {ButtonsSection()}
         </Box>
     )
 
-    const ContentCard = (item: any) =>         
+    const ContentCard = (item: IServiciosEscolares) =>         
         (
         <Box sx={{ mb:4, mt: isMobile ? 2 : 5 }}>
             {
                 isMobile
                 ?
                     <>
-                        { ImageSection(item.image) }
+                        { ImageSection(item.imagen) }
                         { InformationSection(item) }
                     </>
                 :
                     <>
                         <Grid container spacing={2}>
                             <Grid size={{md: 4 }}>
-                                { ImageSection(item.image) }
+                                { ImageSection(item.imagen) }
                             </Grid>
                             <Grid size={{md: 8 }}>
                                 { InformationSection(item) }
@@ -159,10 +139,10 @@ const ServiciosEscolares: React.FC = () => {
                         {
                             cardData && cardData.data.map((item, i) => (
                                 <Tab
-                                    label={item.nombre_servicio}
+                                    label={item.nombre_seccion}
                                     value={i}
                                     key={i}
-                                    sx={{ minWidth: '108px', padding: '0px' }}
+                                    sx={{ minWidth: isMobile ? '158px' : '108px', padding: '0px' }}
                                 />
                             ))
                         }
