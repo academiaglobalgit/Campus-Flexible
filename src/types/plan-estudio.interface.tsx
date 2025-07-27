@@ -10,7 +10,8 @@ export interface PlanEstudio {
     orden:              number;
     obligatorio:        number;
     periodo:            number;
-    estado_inscripcion: number;
+    id_inscripcion_curso: number;
+    estatus_curso_alumno: string;
 }
 
 export interface PlanEstudioMateriasResponse {

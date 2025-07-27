@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useGetManuales } from "./ManualesService";
 
-export const useGetPlanEstudio = (id_plan_estudio: number) => {
+export const useGetPlanEstudio = () => {
      const query =  useQuery<PlanEstudioResponse, Error>({
-         queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.key, id_plan_estudio],
-         queryFn: async () => await apiClient.get<PlanEstudioResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.path}?id_plan_estudio=${id_plan_estudio}`),
+         queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.key],
+         queryFn: async () => await apiClient.get<PlanEstudioResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.path}`),
          staleTime: 1000 * 60 * 5, // 5 minutos de stale time
      });
 
@@ -17,15 +17,15 @@ export const useGetPlanEstudio = (id_plan_estudio: number) => {
     const mapData = (data: PlanEstudio[]): PlanEstudioMateriasResponse[] => {
         const statusMap: Record<number, string> = {
             0: "Inscribirme",
-            1: "Finalizada",
-            2: "Cursando",
+            1: "Cursando",
+            2: "Finalizada",
             3: "Inscribirme",
         };
 
         const rows = Object.values(
             data.reduce((acc, curso) => {
                 const periodoKey = curso.periodo;
-                const estado_inscripcion = curso.estado_inscripcion || 0;
+                const estado_inscripcion = curso.id_inscripcion_curso || 0;
 
                 if (!acc[periodoKey]) {
                     acc[periodoKey] = {
@@ -70,3 +70,10 @@ export const useGetVideoMapa = () => {
 
     return { mapaCurricular, video };
 }
+
+export const useCreateConfirmar = async (id_curso: number): Promise<any> => {
+    const payload = {id_curso};
+
+    const encryptedPayload = await apiClient.encryptData({...payload});
+    return await apiClient.post<any>(PLAN_ESTUDIO_ENDPOINTS.POST_CARGAR_CURSO.path, { data: encryptedPayload });
+};

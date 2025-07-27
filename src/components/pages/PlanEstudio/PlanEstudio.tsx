@@ -23,7 +23,7 @@ const PlanEstudio: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-    const {data: materiaData, isLoading } = useGetPlanEstudio(1);
+    const {data: materiaData, isLoading } = useGetPlanEstudio();
     const { mapaCurricular, video } = useGetVideoMapa();
     
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
@@ -35,6 +35,7 @@ const PlanEstudio: React.FC = () => {
 
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
+    const [idCursoSelected, setIdCursoSelected] = React.useState(0);
 
     useEffect(() => {
         const indexTab = getTabSelected('plan-estudio');
@@ -48,8 +49,9 @@ const PlanEstudio: React.FC = () => {
         setIsOpenVideo(true);
     }
 
-    const handleAction = (status: string) => {
+    const handleAction = (id_curso: number, status: string) => {
         if(status === "Inscribirme") {
+            setIdCursoSelected(id_curso);
             setIsOpenInscribirmeDialog(true);
         }
     }
@@ -59,7 +61,11 @@ const PlanEstudio: React.FC = () => {
             window.open(mapaCurricular.data?.url, "_blank");
     };
 
-    const InformacionStatusButtons = (id_curso: number, status: string, color: "success" | "primary" | "info" | "warning" | undefined) => (
+    const handleConfirmar = (_isConfirmar: boolean) => {
+        setIsOpenInscribirmeDialog(false);
+    }    
+
+    const InformacionStatusButtons = (id_curso: number, status: 'Finalizada' | 'Cursando' | 'Inscribirme', color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
                 <Button onClick={() => goToInformacion(id_curso)} fullWidth variant="outlined">Información</Button>
@@ -67,7 +73,7 @@ const PlanEstudio: React.FC = () => {
             <>
                 <Button 
                     fullWidth
-                    onClick={() => handleAction(status)} 
+                    onClick={() => handleAction(id_curso, status)} 
                     color={color}
                 >{status}</Button>
             </>
@@ -243,7 +249,7 @@ const PlanEstudio: React.FC = () => {
                 </>
             }
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} urlVideo={urlVideo} />
-            <InscribirmeDialog isOpen={isOpenInscribirmeDialog} close={() => setIsOpenInscribirmeDialog(false)} />
+            <InscribirmeDialog idCurso={idCursoSelected} isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
         </>
         
     );
