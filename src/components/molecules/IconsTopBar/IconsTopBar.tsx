@@ -25,7 +25,7 @@ export const IconsTopBar: React.FC = () => {
     }
 
     const handleAllNotifications = () => {
-        alert("Notificaciones");
+        navigate(AppRoutingPaths.NOTIFICACIONES);
         handleClose();
     }
 
