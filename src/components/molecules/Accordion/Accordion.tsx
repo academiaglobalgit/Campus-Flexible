@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Accordion as AccordionMui, AccordionDetails, AccordionSummary, type SxProps, type Theme, Box } from "@mui/material";
 import { Typography } from "../../atoms/Typography/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -11,20 +11,25 @@ type AccordionProps = {
   sxProps?: SxProps<Theme> | undefined;
   customHeader?: React.ReactNode;
   backgroundDetails?: SxProps<Theme> | undefined;
+  isExpanded: boolean;
 };
 
-export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails }) => {
+export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {
     setExpanded(!expanded);
   };
 
+  useEffect(() => {
+    setExpanded(isExpanded);
+  }, [isExpanded])
+
   return (
     <AccordionMui
       expanded={expanded}
       onChange={handleChange}
-      sx={sxProps}
+      sx={sxProps}      
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {
