@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthLogin as loginApi, useLogout as logoutApi, useGetPerfilUsuario } from '../services/AuthService';
 import type { User } from '@constants';
 import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
+import { encryptData } from '../utils/crypto';
 
 interface AuthContextType {
   user: User | null;
@@ -96,14 +97,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 if (perfil.data) {
                     const auth = {
-                            name: `${perfil.data.data.nombre} ${perfil.data.data.apellido_paterno} ${perfil.data.data.apellido_materno}`,
-                            email: perfil.data.data.correo,
-                            photo: perfil.data.data.foto_perfil_url,
-                            city: `${perfil.data.data.nombre_ciudad}`,
-                            phone: perfil?.data.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000"
-                        };
+                        name: `${perfil.data.data.nombre} ${perfil.data.data.apellido_paterno} ${perfil.data.data.apellido_materno}`,
+                        email: perfil.data.data.correo,
+                        photo: perfil.data.data.foto_perfil_url,
+                        city: `${perfil.data.data.nombre_ciudad}`,
+                        phone: perfil?.data.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
+                        perfil: perfil?.data.data,
+                    };
+
                     setUser(auth);
-                    setAuthModel(auth);
+                    
+                    const encry = await encryptData(auth);
+                    setAuthModel(encry);
+
                 } else {
                     setUser(null);
                 }

@@ -1,6 +1,8 @@
+import type { Perfil } from "./Perfil.interface";
+
 export interface LoginCredentials {
   password: string;
-  username?: string; // Optional, used for login
+  username?: string;
 }
 
 export interface User {
@@ -9,6 +11,7 @@ export interface User {
   photo: string;
   city:  string;
   phone:  string;
+  perfil?: Perfil;
 }
 
 export interface AuthResponse {

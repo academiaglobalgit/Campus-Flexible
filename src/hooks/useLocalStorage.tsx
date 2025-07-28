@@ -1,5 +1,5 @@
-import type { User } from '@constants';
 import { jwtDecode } from 'jwt-decode';
+import { decryptData } from '../utils/crypto';
 
 const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
 const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH;
@@ -35,16 +35,14 @@ export const setToken = (token: string): void => {
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
 };
 
-export const getAuthModel = (): User => {
-    const authModel = JSON.parse(
-        localStorage.getItem(AUTH_MODEL_STORAGE_KEY) || '{}'
-    );
-    return authModel;
+export const getAuthModel = async() => {
+    const encry = localStorage.getItem(AUTH_MODEL_STORAGE_KEY) || "";
+    const authModel = await decryptData(encry);
+    return authModel; 
 }
 
-export const setAuthModel = (auth: User): void => {
-    localStorage.setItem(AUTH_MODEL_STORAGE_KEY, JSON.stringify(auth));
-    // setToken(auth.token);
+export const setAuthModel = (auth: string): void => {
+    localStorage.setItem(AUTH_MODEL_STORAGE_KEY, auth);
 }
 
 export const cleanStorage = (): void => {
