@@ -1,27 +1,27 @@
 import React, { useEffect } from 'react';
 import { Typography } from "../../atoms/Typography/Typography";
 import { Box, Button, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
-
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
-import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import TabPanel from '../../molecules/TabPanel/TabPanel';
+
+import { useQueryClient } from "@tanstack/react-query";
+import type { Notificaciones } from "@constants";
+import { useMutation } from "@tanstack/react-query";
+import { MarkReadNotification } from "../../../services/NotificacionesService";
 
 import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import { CardNotification } from "../../molecules/CardNotification/CardNotification";
+import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
+import { number } from 'zod';
+import LoadingDialog from '../../molecules/Dialogs/LoadingDialog/LoadingDialog';
 
-
-import TabPanel from '../../molecules/TabPanel/TabPanel';
-import { flexColumn } from '@styles';
-
-import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
-import { tiempoTranscurrido } from '../../../utils/Helpers';
 
 const tabList = [{ id: 0, label: 'Recientes' }, { id: 1, label: 'Antiguas' },]
 
-const SalaConversacion: React.FC = () => {
+const NotificacionesDesktop: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const queryClient = useQueryClient();
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -30,6 +30,9 @@ const SalaConversacion: React.FC = () => {
     const { data: notiData, isLoading } = useGetNotificaciones();
     const [recientes, setRecientes] = React.useState<any[]>([]);
     const [antiguas, setAntiguas] = React.useState<any[]>([]);
+    const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
+    const [isOpenLoading, setIsOpenLoading] = React.useState(false);
+    const [textoLoading, setTextoLoading] = React.useState("");
 
     useEffect(() => {
         if (notiData?.data) {
@@ -50,63 +53,6 @@ const SalaConversacion: React.FC = () => {
     useEffect(() => {
         setValue(computedTabValue);
     }, [computedTabValue]);
-
-    const iconsNoti = (tipo: string) => {
-        switch (tipo) {
-            case 'anuncio': return <NotificationsNoneIcon color="primary" />;
-            case 'tarea_nueva': return <ThumbsUpDownOutlinedIcon color="primary" />;
-            case 'mensaje': return <BusinessCenterOutlinedIcon color="primary" />;
-            default: return null;
-        }
-    };
-
-    function dataNoti(data: any) {
-
-        return (
-            <Box sx={isMobile ? { width: '100%' } : { width: '100%', mt: '20px' }}>
-                {
-                    data.length > 0
-                        ?
-                        data.map((notis: any, i: number) => (
-                            <Box
-                                key={i}
-                                sx={[{
-                                    width: '100%',
-                                    height: '138px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '30px',
-                                    cursor: 'pointer'
-                                },
-                                notis.leida == '1' ? { backgroundColor: '#F6FAFD', borderBottom: '1px solid #AAB1B6' } : { backgroundColor: '#ffffffff', borderBottom: '1px solid #ffffffff' },
-                                i === 0 && { borderTop: '1px solid #AAB1B6' }]}
-                            >
-                                {iconsNoti(notis.tipo_notificacion)}
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <Typography component="span" variant="body2" color="primary" >{notis.titulo}</Typography>
-
-                                        {
-                                            notis.leida == '1' ? <Box sx={{ width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2' }}></Box> : ''
-                                        }
-
-                                    </Box>
-                                    <Typography component="span" variant="body1">{notis.mensaje}</Typography>
-                                    <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }} >{tiempoTranscurrido(notis.fecha_envio)}</Typography>
-                                </Box>
-                            </Box>
-                        ))
-                        :
-                        <Box sx={{ ...flexColumn, minHeight: '250px' }}>
-                            <NotificationsOffOutlinedIcon sx={{ fontSize: '3.5rem', color: theme.palette.grey[100] }} />
-                            <Typography component='h3' variant='h3' color='disabled'>
-                                No tienes notificaciones por ahora...
-                            </Typography>
-                        </Box>
-                }
-            </Box >
-        )
-    }
 
     const filtrarPorAntiguedad = (data: any[], reciente: boolean): any[] => {
         const ahora = Date.now();
@@ -135,9 +81,37 @@ const SalaConversacion: React.FC = () => {
         });
     };
 
+    const handleNotifications = async (data: any) => {
+
+        setIsOpenLoading(true);
+        setTextoLoading("Cargando...");
+
+        try {
+            const notificacionesNoLeidas = data.filter((notificacion: { leida: number }) => notificacion.leida === 0);
+
+            await Promise.all(
+                notificacionesNoLeidas.map(async (notificacion: { id_notificacion: number }) => {
+                    console.log('Marca como leída notificación: ' + notificacion.id_notificacion);
+                    await createMutation.mutateAsync(notificacion.id_notificacion);
+                })
+            );
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
+            setIsOpenLoading(false);
+        }
+    };
+
+    const createMutation = useMutation({
+        mutationFn: MarkReadNotification,
+    });
+
+
 
     const notificaciones = () => {
-        const totalNoLeidas = recientes.filter(n => n.leida === 1).length;
+        const totalNoLeidas = [...recientes, ...antiguas].filter(n => n.leida === 0).length;
 
         return isMobile ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', mt: '20px' }}>
@@ -147,8 +121,16 @@ const SalaConversacion: React.FC = () => {
                 </Typography>
                 {
                     <>
-                        {[...antiguas, ...recientes].slice(0, 5).map((item, i) => (
-                            <CardNotification key={i} item={item} index={i} />
+                        {[...antiguas, ...recientes].map((item, i) => (
+                            <CardNotification
+                                key={i}
+                                item={item}
+                                index={i}
+                                page={'notiDeskt'}
+                                loadingItems={loadingIds}
+                                setLoadingItems={setLoadingIds}
+                                setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
+                            />
                         ))}
                     </>
 
@@ -166,7 +148,7 @@ const SalaConversacion: React.FC = () => {
                             Tienes {totalNoLeidas} notificaciones no leídas
                         </Typography>
                     </Box>
-                    <Button variant="contained" onClick={() => { }}>Limpiar todas las notificaciones</Button>
+                    <Button variant="contained" onClick={() => { handleNotifications(notiData?.data) }}>Limpiar todas las notificaciones</Button>
                 </Box>
 
                 <Tabs
@@ -189,22 +171,42 @@ const SalaConversacion: React.FC = () => {
                         {isLoading
                             ? <LoadingCircular Text="Cargando Notificaciones" />
                             : item.id === 0 ? <>
-                                {recientes?.slice(0, 5).map((item, i) => (
-                                    <CardNotification key={i} item={item} index={i} />
+                                {recientes?.map((item, i) => (
+                                    <CardNotification
+                                        key={i}
+                                        item={item}
+                                        index={i}
+                                        loadingItems={loadingIds}
+                                        page={'notiDeskt'}
+                                        setLoadingItems={setLoadingIds}
+                                        setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
+
+                                    />
                                 ))}
                             </> : <>
-                                {antiguas?.slice(0, 5).map((item, i) => (
-                                    <CardNotification key={i} item={item} index={i} />
+                                {antiguas?.map((item, i) => (
+                                    <CardNotification
+                                        key={i}
+                                        item={item}
+                                        index={i}
+                                        loadingItems={loadingIds}
+                                        page={'notiDeskt'}
+                                        setLoadingItems={setLoadingIds}
+                                        setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
+
+                                    />
                                 ))}
                             </>
                         }
                     </TabPanel>
                 ))}
+                <LoadingDialog isOpen={isOpenLoading} Text={textoLoading} />
             </>
         );
     };
 
     return isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : notificaciones();
+
 };
 
-export default SalaConversacion;
+export default NotificacionesDesktop;
