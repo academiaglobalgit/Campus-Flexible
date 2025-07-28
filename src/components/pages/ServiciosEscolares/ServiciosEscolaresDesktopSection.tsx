@@ -61,7 +61,7 @@ export const ServiciosEscolaresDesktopSection: React.FC<ServiciosEscolaresDeskto
                             { width: '100%', gap: '10px', pt: 5 },
                             {...flexRows, flexDirection: 'row-reverse' },
                         ]}>
-                        <>
+                        {/* <>
                             <Button
                                 onClick={handlePagar}
                                 fullWidth
@@ -69,7 +69,7 @@ export const ServiciosEscolaresDesktopSection: React.FC<ServiciosEscolaresDeskto
                             >
                                 Pagar Aquí
                             </Button>
-                        </>
+                        </> */}
                         <>
                             <Button onClick={handleInformacion} fullWidth variant="outlined" >Más Información</Button>
                         </>
