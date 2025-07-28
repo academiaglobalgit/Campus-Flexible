@@ -1,7 +1,6 @@
 import React from "react";
 import type { Notificaciones } from "@constants";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
+import { useMutation } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
 import { Box, LinearProgress, useTheme } from "@mui/material";
 
@@ -14,13 +13,14 @@ import { tiempoTranscurrido } from "../../../utils/Helpers";
 type NotificacionProps = {
     item: Notificaciones;
     index: number;
+    loadingItems: Set<number>;
+    setLoadingItems: React.Dispatch<React.SetStateAction<Set<number>>>;
+    setMarkedRead: (id: number) => void;
 }
 
-export const CardNotification: React.FC<NotificacionProps> = ({item, index}) => {
+export const CardNotification: React.FC<NotificacionProps> = ({item, index, loadingItems, setLoadingItems, setMarkedRead}) => {
     const theme = useTheme();
-    const queryClient = useQueryClient();
-    
-    const [loadingItems, setLoadingItems] = React.useState<Set<number>>(new Set());    
+      
     const startLoading = (id: number) => {
         setLoadingItems(prev => new Set(prev).add(id));
     };
@@ -28,22 +28,17 @@ export const CardNotification: React.FC<NotificacionProps> = ({item, index}) => 
     const hasLoading = (id: number) => loadingItems.has(id);
 
     const handleNotifications = async (item: Notificaciones) => {
-        // console.log(item);
         const id = item.id_notificacion;
-        startLoading(id); // ← inicia loading por item
+        startLoading(id);
         try {
-            await createMutation.mutateAsync(id); // ← usa mutateAsync para esperar
-
-            // setFilteredNotifications(prev => prev.filter(n => n.id_notificacion !== id));
-            
-            queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] });
-
+            await createMutation.mutateAsync(id);
+            setMarkedRead(id);
         } catch (error) {
             console.error(error);
         } finally {
             setLoadingItems(prev => {
                 const updated = new Set(prev);
-                updated.delete(id); // ← termina loading por item
+                updated.delete(id);
                 return updated;
             });
         }
@@ -74,7 +69,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({item, index}) => 
                     alignItems: 'center',
                     gap: '25px',
                     borderBottom: '1px solid #AAB1B6',
-                    backgroundColor: item.leida ? '#F6FAFD' : '#FFFFFF',
+                    backgroundColor: item.leida === 0 ? '#F6FAFD' : '#FFFFFF',
                     cursor: item.leida === 0 ? 'pointer' : ''
                 }, index === 0 && { borderTop: '1px solid #AAB1B6' } ]}
             >

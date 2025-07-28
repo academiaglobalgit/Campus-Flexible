@@ -284,7 +284,7 @@ const Sidenav: React.FC = () => {
                     <Typography variant="body1" component="div">
                       {user?.name}
                     </Typography>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" color='disabled'>
                       {user?.city}
                     </Typography>
                   </Box>
