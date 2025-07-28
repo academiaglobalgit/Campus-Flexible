@@ -22,10 +22,11 @@ export const IconsTopBar: React.FC = () => {
     const handleClose = () => setAnchorEl(null);
 
     const [filteredNotifications, setFilteredNotifications] = React.useState<Notificaciones[]>([]);
+    const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
 
     useEffect(() => {
         if (notifications?.data) {
-            setFilteredNotifications(notifications.data);
+            setFilteredNotifications(notifications.data.filter((item) => item.leida === 0));
         }
     }, [notifications]);
 
@@ -40,6 +41,10 @@ export const IconsTopBar: React.FC = () => {
     const getTextCountNotification = (total: number) => {
         if(total === 1) return 'Tienes una notificación sin leer';
         if(total > 1) return `Tienes ${total} notificaciones no leídas`;
+    }
+
+    const handleMarkedRead = (id: number) => {
+        setFilteredNotifications(prev => prev.filter(n => n.id_notificacion !== id));
     }
 
     return(
@@ -112,7 +117,14 @@ export const IconsTopBar: React.FC = () => {
                                 <LoadingCircular />
                             :
                                 filteredNotifications?.slice(0,5).map((item, i) => (
-                                    <CardNotification key={i} item={item} index={i} />
+                                    <CardNotification 
+                                        key={i} 
+                                        item={item} 
+                                        index={i} 
+                                        loadingItems={loadingIds} 
+                                        setLoadingItems={setLoadingIds}
+                                        setMarkedRead={(id) => handleMarkedRead(id)}
+                                    />
                                 ))
                         }
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center', pt: '16px', cursor: 'pointer'}} onClick={handleAllNotifications}>
