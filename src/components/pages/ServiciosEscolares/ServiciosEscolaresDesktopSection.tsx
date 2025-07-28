@@ -28,10 +28,10 @@ export const ServiciosEscolaresDesktopSection: React.FC<ServiciosEscolaresDeskto
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handlePagar = () => {
-        // navigate('/servicios-escolares/pagar');
-        window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
-    };
+    // const handlePagar = () => {
+    //     // navigate('/servicios-escolares/pagar');
+    //     window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
+    // };
 
     const handleInformacion = () => {
         navigate(AppRoutingPaths.CONTACTO);
