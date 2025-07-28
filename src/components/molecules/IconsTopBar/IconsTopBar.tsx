@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Box, IconButton, Menu, useTheme } from "@mui/material";
-import { Ayuda, Notificaciones, PreguntasFrecuentes } from "@iconsCustomizeds";
-import StarIcon from '@mui/icons-material/Star';
+import { Ayuda, Notificaciones as NotificacionesIcon, PreguntasFrecuentes } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { AppRoutingPaths } from "@constants";
+import { AppRoutingPaths, type Notificaciones } from "@constants";
+import { useGetNotificaciones } from "../../../services/NotificacionesService";
+import { LoadingCircular } from "../LoadingCircular/LoadingCircular";
+import { CardNotification } from "../CardNotification/CardNotification";
 
 export const IconsTopBar: React.FC = () => {
     const theme = useTheme();
@@ -15,14 +17,17 @@ export const IconsTopBar: React.FC = () => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const { data: notifications, isLoading } = useGetNotificaciones();
+    
+    const handleClose = () => setAnchorEl(null);
 
-    const handleNotifications = () => {
-        alert("Notificaciones");
-        handleClose();
-    }
+    const [filteredNotifications, setFilteredNotifications] = React.useState<Notificaciones[]>([]);
+
+    useEffect(() => {
+        if (notifications?.data) {
+            setFilteredNotifications(notifications.data);
+        }
+    }, [notifications]);
 
     const handleAllNotifications = () => {
         navigate(AppRoutingPaths.NOTIFICACIONES);
@@ -31,6 +36,11 @@ export const IconsTopBar: React.FC = () => {
 
     const handleFaqs = () => navigate(AppRoutingPaths.PREGUNTAS_FRECUENTES_INT);
     const handleHelp = () => navigate(AppRoutingPaths.AYUDA_INTERIOR);
+
+    const getTextCountNotification = (total: number) => {
+        if(total === 1) return 'Tienes una notificación sin leer';
+        if(total > 1) return `Tienes ${total} notificaciones no leídas`;
+    }
 
     return(
         <>
@@ -47,9 +57,9 @@ export const IconsTopBar: React.FC = () => {
                 >
                     <Badge 
                         onClick={handleClick} sx={{cursor: 'pointer'}}
-                        badgeContent={17} color="error"
+                        badgeContent={ filteredNotifications?.filter((item) => item.leida === 0).length } color="error"
                     >
-                        <Notificaciones />
+                        <NotificacionesIcon />
                     </Badge>
                 </IconButton>
             </Box>
@@ -93,35 +103,17 @@ export const IconsTopBar: React.FC = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '11px'}}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <Typography component="h4" variant="h4">Notificaciones</Typography>
-                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100]}}>Tienes 2 notificaciones no leídas</Typography>
+                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100]}}>{getTextCountNotification(filteredNotifications?.filter((item) => item.leida === 0).length)}</Typography>
                     </Box>
                     <Box>
                         {
-                            Array.from({length: 3}).map((_, i) => (
-                                <Box onClick={handleNotifications}
-                                    key={i}
-                                    sx={[{ 
-                                        width: '305px', 
-                                        height: '138px', 
-                                        display: 'flex', 
-                                        alignItems: 'center',
-                                        gap: '30px',
-                                        borderBottom: '1px solid #AAB1B6',
-                                        backgroundColor: '#F6FAFD',
-                                        cursor: 'pointer'
-                                    }, i === 0 && { borderTop: '1px solid #AAB1B6' } ]}
-                                >
-                                    <StarIcon />
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                                        <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                            <Typography component="span" variant="body2" color="primary" >Graduación Generación 2025</Typography>
-                                            <Box sx={{width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2'}}></Box>
-                                        </Box>
-                                        <Typography component="span" variant="body1">Acto académico de Graduación de Egresados el Miércoles 28 de junio del 2025</Typography>
-                                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100]}} >Hace 1 hora</Typography>
-                                    </Box>
-                                </Box>
-                            ))
+                            isLoading
+                            ?
+                                <LoadingCircular />
+                            :
+                                filteredNotifications?.slice(0,5).map((item, i) => (
+                                    <CardNotification key={i} item={item} index={i} />
+                                ))
                         }
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center', pt: '16px', cursor: 'pointer'}} onClick={handleAllNotifications}>
                             <Typography component="span" variant="body2" color="primary">Ver todas las notificaciones</Typography>

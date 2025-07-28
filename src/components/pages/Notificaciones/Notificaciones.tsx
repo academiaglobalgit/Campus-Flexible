@@ -7,12 +7,12 @@ import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
-//import { useParams } from "react-router-dom";
 import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexColumn } from '@styles';
 
 import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
+import { tiempoTranscurrido } from '../../../utils/Helpers';
 
 const tabList = [{id: 0, label: 'Recientes'},{id: 1, label: 'Antiguas'},]
 
@@ -55,22 +55,6 @@ const SalaConversacion: React.FC = () => {
             case 'mensaje': return <BusinessCenterOutlinedIcon color="primary" />;
             default: return null;
         }
-    };
-
-     const tiempoTranscurrido = (fechaISO: string): string => {
-        const fecha = new Date(fechaISO);
-        const ahora = new Date();
-        const diff = Math.floor((ahora.getTime() - fecha.getTime()) / 1000);
-        const min = Math.floor(diff / 60), h = Math.floor(min / 60), d = Math.floor(h / 24);
-        const sem = Math.floor(d / 7), mes = Math.floor(d / 30), year = Math.floor(d / 365);
-
-        if (diff < 60) return 'Hace un momento';
-        if (min < 60) return `Hace ${min} min`;
-        if (h < 24) return `Hace ${h} h`;
-        if (d < 7) return `Hace ${d} día${d === 1 ? '' : 's'}`;
-        if (sem < 5) return `Hace ${sem} sem`;
-        if (mes < 12) return `Hace ${mes} mes${mes === 1 ? '' : 'es'}`;
-        return `Hace ${year} año${year === 1 ? '' : 's'}`;
     };
 
     function dataNoti(data: any) {
