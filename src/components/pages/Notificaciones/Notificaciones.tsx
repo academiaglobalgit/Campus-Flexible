@@ -8,13 +8,16 @@ import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlin
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 import { useGetNotificaciones } from "../../../services/NotificacionesService";
+import { CardNotification } from "../../molecules/CardNotification/CardNotification";
+
+
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexColumn } from '@styles';
 
 import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
 import { tiempoTranscurrido } from '../../../utils/Helpers';
 
-const tabList = [{id: 0, label: 'Recientes'},{id: 1, label: 'Antiguas'},]
+const tabList = [{ id: 0, label: 'Recientes' }, { id: 1, label: 'Antiguas' },]
 
 const SalaConversacion: React.FC = () => {
     const theme = useTheme();
@@ -26,7 +29,7 @@ const SalaConversacion: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const { data: notiData, isLoading } = useGetNotificaciones();
     const [recientes, setRecientes] = React.useState<any[]>([]);
-    const [antiguas, setAntiguas] = React.useState<any[]>([]);    
+    const [antiguas, setAntiguas] = React.useState<any[]>([]);
 
     useEffect(() => {
         if (notiData?.data) {
@@ -63,7 +66,7 @@ const SalaConversacion: React.FC = () => {
             <Box sx={isMobile ? { width: '100%' } : { width: '100%', mt: '20px' }}>
                 {
                     data.length > 0
-                    ? 
+                        ?
                         data.map((notis: any, i: number) => (
                             <Box
                                 key={i}
@@ -93,13 +96,13 @@ const SalaConversacion: React.FC = () => {
                                 </Box>
                             </Box>
                         ))
-                    :
-                    <Box sx={{...flexColumn, minHeight: '250px' }}>
-                        <NotificationsOffOutlinedIcon sx={{ fontSize: '3.5rem', color: theme.palette.grey[100] }} />
-                        <Typography component='h3' variant='h3' color='disabled'>
-                            No tienes notificaciones por ahora...
-                        </Typography>
-                    </Box>
+                        :
+                        <Box sx={{ ...flexColumn, minHeight: '250px' }}>
+                            <NotificationsOffOutlinedIcon sx={{ fontSize: '3.5rem', color: theme.palette.grey[100] }} />
+                            <Typography component='h3' variant='h3' color='disabled'>
+                                No tienes notificaciones por ahora...
+                            </Typography>
+                        </Box>
                 }
             </Box >
         )
@@ -142,7 +145,15 @@ const SalaConversacion: React.FC = () => {
                 <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
                     Tienes {totalNoLeidas} notificaciones no leídas
                 </Typography>
-                {dataNoti([...recientes, ...antiguas])}
+                {
+                    <>
+                        {[...antiguas, ...recientes].slice(0, 5).map((item, i) => (
+                            <CardNotification key={i} item={item} index={i} />
+                        ))}
+                    </>
+
+
+                }
             </Box>
         ) : (
             <>
@@ -155,7 +166,7 @@ const SalaConversacion: React.FC = () => {
                             Tienes {totalNoLeidas} notificaciones no leídas
                         </Typography>
                     </Box>
-                    <Button variant="contained" onClick={() => {}}>Limpiar todas las notificaciones</Button>
+                    <Button variant="contained" onClick={() => { }}>Limpiar todas las notificaciones</Button>
                 </Box>
 
                 <Tabs
@@ -177,7 +188,16 @@ const SalaConversacion: React.FC = () => {
                     <TabPanel key={item.id} value={value} index={item.id}>
                         {isLoading
                             ? <LoadingCircular Text="Cargando Notificaciones" />
-                            : dataNoti(item.id === 0 ? recientes : antiguas)}
+                            : item.id === 0 ? <>
+                                {recientes?.slice(0, 5).map((item, i) => (
+                                    <CardNotification key={i} item={item} index={i} />
+                                ))}
+                            </> : <>
+                                {antiguas?.slice(0, 5).map((item, i) => (
+                                    <CardNotification key={i} item={item} index={i} />
+                                ))}
+                            </>
+                        }
                     </TabPanel>
                 ))}
             </>
