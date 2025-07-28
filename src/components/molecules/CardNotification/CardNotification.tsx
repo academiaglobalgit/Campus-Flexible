@@ -14,13 +14,14 @@ type NotificacionProps = {
     item: Notificaciones;
     index: number;
     loadingItems: Set<number>;
+    page?: string;
     setLoadingItems: React.Dispatch<React.SetStateAction<Set<number>>>;
     setMarkedRead: (id: number) => void;
 }
 
-export const CardNotification: React.FC<NotificacionProps> = ({item, index, loadingItems, setLoadingItems, setMarkedRead}) => {
+export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, page, setLoadingItems, setMarkedRead }) => {
     const theme = useTheme();
-      
+
     const startLoading = (id: number) => {
         setLoadingItems(prev => new Set(prev).add(id));
     };
@@ -56,35 +57,36 @@ export const CardNotification: React.FC<NotificacionProps> = ({item, index, load
         }
     };
 
-    const MarkedRead = () => ({color: theme.palette.grey[100]})
+    const MarkedRead = () => ({ color: theme.palette.grey[100] })
 
-    return(
+    return (
         <Box>
-            {hasLoading(item.id_notificacion) && <LinearProgress /> }
+            {hasLoading(item.id_notificacion) && <LinearProgress />}
             <Box onClick={() => item.leida === 0 && handleNotifications(item)}
-                sx={[{ 
-                    width: '305px', 
-                    height: '138px', 
-                    display: 'flex', 
+                sx={[page === 'notiDeskt' ? { width: '100%', } : { width: '350px' }, {
+                    height: '138px',
+                    display: 'flex',
                     alignItems: 'center',
                     gap: '25px',
                     borderBottom: '1px solid #AAB1B6',
                     backgroundColor: item.leida === 0 ? '#F6FAFD' : '#FFFFFF',
                     cursor: item.leida === 0 ? 'pointer' : ''
-                }, index === 0 && { borderTop: '1px solid #AAB1B6' } ]}
+                }, index === 0 && { borderTop: '1px solid #AAB1B6' }]}
+
+
             >
-                <Box sx={{pl: 1}}>
+                <Box sx={{ pl: 1 }}>
                     {IconsNotification(item)}
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <Typography component="span" variant="body2" color="primary" >{item.titulo}</Typography>
                         {
-                            item.leida === 0 && <Box sx={{width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2'}}></Box>
+                            item.leida === 0 && <Box sx={{ width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2' }}></Box>
                         }
                     </Box>
                     <Typography component="span" variant="body1">{item.mensaje}</Typography>
-                    <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100]}}>{tiempoTranscurrido(item.fecha_envio)}</Typography>
+                    <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>{tiempoTranscurrido(item.fecha_envio)}</Typography>
                 </Box>
             </Box>
         </Box>
