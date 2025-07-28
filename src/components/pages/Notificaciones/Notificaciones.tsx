@@ -5,14 +5,12 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 
 import { useQueryClient } from "@tanstack/react-query";
-import type { Notificaciones } from "@constants";
 import { useMutation } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
 
 import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import { CardNotification } from "../../molecules/CardNotification/CardNotification";
 import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
-import { number } from 'zod';
 import LoadingDialog from '../../molecules/Dialogs/LoadingDialog/LoadingDialog';
 
 
