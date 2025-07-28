@@ -89,7 +89,6 @@ const NotificacionesDesktop: React.FC = () => {
 
             await Promise.all(
                 notificacionesNoLeidas.map(async (notificacion: { id_notificacion: number }) => {
-                    console.log('Marca como leída notificación: ' + notificacion.id_notificacion);
                     await createMutation.mutateAsync(notificacion.id_notificacion);
                 })
             );
