@@ -1,24 +1,26 @@
 import React, { useEffect } from 'react';
 import { Typography } from "../../atoms/Typography/Typography";
 import { Box, Button, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
-
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
-import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-
-//import { useParams } from "react-router-dom";
-import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import TabPanel from '../../molecules/TabPanel/TabPanel';
-import { flexColumn } from '@styles';
 
-import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
+import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { ReadAllNotificaciones } from "../../../services/NotificacionesService";
 
-const tabList = [{id: 0, label: 'Recientes'},{id: 1, label: 'Antiguas'},]
+import { useGetNotificaciones } from "../../../services/NotificacionesService";
+import { CardNotification } from "../../molecules/CardNotification/CardNotification";
+import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
+import LoadingDialog from '../../molecules/Dialogs/LoadingDialog/LoadingDialog';
+import type { Notificaciones } from '@constants';
 
-const SalaConversacion: React.FC = () => {
+
+const tabList = [{ id: 0, label: 'Recientes' }, { id: 1, label: 'Antiguas' },]
+
+const NotificacionesDesktop: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const queryClient = useQueryClient();
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -26,7 +28,11 @@ const SalaConversacion: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const { data: notiData, isLoading } = useGetNotificaciones();
     const [recientes, setRecientes] = React.useState<any[]>([]);
-    const [antiguas, setAntiguas] = React.useState<any[]>([]);    
+    const [antiguas, setAntiguas] = React.useState<any[]>([]);
+    const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
+    const [isOpenLoading, setIsOpenLoading] = React.useState(false);
+    const [textoLoading, setTextoLoading] = React.useState("");
+    const handleRefetch = () => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
 
     useEffect(() => {
         if (notiData?.data) {
@@ -47,79 +53,6 @@ const SalaConversacion: React.FC = () => {
     useEffect(() => {
         setValue(computedTabValue);
     }, [computedTabValue]);
-
-    const iconsNoti = (tipo: string) => {
-        switch (tipo) {
-            case 'anuncio': return <NotificationsNoneIcon color="primary" />;
-            case 'tarea_nueva': return <ThumbsUpDownOutlinedIcon color="primary" />;
-            case 'mensaje': return <BusinessCenterOutlinedIcon color="primary" />;
-            default: return null;
-        }
-    };
-
-     const tiempoTranscurrido = (fechaISO: string): string => {
-        const fecha = new Date(fechaISO);
-        const ahora = new Date();
-        const diff = Math.floor((ahora.getTime() - fecha.getTime()) / 1000);
-        const min = Math.floor(diff / 60), h = Math.floor(min / 60), d = Math.floor(h / 24);
-        const sem = Math.floor(d / 7), mes = Math.floor(d / 30), year = Math.floor(d / 365);
-
-        if (diff < 60) return 'Hace un momento';
-        if (min < 60) return `Hace ${min} min`;
-        if (h < 24) return `Hace ${h} h`;
-        if (d < 7) return `Hace ${d} día${d === 1 ? '' : 's'}`;
-        if (sem < 5) return `Hace ${sem} sem`;
-        if (mes < 12) return `Hace ${mes} mes${mes === 1 ? '' : 'es'}`;
-        return `Hace ${year} año${year === 1 ? '' : 's'}`;
-    };
-
-    function dataNoti(data: any) {
-
-        return (
-            <Box sx={isMobile ? { width: '100%' } : { width: '100%', mt: '20px' }}>
-                {
-                    data.length > 0
-                    ? 
-                        data.map((notis: any, i: number) => (
-                            <Box
-                                key={i}
-                                sx={[{
-                                    width: '100%',
-                                    height: '138px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '30px',
-                                    cursor: 'pointer'
-                                },
-                                notis.leida == '1' ? { backgroundColor: '#F6FAFD', borderBottom: '1px solid #AAB1B6' } : { backgroundColor: '#ffffffff', borderBottom: '1px solid #ffffffff' },
-                                i === 0 && { borderTop: '1px solid #AAB1B6' }]}
-                            >
-                                {iconsNoti(notis.tipo_notificacion)}
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <Typography component="span" variant="body2" color="primary" >{notis.titulo}</Typography>
-
-                                        {
-                                            notis.leida == '1' ? <Box sx={{ width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2' }}></Box> : ''
-                                        }
-
-                                    </Box>
-                                    <Typography component="span" variant="body1">{notis.mensaje}</Typography>
-                                    <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }} >{tiempoTranscurrido(notis.fecha_envio)}</Typography>
-                                </Box>
-                            </Box>
-                        ))
-                    :
-                    <Box sx={{...flexColumn, minHeight: '250px' }}>
-                        <NotificationsOffOutlinedIcon sx={{ fontSize: '3.5rem', color: theme.palette.grey[100] }} />
-                        <Typography component='h3' variant='h3' color='disabled'>
-                            No tienes notificaciones por ahora...
-                        </Typography>
-                    </Box>
-                }
-            </Box >
-        )
-    }
 
     const filtrarPorAntiguedad = (data: any[], reciente: boolean): any[] => {
         const ahora = Date.now();
@@ -148,9 +81,39 @@ const SalaConversacion: React.FC = () => {
         });
     };
 
+    const handleReadALLNotifications = async () => {
+
+        setIsOpenLoading(true);
+        setTextoLoading("Cargando...");
+
+        try {
+            await createMutation.mutateAsync();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            await handleRefetch()
+            setIsOpenLoading(false);
+        }
+    };
+
+    const createMutation = useMutation({
+        mutationFn: ReadAllNotificaciones,
+    });
+
+    const renderCardNotification = (item: Notificaciones, i: number) => (
+        <CardNotification
+            key={i}
+            item={item}
+            index={i}
+            loadingItems={loadingIds}
+            setLoadingItems={setLoadingIds}
+            setMarkedRead={ handleRefetch}
+        />
+    );
+
 
     const notificaciones = () => {
-        const totalNoLeidas = recientes.filter(n => n.leida === 1).length;
+        const totalNoLeidas = [...recientes, ...antiguas].filter(n => n.leida === 0).length;
 
         return isMobile ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', mt: '20px' }}>
@@ -158,7 +121,14 @@ const SalaConversacion: React.FC = () => {
                 <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>
                     Tienes {totalNoLeidas} notificaciones no leídas
                 </Typography>
-                {dataNoti([...recientes, ...antiguas])}
+                {
+                    <>
+                        {[...antiguas, ...recientes].map((item, i) => (
+                            renderCardNotification(item, i)
+                        ))}
+                    </>
+
+                }
             </Box>
         ) : (
             <>
@@ -171,7 +141,7 @@ const SalaConversacion: React.FC = () => {
                             Tienes {totalNoLeidas} notificaciones no leídas
                         </Typography>
                     </Box>
-                    <Button variant="contained" onClick={() => {}}>Limpiar todas las notificaciones</Button>
+                    <Button variant="contained" onClick={handleReadALLNotifications}>Limpiar todas las notificaciones</Button>
                 </Box>
 
                 <Tabs
@@ -193,14 +163,25 @@ const SalaConversacion: React.FC = () => {
                     <TabPanel key={item.id} value={value} index={item.id}>
                         {isLoading
                             ? <LoadingCircular Text="Cargando Notificaciones" />
-                            : dataNoti(item.id === 0 ? recientes : antiguas)}
+                            : item.id === 0 ? <>
+                                {recientes?.map((item, i) => (
+                                    renderCardNotification(item, i)
+                                ))}
+                            </> : <>
+                                {antiguas?.map((item, i) => (
+                                    renderCardNotification(item, i)
+                                ))}
+                            </>
+                        }
                     </TabPanel>
                 ))}
+                <LoadingDialog isOpen={isOpenLoading} Text={textoLoading} />
             </>
         );
     };
 
     return isLoading ? <LoadingCircular Text="Cargando Notificaciones" /> : notificaciones();
+
 };
 
-export default SalaConversacion;
+export default NotificacionesDesktop;

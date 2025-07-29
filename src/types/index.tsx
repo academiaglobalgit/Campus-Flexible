@@ -40,3 +40,8 @@ export type {
     ForosSave,
     Mensaje,
 } from './SalaConversacion.interface';
+
+export type {
+    NotificacionesResponse,
+    Notificaciones,    
+} from './Notificaciones.interface';

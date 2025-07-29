@@ -15,17 +15,17 @@ export const useGetPlanEstudio = () => {
 
 
     const mapData = (data: PlanEstudio[]): PlanEstudioMateriasResponse[] => {
-        const statusMap: Record<number, string> = {
-            0: "Inscribirme",
-            1: "Cursando",
-            2: "Finalizada",
-            3: "Inscribirme",
-        };
+        // const statusMap: Record<number, string> = {
+        //     0: "Inscribirme",
+        //     1: "Cursando",
+        //     2: "Finalizada",
+        //     3: "Inscribirme",
+        // };
 
         const rows = Object.values(
             data.reduce((acc, curso) => {
                 const periodoKey = curso.periodo;
-                const estado_inscripcion = curso.id_inscripcion_curso || 0;
+                // const estado_inscripcion = curso.id_inscripcion_curso || 0;
 
                 if (!acc[periodoKey]) {
                     acc[periodoKey] = {
@@ -37,7 +37,7 @@ export const useGetPlanEstudio = () => {
                 acc[periodoKey].materias.push({
                     id_curso: curso.id_curso,
                     titulo: curso.nombre_curso,
-                    status: statusMap[estado_inscripcion],
+                    status: curso.estatus_curso_alumno === 'No Cursando' ? 'Inscribirme' : curso.estatus_curso_alumno,
                 });
                 return acc;
             }, {} as Record<number, any>)

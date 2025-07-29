@@ -11,6 +11,7 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 import { useGetCursos } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle } from "@styles";
+import { setCursoSelected } from "../../../hooks/useLocalStorage";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
@@ -19,7 +20,17 @@ const CursoActivo: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const navigate = useNavigate();
-    const goToInformacion = (idCurso: number) => navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${ idCurso }`));
+    
+    const goToInformacion = (item: ICursoActivo) => {
+        const curso = {
+            id_curso: item.id_curso,
+            titulo: item.titulo_curso,
+            estatus: item.estatus
+        };
+
+        setCursoSelected(JSON.stringify(curso));
+        navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${ item.id_curso }`));
+    }
 
     const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
         <Box sx={{ display: 'flex' }}>
@@ -93,7 +104,7 @@ const CursoActivo: React.FC = () => {
                         </Box>
 
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '320px' }}>
-                            <Button onClick={() => goToInformacion(item.id_curso)} fullWidth variant="contained">Ir al Curso</Button>
+                            <Button onClick={() => goToInformacion(item)} fullWidth variant="contained">Ir al Curso</Button>
                         </Box>
 
                     </Box>

@@ -11,6 +11,7 @@ import { ForosCursos } from "./ForosCursos";
 import { Evaluaciones } from "./Evaluaciones";
 import { Tutorias } from "./Tutorias";
 import { ListaPendientes } from "./ListaPendientes";
+import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 
 const CursosTabs = [
     { tab: 'Contenido', content: <Contenido /> },
@@ -23,12 +24,18 @@ const CursosTabs = [
 
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
+    const curso = JSON.parse(getCursoSelected());
+    const [value, setValue] = React.useState(0);
+
+    React.useEffect(() => {
+        const indexTab = getTabSelected('cursos-detalle');
+        setValue(indexTab);
+    },[]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+        setTabSelected({tab: 'cursos-detalle', index: newValue});
         setValue(newValue);
     };
-
-    const [value, setValue] = React.useState(0);
     
     function MultiColorBar() {
         return (
@@ -84,7 +91,7 @@ const CursosActivosDetalles: React.FC = () => {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <TituloIcon Titulo={"Práctica y Colaboración Ciudadana I"} Icon={CursosActivosDetalle} />
+            <TituloIcon Titulo={curso.titulo} Icon={CursosActivosDetalle} />
             <Box sx={{ pl: '30px' }} >
                 <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Click para descargar contenido</Typography>
             </Box>

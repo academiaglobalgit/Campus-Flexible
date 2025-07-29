@@ -31,6 +31,7 @@ import lodash from 'lodash';
 import { setAuthModel } from "../../../hooks/useLocalStorage";
 import { flexColumn } from "@styles";
 import type { PreviewFile } from "../../../types/Perfil.interface";
+import { encryptData } from "../../../utils/crypto";
 
 const MiPerfil: React.FC = () => {
     const { logout, user, setUser } = useAuth();
@@ -186,14 +187,16 @@ const MiPerfil: React.FC = () => {
             const perfil = await refetch();
             if(perfil) {
               const auth: User = {
-                    name: `${perfil.data?.data.nombre} ${perfil.data?.data.apellido_paterno} ${perfil.data?.data.apellido_materno}`,
-                    email: perfil.data?.data.correo ?? "",
-                    photo: perfil.data?.data.foto_perfil_url ?? "",
-                    city: `${perfil.data?.data.nombre_ciudad}`,
-                    phone: perfil?.data?.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000"
-                };
+                name: `${perfil.data?.data.nombre} ${perfil.data?.data.apellido_paterno} ${perfil.data?.data.apellido_materno}`,
+                email: perfil.data?.data.correo ?? "",
+                photo: perfil.data?.data.foto_perfil_url ?? "",
+                city: `${perfil.data?.data.nombre_ciudad}`,
+                phone: perfil?.data?.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
+                perfil: perfil?.data?.data,
+              };
               setUser(auth);
-              setAuthModel(auth);
+              const encry = await encryptData(auth);
+              setAuthModel(encry);
             }
         },
         onError: (error) => {

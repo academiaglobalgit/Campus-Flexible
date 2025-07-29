@@ -36,6 +36,7 @@ export const AppRoutingPaths = {
     FOROS: "/foros/:id",
     CONSEJERIAINFO: "/consejeria-informacion",
     NOTIFICACIONES: "/notificaciones",
+    SESSION_EXPIRED: "/expired",
 
 } as const;
 

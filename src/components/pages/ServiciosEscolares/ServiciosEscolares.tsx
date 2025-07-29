@@ -35,10 +35,10 @@ const ServiciosEscolares: React.FC = () => {
         setValue(newValue);
     };
 
-    const handlePagar = () => {
-        // navigate('/servicios-escolares/pagar');
-        window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
-    };
+    // const handlePagar = () => {
+    //     // navigate('/servicios-escolares/pagar');
+    //     window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
+    // };
 
     const ImageSection = (image: string) => (
         <Card sx={{ borderRadius: '5px' }}>
@@ -59,14 +59,14 @@ const ServiciosEscolares: React.FC = () => {
                 isMobile && {...flexColumn },
                 !isMobile && {...flexRows, flexDirection: 'row-reverse' },
             ]}>
-            <>
+            {/* <>
                 <Button
                     onClick={handlePagar}
                     fullWidth
                 >
                     Pagar Aquí
                 </Button>
-            </>
+            </> */}
             <>
                 <Button onClick={handleInformacion} fullWidth variant="outlined" >Más Información</Button>
             </>

@@ -11,10 +11,10 @@ type AccordionProps = {
   sxProps?: SxProps<Theme> | undefined;
   customHeader?: React.ReactNode;
   backgroundDetails?: SxProps<Theme> | undefined;
-  isExpanded: boolean;
+  isExpanded?: boolean;
 };
 
-export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded }) => {
+export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded = false }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {

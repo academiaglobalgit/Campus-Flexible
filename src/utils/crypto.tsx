@@ -26,7 +26,6 @@ const getCryptoKey = async (): Promise<CryptoKey> => {
 export const encryptData = async (data: unknown): Promise<string> => {
   try {
     const cryptoKey = await getCryptoKey();
-    // const iv = crypto.getRandomValues(new Uint8Array(12)); // IV de 12 bytes para AES-GCM
     const encoder = new TextEncoder();
     const encodedData = encoder.encode(JSON.stringify(data));
 
@@ -50,7 +49,7 @@ export const decryptData = async (encryptedData: string): Promise<any> => {
     const buffer = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
 
     const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: SECRET_IV },
+      { name: 'AES-CBC', iv: SECRET_IV },
       cryptoKey,
       buffer
     );

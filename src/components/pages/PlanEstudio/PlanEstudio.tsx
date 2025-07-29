@@ -16,7 +16,7 @@ import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
+import { getTabSelected, setCursoSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 
 const PlanEstudio: React.FC = () => {
     const navigate = useNavigate();
@@ -49,42 +49,44 @@ const PlanEstudio: React.FC = () => {
         setIsOpenVideo(true);
     }
 
-    const handleAction = (id_curso: number, status: string) => {
-        if(status === "Inscribirme") {
-            setIdCursoSelected(id_curso);
+    const handleAction = (materia: Materia) => {
+        if(materia.status === "Inscribirme") {
+            setIdCursoSelected(materia.id_curso);
             setIsOpenInscribirmeDialog(true);
+        }else if(materia.status === "Cursando") {
+            setCursoSelected(JSON.stringify(materia));
+            navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${materia.id_curso}`));
         }
     }
 
     const handleMapaCurricular = () => {
-        if(mapaCurricular)
-            window.open(mapaCurricular.data?.url, "_blank");
+        if(mapaCurricular) window.open(mapaCurricular.data?.url, "_blank");
     };
 
     const handleConfirmar = (_isConfirmar: boolean) => {
         setIsOpenInscribirmeDialog(false);
     }    
 
-    const InformacionStatusButtons = (id_curso: number, status: 'Finalizada' | 'Cursando' | 'Inscribirme', color: "success" | "primary" | "info" | "warning" | undefined) => (
+    const InformacionStatusButtons = (materia: Materia, color: "success" | "primary" | "info" | "warning" | undefined) => (
         <Box sx={{ paddingTop: '8px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
             <>
-                <Button onClick={() => goToInformacion(id_curso)} fullWidth variant="outlined">Información</Button>
+                <Button onClick={() => goToInformacion(materia.id_curso)} fullWidth variant="outlined">Información</Button>
             </>
             <>
                 <Button 
                     fullWidth
-                    onClick={() => handleAction(id_curso, status)} 
+                    onClick={() => handleAction(materia)} 
                     color={color}
-                >{status}</Button>
+                >{materia.status}</Button>
             </>
         </Box>
     );
 
-    const materiaItem = (id_curso: number, materia: string, status: 'Finalizada' | 'Cursando' | 'Inscribirme', isDesktop = true) => {
+    const materiaItem = (materia: Materia, isDesktop = true) => {
         let color: "success" | "primary" | "info" | "warning" | undefined;
-        if(status === 'Finalizada') {
+        if(materia.status === 'Finalizada') {
             color = "success";
-        }else if(status === "Cursando"){
+        }else if(materia.status === "Cursando"){
             color = "warning";        
         } else {
             color = undefined;
@@ -96,20 +98,20 @@ const PlanEstudio: React.FC = () => {
                     <Grid container sx={{ display: 'flex', alignItems: 'center', height: '80px'}}>
                         <Grid size={{md: 6}}>
                             <Typography component="span" variant="body2">
-                                {materia}
+                                {materia.titulo}
                             </Typography>
                         </Grid>
                         <Grid size={{md: 6}}>
-                            {InformacionStatusButtons(id_curso, status, color)}
+                            {InformacionStatusButtons(materia, color)}
                         </Grid>
                     </Grid>
                 </Box>
             :
             <Box>
                 <Typography component="span" variant="body2">
-                    {materia}
+                    {materia.titulo}
                 </Typography>
-                {InformacionStatusButtons(id_curso, status, color)}
+                {InformacionStatusButtons(materia, color)}
             </Box>
         )
     };
@@ -155,7 +157,7 @@ const PlanEstudio: React.FC = () => {
                                 <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                     {item.materias.map((materia: Materia, idx: number) => (
                                         <Box key={idx}>
-                                            {materiaItem(materia.id_curso, materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', false)}
+                                            {materiaItem(materia, false)}
                                         </Box>
                                     ))}
                                 </Box>
@@ -186,7 +188,7 @@ const PlanEstudio: React.FC = () => {
                                                 <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
                                                     {item.materias.map((materia: Materia, idx: number) => (
                                                         <Box key={idx}>
-                                                            {materiaItem(materia.id_curso, materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
+                                                            {materiaItem(materia, true)}
                                                         </Box>
                                                     ))}
                                                 </Box>
