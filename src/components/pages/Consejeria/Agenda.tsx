@@ -6,8 +6,8 @@ import { Users as ConsejeriaEstudiantil } from "@iconsCustomizeds";
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField, useMediaQuery, useTheme, type SelectChangeEvent } from "@mui/material";
 import Button from '../../atoms/Button/Button';
 
+export const AgendaConsejeria: React.FC = () => {
 
-const ConsejeriaAgendaCita: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -115,5 +115,3 @@ const ConsejeriaAgendaCita: React.FC = () => {
 
     );
 };
-
-export default ConsejeriaAgendaCita;
