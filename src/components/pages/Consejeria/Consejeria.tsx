@@ -10,6 +10,7 @@ import Button from '../../atoms/Button/Button';
 import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesktop';
 import { useNavigate } from "react-router-dom";
 import { flexColumn, flexRows } from '@styles';
+import { setTabSelected } from '../../../hooks/useLocalStorage';
 
 const Consejeria: React.FC = () => {
     const theme = useTheme();
@@ -18,12 +19,17 @@ const Consejeria: React.FC = () => {
     const navigate = useNavigate();
 
     const Buttons = [
-        {label: 'Nosotros', url: AppRoutingPaths.CONSEJERIAINFO},
-        {label: 'Encuestas', url: AppRoutingPaths.CONSEJERIAINFO},
-        {label: 'Blog', url: AppRoutingPaths.CONSEJERIAINFO},
-        {label: 'Recursos', url: AppRoutingPaths.CONSEJERIAINFO},
-        {label: 'Agenda una cita', url: AppRoutingPaths.CONSEJERIAINFO},
+        {label: 'Nosotros', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 0},
+        {label: 'Encuestas', url: ''},
+        {label: 'Blog', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 1},
+        {label: 'Recursos', url: ''},
+        {label: 'Agenda una cita', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 2},
     ];
+
+    const handleAction = (item: any) => {
+        setTabSelected({tab: 'consejeria-info', index: item.tabIndex});
+        navigate(item.url);
+    }
 
     const BienvenidoText = () => {
         const fontSize = isMobile ? 'h4' : 'h2';
@@ -49,7 +55,7 @@ const Consejeria: React.FC = () => {
                             return (<Button key={i}
                                 fullWidth
                                 variant="contained"
-                                onClick={() => navigate(item.url)}
+                                onClick={() => handleAction(item)}
                                 icon={<ArrowRightAltIcon />}
                                 iconPosition={'end'}
                             >
@@ -61,7 +67,7 @@ const Consejeria: React.FC = () => {
                                     key={i}
                                     fullWidth
                                     variant="outlined"
-                                    onClick={() => navigate(item.url)}
+                                    onClick={() => handleAction(item)}
                                 >
                                     {item.label}
                                 </Button>

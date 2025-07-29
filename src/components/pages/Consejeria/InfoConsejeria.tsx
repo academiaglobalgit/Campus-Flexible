@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { TitleScreen } from '@constants';
 import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
@@ -8,6 +8,7 @@ import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { InformacionConsejeria } from './Informacion';
 import { BlogConsejeria } from './Blog';
 import { AgendaConsejeria } from './Agenda';
+import { getTabSelected } from '../../../hooks/useLocalStorage';
 
 
 const InfoConsejeria: React.FC = () => {
@@ -21,6 +22,11 @@ const InfoConsejeria: React.FC = () => {
         { tab: 'Blog', content: <BlogConsejeria /> },
         { tab: 'Agenda', content: <AgendaConsejeria /> },
     ];
+
+    useEffect(() => {
+        const indexTab = getTabSelected('consejeria-info');
+        setTabValue(indexTab);
+    },[]);
 
     const Content = () => {
 
