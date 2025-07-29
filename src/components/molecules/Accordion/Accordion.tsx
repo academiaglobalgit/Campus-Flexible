@@ -29,30 +29,30 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
     <AccordionMui
       expanded={expanded}
       onChange={handleChange}
-      sx={sxProps}      
+      sx={sxProps}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {
           customSummary
-          ?
+            ?
             customSummary
-          :
+            :
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <Typography
-              component="span"
-              variant="subtitle1"
-              sxProps={{
-                color: (theme) => `${sxProps === undefined ? theme.palette.grey[200] : theme.palette.grey[500]}`
-              }}
-            >
-              {title}
-            </Typography>
-            {opcion}
-          </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '8px', justifyContent: 'space-between', width: '100%' }}>
+              <Typography
+                component="span"
+                variant="subtitle1"
+                sxProps={{
+                  color: (theme) => `${sxProps === undefined ? theme.palette.grey[200] : theme.palette.grey[500]}`
+                }}
+              >
+                {title}
+              </Typography>
+              {opcion}
+            </Box>
         }
       </AccordionSummary>
-      <AccordionDetails sx={{...backgroundDetails}}>
+      <AccordionDetails sx={{ ...backgroundDetails }}>
         {children}
       </AccordionDetails>
     </AccordionMui>
