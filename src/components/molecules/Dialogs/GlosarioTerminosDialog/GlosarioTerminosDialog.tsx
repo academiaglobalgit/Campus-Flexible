@@ -41,7 +41,6 @@ export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, c
             ]}>
                 <Divider sx={{
                         '& .MuiDivider-wrapper': {
-                        backgroundColor: '#fff',
                         borderRadius: '50px',
                         padding: '5px 10px 5px 10px',
                         },
