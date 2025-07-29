@@ -2,7 +2,7 @@ import React from "react";
 import type { Notificaciones } from "@constants";
 import { useMutation } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
-import { Box, LinearProgress, useTheme } from "@mui/material";
+import { Box, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
@@ -14,13 +14,13 @@ type NotificacionProps = {
     item: Notificaciones;
     index: number;
     loadingItems: Set<number>;
-    page?: string;
     setLoadingItems: React.Dispatch<React.SetStateAction<Set<number>>>;
     setMarkedRead: (id: number) => void;
 }
 
-export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, page, setLoadingItems, setMarkedRead }) => {
+export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, setLoadingItems, setMarkedRead }) => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const startLoading = (id: number) => {
         setLoadingItems(prev => new Set(prev).add(id));
@@ -63,7 +63,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
         <Box>
             {hasLoading(item.id_notificacion) && <LinearProgress />}
             <Box onClick={() => item.leida === 0 && handleNotifications(item)}
-                sx={[page === 'notiDeskt' ? { width: '100%', } : { width: '350px' }, {
+                sx={[isMobile ? { width: '350px%', } : { width: '100%' }, {
                     height: '138px',
                     display: 'flex',
                     alignItems: 'center',
