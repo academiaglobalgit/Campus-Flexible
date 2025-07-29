@@ -3,7 +3,7 @@ export { default as Biblioteca } from './Biblioteca.svg?react';
 export { default as BoletinAcademico } from './BoletinAcademico.svg?react';
 export { default as BolsaTrabajo } from './BolsaTrabajo.svg?react';
 export { default as Calendario } from './Calendario.svg?react';
-export { default as Calificaciones } from './Calificaciones.svg?react';
+export { default as Calificaciones } from './Star.svg?react';
 export { default as CallCalling } from './CallCalling.svg?react';
 export { default as Certificaciones } from './Certificaciones.svg?react';
 export { default as CheckboxAzul } from './CheckboxAzul.svg?react';

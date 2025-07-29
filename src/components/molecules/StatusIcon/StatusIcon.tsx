@@ -2,10 +2,11 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Typography } from '../../atoms/Typography/Typography';
 import DsSvgIcon from '../../atoms/Icon/Icon';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { Loading } from '../../../assets/icons';
 import DoneIcon from '@mui/icons-material/Done';
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
+import ClearIcon from '@mui/icons-material/Clear';
 
 export interface StatusIconProps {
     estado: string;
@@ -13,8 +14,9 @@ export interface StatusIconProps {
 
 const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    let color: "success" | "primary" | "info" | "warning" | "disabled" | undefined;
+    let color: "success" | "primary" | "info" | "warning" | "disabled" | "secondary"|undefined;
     let icon: any;
 
     if (estado === "Finalizado") {
@@ -26,6 +28,9 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     } else if (estado === "Sin iniciar") {
         color = "disabled";
         icon = LockOutlineIcon;
+    } else if (estado === "Reprobado") {
+        color = "secondary";
+        icon = ClearIcon;
     } else {
         color = undefined;
     }
@@ -33,7 +38,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     return (
         <>
             <Box sx={[
-                { color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: 'flex-start'},
+                { color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: isMobile ? 'space-between' : 'flex-start' },
             ]}>
                 <Typography component="span" variant="subtitle1" color={color} >
                     {estado}
