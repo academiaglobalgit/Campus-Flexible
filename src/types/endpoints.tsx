@@ -6,7 +6,8 @@ export const LOGIN_ENDPOINTS = {
 
 export const NOTIFICATIONS_ENDPOINTS = {
     GET_NOTIFICATIONS: { path: '/notificaciones', key: 'notificaciones' },
-    POST_NOTIFICATIONS: { path: '/notificaciones/read' }
+    POST_NOTIFICATIONS: { path: '/notificaciones/read' },
+    POST_READ_ALL_NOTIFICATIONS: { path: '/notificaciones/read-all' }
 }
 
 export const PERFIL_ENDPOINTS = {

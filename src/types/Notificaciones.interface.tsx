@@ -11,3 +11,8 @@ export interface Notificaciones {
     fecha_envio:        string;
     enlace_accion:      string;
 }
+
+export interface NotificacionesReadAllResponse {
+    success: boolean;
+    data:    string;
+}

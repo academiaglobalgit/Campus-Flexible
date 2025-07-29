@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { NOTIFICATIONS_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import type { NotificacionesResponse } from "@constants";
+import type { NotificacionesReadAllResponse } from "../types/Notificaciones.interface";
 
 export const useGetNotificaciones = () => {
     return useQuery<NotificacionesResponse, Error>({
@@ -11,8 +12,14 @@ export const useGetNotificaciones = () => {
     });
 }
 
-export const MarkReadNotification = async(id_notificacion: number) => {
-    const payload = {id_notificacion};
+export const MarkReadNotification = async (id_notificacion: number) => {
+    const payload = { id_notificacion };
     const encryptedPayload = await apiClient.encryptData({ ...payload });
     return await apiClient.post(NOTIFICATIONS_ENDPOINTS.POST_NOTIFICATIONS.path, { data: encryptedPayload });
+}
+
+export const ReadAllNotificaciones = async () => {
+    return await apiClient.post<NotificacionesReadAllResponse>(
+        NOTIFICATIONS_ENDPOINTS.POST_READ_ALL_NOTIFICATIONS.path
+    );
 }
