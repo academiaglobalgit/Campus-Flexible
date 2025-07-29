@@ -19,6 +19,10 @@ export const Biblioteca: React.FC<BibliotecaProps> = ({data}) => {
         }
     };
 
+    const handleOpenRedalyc = () => {
+         window.open("https://www.redalyc.org", '_blank');
+    };
+
     return(
         <>
           <TituloIcon Titulo={TitleScreen.BIBLIOTECA_VIRTUAL} Icon={ Document } />
@@ -29,7 +33,7 @@ export const Biblioteca: React.FC<BibliotecaProps> = ({data}) => {
             />
             <Box sx={{ paddingTop: '10px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
                 <>
-                    <Button onClick={() => {}} fullWidth>Acceder</Button>
+                    <Button onClick={handleOpenRedalyc} fullWidth>Acceder</Button>
                 </>
                 <>
                     <Button onClick={handleManualBiblioteca} fullWidth variant="outlined">Manual de Biblioteca</Button>
