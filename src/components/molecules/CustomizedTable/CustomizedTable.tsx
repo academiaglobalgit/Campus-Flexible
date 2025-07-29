@@ -37,11 +37,11 @@ function createData(
 }
 
 const rows = [
-  createData('Frozen yoghurt', 24, 4.0),
-  createData('Ice cream sandwich', 37, 4.3),
-  createData('Eclair', 24, 6.0),
-  createData('Cupcake', 67, 4.3),
-  createData('Gingerbread', 49, 3.9),
+  createData('1', 0.1, 10),
+  createData('2', 0.1, 10),
+  createData('3', 0.1, 10),
+  createData('4', 0.1, 10),
+  createData('5', 0.1, 10),
 ];
 
 const CustomizedTable: React.FC = () => {
@@ -58,9 +58,7 @@ const CustomizedTable: React.FC = () => {
         <TableBody>
           {rows.map((row) => (
             <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
+              <StyledTableCell align="center">{row.name}</StyledTableCell>
               <StyledTableCell align="center">{row.calories}</StyledTableCell>
               <StyledTableCell align="center">{row.fat}</StyledTableCell>
             </StyledTableRow>
