@@ -6,7 +6,7 @@ import TabPanel from '../../molecules/TabPanel/TabPanel';
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { MarkReadNotification } from "../../../services/NotificacionesService";
+import { ReadAllNotificaciones } from "../../../services/NotificacionesService";
 
 import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import { CardNotification } from "../../molecules/CardNotification/CardNotification";
@@ -31,6 +31,7 @@ const NotificacionesDesktop: React.FC = () => {
     const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
     const [isOpenLoading, setIsOpenLoading] = React.useState(false);
     const [textoLoading, setTextoLoading] = React.useState("");
+    const refetch = () => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
 
     useEffect(() => {
         if (notiData?.data) {
@@ -79,32 +80,35 @@ const NotificacionesDesktop: React.FC = () => {
         });
     };
 
-    const handleNotifications = async (data: any) => {
+    const handleReadALLNotifications = async () => {
 
         setIsOpenLoading(true);
         setTextoLoading("Cargando...");
 
         try {
-            const notificacionesNoLeidas = data.filter((notificacion: { leida: number }) => notificacion.leida === 0);
-
-            await Promise.all(
-                notificacionesNoLeidas.map(async (notificacion: { id_notificacion: number }) => {
-                    await createMutation.mutateAsync(notificacion.id_notificacion);
-                })
-            );
-
+            await createMutation.mutateAsync();
         } catch (error) {
             console.error(error);
         } finally {
-            queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
+            await refetch()
             setIsOpenLoading(false);
         }
     };
 
     const createMutation = useMutation({
-        mutationFn: MarkReadNotification,
+        mutationFn: ReadAllNotificaciones,
     });
 
+    const renderCardNotification = (item: any, i: number) => (
+        <CardNotification
+            key={i}
+            item={item}
+            index={i}
+            loadingItems={loadingIds}
+            setLoadingItems={setLoadingIds}
+            setMarkedRead={() => refetch()}
+        />
+    );
 
 
     const notificaciones = () => {
@@ -119,18 +123,9 @@ const NotificacionesDesktop: React.FC = () => {
                 {
                     <>
                         {[...antiguas, ...recientes].map((item, i) => (
-                            <CardNotification
-                                key={i}
-                                item={item}
-                                index={i}
-                                page={'notiDeskt'}
-                                loadingItems={loadingIds}
-                                setLoadingItems={setLoadingIds}
-                                setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
-                            />
+                            renderCardNotification(item, i)
                         ))}
                     </>
-
 
                 }
             </Box>
@@ -145,7 +140,7 @@ const NotificacionesDesktop: React.FC = () => {
                             Tienes {totalNoLeidas} notificaciones no leídas
                         </Typography>
                     </Box>
-                    <Button variant="contained" onClick={() => { handleNotifications(notiData?.data) }}>Limpiar todas las notificaciones</Button>
+                    <Button variant="contained" onClick={() => { handleReadALLNotifications() }}>Limpiar todas las notificaciones</Button>
                 </Box>
 
                 <Tabs
@@ -169,29 +164,11 @@ const NotificacionesDesktop: React.FC = () => {
                             ? <LoadingCircular Text="Cargando Notificaciones" />
                             : item.id === 0 ? <>
                                 {recientes?.map((item, i) => (
-                                    <CardNotification
-                                        key={i}
-                                        item={item}
-                                        index={i}
-                                        loadingItems={loadingIds}
-                                        page={'notiDeskt'}
-                                        setLoadingItems={setLoadingIds}
-                                        setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
-
-                                    />
+                                    renderCardNotification(item, i)
                                 ))}
                             </> : <>
                                 {antiguas?.map((item, i) => (
-                                    <CardNotification
-                                        key={i}
-                                        item={item}
-                                        index={i}
-                                        loadingItems={loadingIds}
-                                        page={'notiDeskt'}
-                                        setLoadingItems={setLoadingIds}
-                                        setMarkedRead={() => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })}
-
-                                    />
+                                    renderCardNotification(item, i)
                                 ))}
                             </>
                         }
