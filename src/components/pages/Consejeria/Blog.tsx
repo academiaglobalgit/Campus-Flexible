@@ -1,12 +1,11 @@
 import React from 'react';
 
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, Divider, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Divider, useTheme } from "@mui/material";
 import { flexColumn, flexRows } from '@styles';
 
 export const BlogConsejeria: React.FC = () => {
     const theme = useTheme();
-    // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     function BasicTable() {
         return (
