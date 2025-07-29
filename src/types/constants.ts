@@ -38,6 +38,7 @@ export const AppRoutingPaths = {
     AGENDA_CITA: "/agenda-cita",
     CONSEJERIA_BLOG: "/blog",
     NOTIFICACIONES: "/notificaciones",
+    SESSION_EXPIRED: "/expired",
 
 } as const;
 

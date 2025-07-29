@@ -152,6 +152,10 @@ export const AppRouting = createHashRouter([
       {
         path: AppRoutingPaths.NOTFOUND,
         Component: Component.NotFound
+      },
+      {
+        path: AppRoutingPaths.SESSION_EXPIRED,
+        Component: Component.SessionExpired
       }
     ]
   }

@@ -5,6 +5,7 @@ const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
 const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH;
 const FORO_KEY = import.meta.env.VITE_APP_FORO;
 const TAB_SELECTED_KEY = import.meta.env.VITE_APP_TAB_SELECTED;
+const CURSO_SELECTED = import.meta.env.VITE_APP_CURSO;
 
 export const checkAuthStatus = async (): Promise<{ isAuth: boolean; tokenExpired: boolean }> => {
   const token = getToken();
@@ -51,6 +52,10 @@ export const cleanStorage = (): void => {
 
     // Remove Authentication model
     localStorage.removeItem(AUTH_MODEL_STORAGE_KEY);
+
+    localStorage.removeItem(CURSO_SELECTED);
+    localStorage.removeItem(TAB_SELECTED_KEY);
+    localStorage.removeItem(FORO_KEY);
 }
 
 export const setForoSelected = (foro: string) => {
@@ -59,6 +64,14 @@ export const setForoSelected = (foro: string) => {
 
 export const getForoSelected = (): string => {
   return localStorage.getItem(FORO_KEY) || '';
+}
+
+export const setCursoSelected = (curso: string) => {
+  localStorage.setItem(CURSO_SELECTED, curso);
+}
+
+export const getCursoSelected = (): string => {
+  return localStorage.getItem(CURSO_SELECTED) || '';
 }
 
 export const setTabSelected = (tab: { tab: string, index: number }) => {

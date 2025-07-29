@@ -33,3 +33,4 @@ export { default as ConsejeriaNosotros } from './pages/Consejeria/nosotros';
 export { default as ConsejeriaCita } from './pages/Consejeria/Cita';
 export { default as ConsejeriaBlog } from './pages/Consejeria/Blog';
 export { default as Notificaciones } from './pages/Notificaciones/Notificaciones';
+export { default as SessionExpired } from './pages/SessionExpired/SessionExpired';
