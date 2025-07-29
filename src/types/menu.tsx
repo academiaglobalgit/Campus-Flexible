@@ -23,7 +23,7 @@ export const MenuRoutes: Menu[] = [
     { text: TitleScreen.CALIFICACIONES, icon: Icons.Calificaciones, path: AppRoutingPaths.CALIFICACIONES, order: 2, visible: 1, children:[], menu: 'main' },
     { text: TitleScreen.CALENDARIO, icon: Icons.Calendario, path: AppRoutingPaths.CALENDARIO, order: 3, visible: 1, children:[], menu: 'main' },
     { text: TitleScreen.BIBLIOTECA, icon: Icons.Biblioteca, path: AppRoutingPaths.BIBLIOTECA, order: 4, visible: 1, children:[], menu: 'main' },
-    { text: TitleScreen.CONSEJERIA, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CONSEJERIA, order: 5, visible: 1, children:[], menu: 'main'},
+    { text: TitleScreen.CONSEJERIA, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CONSEJERIA_ESTUDIANTIL, order: 5, visible: 1, children:[], menu: 'main'},
     { text: TitleScreen.SALA_CONVERSACIONES, icon: Icons.SalaConversacion, path: AppRoutingPaths.SALA_CONVERSACIONES, order: 6, visible: 1, children:[], menu: 'main' },
     { text: TitleScreen.BOLETIN_EDUCATIVO, icon: Icons.BoletinAcademico, path: AppRoutingPaths.BOLETIN_EDUCATIVO, order: 7, visible: 1, children:[], menu: 'more' },
     { text: TitleScreen.CERTIFICACIONES, icon: Icons.Certificaciones, path: AppRoutingPaths.CERTIFICACIONES, order: 8, visible: 1, children:[], menu: 'more' },

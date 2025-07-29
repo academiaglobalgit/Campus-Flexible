@@ -9,76 +9,52 @@ import { InformacionConsejeria } from './Informacion';
 import { BlogConsejeria } from './Blog';
 import { AgendaConsejeria } from './Agenda';
 
-const InfoTabs = [
-    { tab: 'Informaciòn', content: <InformacionConsejeria /> },
-    { tab: 'Blog', content: <BlogConsejeria /> },
-    { tab: 'Agenda', content: <AgendaConsejeria /> },
-];
 
 const InfoConsejeria: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [tabValue, setTabValue] = React.useState(0);
+    const [tabValue, setTabValue] = React.useState(0);    
 
-    const tabsSecciones = [
-        { id: 0, label: 'Informaciòn' },
-        { id: 1, label: 'Blog' },
-        { id: 1, label: 'Agendar cita' },
+    const InfoTabs = [
+        { tab: 'Información', content: <InformacionConsejeria /> },
+        { tab: 'Blog', content: <BlogConsejeria /> },
+        { tab: 'Agenda', content: <AgendaConsejeria /> },
     ];
-
-
-    const tabsSection = () => (
-        <Tabs
-            value={tabValue}
-            onChange={(_, val) => setTabValue(val)}
-        >
-            {
-                tabsSecciones.map((item) => <Tab label={item.label} key={item.id} sx={{ minWidth: '132px', padding: '0px' }} />)
-            }
-        </Tabs>
-    )
 
     const Content = () => {
 
         return (
             <>
-
-                <Box sx={{ alignItems: 'start', gap: '20px', width: '50%' }}>
-                    {tabsSection()}
-                </Box>
-                {
-                    InfoTabs.map((tab, i) => (
-                        <TabPanel key={i} value={tabValue} index={i}>
-                            <Box sx={{ pt: 2 }}>
-                                {tab.content}
-                            </Box>
-                        </TabPanel>
-                    ))
-                }
-
+                <Tabs value={tabValue} onChange={(_, val) => setTabValue(val)} >
+                    {
+                        InfoTabs.map((item, i) => <Tab label={item.tab} key={i} sx={{ minWidth: '132px', padding: '0px' }} />)
+                    }
+                </Tabs>
+                    {
+                        InfoTabs.map((tab, i) => (
+                            <TabPanel key={`tab${i}`} value={tabValue} index={i}>
+                                <Box sx={{ pt: 2 }}>
+                                    {tab.content}
+                                </Box>
+                            </TabPanel>
+                        ))
+                    }
             </>
         )
     }
 
     return (
-        <>
-            {
-                isMobile
-                    ?
-                    <>
-                        <TituloIcon Titulo={TitleScreen.CONSEJERIA} Icon={ConsejeriaEstudiantil} />
-                        {Content()}
-                    </>
-                    :
-                    <>
-                        <ContainerDesktop title={TitleScreen.CONSEJERIA} >
-                            {Content()}
-                        </ContainerDesktop>
-                    </>
-            }
-        </>
-
+        isMobile
+            ?
+                <>
+                    <TituloIcon Titulo={TitleScreen.CONSEJERIA} Icon={ConsejeriaEstudiantil} />
+                    {Content()}
+                </>
+            :
+                <ContainerDesktop title={TitleScreen.CONSEJERIA} >
+                    {Content()}
+                </ContainerDesktop>
     );
 };
 

@@ -45,3 +45,8 @@ export type {
     NotificacionesResponse,
     Notificaciones,    
 } from './Notificaciones.interface';
+
+export type {
+    MotivosCitaResponse,
+    MotivosCita
+} from './ConsejeriaEstudiantil.interface';

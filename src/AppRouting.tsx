@@ -86,7 +86,7 @@ export const AppRouting = createHashRouter([
                 Component: Component.SalaConversacion
               },
               {
-                path: AppRoutingPaths.CONSEJERIA,
+                path: AppRoutingPaths.CONSEJERIA_ESTUDIANTIL,
                 Component: Component.Consejeria
               },
               {
