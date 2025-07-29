@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { NOTIFICATIONS_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import type { NotificacionesResponse } from "@constants";
-import type { ReadAll } from "../types/Notificaciones.interface";
+import type { NotificacionesReadAllResponse } from "../types/Notificaciones.interface";
 
 export const useGetNotificaciones = () => {
     return useQuery<NotificacionesResponse, Error>({
@@ -19,7 +19,7 @@ export const MarkReadNotification = async (id_notificacion: number) => {
 }
 
 export const ReadAllNotificaciones = async () => {
-    return await apiClient.post<ReadAll>(
-        NOTIFICATIONS_ENDPOINTS.READ_ALL_NOTIFICATIONS.path
+    return await apiClient.post<NotificacionesReadAllResponse>(
+        NOTIFICATIONS_ENDPOINTS.POST_READ_ALL_NOTIFICATIONS.path
     );
 }

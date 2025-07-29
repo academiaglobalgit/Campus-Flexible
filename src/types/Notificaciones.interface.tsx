@@ -12,7 +12,7 @@ export interface Notificaciones {
     enlace_accion:      string;
 }
 
-export interface ReadAll {
+export interface NotificacionesReadAllResponse {
     success: boolean;
     data:    string;
 }

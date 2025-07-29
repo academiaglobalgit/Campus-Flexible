@@ -63,7 +63,8 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
         <Box>
             {hasLoading(item.id_notificacion) && <LinearProgress />}
             <Box onClick={() => item.leida === 0 && handleNotifications(item)}
-                sx={[isMobile ? { width: '350px%', } : { width: '100%' }, {
+                sx={[{
+                    width: isMobile ? '350px' : '100%',
                     height: '138px',
                     display: 'flex',
                     alignItems: 'center',

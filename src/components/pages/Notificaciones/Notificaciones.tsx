@@ -12,6 +12,7 @@ import { useGetNotificaciones } from "../../../services/NotificacionesService";
 import { CardNotification } from "../../molecules/CardNotification/CardNotification";
 import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
 import LoadingDialog from '../../molecules/Dialogs/LoadingDialog/LoadingDialog';
+import type { Notificaciones } from '@constants';
 
 
 const tabList = [{ id: 0, label: 'Recientes' }, { id: 1, label: 'Antiguas' },]
@@ -31,7 +32,7 @@ const NotificacionesDesktop: React.FC = () => {
     const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
     const [isOpenLoading, setIsOpenLoading] = React.useState(false);
     const [textoLoading, setTextoLoading] = React.useState("");
-    const refetch = () => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
+    const handleRefetch = () => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
 
     useEffect(() => {
         if (notiData?.data) {
@@ -90,7 +91,7 @@ const NotificacionesDesktop: React.FC = () => {
         } catch (error) {
             console.error(error);
         } finally {
-            await refetch()
+            await handleRefetch()
             setIsOpenLoading(false);
         }
     };
@@ -99,14 +100,14 @@ const NotificacionesDesktop: React.FC = () => {
         mutationFn: ReadAllNotificaciones,
     });
 
-    const renderCardNotification = (item: any, i: number) => (
+    const renderCardNotification = (item: Notificaciones, i: number) => (
         <CardNotification
             key={i}
             item={item}
             index={i}
             loadingItems={loadingIds}
             setLoadingItems={setLoadingIds}
-            setMarkedRead={() => refetch()}
+            setMarkedRead={ handleRefetch}
         />
     );
 
@@ -140,7 +141,7 @@ const NotificacionesDesktop: React.FC = () => {
                             Tienes {totalNoLeidas} notificaciones no leídas
                         </Typography>
                     </Box>
-                    <Button variant="contained" onClick={() => { handleReadALLNotifications() }}>Limpiar todas las notificaciones</Button>
+                    <Button variant="contained" onClick={handleReadALLNotifications}>Limpiar todas las notificaciones</Button>
                 </Box>
 
                 <Tabs
