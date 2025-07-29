@@ -31,6 +31,7 @@ export const ShowBackMenuRoutes = [
     AppRoutingPaths.VIDEOTECA_DETALLE,
     AppRoutingPaths.CALIFICACIONES_DETALLE.replace("/:id",""),
     AppRoutingPaths.FOROS.replace("/:id",""),
+    AppRoutingPaths.CONSEJERIAINFO
 ];
 
 export const numerosOrdinales = (numero: number) => {
