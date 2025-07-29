@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from '@constants';
-import { Calificaciones as CalificacionesIcon, Loading } from "@iconsCustomizeds";
+import { Calificaciones as CalificacionesIcon } from "@iconsCustomizeds";
 import { Typography } from '../../atoms/Typography/Typography';
 import Button from '../../atoms/Button/Button';
 import { GlosarioTerminosDialog } from '../../molecules/Dialogs/GlosarioTerminosDialog/GlosarioTerminosDialog';
