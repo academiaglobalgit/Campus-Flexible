@@ -34,6 +34,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
         try {
             await createMutation.mutateAsync(id);
             setMarkedRead(id);
+            goTo(item);
         } catch (error) {
             console.error(error);
         } finally {
@@ -59,10 +60,15 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
 
     const MarkedRead = () => ({ color: theme.palette.grey[100] })
 
+    const goTo = (item: Notificaciones) => {
+        console.log(item);
+        //FALTA NAVEGAR
+    }
+
     return (
         <Box>
             {hasLoading(item.id_notificacion) && <LinearProgress />}
-            <Box onClick={() => item.leida === 0 && handleNotifications(item)}
+            <Box onClick={() => item.leida === 0 ? handleNotifications(item) : goTo(item)}
                 sx={[{
                     width: isMobile ? '350px' : '100%',
                     height: '138px',
@@ -71,7 +77,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
                     gap: '25px',
                     borderBottom: '1px solid #AAB1B6',
                     backgroundColor: item.leida === 0 ? '#F6FAFD' : '#FFFFFF',
-                    cursor: item.leida === 0 ? 'pointer' : ''
+                    cursor: 'pointer'
                 }, index === 0 && { borderTop: '1px solid #AAB1B6' }]}
 
 

@@ -26,7 +26,7 @@ export const IconsTopBar: React.FC = () => {
 
     useEffect(() => {
         if (notifications?.data) {
-            setFilteredNotifications(notifications.data.filter((item) => item.leida === 0));
+            setFilteredNotifications(notifications.data);
         }
     }, [notifications]);
 
