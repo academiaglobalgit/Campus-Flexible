@@ -12,6 +12,7 @@ import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNotification } from "../../../providers/NotificationProvider";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 
 type PreviewFile = {
   file: File;
@@ -206,6 +207,19 @@ export const Actividades: React.FC = () => {
         </Box>
     );
 
+    const AccordionHeader = (item: any) => {
+        return(
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%'  }}>
+                <Typography component="span" variant="subtitle1">
+                  {`Unidad ${toRoman(Number(item[0].unidad))}`}
+                </Typography>
+                <Box sx={{pr: 2}}>
+                    <StatusIcon estado={"Cursando"} /> {/* cambiar por item[0].status */}
+                </Box>
+            </Box>
+        );
+    }
+
     return (
         <>
             {
@@ -220,8 +234,13 @@ export const Actividades: React.FC = () => {
                 ?
                     <LoadingCircular Text="Cargando Actividades..." />
                 :
-                dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>
-                    <Accordion key={index} title={`Unidad ${toRoman(Number(unidad))}`} sxProps={accordionStyle}>
+                dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) => 
+                    <Accordion 
+                        key={index} 
+                        title={`Unidad ${toRoman(Number(unidad))}`} 
+                        sxProps={accordionStyle}
+                        customHeader={AccordionHeader(contenidos?.filter((item) => item.unidad === Number(unidad)))}
+                    >
                         {
                             contenidos?.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
                                 <Box 
