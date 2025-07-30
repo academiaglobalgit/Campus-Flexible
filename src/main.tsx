@@ -5,9 +5,13 @@ import { AppRouting as router } from './AppRouting';
 import { QueryProvider } from './providers/QueryProvider';
 import './index.scss';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from './theme';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './providers/NotificationProvider';
+import { getPlataformaFromSubdomain } from './config/plataformaConfig';
+import { getThemeByPlataforma } from './themes';
+
+const plataforma = getPlataformaFromSubdomain();
+const theme = getThemeByPlataforma(plataforma);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
