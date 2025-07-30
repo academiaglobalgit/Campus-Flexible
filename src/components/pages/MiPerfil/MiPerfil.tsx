@@ -339,7 +339,7 @@ const MiPerfil: React.FC = () => {
               <TextField
                 {...field}
                 id="matricula"
-                label="ID Alumno"
+                label="Matricula"
                 error={!!errors.matricula}
                 helperText={errors.matricula?.message}
                 slotProps={{
