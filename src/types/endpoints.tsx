@@ -1,7 +1,8 @@
 export const LOGIN_ENDPOINTS = {
     POST_AUTH: { path: '/auth' },
     POST_LOGIN: { path: '/auth/login' },
-    POST_LOGOUT: { path: '/auth/logout' }
+    POST_LOGOUT: { path: '/auth/logout' },
+    POST_NEW_PASSWORD: { path: '/auth/complete-new-password' },
 }
 
 export const NOTIFICATIONS_ENDPOINTS = {

@@ -8,7 +8,7 @@ import { formatWithIMask } from "../utils/Helpers";
 export const useGetContacto = (id_plan_estudios: number) => {
     const query = useQuery<ContactoResponse, Error>({
         queryKey: [CONTACTO_ENDPOINTS.GET_CONTACTO.key, id_plan_estudios],
-        queryFn: async () => await apiClient.get<ContactoResponse>(`${CONTACTO_ENDPOINTS.GET_CONTACTO.path}?id_plan_estudio=${id_plan_estudios}`),
+        queryFn: async () => await apiClient.get<ContactoResponse>(`${CONTACTO_ENDPOINTS.GET_CONTACTO.path}?id_plan_estudio=${id_plan_estudios}&principal=1`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 

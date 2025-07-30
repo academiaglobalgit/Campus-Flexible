@@ -15,6 +15,7 @@ import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
 import { Footer } from "../../atoms/Footer/Footer";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AppRoutingPaths } from "@constants";
+import { ChangePasswordDialog } from "../../molecules/Dialogs/ChangePasswordDialog/ChangePasswordDialog";
 
 interface AccessLoginItem {
     id: string;
@@ -33,7 +34,8 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const { showNotification } = useNotification();
     const [showPassword, setShowPassword] = React.useState(false);
     const [captchaValido, setCaptchaValido] = useState(false);
-
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [userName, setUserName] = useState("");
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,12 +52,18 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             showNotification("Por favor completa el CAPTCHA", "warning");
             return;
         }
+
+        setUserName(data.username);
         const result = await login(data.username, data.password);
         // enviar formulario
         if (result.success) {
             navigate(AppRoutingPaths.PLAN_ESTUDIOS);
         } else {
-            showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
+            if(result.cambiarPassword) {
+                setShowChangePassword(true);
+            }else{
+                showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
+            }
         }
     };
 
@@ -103,7 +111,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                 >
                     Para iniciar sesión,<br />ingresa tu usuario y contraseña
                 </Typography>
-
                 <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <TextField
                         label="Usuario"
@@ -179,6 +186,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             </Box>
 
             <Footer />
+            <ChangePasswordDialog isOpen={showChangePassword} userName={userName} />
         </>
     );
 };

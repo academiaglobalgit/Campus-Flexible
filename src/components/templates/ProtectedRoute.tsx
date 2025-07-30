@@ -7,7 +7,7 @@ import { apiClient } from '../../services/ApiConfiguration/httpClient';
 import { LoadingCircular } from '../molecules/LoadingCircular/LoadingCircular';
 
 export const ProtectedRoute: React.FC = () => {
-    const { isAuthenticated, isInitializing, isTokenExpired } = useAuth();
+    const { isAuthenticated, isInitializing, isTokenExpired, isLogout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     
@@ -25,6 +25,8 @@ export const ProtectedRoute: React.FC = () => {
     if (isInitializing) {
         return <LoadingCircular Text='' />; // show un spinner mientras verifica
     }
+
+    if(isLogout) return <Navigate to={AppRoutingPaths.LOGIN} state={{ from: location }} replace />;
 
     if (!isAuthenticated || isTokenExpired) {
         return <Navigate to={AppRoutingPaths.SESSION_EXPIRED} state={{ from: location }} replace />;

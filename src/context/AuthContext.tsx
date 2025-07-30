@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthLogin as loginApi, useLogout as logoutApi, useGetPerfilUsuario } from '../services/AuthService';
+import { useAuthLogin as loginApi, useLogout as logoutApi, useAuthNewPassword, useGetPerfilUsuario } from '../services/AuthService';
 import type { User } from '@constants';
 import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
 import { encryptData } from '../utils/crypto';
@@ -11,11 +11,13 @@ interface AuthContextType {
   isAuthenticated: boolean;
   error: string | null;
   isInitializing: boolean;
+  isTokenExpired: boolean;
+  isLogout: boolean;
   clearError: () => void;
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string, cambiarPassword?: boolean }>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
-  isTokenExpired: boolean;
+  newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [error, setError] = useState<string | null>(null);
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
+    const [isLogout, setIsLogout] = useState(false);
 
     const { refetch } = useGetPerfilUsuario({ enabled: false });
 
@@ -67,11 +70,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     });
 
+    const newPasswordMutation = useMutation({
+        mutationFn: useAuthNewPassword,
+        onError: (err: any) => {
+            setError(err.response?.data?.message || 'Error al iniciar sesión');
+        }
+    });
+
     const logoutMutation = useMutation({
         mutationFn: logoutApi,
         onSuccess: () => {
             cleanStorage();
             setUser(null);
+            setIsLogout(true);
             setIsAuthenticated(false);
             setIsTokenExpired(false);
             queryClient.clear();
@@ -87,33 +98,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
+            if(response?.session) {
+                localStorage.setItem("session", response.session);
+                return { success: false, data: null, cambiarPassword: true };
+            }
+
             if (response?.token) {
                 setToken(response?.token);
                 setIsAuthenticated(true);
 
-                const perfil = await refetch();
+                await procesarPerfil();
                 
                 setIsLoading(false);
 
-                if (perfil.data) {
-                    const auth = {
-                        name: `${perfil.data.data.nombre} ${perfil.data.data.apellido_paterno} ${perfil.data.data.apellido_materno}`,
-                        email: perfil.data.data.correo,
-                        photo: perfil.data.data.foto_perfil_url,
-                        city: `${perfil.data.data.nombre_ciudad}`,
-                        phone: perfil?.data.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
-                        perfil: perfil?.data.data,
-                    };
+                return { success: true, data: null, cambiarPassword: false };
+            } else {
+                setIsLoading(false);
+                const errorMessage = response?.message || 'Autenticación fallida';
+                setError(errorMessage);
+                return { success: false, message: errorMessage, cambiarPassword: false };
+            }
+        } catch (error: any) {
+            setIsLoading(false);
+            const errorMessage = error.response?.data?.message || 
+                            error.message || 
+                            'Error al conectar con el servidor';
+            setError(errorMessage);
+            return { success: false, message: errorMessage, cambiarPassword: false };
+        }
+    }
 
-                    setUser(auth);
-                    
-                    const encry = await encryptData(auth);
-                    setAuthModel(encry);
+    const handleNewPassword = async(email: string, password: string) => {
+        try {
+            initValues();
 
-                } else {
-                    setUser(null);
-                }
+            const username = email;
+            const token = localStorage.getItem("session") || "";
+            const response = await newPasswordMutation.mutateAsync({ newPassword: password, username, token });
+            
+            localStorage.removeItem("session");
 
+            queryClient.invalidateQueries({ queryKey: ['currentUser']});
+
+            if (response?.token) {
+                setToken(response?.token);
+                setIsAuthenticated(true);
+
+                await procesarPerfil();
+                
+                setIsLoading(false);
+                
                 return { success: true, data: null };
             } else {
                 setIsLoading(false);
@@ -131,7 +165,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
+    const procesarPerfil = async () => {
+        const perfil = await refetch();
+
+        if (perfil.data) {
+            const datos = perfil.data.data;
+            
+            const auth = {
+                name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
+                email: datos.correo,
+                photo: datos.foto_perfil_url,
+                city: datos.nombre_ciudad,
+                phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
+                perfil: datos,
+            };
+
+            setUser(auth);
+
+            const encry = await encryptData(auth);
+            setAuthModel(encry);
+        } else {
+            setUser(null);
+        }
+    };
+
+
     const handleLogout = async () => {
+        setIsLogout(true);
         setIsAuthenticated(false);
         setIsTokenExpired(false);
         await logoutMutation.mutate();
@@ -146,7 +206,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(true);
         setIsAuthenticated(false);
         setError(null);
-        setIsTokenExpired(false);        
+        setIsTokenExpired(false);   
+        setIsLogout(false);     
     }
 
     const value = {
@@ -155,11 +216,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated,
         error,
         isInitializing,
+        isTokenExpired,
+        isLogout,
         login: handleLogin,
         logout: handleLogout,
         clearError,
-        isTokenExpired,
-        setUser
+        setUser,
+        newPassword: handleNewPassword
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
