@@ -16,6 +16,10 @@ export const AppRouting = createHashRouter([
         Component: Component.LoginPage,
       },
       {
+        path: AppRoutingPaths.TERMINOS_CONDICIONES,
+        Component: Component.TerminosCondiciones
+      },
+      {
         Component: ProtectedRoute,
         children: [
           {
@@ -88,10 +92,6 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.CONSEJERIA_ESTUDIANTIL,
                 Component: Component.Consejeria
-              },
-              {
-                path: AppRoutingPaths.TERMINOS_CONDICIONES,
-                Component: Component.TerminosCondiciones
               },
               {
                 path: AppRoutingPaths.BOLETIN_EDUCATIVO,

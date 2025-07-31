@@ -57,7 +57,10 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         const result = await login(data.username, data.password);
         // enviar formulario
         if (result.success) {
-            navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            if(result.aceptoTerminos)
+                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            else
+                navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
         } else {
             if(result.cambiarPassword) {
                 setShowChangePassword(true);

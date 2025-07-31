@@ -35,7 +35,7 @@ export const NewPassword: React.FC<NewPasswordProps> = ({userName}) => {
             setLoading(true);
             const result = await newPassword(userName, data.new_password);
             if (result.success) {
-                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+                navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
             } else {
                 showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
             }

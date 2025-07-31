@@ -17,17 +17,7 @@ export const ListaPendientes: React.FC = () => {
 
     const {id} = useParams<{id:string}>();
 
-    const { data: lista, isLoading } = useGetListaPendientes(Number(id!))
-    
-    const getTitleDivider = (opcion: string) => {
-        switch(opcion) {
-            case 'actividad': return 'Actividades';
-            case 'foro': return 'Foros';
-            case 'contenido': return 'Contenido';
-            case 'evaluacion': return 'Evaluaciones';
-            default: return 'Otros';
-        }
-    }
+    const { data: lista, isLoading } = useGetListaPendientes(Number(id!));
 
     const Sections = (items: IListaPendientes[]) => {
         return(
@@ -64,7 +54,7 @@ export const ListaPendientes: React.FC = () => {
                                 lista && Object.entries(lista).map(([title, items], index) => (
                                     <Box key={index} sx={{width: '100%'}}>
                                         <Divider textAlign="center">
-                                            <Typography component="span" variant="body2" color="primary">{getTitleDivider(title)}</Typography>
+                                            <Typography component="span" variant="body2" color="primary">{title}</Typography>
                                         </Divider>
                                         { 
                                             Sections(items)
@@ -89,7 +79,7 @@ export const ListaPendientes: React.FC = () => {
                                 lista && Object.entries(lista).map(([title, items], index) => (
                                     <Box key={index} sx={{pr: 2, borderRight: `1px solid ${theme.palette.grey[300]}`, minHeight: '200px', pb: 3}}>
                                         <Divider textAlign="center" sx={{mt: '0px'}}>
-                                            <Typography component="span" variant="body2" color="primary">{getTitleDivider(title)}</Typography>
+                                            <Typography component="span" variant="body2" color="primary">{title}</Typography>
                                         </Divider>
                                             { 
                                                 Sections(items)
