@@ -14,10 +14,11 @@ interface AuthContextType {
   isTokenExpired: boolean;
   isLogout: boolean;
   clearError: () => void;
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string, cambiarPassword?: boolean }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
   newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  aceptoTerminos: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,6 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
     const [isLogout, setIsLogout] = useState(false);
+    const [aceptoTerminos, setAceptoTerminos] = useState(true);
 
     const { refetch } = useGetPerfilUsuario({ enabled: false });
 
@@ -49,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 if (authStatus.isAuth) {
                     const userData = await getAuthModel();
                     setUser(userData);
+                    setAceptoTerminos(userData.aceptoTerminos);
                 }
                 setIsAuthenticated(authStatus.isAuth);
             } catch (error) {
@@ -106,12 +109,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (response?.token) {
                 setToken(response?.token);
                 setIsAuthenticated(true);
+                setAceptoTerminos(response?.acepto_terminos);                
 
                 await procesarPerfil();
                 
                 setIsLoading(false);
 
-                return { success: true, data: null, cambiarPassword: false };
+                return { success: true, data: null, cambiarPassword: false, aceptoTerminos: aceptoTerminos };
             } else {
                 setIsLoading(false);
                 const errorMessage = response?.message || 'Autenticación fallida';
@@ -148,7 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 
                 setIsLoading(false);
                 
-                return { success: true, data: null };
+                return { success: true, data: null, aceptoTerminos: false };
             } else {
                 setIsLoading(false);
                 const errorMessage = response?.message || 'Autenticación fallida';
@@ -178,6 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 city: datos.nombre_ciudad,
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
+                aceptoTerminos: aceptoTerminos
             };
 
             setUser(auth);
@@ -218,11 +223,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isInitializing,
         isTokenExpired,
         isLogout,
+        aceptoTerminos,
         login: handleLogin,
         logout: handleLogout,
         clearError,
         setUser,
-        newPassword: handleNewPassword
+        newPassword: handleNewPassword,
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

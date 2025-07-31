@@ -1,6 +1,6 @@
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, Button, FormControlLabel, FormGroup, Switch, useTheme } from "@mui/material";
+import { Box, Container, FormControlLabel, FormGroup, Switch, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,11 +9,15 @@ import { useMutation } from "@tanstack/react-query";
 import { useTerminos } from "../../../services/TerminosCondicionesService";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
+import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
+import { Terminos } from "@iconsCustomizeds";
+import Button from "../../atoms/Button/Button";
 
 const TerminosCondiciones: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { showNotification } = useNotification()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
     const {
         control,
@@ -45,28 +49,35 @@ const TerminosCondiciones: React.FC = () => {
     const textos = () =>(
         <>
             <p>Bienvenido(a) al campus, te deseamos mucho éxito en tus estudios.</p>
-            <p>Antes de iniciar las actividades de tus cursos, deberás seguir dos sencillos pasos:</p>            
-            <p>1. Leer y aceptar de conformidad los Lineamientos Internos y Normas de Control Escolar, el cual puedes leer haciendo clic aquí.</p>            
-            <p>2. Comprometerse a asumir los costos por los conceptos de estudio que se generen, realizando los depósitos en las cuentas bancarias autorizadas. Consulta los precios aquí.</p>            
+            <p>Antes de iniciar las actividades de tus cursos, deberás seguir dos sencillos pasos:</p>
+            <ol>
+                <li><p>Leer y aceptar de conformidad los Lineamientos Internos y Normas de Control Escolar, el cual puedes leer haciendo clic aquí.</p></li>
+                <li><p>Comprometerse a asumir los costos por los conceptos de estudio que se generen, realizando los depósitos en las cuentas bancarias autorizadas. Consulta los precios aquí.</p></li>
+            </ol>
+            
             <p>Para conocer los tipos de becas y formas de pago que te proporciona tu empresa te sugerimos acercarte a tu RH.</p>            
-            <p>3. En caso de haberte inscrito al programa con documentación electrónica, leer y aceptar de conformidad los Términos y Condiciones de entrega de documentación física original, las cuales puedes leer haciendo clic aquí.</p>            
-            <p>4. Para garantizar que cumplimos con las nuevas normas de privacidad y datos, nos gustaría asegurarnos de que estés conforme de recibir actualizaciones por correo electrónico de Academia Global. Nuestro Aviso de Privacidad, mismo que puede ser encontrado aquí.</p>
+            <ol start={3}>
+                <li><p>En caso de haberte inscrito al programa con documentación electrónica, leer y aceptar de conformidad los Términos y Condiciones de entrega de documentación física original, las cuales puedes leer haciendo clic aquí.</p></li>
+                <li><p>Para garantizar que cumplimos con las nuevas normas de privacidad y datos, nos gustaría asegurarnos de que estés conforme de recibir actualizaciones por correo electrónico de Academia Global. Nuestro Aviso de Privacidad, mismo que puede ser encontrado aquí.</p></li>
+            </ol>
         </>
     );
 
     const contenido = (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <Typography component="span" variant="h4">
-                Estimado(a) alumno(a):
+                Estimado(A) alumno(A):
             </Typography>
             <Typography component="div" variant="body2">
                 { textos() }
             </Typography>
 
-            <Typography component="p" variant="body3" sxProps={{ color: theme.palette.primary.main }}>
-                ¡Felicidades!, has dado un gran paso en tu desarrollo profesional y personal.
+            <Typography component="p" variant="h4" sxProps={{ color: theme.palette.primary.main, textAlign: isMobile ? 'center' : 'left' }}>
+                ¡Felicidades!
+                {isMobile && <br />}
+                {' has dado un gran paso en tu desarrollo profesional y personal.'}
             </Typography>
-            <FormGroup>                
+            <FormGroup sx={{gap: isMobile ? '32px' : '20px'}}>                
                 <Controller
                     name="aceptoTerminos"
                     control={control}
@@ -76,9 +87,9 @@ const TerminosCondiciones: React.FC = () => {
                         label="Acepto que he leído los Lineamientos Internos y Normas de Control Escolar."
                         />
                     )}
-                    />
+                />
 
-                    <Controller
+                <Controller
                     name="aceptoLineamientos"
                     control={control}
                     render={({ field }) => (
@@ -87,9 +98,9 @@ const TerminosCondiciones: React.FC = () => {
                         label="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
                         />
                     )}
-                    />
+                />
 
-                    <Controller
+                <Controller
                     name="aceptoAvisos"
                     control={control}
                     render={({ field }) => (
@@ -98,26 +109,36 @@ const TerminosCondiciones: React.FC = () => {
                         label="He leído y acepto el Aviso de Privacidad de Academia Global."
                         />
                     )}
-                    />
+                />
             </FormGroup>
-            <Button
-                onClick={handleSubmit(onSubmit)} 
-                variant="contained"
-                sx={{ width: 'fit-content', padding: '8px 22px' }}
-                disabled={!isValid}
-            >Aceptar
-            </Button>
+            <Box sx={{ width: isMobile ? '100%' : '178px'}}>
+                    <Button
+                        fullWidth
+                        onClick={handleSubmit(onSubmit)} 
+                        variant="contained"
+                        sxProps={{ padding: '8px 22px' }}
+                        disabled={!isValid}
+                    >Aceptar
+                </Button>
+            </Box>
         </Box>
     );
 
     return (
-
-        <ContainerDesktop
-            title={TitleScreen.TERMINOS_CONDICIONES}
-            children={contenido}
-        >
-        </ContainerDesktop>
-
+        !isMobile
+        ?
+            <Container fixed sx={{ pl: { xs: 0, sm: "50px" } }}>
+                <ContainerDesktop title={TitleScreen.TERMINOS_CONDICIONES}>
+                    { contenido }
+                </ContainerDesktop>
+            </Container>
+        :
+            <>
+                <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }} >
+                    <TituloIcon Titulo={TitleScreen.TERMINOS_CONDICIONES} Icon={ Terminos } />
+                    {contenido}
+                </Container>
+            </>
     );
 };
 

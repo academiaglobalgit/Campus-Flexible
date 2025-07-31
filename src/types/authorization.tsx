@@ -12,6 +12,7 @@ export interface User {
   city:  string;
   phone:  string;
   perfil?: Perfil;
+  aceptoTerminos?: boolean;
 }
 
 export interface AuthResponse {
@@ -19,4 +20,6 @@ export interface AuthResponse {
   message: string;
   token:  string;
   session:  string;
+  programa: string;
+  acepto_terminos: boolean;
 }
