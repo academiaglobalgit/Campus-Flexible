@@ -64,7 +64,7 @@ export const Tutorias: React.FC = () => {
                 {
                     tutorias && tutorias.data.map((tutoria: Tutoria, i: number) => (
                         <Accordion key={i}
-                            customHeader={<AccordionStatus tittle={tutoria.titulo} status={'Cursando'} />}
+                            customHeader={<AccordionStatus tittle={tutoria.titulo} status={tutoria.estatus} />}
                             sxProps={accordionStyle}>
                             {
                                 isMobile

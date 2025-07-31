@@ -10,15 +10,15 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 export const Contenido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { data: contenido, isLoading } = useGetCursosTabs(Number(id!), "Contenido");
-
     return (
         isLoading ?
             <LoadingCircular Text="Cargando Contenido..." />
             :
 
             Object.entries(contenido).map(([unidad, contenidos], index) =>
+                
                 <Accordion key={index}
-                    customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={'Cursando'} />}
+                    customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} />}
 
                     sxProps={accordionStyle}>
                     {
