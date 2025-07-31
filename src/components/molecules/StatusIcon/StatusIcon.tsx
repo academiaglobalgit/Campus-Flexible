@@ -25,7 +25,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     } else if (estado === "Cursando") {
         color = "warning";
         icon = Loading;
-    } else if (estado === "Sin iniciar") {
+    } else if (estado === "Sin Iniciar") {
         color = "disabled";
         icon = LockOutlineIcon;
     } else if (estado === "Reprobado") {
