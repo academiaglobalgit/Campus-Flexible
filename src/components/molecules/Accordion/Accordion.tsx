@@ -4,7 +4,7 @@ import { Typography } from "../../atoms/Typography/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 type AccordionProps = {
-  title: string;
+  title?: string;
   icon?: React.ReactNode;
   opcion?: React.ReactNode;
   children: React.ReactNode;
