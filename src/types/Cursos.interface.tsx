@@ -22,6 +22,7 @@ export interface CursosTabsResponse {
 }
 
 export interface CursosTabs {
+    estatus_respuesta: string;
     id_curso:           number;
     id_modulo:          number;
     modulo:             string;
@@ -33,6 +34,7 @@ export interface CursosTabs {
     contenido_elemento: string;
     creado_por:         number;
     url:                string;
+    estatus:            string;
     activo:             number;
     eliminado:          number;
 }
@@ -59,6 +61,7 @@ export interface Actividad {
     contenido_elemento: string;
     creado_por:         null;
     url:                null;
+    estatus:            string;
     activo:             number;
     eliminado:          number;
     hasEntrega:         number;
@@ -109,6 +112,7 @@ export interface Tutoria {
     calendario_url: string;
     reunion_url:    string;
     grabacion_url:  string;
+    estatus:        string;
     expirada:       boolean;
     recursos:       RecursoTutoria[];
 }
@@ -150,6 +154,7 @@ export interface ActividadEntrega {
     retroalimentacion:   string;
     calificado_por:      string;
     fecha_calificacion:  string;
+    estatus_respuesta:   string;
     activo:              number;
     eliminado:           number;
 }

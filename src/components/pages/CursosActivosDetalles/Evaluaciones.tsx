@@ -19,7 +19,7 @@ export const Evaluaciones: React.FC = () => {
 
             Object.entries(contenido).map(([unidad, contenidos], index) =>
                 <Accordion key={index}
-                    customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={'Cursando'} />}
+                    customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} />}
                     sxProps={accordionStyle}>
                     {
                         contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (

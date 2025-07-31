@@ -20,7 +20,7 @@ export const ForosCursos: React.FC = () => {
 
     const {id} = useParams<{id:string}>();    
     const {data: { agrupadoPorUnidad: foros, manuales }, isLoading} = useGetForosManuales(Number(id!), "Foros");
-    
+
     const handleForo = (item: CursosTabs) => {
         setForoSelected(JSON.stringify(item));
         navigate(AppRoutingPaths.FOROS.replace(":id", `${item.id_recurso}`));
@@ -42,7 +42,7 @@ export const ForosCursos: React.FC = () => {
     const AccordionSection = () => (
         Object.entries(foros).map(([unidad, contenidos], index) => 
 
-            <Accordion key={index} customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={"Cursando"} />} sxProps={accordionStyle}>
+            <Accordion key={index} customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus_respuesta} />} sxProps={accordionStyle}>
                 {
                     isMobile && <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />
                 }
