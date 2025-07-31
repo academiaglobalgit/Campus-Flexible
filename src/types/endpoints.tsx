@@ -88,3 +88,7 @@ export const CONSEJERIA_ESTUDIANTIL = {
     GET_MOTIVOS: {path: '/consejeria-estudiantil/citas/motivos', key: 'consejeria-motivos'},
     POST_AGENDR_CITA: {path: '/consejeria-estudiantil/citas/guardar'}
 }
+
+export const TERMINOS_CONDICIONES = {
+    POST_TERMINOS: {path: '/documentos/tyc/aceptar'}
+}

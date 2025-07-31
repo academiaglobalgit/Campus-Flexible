@@ -1,12 +1,46 @@
-import { TitleScreen } from "@constants";
+import { AppRoutingPaths, TitleScreen } from "@constants";
 import { Typography } from "../../atoms/Typography/Typography";
-import { CheckBoxLabel } from "../../atoms/Checkbox/Checkbox";
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, Button, FormControlLabel, FormGroup, Switch, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { terminosSchema, type TerminosFormData } from "../../../schemas/terminosCondicionesSchema";
+import { useMutation } from "@tanstack/react-query";
+import { useTerminos } from "../../../services/TerminosCondicionesService";
+import { useNavigate } from "react-router-dom";
+import { useNotification } from "../../../providers/NotificationProvider";
 
 const TerminosCondiciones: React.FC = () => {
-    const theme = useTheme();    
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const { showNotification } = useNotification()
+    
+    const {
+        control,
+        handleSubmit,
+        formState: { isValid },
+    } = useForm<TerminosFormData>({
+        resolver: zodResolver(terminosSchema),
+        defaultValues: {
+            aceptoTerminos: false,
+            aceptoLineamientos: false,
+            aceptoAvisos: false,
+        },
+    });
+
+    const onSubmit = async() => {
+        try {
+            await createMutation.mutateAsync({ documentos_legales: [1,2,3] });
+            navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+        } catch (error) {
+            showNotification("Hubo un error al registrar: " + error, "error");
+            console.error(error);
+        }
+    }
+
+    const createMutation = useMutation({
+        mutationFn: useTerminos,
+    }); 
 
     const textos = () =>(
         <>
@@ -32,25 +66,45 @@ const TerminosCondiciones: React.FC = () => {
             <Typography component="p" variant="body3" sxProps={{ color: theme.palette.primary.main }}>
                 ¡Felicidades!, has dado un gran paso en tu desarrollo profesional y personal.
             </Typography>
+            <FormGroup>                
+                <Controller
+                    name="aceptoTerminos"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                        control={<Switch {...field} checked={field.value} />}
+                        label="Acepto que he leído los Lineamientos Internos y Normas de Control Escolar."
+                        />
+                    )}
+                    />
 
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <CheckBoxLabel
-                    text="Acepto que he leído los Lineamientos Internos y Normas de Control Escolar"
-                    place="end"
-                />
-                <CheckBoxLabel
-                    text="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
-                    place="end"
-                />
-                <CheckBoxLabel
-                    text="He leído y acepto el Aviso de Privacidad de Academia Global."
-                    place="end"
-                />
-            </Box>
+                    <Controller
+                    name="aceptoLineamientos"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                        control={<Switch {...field} checked={field.value} />}
+                        label="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
+                        />
+                    )}
+                    />
+
+                    <Controller
+                    name="aceptoAvisos"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                        control={<Switch {...field} checked={field.value} />}
+                        label="He leído y acepto el Aviso de Privacidad de Academia Global."
+                        />
+                    )}
+                    />
+            </FormGroup>
             <Button
-                onClick={() => { }}
+                onClick={handleSubmit(onSubmit)} 
                 variant="contained"
                 sx={{ width: 'fit-content', padding: '8px 22px' }}
+                disabled={!isValid}
             >Aceptar
             </Button>
         </Box>
