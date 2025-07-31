@@ -12,11 +12,11 @@ import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNotification } from "../../../providers/NotificationProvider";
-import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 
 type PreviewFile = {
-  file: File;
-  preview?: string;
+    file: File;
+    preview?: string;
 };
 
 export const Actividades: React.FC = () => {
@@ -28,7 +28,7 @@ export const Actividades: React.FC = () => {
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isSaving, setIsSaving] = useState(false);
 
-    const {id} = useParams<{id:string}>();    
+    const { id } = useParams<{ id: string }>();
     const { dataMapped, isLoading } = useGetActividades(Number(id!), "Actividades");
 
     const { control, setValue } = useForm();
@@ -60,7 +60,7 @@ export const Actividades: React.FC = () => {
         await Promise.all(
             Object.entries(dataMapped?.agrupadoPorUnidad ?? {}).map(async ([_, contenidos]) => {
                 const curso = contenidos.filter((item) => item.id_recurso === id_recurso);
-                
+
                 for (const item of curso) {
                     id_entrega = item.entrega?.id_entrega ?? 0;
 
@@ -83,8 +83,8 @@ export const Actividades: React.FC = () => {
 
         const filesArray = archivosPorId[id_recurso]
             .filter((item) => archivosNoExistentes.includes(item.file.name))
-            .map((item) => item);    
-        
+            .map((item) => item);
+
         const contenidoText = contenido[id_recurso] || '';
         const files = filesArray.map((item) => item.file);
         createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar, id_entrega });
@@ -95,13 +95,13 @@ export const Actividades: React.FC = () => {
         const contenidoText = contenido[id_recurso] || '';
         const archivos = archivosPorId[id_recurso] || [];
         const files = archivos.map((item) => item.file);
-        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar: [], id_entrega: null });        
+        createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar: [], id_entrega: null });
     }
 
     const createMutationActivity = useMutation({
         mutationFn: updateActividad,
         onSuccess: async () => {
-            showNotification(`La actividades se guardo satisfactoriamente`,"success");
+            showNotification(`La actividades se guardo satisfactoriamente`, "success");
 
             await queryClient.invalidateQueries({ queryKey: ["Actividades"] });
             setIsSaving(false);
@@ -114,15 +114,15 @@ export const Actividades: React.FC = () => {
         onSettled: () => {
             console.log('La mutación ha finalizado');
         }
-    });    
-    
+    });
+
     useEffect(() => {
         loadAllArchivos();
         loadComentarios();
     }, [dataMapped]);
 
     const loadComentarios = () => {
-        if(dataMapped?.agrupadoPorUnidad) {
+        if (dataMapped?.agrupadoPorUnidad) {
             Object.entries(dataMapped.agrupadoPorUnidad).map(async ([_, contenidos]) => {
                 // const curso = contenidos.filter((item) => item.id_recurso === id_recurso);
                 contenidos.map((item) => {
@@ -164,7 +164,7 @@ export const Actividades: React.FC = () => {
 
     const handleCancel = (id_recurso: number) => {
         loadAllArchivos(id_recurso);
-        if(dataMapped?.agrupadoPorUnidad) {
+        if (dataMapped?.agrupadoPorUnidad) {
             Object.entries(dataMapped?.agrupadoPorUnidad).map(async ([_, contenidos]) => {
                 const curso = contenidos.filter((item) => item.id_recurso === id_recurso);
                 curso.map((item) => {
@@ -187,17 +187,17 @@ export const Actividades: React.FC = () => {
             sx={
                 [
                     { width: '100%' },
-                    isDesktop && {...flexRows, gap: '30px', mb: '25px' },
-                    !isDesktop && {...flexColumn, gap: '18px', pb: 4 }
+                    isDesktop && { ...flexRows, gap: '30px', mb: '25px' },
+                    !isDesktop && { ...flexColumn, gap: '18px', pb: 4 }
                 ]
             }
         >
             {
-                !isLoading && 
+                !isLoading &&
                 <>
                     {
                         dataMapped?.manuales && Object.entries(dataMapped.manuales).map(([_, item], index) =>
-                            <Box sx={{ width: isDesktop ? '300px' : '100%'}} key={index}>
+                            <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={index}>
                                 <Button onClick={() => handleLink(item.url_archivo)} fullWidth >{item.titulo}</Button>
                             </Box>
                         )
@@ -207,153 +207,141 @@ export const Actividades: React.FC = () => {
         </Box>
     );
 
-    const AccordionHeader = (item: any) => {
-        return(
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%'  }}>
-                <Typography component="span" variant="subtitle1">
-                  {`Unidad ${toRoman(Number(item[0].unidad))}`}
-                </Typography>
-                <Box sx={{pr: 2}}>
-                    <StatusIcon estado={"Cursando"} /> {/* cambiar por item[0].status */}
-                </Box>
-            </Box>
-        );
-    }
 
     return (
         <>
             {
                 isMobile
-                ?
+                    ?
                     ButtonSection(!isMobile)
-                :
+                    :
                     ButtonSection(betweenDevice ? false : true)
             }
             {
-                isLoading 
-                ?
+                isLoading
+                    ?
                     <LoadingCircular Text="Cargando Actividades..." />
-                :
-                dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) => 
-                    <Accordion 
-                        key={index} 
-                        title={`Unidad ${toRoman(Number(unidad))}`} 
-                        sxProps={accordionStyle}
-                        customHeader={AccordionHeader(contenidos?.filter((item) => item.unidad === Number(unidad)))}
-                    >
-                        {
-                            contenidos?.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
-                                <Box 
+                    :
+                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>
+                        <Accordion
+                            key={index}
+                            title={`Unidad ${toRoman(Number(unidad))}`}
+                            sxProps={accordionStyle}
+                            customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={'Cursando'} />}
+                        >
+                            {
+                                contenidos?.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
+                                    <Box
                                         key={i}
-                                >
-                                    <Box                                         
-                                        dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} 
-                                        sx={{
-                                            '& h1, h2':{
-                                                font: theme.typography.h4
-                                            },
-                                            '& h1, h2, h3': {
-                                                color: 'primary.main',
-                                            },
-                                            '& p': {
-                                                marginBottom: '1rem',
-                                                lineHeight: 1.6,
-                                                color: 'text.primary'
-                                            },
-                                            '& ul': {
-                                                paddingLeft: '1.5rem',
-                                                listStyleType: 'disc',
-                                            },
-                                            pl: 3, pr: 3
-                                        }}
-                                    />
-                                    <Box sx={{pl: 3, pr: 3, pb: 3}}>
-                                        <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
-                                            Entrega de actividad
-                                        </Typography>
-                                        <Box sx={{pt: 2}}>
-                                            <Controller
-                                                name={`comentario.${item.id_recurso}`}
-                                                control={control}
-                                                defaultValue={item.entrega?.contenido_entregado ?? ''}
-                                                render={({ field }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        label="Comentario"
-                                                        placeholder="Ingresa tu comentario"
-                                                        multiline
-                                                        rows={5}
-                                                        fullWidth
-                                                        slotProps={{
-                                                            input: {
-                                                                inputProps: {
-                                                                    maxLength: 200
-                                                                },
-                                                            },
-                                                        }}
-                                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            field.onChange(event); // necesario para que React Hook Form actualice el valor
-                                                            handleChange(event, item.id_recurso); // ← si tú quieres manejar algo extra
-                                                        }}
-                                                    />
-                                                )}
-                                            />
-                                        </Box>
-
-                                        <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
-                                            <Typography component="p" variant="body1" color="primary">
-                                                Sube tu archivo aquí
-                                            </Typography>
-                                            <Typography component="p" variant="body1">
-                                                (pdf. xml. word, ppt)
-                                            </Typography>
-                                        </Box>
-                                        <FileUploader                                              
-                                            files={archivosPorId[item.id_recurso] || []}
-                                            onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
-                                            maxFiles={3} maxFileSizeMb={3}
+                                    >
+                                        <Box
+                                            dangerouslySetInnerHTML={{ __html: item.contenido_elemento }}
+                                            sx={{
+                                                '& h1, h2': {
+                                                    font: theme.typography.h4
+                                                },
+                                                '& h1, h2, h3': {
+                                                    color: 'primary.main',
+                                                },
+                                                '& p': {
+                                                    marginBottom: '1rem',
+                                                    lineHeight: 1.6,
+                                                    color: 'text.primary'
+                                                },
+                                                '& ul': {
+                                                    paddingLeft: '1.5rem',
+                                                    listStyleType: 'disc',
+                                                },
+                                                pl: 3, pr: 3
+                                            }}
                                         />
-                                        {
-                                            item.hasEntrega === 1
-                                            ?
-                                                <Box sx={{...flexRows, gap: '20px', mt: 2}}>
-                                                    <>
-                                                        <Button
+                                        <Box sx={{ pl: 3, pr: 3, pb: 3 }}>
+                                            <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
+                                                Entrega de actividad
+                                            </Typography>
+                                            <Box sx={{ pt: 2 }}>
+                                                <Controller
+                                                    name={`comentario.${item.id_recurso}`}
+                                                    control={control}
+                                                    defaultValue={item.entrega?.contenido_entregado ?? ''}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            label="Comentario"
+                                                            placeholder="Ingresa tu comentario"
+                                                            multiline
+                                                            rows={5}
                                                             fullWidth
-                                                            onClick={() => handleEditActivity(item.id_recurso)}
-                                                            isLoading={isSaving}
-                                                        >
-                                                            Modificar
-                                                        </Button>
-                                                    </>
-                                                    <>
-                                                        <Button
-                                                            fullWidth
-                                                            onClick={() => handleCancel(item.id_recurso)}
-                                                            variant="outlined"
-                                                        >
-                                                            Cancelar
-                                                        </Button>
-                                                    </>
-                                                </Box>
-                                            :
-                                            <Button
-                                                fullWidth
-                                                onClick={() => handleSaveActivity(item.id_recurso)}
-                                                sxProps={{ mt: 2 }}
-                                                isLoading={isSaving}
-                                            >
-                                                Finalizar Actividad
-                                            </Button>
-                                        }
-                                            
+                                                            slotProps={{
+                                                                input: {
+                                                                    inputProps: {
+                                                                        maxLength: 200
+                                                                    },
+                                                                },
+                                                            }}
+                                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                field.onChange(event); // necesario para que React Hook Form actualice el valor
+                                                                handleChange(event, item.id_recurso); // ← si tú quieres manejar algo extra
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Box>
+
+                                            <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
+                                                <Typography component="p" variant="body1" color="primary">
+                                                    Sube tu archivo aquí
+                                                </Typography>
+                                                <Typography component="p" variant="body1">
+                                                    (pdf. xml. word, ppt)
+                                                </Typography>
+                                            </Box>
+                                            <FileUploader
+                                                files={archivosPorId[item.id_recurso] || []}
+                                                onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
+                                                maxFiles={3} maxFileSizeMb={3}
+                                            />
+                                            {
+                                                item.hasEntrega === 1
+                                                    ?
+                                                    <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
+                                                        <>
+                                                            <Button
+                                                                fullWidth
+                                                                onClick={() => handleEditActivity(item.id_recurso)}
+                                                                isLoading={isSaving}
+                                                            >
+                                                                Modificar
+                                                            </Button>
+                                                        </>
+                                                        <>
+                                                            <Button
+                                                                fullWidth
+                                                                onClick={() => handleCancel(item.id_recurso)}
+                                                                variant="outlined"
+                                                            >
+                                                                Cancelar
+                                                            </Button>
+                                                        </>
+                                                    </Box>
+                                                    :
+                                                    <Button
+                                                        fullWidth
+                                                        onClick={() => handleSaveActivity(item.id_recurso)}
+                                                        sxProps={{ mt: 2 }}
+                                                        isLoading={isSaving}
+                                                    >
+                                                        Finalizar Actividad
+                                                    </Button>
+                                            }
+
+                                        </Box>
                                     </Box>
-                                </Box>
-                            ))
-                        }
-                        
-                    </Accordion>      
-                )
+                                ))
+                            }
+
+                        </Accordion>
+                    )
             }
         </>
     );
