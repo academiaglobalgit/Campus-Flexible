@@ -227,7 +227,7 @@ export const Actividades: React.FC = () => {
                             key={index}
                             title={`Unidad ${toRoman(Number(unidad))}`}
                             sxProps={accordionStyle}
-                            customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} />}
+                            customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
                         >
                             {
                                 contenidos?.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
