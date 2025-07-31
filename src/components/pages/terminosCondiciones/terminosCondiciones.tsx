@@ -1,3 +1,4 @@
+import React from "react";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { Typography } from "../../atoms/Typography/Typography";
 import { Box, Container, FormControlLabel, FormGroup, Switch, useMediaQuery, useTheme } from "@mui/material";
@@ -18,6 +19,7 @@ const TerminosCondiciones: React.FC = () => {
     const navigate = useNavigate();
     const { showNotification } = useNotification()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isLoading, setIsLoading] = React.useState(false);
     
     const {
         control,
@@ -34,10 +36,12 @@ const TerminosCondiciones: React.FC = () => {
 
     const onSubmit = async() => {
         try {
+            setIsLoading(true);
             await createMutation.mutateAsync({ documentos_legales: [1,2,3] });
             navigate(AppRoutingPaths.PLAN_ESTUDIOS);
         } catch (error) {
             showNotification("Hubo un error al registrar: " + error, "error");
+            setIsLoading(false);
             console.error(error);
         }
     }
@@ -118,6 +122,7 @@ const TerminosCondiciones: React.FC = () => {
                         variant="contained"
                         sxProps={{ padding: '8px 22px' }}
                         disabled={!isValid}
+                        isLoading={isLoading}
                     >Aceptar
                 </Button>
             </Box>
