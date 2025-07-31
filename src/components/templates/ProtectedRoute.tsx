@@ -11,15 +11,16 @@ export const ProtectedRoute: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     
-    React.useEffect(() => {
-        const unsubscribe = apiClient.subscribeUnauthorized(() => {
-            return <Navigate to={AppRoutingPaths.SESSION_EXPIRED} state={{ from: location }} replace />;
-        });
+    const handleUnauthorized = React.useCallback(() => {
+        navigate(AppRoutingPaths.SESSION_EXPIRED, { state: { from: location }, replace: true });
+    }, [navigate, location]);
 
+    React.useEffect(() => {
+        const unsubscribe = apiClient.subscribeUnauthorized(handleUnauthorized);
         return () => {
             unsubscribe();
         };
-    }, [navigate]);
+    }, [handleUnauthorized]);
 
 
     if (isInitializing) {

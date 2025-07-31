@@ -12,6 +12,7 @@ import { FormTutor } from "./FormTutor";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetAyudaTickets } from "../../../services/AyudaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { FormatearFecha } from "../../../utils/Helpers";
 
 const Ayuda: React.FC = () => {
     const theme = useTheme();
@@ -79,9 +80,14 @@ const Ayuda: React.FC = () => {
     const CardStatus: React.FC<EstadoTicket> = (item) => {
         return(
             <Box sx={{borderBottom: '1px solid #AAB1B6', minHeight: '149px'}}>
-                <Typography component="span" variant="body2">
-                    {item.folio_seguimiento}
-                </Typography>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                    <Typography component="span" variant="body2">
+                        {item.folio_seguimiento}
+                    </Typography>
+                    <Typography component="span" variant="body1" color="textDisabled">
+                        {FormatearFecha(item.fecha_creacion)}
+                    </Typography>
+                </Box>
                 <Typography component="h4" variant="h4" color="primary">
                     {
                         item.estado === "Resuelto" ? <Stack>

@@ -1,5 +1,6 @@
 import { AppRoutingPaths } from "@constants";
 import { IMask } from "react-imask";
+import { format } from 'date-fns';
 
 export const CustomMask = {
   phone: "(000) 000-0000",
@@ -157,3 +158,5 @@ export const tiempoTranscurrido = (fechaISO: string): string => {
         if (mes < 12) return `Hace ${mes} mes${mes === 1 ? '' : 'es'}`;
         return `Hace ${year} año${year === 1 ? '' : 's'}`;
 };
+
+export const FormatearFecha = (fecha: string) => format(new Date(fecha), 'dd/MM/yyyy HH:mm a');
