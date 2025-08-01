@@ -24,9 +24,11 @@ export const Evaluaciones: React.FC = () => {
                     title={`Unidad ${toRoman(Number(unidad))}`}
                     customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
                     sxProps={accordionStyle}>
-                    <Box sx={{ display: isMobile ? 'block' : 'none', padding: '10px' }}>
-                        <StatusIcon estado={contenidos?.[0]?.estatus} />
-                    </Box>
+                    {
+                        isMobile && <Box sx={{ padding: '10px' }}>
+                            <StatusIcon estado={contenidos?.[0]?.estatus} />
+                        </Box>
+                    }
                     {
                         contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
                             <Box key={i}>

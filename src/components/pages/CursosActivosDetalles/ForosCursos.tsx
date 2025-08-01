@@ -58,9 +58,11 @@ export const ForosCursos: React.FC = () => {
                         >
                             <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} />
 
-                            <Box sx={{ display: isMobile ? 'block' : 'none', padding: '10px',width: '100%' }}>
-                                <StatusIcon estado={item.estatus_respuesta} />
-                            </Box>
+                            {
+                                isMobile && <Box sx={{ padding: '10px', width: '100%' }}>
+                                    <StatusIcon estado={contenidos?.[0]?.estatus_respuesta} />
+                                </Box>
+                            }
                             <Box sx={{ pl: 3, pr: 3, width: '100%' }}>
                                 <Button onClick={() => handleForo(item)} variant="outlined" fullWidth iconPosition={'end'} icon={<EastIcon />}>Entrar al foro</Button>
                             </Box>
