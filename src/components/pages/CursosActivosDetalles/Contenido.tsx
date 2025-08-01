@@ -6,6 +6,7 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { toRoman } from "../../../utils/Helpers";
 import { accordionStyle } from "@styles";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 
 export const Contenido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -24,6 +25,12 @@ export const Contenido: React.FC = () => {
                     title={`Unidad ${toRoman(Number(unidad))}`}
                     customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
                     sxProps={accordionStyle}>
+                    {
+                        isMobile && <Box sx={{ padding: '10px' }}>
+                            <StatusIcon estado={contenidos?.[0]?.estatus} />
+                        </Box>
+                    }
+
                     {
                         contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
                             <Box key={i}>
