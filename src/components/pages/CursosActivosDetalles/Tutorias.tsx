@@ -10,6 +10,7 @@ import { useGetTutorias } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import type { Tutoria } from "@constants";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 
 export const Tutorias: React.FC = () => {
     const theme = useTheme();
@@ -76,6 +77,9 @@ export const Tutorias: React.FC = () => {
                                             {text(tutoria.fecha_inicio)}
                                             {text("(Hora Centro)", theme.palette.text)}
                                         </Box>
+                                        <Box sx={{ display: isMobile ? 'block' : 'none', width: '100%' }}>
+                                            <StatusIcon estado={tutoria.estatus} />
+                                        </Box>
                                         {AgregarButton(tutoria.calendario_url)}
                                         {text("Descripción")}
                                         <Typography component="p" variant="body2">
@@ -102,6 +106,7 @@ export const Tutorias: React.FC = () => {
                                                 {recursosCompartidos(tutoria.recursos)}
                                             </Box>
                                         </Grid>
+
                                         <Grid size={{ md: 4 }}>
                                             <Box sx={{ ...flexColumn, gap: '40px' }}>
                                                 {AgregarButton(tutoria.calendario_url)}

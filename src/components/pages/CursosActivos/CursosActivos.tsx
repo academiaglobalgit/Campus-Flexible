@@ -53,7 +53,7 @@ const CursoActivo: React.FC = () => {
                 key={index}
                 sxProps={accordionStyle}
                 title={item.titulo_curso}
-                customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus}/>}
+                customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus}  sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
             >
 
                 <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column wrap' }}>
