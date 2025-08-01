@@ -193,6 +193,7 @@ const MiPerfil: React.FC = () => {
                 city: `${perfil.data?.data.nombre_ciudad}`,
                 phone: perfil?.data?.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: perfil?.data?.data,
+                aceptoTerminos: user?.aceptoTerminos
               };
               setUser(auth);
               const encry = await encryptData(auth);
