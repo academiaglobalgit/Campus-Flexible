@@ -26,7 +26,7 @@ export const ContainerDesktop: React.FC<ContainerDesktopProps> = (
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     
     return(
-        <Box sx={{ width: { md: '100%' }, display: 'flex', flexDirection: 'column', gap: '20px', pb: '100px'}}>
+        <Box sx={{ width: { md: '100%' }, display: 'flex', flexDirection: 'column', gap: description ? '20px' : '0px', pb: '100px'}}>
             <Grid container sx={{ alignItems:'center'}}>
                 <Grid size={{md: !betweenDevice ? (actions === undefined ? 10 : column1Size) : 12}}>
                     <TituloIcon Titulo={title} fontSize="h2" />

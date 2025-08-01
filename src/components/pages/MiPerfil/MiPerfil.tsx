@@ -32,6 +32,7 @@ import { setAuthModel } from "../../../hooks/useLocalStorage";
 import { flexColumn } from "@styles";
 import type { PreviewFile } from "../../../types/Perfil.interface";
 import { encryptData } from "../../../utils/crypto";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 
 const MiPerfil: React.FC = () => {
     const { logout, user, setUser } = useAuth();
@@ -257,7 +258,7 @@ const MiPerfil: React.FC = () => {
     );
 
     const BotonesSaveLogout = (flexDirection: string = "row") => (
-        <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
+        <Box sx={{ paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
             <>
                 {ButtonGuardarCambios}
             </>
@@ -485,18 +486,16 @@ const MiPerfil: React.FC = () => {
               </Box>
           </Box>
         :
-        <>
-          <Box sx={{ width: { md: '70vw' }, display: 'flex', flexDirection: 'column', gap: '80px'}}>
-            <Grid container sx={{ alignItems:'center'}}>
-                <Grid size={{md: !betweenDevice ? 8 : 12}}>
-                    <TituloIcon Titulo={`${TitleScreen.MI_PERFIL} - Información de contacto`} fontSize="h2" />
-                    {Leyenda}
-                </Grid>
-                <Grid size={{md: !betweenDevice ? 4 : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
-                    {BotonesSaveLogout(!betweenDevice ? "column" : "row")}
-                </Grid>
+        <ContainerDesktop title={`${TitleScreen.MI_PERFIL} - Información de contacto`}>
+          <Grid container sx={{ alignItems:'center'}}>
+            <Grid size={{md: !betweenDevice ? 8 : 12}}>
+                {Leyenda}
             </Grid>
-            <Grid container>
+            <Grid size={{md: !betweenDevice ? 4 : 12}} sx={{ width: betweenDevice ? "100%" : undefined}}>
+                {BotonesSaveLogout(!betweenDevice ? "column" : "row")}
+            </Grid>
+          </Grid>
+          <Grid container>
               <Grid size={{md: 12}} sx={[{display: 'flex', gap: '50px', alignItems: 'center'}, betweenDevice && {flexDirection: 'column'}]}>
                 <Box sx={{
                   display: 'flex',
@@ -518,8 +517,7 @@ const MiPerfil: React.FC = () => {
                 </Box>
               </Grid>
             </Grid>
-          </Box>
-        </>
+        </ContainerDesktop>
       }
       <UploadImagePerfilDialog isOpen={openUploadImage} close={(val) => handleImage(val)} />
       </>
