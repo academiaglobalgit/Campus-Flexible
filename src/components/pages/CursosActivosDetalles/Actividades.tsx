@@ -13,6 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
+import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 
 type PreviewFile = {
     file: File;
@@ -229,6 +230,9 @@ export const Actividades: React.FC = () => {
                             sxProps={accordionStyle}
                             customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
                         >
+                            <Box sx={{ display: isMobile ? 'block' : 'none', padding: '10px' }}>
+                                <StatusIcon estado={contenidos?.[0]?.estatus} />
+                            </Box>
                             {
                                 contenidos?.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
                                     <Box

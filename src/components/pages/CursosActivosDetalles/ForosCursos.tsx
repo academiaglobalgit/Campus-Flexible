@@ -57,7 +57,8 @@ export const ForosCursos: React.FC = () => {
                             sx={{ ...flexColumn, gap: '20px', alignItems: 'flex-start' }}
                         >
                             <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} />
-                            <Box sx={{ pl: 3, display: isMobile ? 'block' :'none' }}>
+
+                            <Box sx={{ display: isMobile ? 'block' : 'none', padding: '10px',width: '100%' }}>
                                 <StatusIcon estado={item.estatus_respuesta} />
                             </Box>
                             <Box sx={{ pl: 3, pr: 3, width: '100%' }}>
