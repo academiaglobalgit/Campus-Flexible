@@ -1,6 +1,6 @@
 import { accordionStyle } from "@styles";
 import { Accordion } from "../../molecules/Accordion/Accordion";
-import { Box } from "@mui/material"
+import { Box, useMediaQuery, useTheme } from "@mui/material"
 import { useGetCursosTabs } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,8 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 export const Evaluaciones: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { data: contenido, isLoading } = useGetCursosTabs(Number(id!), "Evaluaciones");
-
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         isLoading ?
@@ -19,7 +20,8 @@ export const Evaluaciones: React.FC = () => {
 
             Object.entries(contenido).map(([unidad, contenidos], index) =>
                 <Accordion key={index}
-                    customHeader={<AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} />}
+                    title={`Unidad ${toRoman(Number(unidad))}`}
+                    customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
                     sxProps={accordionStyle}>
                     {
                         contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (

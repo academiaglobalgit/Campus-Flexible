@@ -16,7 +16,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    let color: "success" | "primary" | "info" | "warning" | "disabled" | "secondary"|undefined;
+    let color: "success" | "primary" | "info" | "warning" | "disabled" | "secondary" | undefined;
     let icon: any;
 
     if (estado === "Finalizado") {
@@ -40,7 +40,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
             <Box sx={[
                 { color: theme.palette.primary.dark, display: 'flex', flexDirection: 'row', gap: '1.5rem', justifyContent: isMobile ? 'space-between' : 'flex-start' },
             ]}>
-                <Typography component="span" variant="h4" color={color} >
+                <Typography component="span" variant={isMobile ? 'body2' : 'h4'} color={color} >
                     {estado}
                 </Typography>
                 <DsSvgIcon component={icon} color={color} sxProps={{ fill: 'currentcolor !important' }} />
