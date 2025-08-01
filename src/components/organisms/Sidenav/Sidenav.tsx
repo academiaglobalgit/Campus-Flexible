@@ -202,7 +202,6 @@ const Sidenav: React.FC = () => {
     window.history.back();
   }
 
-
   const AppBarSection = () => {
     return(
       <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
@@ -228,7 +227,7 @@ const Sidenav: React.FC = () => {
             
             <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
               <Typography variant="h4" component="h4" color='primary'>
-                Nombre de la plataforma
+                {user?.nombrePrograma}
               </Typography>
               <IconsTopBar />
             </Toolbar>

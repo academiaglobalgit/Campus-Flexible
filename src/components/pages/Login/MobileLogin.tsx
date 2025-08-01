@@ -36,6 +36,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const [captchaValido, setCaptchaValido] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userName, setUserName] = useState("");
+    const nombrePlataforma = localStorage.getItem("programa") || "";
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -107,7 +108,17 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     component="p"
                     variant="body2"
                     sx={{
-                        mt: '8px',
+                        mt: '14px',
+                        textAlign: 'center',
+                    }}
+                >
+                    { nombrePlataforma }
+                </Typography>
+                <Typography
+                    color='primary.main'
+                    component="p"
+                    variant="body2"
+                    sx={{
                         mb: '6px',
                         textAlign: 'center',
                     }}

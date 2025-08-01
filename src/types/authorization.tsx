@@ -13,6 +13,7 @@ export interface User {
   phone:  string;
   perfil?: Perfil;
   aceptoTerminos?: boolean;
+  nombrePrograma?: string;
 }
 
 export interface AuthResponse {

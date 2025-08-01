@@ -48,7 +48,7 @@ const MiPerfil: React.FC = () => {
     const [perfil, setPerfil] = React.useState<PerfilResponse | undefined>(undefined);
     const [newImage, setNewImage] = React.useState<PreviewFile | null>(null);
 
-    const { refetch } = useGetPerfilUsuario({ enabled: false });
+    const { refetch } = useGetPerfilUsuario("MiPerfil", { enabled: false });
 
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
@@ -187,13 +187,13 @@ const MiPerfil: React.FC = () => {
             const perfil = await refetch();
             if(perfil) {
               const auth: User = {
+                ...user,
                 name: `${perfil.data?.data.nombre} ${perfil.data?.data.apellido_paterno} ${perfil.data?.data.apellido_materno}`,
                 email: perfil.data?.data.correo ?? "",
                 photo: perfil.data?.data.foto_perfil_url ?? "",
                 city: `${perfil.data?.data.nombre_ciudad}`,
                 phone: perfil?.data?.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: perfil?.data?.data,
-                aceptoTerminos: user?.aceptoTerminos
               };
               setUser(auth);
               const encry = await encryptData(auth);

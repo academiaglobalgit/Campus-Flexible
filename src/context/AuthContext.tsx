@@ -32,8 +32,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isTokenExpired, setIsTokenExpired] = useState(false);
     const [isLogout, setIsLogout] = useState(false);
     const [aceptoTerminos, setAceptoTerminos] = useState(true);
+    const [_nombrePrograma, setNombrePrograma] = useState("");
 
-    const { refetch } = useGetPerfilUsuario({ enabled: false });
+    const { refetch } = useGetPerfilUsuario("Login", { enabled: false });
 
     const queryClient = useQueryClient();
     
@@ -52,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     const userData = await getAuthModel();
                     setUser(userData);
                     setAceptoTerminos(userData.aceptoTerminos);
+                    setNombrePrograma(userData.nombrePrograma);
                 }
                 setIsAuthenticated(authStatus.isAuth);
             } catch (error) {
@@ -108,9 +110,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             if (response?.token) {
                 setToken(response?.token);
-                setAceptoTerminos(response?.acepto_terminos);                
+                setAceptoTerminos(response?.acepto_terminos);     
+                setNombrePrograma(response?.programa);           
                 
-                await procesarPerfil();
+                await procesarPerfil(response?.acepto_terminos, response?.programa);
 
                 setIsAuthenticated(true);                
                 setIsLoading(false);
@@ -148,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setToken(response?.token);
                 setIsAuthenticated(true);
 
-                await procesarPerfil();
+                await procesarPerfil(false, undefined);
                 
                 setIsLoading(false);
                 
@@ -169,7 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async () => {
+    const procesarPerfil = async(aceptoTerminos: boolean | undefined, programa: string | undefined) => {
         const perfil = await refetch();
 
         if (perfil.data) {
@@ -182,8 +185,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 city: datos.nombre_ciudad,
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
-                aceptoTerminos: aceptoTerminos
+                aceptoTerminos: aceptoTerminos,
+                nombrePrograma: programa,
             };
+
+            localStorage.setItem("programa", programa ?? "");
 
             setUser(auth);
 

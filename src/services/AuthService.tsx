@@ -34,9 +34,9 @@ export const useAuthNewPassword = async (payload: { username: string; newPasswor
     return response.data;
 };
 
-export const useGetPerfilUsuario = (options?: { enabled?: boolean }) => {
+export const useGetPerfilUsuario = (key: string, options?: { enabled?: boolean }) => {
     return useQuery<PerfilResponse, Error>({
-        queryKey: [PERFIL_ENDPOINTS.GET_PERFIL.key],
+        queryKey: [PERFIL_ENDPOINTS.GET_PERFIL.key, key],
         queryFn: async () => await apiClient.get<PerfilResponse>(`${PERFIL_ENDPOINTS.GET_PERFIL.path}`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
         ...options,
