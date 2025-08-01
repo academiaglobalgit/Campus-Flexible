@@ -15,7 +15,6 @@ import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema
 
 import {Location as LocationIcon, CheckCircle} from "@iconsCustomizeds";
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
-import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { AppRoutingPaths, TitleScreen, type PerfilResponse, type User } from "@constants";
 
 import { Calendar, Mail, User as IUser, Contacto, WhatsApp, Right } from "../../../assets/icons";
