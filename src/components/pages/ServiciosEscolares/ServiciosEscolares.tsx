@@ -111,7 +111,7 @@ const ServiciosEscolares: React.FC = () => {
         <Box sx={{ mb: 4, mt: isMobile ? 2 : 5 }}>
             <>
                 {ImageSection(servicios.imagen)}
-                <Box sx={{ ...flexColumn, pt: 2, width: '100%', textAlign: 'left' }}>
+                <Box sx={{ ...flexColumn, pt: 2, width: '100%', alignItems: isMobile ? 'center' : 'flex-start' }}>
                     <Typography component="h3" variant="h3" color="primary">
                         {servicios.nombre_seccion}
                     </Typography>
