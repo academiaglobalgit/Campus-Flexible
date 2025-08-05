@@ -6,7 +6,7 @@ import { Typography } from "../../atoms/Typography/Typography";
 import { Box, Card, CardMedia, Grid, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import Button from "../../atoms/Button/Button";
-import { accordionStyle, flexColumn, flexRows } from "@styles";
+import { accordionStyle, flexColumn } from "@styles";
 import { InformacionServiciosEscolaresDialog } from "../../molecules/Dialogs/InformacionServiciosEscolaresDialog/InformacionServiciosEscolaresDialog";
 
 import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
@@ -43,10 +43,11 @@ const ServiciosEscolares: React.FC = () => {
         <Card sx={{ borderRadius: '5px' }}>
             <CardMedia
                 component="img"
-                height={isMobile ? 120 : 418}
+                height={isMobile ? 120 : 165}
+                width={isMobile ? 346 : 425}
                 image={image}
                 sx={[
-                    isMobile && { objectFit: 'initial' },
+                    isMobile && { objectFit: 'cover' },
                 ]}
             />
         </Card>
@@ -54,9 +55,7 @@ const ServiciosEscolares: React.FC = () => {
 
     const ButtonsSection = () => (
         <Box sx={[
-            { width: '100%', gap: '10px', pt: isMobile ? 2 : 5 },
-            isMobile && { ...flexColumn },
-            !isMobile && { ...flexRows, flexDirection: 'row-reverse' },
+            { ...flexColumn, width: '100%', gap: '10px', pt: isMobile ? 2 : 0 }
         ]}>
             {/* <>
                 <Button
@@ -74,9 +73,9 @@ const ServiciosEscolares: React.FC = () => {
 
     const InformationSection = (item: Servicios) => (
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-            <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <Grid size={isMobile ? 12 : 6}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Grid container sx={{ justifyContent: 'space-between', paddingInline: isMobile ? '0px' : '75px' }}>
+                <Grid size={isMobile ? 12 : 5}>
                     <Typography
                         component="span"
                         variant="body2"
@@ -84,11 +83,12 @@ const ServiciosEscolares: React.FC = () => {
                         {item.descripcion}
                     </Typography>
                 </Grid>
-                <Grid size={isMobile ? 12 : 6}>
-                    <CardDuracion label="Costo" description={`$${item.precio} MNX`} />
+                <Grid size={isMobile ? 12 : 5} sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {!isMobile && ImageSection(item.imagen)}
+                    <CardDuracion label="Costo" description={`$${item.precio} MNX`} sxProps={{ justifyContent: isMobile ? 'center' : 'flex-start', paddingInline: '10px', mt: isMobile ? 2.5 : 0 }} />
+                    {ButtonsSection()}
                 </Grid>
             </Grid>
-            {ButtonsSection()}
         </Box >
     )
 
@@ -98,7 +98,9 @@ const ServiciosEscolares: React.FC = () => {
             <Accordion
                 key={index}
                 title={item.nombre}
-                sxProps={accordionStyle}
+                sxProps={{
+                    ...accordionStyle
+                }}
                 isExpanded={index === 0}
             >
                 {InformationSection(item)}
@@ -110,7 +112,7 @@ const ServiciosEscolares: React.FC = () => {
     (
         <Box sx={{ mb: 4, mt: isMobile ? 2 : 5 }}>
             <>
-                {ImageSection(servicios.imagen)}
+                {isMobile && ImageSection(servicios.imagen)}
                 <Box sx={{ ...flexColumn, pt: 2, width: '100%', alignItems: isMobile ? 'center' : 'flex-start' }}>
                     <Typography component="h3" variant="h3" color="primary">
                         {servicios.nombre_seccion}
