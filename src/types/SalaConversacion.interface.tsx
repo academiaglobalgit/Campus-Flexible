@@ -6,7 +6,7 @@ export interface DatosSalaConversacionResponse {
 export interface DatosSalaConversacion {
     id_conversacion: number;
     titulo:          string;
-    fecha_creacion:  Date;
+    fecha_creacion:  string;
     plan_estudio:    string;
 }
 
@@ -48,7 +48,7 @@ export interface TemaForoByIdResponse {
 export interface TemaForo {
     id_recurso:         number;
     titulo:             string;
-    fecha_creacion:     Date;
+    fecha_creacion:     string;
     plan_estudio:       string;
     contenido_elemento: string;
 }
