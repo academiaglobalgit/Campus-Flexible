@@ -13,7 +13,8 @@ type DropzoneUploaderProps = {
   files: PreviewFile[];
   onFilesChange: (files: PreviewFile[]) => void;
   maxFiles?: number;
-  maxFileSizeMb?: number; // new prop
+  maxFileSizeMb?: number;
+  canUpload?: boolean;
 };
 
 const getFileTypeIcon = (fileType: string) => {
@@ -26,11 +27,13 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
   onFilesChange,
   maxFiles = 3,
   maxFileSizeMb = 3,
+  canUpload = true,
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      if (!canUpload) return;
       setErrorMessage('');
 
       const validFiles = acceptedFiles.filter((file) => {
@@ -85,23 +88,27 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
 
   return (
     <Box sx={{ border: '2px dashed #ccc', p: 2, borderRadius: 2 }}>
-      <Box
-        {...getRootProps()}
-        sx={{
-          cursor: 'pointer',
-          textAlign: 'center',
-          py: 3,
-          bgcolor: '#f9f9f9',
-          borderRadius: 2,
-        }}
-      >
-        <input {...getInputProps()} />
-        <Typography variant="body1">
-          {isDragActive
-            ? 'Suelta los archivos aquí'
-            : `Arrastra archivos o haz clic (máx. ${maxFiles}, máx. ${maxFileSizeMb}MB c/u)`}
-        </Typography>
-      </Box>
+      {
+        canUpload &&
+          <Box
+            {...getRootProps()}
+            sx={{
+              cursor: 'pointer',
+              textAlign: 'center',
+              py: 3,
+              bgcolor: '#f9f9f9',
+              borderRadius: 2,
+            }}
+          >
+            <input {...getInputProps()} />
+            <Typography variant="body1">
+              {isDragActive
+                ? 'Suelta los archivos aquí'
+                : `Arrastra archivos o haz clic (máx. ${maxFiles}, máx. ${maxFileSizeMb}MB c/u)`}
+            </Typography>
+          </Box>
+      }
+      
 
       {errorMessage && (
         <Alert severity="error" sx={{ mt: 2 }}>
@@ -141,20 +148,23 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
             >
               {file.file.name}
             </Typography>
-            <IconButton
-              size="small"
-              onClick={() => removeFile(index)}
-              sx={{
-                position: 'absolute',
-                top: 4,
-                right: 4,
-                background: 'rgba(0,0,0,0.6)',
-                color: '#fff',
-                '&:hover': { background: 'rgba(0,0,0,0.8)' },
-              }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
+            {
+              canUpload &&
+                <IconButton
+                size="small"
+                onClick={() => removeFile(index)}
+                sx={{
+                  position: 'absolute',
+                  top: 4,
+                  right: 4,
+                  background: 'rgba(0,0,0,0.6)',
+                  color: '#fff',
+                  '&:hover': { background: 'rgba(0,0,0,0.8)' },
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            }
           </Box>
         ))}
       </Box>

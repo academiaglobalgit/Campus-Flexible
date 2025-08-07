@@ -267,6 +267,9 @@ export const Actividades: React.FC = () => {
                                                 Entrega de actividad
                                             </Typography>
                                             <Box sx={{ pt: 2 }}>
+                                                <Typography component="p" variant="body1" color="primary">
+                                                    Comentario:
+                                                </Typography>
                                                 <Controller
                                                     name={`comentario.${item.id_recurso}`}
                                                     control={control}
@@ -274,7 +277,6 @@ export const Actividades: React.FC = () => {
                                                     render={({ field }) => (
                                                         <TextField
                                                             {...field}
-                                                            label="Comentario"
                                                             placeholder="Ingresa tu comentario"
                                                             multiline
                                                             rows={5}
@@ -307,30 +309,31 @@ export const Actividades: React.FC = () => {
                                                 files={archivosPorId[item.id_recurso] || []}
                                                 onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
                                                 maxFiles={3} maxFileSizeMb={3}
+                                                canUpload={item.calificacion === null}
                                             />
                                             {
                                                 item.hasEntrega === 1
                                                     ?
-                                                    <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleEditActivity(item.id_recurso)}
-                                                                isLoading={isSaving}
-                                                            >
-                                                                Modificar
-                                                            </Button>
-                                                        </>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleCancel(item.id_recurso)}
-                                                                variant="outlined"
-                                                            >
-                                                                Cancelar
-                                                            </Button>
-                                                        </>
-                                                    </Box>
+                                                        item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
+                                                            <>
+                                                                <Button
+                                                                    fullWidth
+                                                                    onClick={() => handleEditActivity(item.id_recurso)}
+                                                                    isLoading={isSaving}
+                                                                >
+                                                                    Modificar
+                                                                </Button>
+                                                            </>
+                                                            <>
+                                                                <Button
+                                                                    fullWidth
+                                                                    onClick={() => handleCancel(item.id_recurso)}
+                                                                    variant="outlined"
+                                                                >
+                                                                    Cancelar
+                                                                </Button>
+                                                            </>
+                                                        </Box>
                                                     :
                                                     <Button
                                                         fullWidth

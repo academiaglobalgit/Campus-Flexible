@@ -66,6 +66,7 @@ export interface Actividad {
     eliminado:          number;
     hasEntrega:         number;
     entrega:            Entrega | null;
+    calificacion:       string | null;
 }
 
 export interface Entrega {
