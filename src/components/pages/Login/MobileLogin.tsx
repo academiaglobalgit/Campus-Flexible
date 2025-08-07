@@ -106,19 +106,21 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                 <Typography
                     color='primary.main'
                     component="p"
-                    variant="body2"
+                    variant="body3"
                     sx={{
                         mt: '14px',
                         textAlign: 'center',
+                        fontSize: '20px'
                     }}
                 >
                     { nombrePlataforma }
                 </Typography>
                 <Typography
-                    color='primary.main'
+                    
                     component="p"
                     variant="body2"
                     sx={{
+                        mt: '8px',
                         mb: '6px',
                         textAlign: 'center',
                     }}
