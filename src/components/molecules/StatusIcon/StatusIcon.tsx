@@ -22,7 +22,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
     if (estado === "Finalizado") {
         color = "success";
         icon = DoneIcon;
-    } else if (estado === "Cursando") {
+    } else if (estado === "Entregado") {
         color = "warning";
         icon = Loading;
     } else if (estado === "Sin Iniciar") {
