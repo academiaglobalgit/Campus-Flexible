@@ -6,7 +6,6 @@ import imgBiblioteca from "../../../assets/biblioteca.jpg";
 import { Biblioteca } from "./Biblioteca";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 
-import { DescripcionesPantallas, TitleScreen } from "@constants";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetBiblioteca, useGetBibliotecaById } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
@@ -29,7 +28,7 @@ const BibliotecaVideoteca: React.FC = () => {
 
     const Image = () => {
         const src = value === 0 ? imgVideoteca : imgBiblioteca;
-        return(
+        return (
             <Box
                 component="img"
                 src={src}
@@ -40,40 +39,40 @@ const BibliotecaVideoteca: React.FC = () => {
     };
 
     const Contents = () => (
-      <>
-        <Image />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                <Tab label="Biblioteca" value={0} />
-                <Tab label="Videoteca" value={1} />
-            </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-            {isLoading || loadingDetalle ? (
-                <LoadingCircular Text="Cargando Biblioteca..." />
-            ) : (
-                detalle && <Biblioteca data={detalle.data[0]} />
-            )}
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-            {isLoading || loadingDetalle ? (
-                <LoadingCircular Text="Cargando Videoteca..." />
-            ) : (
-                detalle && <Videoteca data={detalle.data[1]} />
-            )}
-        </TabPanel>
-      </>
+        <>
+            <Image />
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                    <Tab label="Biblioteca" value={0} />
+                    <Tab label="Videoteca" value={1} />
+                </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+                {isLoading || loadingDetalle ? (
+                    <LoadingCircular Text="Cargando Biblioteca..." />
+                ) : (
+                    detalle && <Biblioteca data={detalle.data[0]} />
+                )}
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                {isLoading || loadingDetalle ? (
+                    <LoadingCircular Text="Cargando Videoteca..." />
+                ) : (
+                    detalle && <Videoteca data={detalle.data[1]} />
+                )}
+            </TabPanel>
+        </>
     );
 
-    return(
-        isMobile 
-        ? 
-            <Box sx={[{ width: '100%', }, isMobile && { paddingTop:'28px', paddingBottom: '28px' }]}>
+    return (
+        isMobile
+            ?
+            <Box sx={[{ width: '100%', }, isMobile && { paddingTop: '28px', paddingBottom: '28px' }]}>
                 <Contents />
             </Box>
-        :
-            <ContainerDesktop title={TitleScreen.BIBLIOTECA} description={DescripcionesPantallas.BIBLIOTECA}>
-                <Box sx={{pt:'12px'}}>
+            :
+            <ContainerDesktop title={""} >
+                <Box sx={{ pt: '12px' }}>
                     <Contents />
                 </Box>
             </ContainerDesktop>
