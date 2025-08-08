@@ -14,6 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { RetroalimentacionDialog } from "../../molecules/Dialogs/RetroalimentacionDialog/RetroalimentacionDialog";
 
 type PreviewFile = {
     file: File;
@@ -36,6 +37,8 @@ export const Actividades: React.FC = () => {
 
     const [archivosPorId, setArchivosPorId] = useState<Record<number, PreviewFile[]>>({});
     const [contenido, setContenido] = useState<Record<number, string>>({});
+    const [openRetroDialog, setOpenRetroDialog] = useState(false);
+    const [retroalimentacion, setRetroalimentacion] = useState<string>("");
 
     const handleFilesChange = (id: number, files: PreviewFile[]) => {
         setArchivosPorId((prev) => ({
@@ -208,6 +211,10 @@ export const Actividades: React.FC = () => {
         </Box>
     );
 
+    const handleRetroAlimentacion = (retroalimentacion: string) => {
+        setRetroalimentacion(retroalimentacion);
+        setOpenRetroDialog(true);
+    }
 
     return (
         <>
@@ -241,6 +248,26 @@ export const Actividades: React.FC = () => {
                                     <Box
                                         key={i}
                                     >
+                                        {
+                                            item.calificacion && <Box sx={{...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1}}>
+                                                <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                    <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
+                                                    <Typography component="h3" variant="h3" >{ item.calificacion }</Typography>
+                                                </Box>
+                                                <Box sx={{ width: '250px'}}>
+                                                    {
+                                                        item.retroalimentacion && <Button
+                                                            fullWidth
+                                                            onClick={() => handleRetroAlimentacion(item.retroalimentacion)}
+                                                            isLoading={isSaving}
+                                                        >
+                                                            Ver Retroalimentación
+                                                        </Button>
+                                                    }
+                                                </Box>
+                                            </Box>
+                                        }
+                                            
                                         <Box
                                             dangerouslySetInnerHTML={{ __html: item.contenido_elemento }}
                                             sx={{
@@ -353,6 +380,7 @@ export const Actividades: React.FC = () => {
                         </Accordion>
                     )
             }
+            <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
         </>
     );
 };

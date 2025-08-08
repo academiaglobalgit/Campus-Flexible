@@ -67,6 +67,7 @@ export interface Actividad {
     hasEntrega:         number;
     entrega:            Entrega | null;
     calificacion:       string | null;
+    retroalimentacion:  string | null;
 }
 
 export interface Entrega {
