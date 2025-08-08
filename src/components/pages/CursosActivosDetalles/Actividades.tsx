@@ -249,7 +249,11 @@ export const Actividades: React.FC = () => {
                                         key={i}
                                     >
                                         {
-                                            item.calificacion && <Box sx={{...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1}}>
+                                            item.calificacion && 
+                                            <Box sx={[
+                                                    {...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1},
+                                                    isMobile && { flexDirection: 'column', gap: '10px' }
+                                                ]}>
                                                 <Box sx={{ display: 'flex', gap: '10px' }}>
                                                     <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
                                                     <Typography component="h3" variant="h3" >{ item.calificacion }</Typography>
@@ -258,7 +262,7 @@ export const Actividades: React.FC = () => {
                                                     {
                                                         item.retroalimentacion && <Button
                                                             fullWidth
-                                                            onClick={() => handleRetroAlimentacion(item.retroalimentacion)}
+                                                            onClick={() => handleRetroAlimentacion(item.retroalimentacion || '')}
                                                             isLoading={isSaving}
                                                         >
                                                             Ver Retroalimentación
