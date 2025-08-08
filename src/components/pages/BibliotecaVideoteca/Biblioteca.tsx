@@ -3,41 +3,41 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Document } from "../../../assets/icons";
 import { Box } from "@mui/material";
 import Button from "../../atoms/Button/Button";
-import { useGetManuales } from "../../../services/ManualesService";
+//import { useGetManuales } from "../../../services/ManualesService";
 import { innerHTMLStyle } from "@styles";
 
 type BibliotecaProps = {
     data: BibliotecaVideoteca;
 }
 
-export const Biblioteca: React.FC<BibliotecaProps> = ({data}) => {
-    const {data: manual} = useGetManuales('Manual Biblioteca', 'alumnos');
+export const Biblioteca: React.FC<BibliotecaProps> = ({ data }) => {
+    //const { data: manual } = useGetManuales('Manual Biblioteca', 'alumnos');
 
-    const handleManualBiblioteca = () => {
+    /* const handleManualBiblioteca = () => {
         if (manual) {
             const manualUrl = manual.url;
             window.open(manualUrl, '_blank');
         }
-    };
+    }; */
 
     const handleOpenRedalyc = () => {
-         window.open("https://www.redalyc.org", '_blank');
+        window.open("https://www.redalyc.org", '_blank');
     };
 
-    return(
+    return (
         <>
-          <TituloIcon Titulo={TitleScreen.BIBLIOTECA_VIRTUAL} Icon={ Document } />
-          <Box>
-            <Box sx={{...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: data.descripcion_html }} />
-            <Box sx={{ paddingTop: '10px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
-                <>
-                    <Button onClick={handleOpenRedalyc} fullWidth>Acceder</Button>
-                </>
-                <>
+            <TituloIcon Titulo={TitleScreen.BIBLIOTECA_VIRTUAL} Icon={Document} />
+            <Box>
+                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: data.descripcion_html }} />
+                <Box sx={{ paddingTop: '10px', display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
+                    <>
+                        <Button onClick={handleOpenRedalyc} fullWidth>Acceder</Button>
+                    </>
+                    {/* <>
                     <Button onClick={handleManualBiblioteca} fullWidth variant="outlined">Manual de Biblioteca</Button>
-                </>
+                </> */}
+                </Box>
             </Box>
-          </Box>
         </>
     );
 }
