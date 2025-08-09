@@ -26,3 +26,30 @@ export interface Glosario {
     termino:     string;
     descripcion: string;
 }
+
+
+export interface CalificacionDetalleResponse {
+    id_curso:                string;
+    detalle:                 CalificacionDetalle[];
+    promedio:                number;
+    promedios_por_categoria: PromediosPorCategoria;
+}
+
+export interface CalificacionDetalle {
+    tipo_recurso:  string;
+    valor_total:   number;
+    promedio_tipo: number;
+    recursos:      Recurso[];
+}
+
+export interface Recurso {
+    recurso:      string;
+    valor:        number;
+    calificacion: number | null;
+}
+
+export interface PromediosPorCategoria {
+    Actividades:  number;
+    Evaluaciones: number;
+    Foros:        number;
+}

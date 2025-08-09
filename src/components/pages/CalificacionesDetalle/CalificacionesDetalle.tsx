@@ -6,16 +6,19 @@ import CustomizedTable from "../../molecules/CustomizedTable/CustomizedTable";
 import { Typography } from "../../atoms/Typography/Typography";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { accordionStyle, flexColumn, flexRows } from "@styles";
+import { useGetCalificacionesDetalles } from "../../../services/CalificacionesService";
+import { useParams } from "react-router-dom";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+
 
 const CalificacionesDetalle: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const Accordions = ["Exámenes", "Actividades", "Foros"];
-    const calificacion: number = 10
-    const estado: string = 'Finalizado'
+    const { id } = useParams<{ id: string }>();
+    const {data, isLoading } = useGetCalificacionesDetalles(Number(id!));
 
-    const Promedio = ({ estado, calificacion }: { estado: string; calificacion: number }): React.ReactNode => (
+    const Promedio = ({ estado, calificacion }: { estado: string; calificacion: any }): React.ReactNode => (
 
         <Box sx={{ mr: 8 }}>
             <Typography
@@ -34,18 +37,21 @@ const CalificacionesDetalle: React.FC = () => {
 
     const PeriodosAccordion = () => {
         return (
-            Accordions.map((item, index) => (
+            isLoading 
+            ? <LoadingCircular Text="Cargando Calificaciones..." />
+            :
+            data && data.detalle.map((item, index) => (
                 <Accordion
                     key={index}
-                    title={item}
-                    opcion={isMobile ? '' : Promedio({ estado, calificacion })}
+                    title={item.tipo_recurso}
+                    opcion={isMobile ? '' : Promedio({ estado: "", calificacion: item.promedio_tipo })}
                     sxProps={{
                         ...accordionStyle,
                         width: '100%',
                     }}
                     backgroundDetails={{ backgroundColor: "#FFFFFF !important", }}
                 >
-                    <CustomizedTable />
+                    <CustomizedTable recursos={item.recursos} />
                     <Box
                         sx={{
                             ...flexRows, width: '100%',
@@ -56,7 +62,7 @@ const CalificacionesDetalle: React.FC = () => {
 
                         }}>
                         <Typography component="h4" variant="h4" color='primary' sxProps={{ transform: isMobile ? 'translateX(0px)' : 'translateX(-40px)' }}>Promedio:</Typography>
-                        <Typography component="h4" variant="h4" color='primary' sxProps={{ transform: isMobile ? 'translateX(0px)' : 'translateX(-40px)' }}>8.6</Typography>
+                        <Typography component="h4" variant="h4" color='primary' sxProps={{ transform: isMobile ? 'translateX(0px)' : 'translateX(-40px)' }}>{item.promedio_tipo}</Typography>
                     </Box>
 
                 </Accordion >
@@ -80,7 +86,7 @@ const CalificacionesDetalle: React.FC = () => {
                     backgroundColor: '#F8F8F9',
                 }}>
                     <Typography component="span" variant="h3" color="primary">Calificación Final: </Typography>
-                    <Typography component="span" variant="h3" color="primary" >8.6</Typography>
+                    <Typography component="span" variant="h3" color="primary">{data?.promedio}</Typography>
 
                 </Box>
             </>
@@ -90,7 +96,7 @@ const CalificacionesDetalle: React.FC = () => {
                 description="Aquí podrás consultar la calificación final de la materia seleccionada, junto con el desglose de cada componente: el valor asignado, el recurso evaluado y la calificación obtenida."
             >
                 <Box sx={{ display: 'flex', flexDirection: 'column', pt: 7 }}>
-                    <Typography component="h3" variant="h3" sxProps={{ pb: 2 }} >Detalle de tu calificación</Typography>
+                    <Typography component="h3" variant="h3" sxProps={{ pb: 2 }}>Detalle de tu calificación</Typography>
                     {PeriodosAccordion()}
                 </Box>
             </ContainerDesktop>

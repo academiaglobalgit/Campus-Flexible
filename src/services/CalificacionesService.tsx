@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { CalificacionCurso, CalificacionesResponse } from "../types/Calificaciones.interface";
+import type { CalificacionCurso, CalificacionDetalleResponse, CalificacionesResponse } from "../types/Calificaciones.interface";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import { CALIFICACIONES_ENDPOINTS } from "../types/endpoints";
 
@@ -37,3 +37,11 @@ export const useGetCalificaciones = () => {
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 };
+
+export const useGetCalificacionesDetalles = (cursoId: number) => {
+  return useQuery<CalificacionDetalleResponse, Error>({
+      queryKey: [CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.key, cursoId],
+      queryFn: async () => await apiClient.get<CalificacionDetalleResponse>(`${CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.path}?id_curso=${cursoId}`),
+      staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+  });
+}

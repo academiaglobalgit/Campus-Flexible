@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import type { Recurso } from '../../../types/Calificaciones.interface';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,23 +29,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-) {
-  return { name, calories, fat };
+type CustomizedTableProps = {
+  recursos: Recurso[]
 }
 
-const rows = [
-  createData('1', 0.1, 10),
-  createData('2', 0.1, 10),
-  createData('3', 0.1, 10),
-  createData('4', 0.1, 10),
-  createData('5', 0.1, 10),
-];
-
-const CustomizedTable: React.FC = () => {
+const CustomizedTable: React.FC<CustomizedTableProps> = ({recursos}) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 313 }} aria-label="customized table">
@@ -56,11 +45,11 @@ const CustomizedTable: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell align="center">{row.name}</StyledTableCell>
-              <StyledTableCell align="center">{row.calories}</StyledTableCell>
-              <StyledTableCell align="center">{row.fat}</StyledTableCell>
+          {recursos.map((row, i) => (
+            <StyledTableRow key={i}>
+              <StyledTableCell align="center">{row.recurso}</StyledTableCell>
+              <StyledTableCell align="center">{row.valor}</StyledTableCell>
+              <StyledTableCell align="center">{row.calificacion}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
