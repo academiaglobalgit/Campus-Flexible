@@ -25,7 +25,7 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
     const query = useQuery<CursosTabsResponse, Error>({
-        queryKey: [tab],
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
     });
 
@@ -59,7 +59,7 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
     const query = useQuery<CursosActividadesResponse, Error>({
-        queryKey: [tab],
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () =>
         apiClient.get<CursosActividadesResponse>(
             `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
@@ -113,7 +113,7 @@ export const useGetTutorias = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
     return useQuery<CursosTutoriasResponse, Error>({
-        queryKey: [tab],
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTutoriasResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
     });
 }
@@ -139,8 +139,6 @@ export const useGetListaPendientes = (id: number) => {
             agrupado[tipo].sort((a, b) => a.orden - b.orden);
         });
 
-        console.log(agrupado);
-
         return agrupado;
     };
 
@@ -157,7 +155,7 @@ export const useGetForosManuales = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
     const query = useQuery<CursosForosResponse, Error>({
-        queryKey: [tab],
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () =>
         apiClient.get<CursosForosResponse>(
             `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
@@ -184,47 +182,4 @@ export const useGetForosManuales = (id: number, tab: string) => {
             [query.data]
         )
     }
-
-    // const dataMapped = React.useMemo<ActividadesCacheData | undefined>(() => {
-    //     if (!query.data) return undefined;
-
-    //     const actividades = query.data.data.foros ?? [];
-    //     const manuales = query.data.data.manual ?? [];
-
-    //     const agrupadoPorUnidad = actividades.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-    //         if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
-    //         acc[contenido.unidad].push(contenido);
-    //         return acc;
-    //     }, {});
-
-    //     return {
-    //         agrupadoPorUnidad,
-    //         manuales,
-    //     };
-
-    // }, [query.data]);
-
-    // const dataMapped = React.useMemo<ActividadesCacheData | undefined>(() => {
-    //     if (!query.data) return undefined;
-
-    //     const foros = query.data.data.foros ?? [];
-    //     const manuales = query.data.data.manual ?? [];
-
-    //     const agrupadoPorUnidad = foros.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-    //         if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
-    //         acc[contenido.unidad].push(contenido);
-    //         return acc;
-    //     }, {});
-
-    //     return {
-    //         agrupadoPorUnidad,
-    //         manuales,
-    //     };
-
-    // }, [query.data]);
-
-    // return {
-    //     ...query,
-    //     dataMapped,
-    // };
 };

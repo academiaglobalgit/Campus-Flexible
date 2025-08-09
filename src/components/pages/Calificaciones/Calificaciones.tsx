@@ -16,20 +16,30 @@ import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import type { CalificacionCurso } from '../../../types/Calificaciones.interface';
 import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
+import { useQueryClient } from '@tanstack/react-query';
+import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
+import { getTabSelected, setTabSelected } from '../../../hooks/useLocalStorage';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+    const queryClient = useQueryClient();
+
     const [isOpen, setIsOpen] = React.useState(false);
     
     const {data: calificacionData, isLoading } = useGetCalificaciones();
 
     const [value, setValue] = React.useState(0);
-    const [tabPreviewSelected, _setPreviewTabSelected] = React.useState(0);
+    const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
     const handleGlosario = () => (setIsOpen(true));
+
+    React.useEffect(() => {
+        const indexTab = getTabSelected('calificaciones'); 
+        setPreviewTabSelected(indexTab);
+    },[]);
 
     const Leyenda = (
         <Typography component="span" variant="body1">
@@ -45,13 +55,18 @@ const Calificaciones: React.FC = () => {
         navigate(AppRoutingPaths.CALIFICACIONES_DETALLE.replace(":id", id_curso.toString()))
     );
 
-    const handleIrCurso = (id_curso: number) => (
-        navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", id_curso.toString()))
-    );
+    const handleIrCurso = (id_curso: number) => {
+        setTabSelected({tab: 'cursos-detalle', index: 0});
+        queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, id_curso, "Contenido"] });
+        
+        setTimeout(() => 
+            navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", id_curso.toString()))
+        ,500);
+    };
 
     const handleTabChange = (val: number) => {
         setValue(val);
-        // setTabSelected({tab: 'plan-estudio', index: val});
+        setTabSelected({tab: 'calificaciones', index: val});
     }
 
     const MateriaCard = (curso: CalificacionCurso) => {

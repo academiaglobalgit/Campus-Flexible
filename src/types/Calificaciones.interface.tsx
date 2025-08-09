@@ -30,6 +30,7 @@ export interface Glosario {
 
 export interface CalificacionDetalleResponse {
     id_curso:                string;
+    curso:                   string;
     detalle:                 CalificacionDetalle[];
     promedio:                number;
     promedios_por_categoria: PromediosPorCategoria;

@@ -37,9 +37,6 @@ const CalificacionesDetalle: React.FC = () => {
 
     const PeriodosAccordion = () => {
         return (
-            isLoading 
-            ? <LoadingCircular Text="Cargando Calificaciones..." />
-            :
             data && data.detalle.map((item, index) => (
                 <Accordion
                     key={index}
@@ -71,35 +68,38 @@ const CalificacionesDetalle: React.FC = () => {
     };
 
     return (
-        isMobile
-            ?
-            <>
-                <TituloIcon Titulo="Práctica y Colaboración Ciudadana I" Icon={Users} />
-                <Typography component="span" variant="body2" sxProps={{ pl: 4 }}>Click para descargar contenido</Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', paddingTop: '20px' }}>
-                    {PeriodosAccordion()}
-                </Box>
-                <Box sx={{
-                    ...flexColumn,
-                    padding: '16px',
-                    borderRadius: '10px',
-                    backgroundColor: '#F8F8F9',
-                }}>
-                    <Typography component="span" variant="h3" color="primary">Calificación Final: </Typography>
-                    <Typography component="span" variant="h3" color="primary">{data?.promedio}</Typography>
+        isLoading 
+        ? <LoadingCircular Text="Cargando Calificaciones..." />
+        :
+            isMobile
+                ?
+                <>
+                    <TituloIcon Titulo="Práctica y Colaboración Ciudadana I" Icon={Users} />
+                    <Typography component="span" variant="body2" sxProps={{ pl: 4 }}>Click para descargar contenido</Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', paddingTop: '20px' }}>
+                        {PeriodosAccordion()}
+                    </Box>
+                    <Box sx={{
+                        ...flexColumn,
+                        padding: '16px',
+                        borderRadius: '10px',
+                        backgroundColor: '#F8F8F9',
+                    }}>
+                        <Typography component="span" variant="h3" color="primary">Calificación Final: </Typography>
+                        <Typography component="span" variant="h3" color="primary">{data?.promedio}</Typography>
 
-                </Box>
-            </>
-            :
-            <ContainerDesktop
-                title="Práctica y Colaboración Ciudadana I"
-                description="Aquí podrás consultar la calificación final de la materia seleccionada, junto con el desglose de cada componente: el valor asignado, el recurso evaluado y la calificación obtenida."
-            >
-                <Box sx={{ display: 'flex', flexDirection: 'column', pt: 7 }}>
-                    <Typography component="h3" variant="h3" sxProps={{ pb: 2 }}>Detalle de tu calificación</Typography>
-                    {PeriodosAccordion()}
-                </Box>
-            </ContainerDesktop>
+                    </Box>
+                </>
+                :
+                <ContainerDesktop
+                    title={data?.curso || ""}
+                    description="Aquí podrás consultar la calificación final de la materia seleccionada, junto con el desglose de cada componente: el valor asignado, el recurso evaluado y la calificación obtenida."
+                >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', pt: 7 }}>
+                        <Typography component="h3" variant="h3" sxProps={{ pb: 2 }}>Detalle de tu calificación</Typography>
+                        {PeriodosAccordion()}
+                    </Box>
+                </ContainerDesktop>
     );
 }
 
