@@ -13,6 +13,9 @@ import { flexRows } from '@styles';
 import { useNavigate } from 'react-router-dom';
 import { toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
+import { useGetCalificaciones } from '../../../services/CalificacionesService';
+import type { CalificacionCurso } from '../../../types/Calificaciones.interface';
+import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -20,9 +23,13 @@ const Calificaciones: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isOpen, setIsOpen] = React.useState(false);
-    const [tabValue, setTabValue] = React.useState(0);
-    const calificacion: number = 9
+    
+    const {data: calificacionData, isLoading } = useGetCalificaciones();
+    
     const estado: string = 'Cursando'
+
+    const [value, setValue] = React.useState(0);
+    const [tabPreviewSelected, _setPreviewTabSelected] = React.useState(0);
 
     const handleGlosario = () => (setIsOpen(true));
 
@@ -36,71 +43,151 @@ const Calificaciones: React.FC = () => {
         <Button onClick={handleGlosario} fullWidth variant={variant}>Click para ver el Glosario</Button>
     );
 
-    const handleDetalle = () => (
-        navigate(AppRoutingPaths.CALIFICACIONES_DETALLE.replace(":id", "1"))
+    const handleDetalle = (id_curso: number) => (
+        navigate(AppRoutingPaths.CALIFICACIONES_DETALLE.replace(":id", id_curso.toString()))
     );
 
-    const handleIrCuros = () => (
-        navigate(AppRoutingPaths.CURSOS_ACTIVOS)
+    const handleIrCurso = (id_curso: number) => (
+        navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", id_curso.toString()))
     );
 
-    const MateriaCard = () => {
+    const handleTabChange = (val: number) => {
+        setValue(val);
+        // setTabSelected({tab: 'plan-estudio', index: val});
+    }
+
+    const MateriaCard = (curso: CalificacionCurso) => {
         return (
-            Array.from({ length: 5 }).map((_, key) => (
-                <Box
-                    key={key}
-                    sx={[
-                        {
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '8px',
-                            paddingBottom: '30px',
-                            borderBottom: '1px solid #E0E0E0',
-                            paddingTop: '20px',
-                        },
-                        key === 0 && { paddingTop: '0px' },
-                    ]}
-                >
-                    <Box sx={isMobile ? { display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' } : { ...flexRows, justifyContent: 'space-between' }}>
-                        <Typography component="span" variant="body3">Práctica y Colaboración Ciudadana I</Typography>
-                        <StatusIcon estado={'Cursando'} />
-                    </Box>
-                    <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
-                        <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
-                        <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'disabled'}>{estado == 'Finalizado' ? calificacion : 'Pendiente'}</Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: '15px' }}>
-                        <><Button onClick={handleDetalle} fullWidth>Detalles Calificación</Button></>
-                        <><Button onClick={handleIrCuros} fullWidth>Ir al Curso</Button></>
-                    </Box>
+            <Box
+                sx={[
+                    {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px',
+                        paddingBottom: '30px',
+                        borderBottom: '1px solid #E0E0E0',
+                        paddingTop: '20px',
+                    },
+                ]}
+            >
+                <Box sx={isMobile ? { display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' } : { ...flexRows, justifyContent: 'space-between' }}>
+                    <Typography component="span" variant="body3">{curso.nombre_curso}</Typography>
+                    <StatusIcon estado={curso.estatus_curso_alumno} />
                 </Box>
-            ))
+                <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
+                    <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
+                    <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: '15px' }}>
+                    <><Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button></>
+                    <><Button onClick={() => handleIrCurso(curso.id_curso)} fullWidth>Ir al Curso</Button></>
+                </Box>
+            </Box>
         );
     };
 
-    const promedio = (promedio: string) => (
+    const promedio = () => (
         <Box sx={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }, isMobile && { flexDirection: 'column' }]}>
             {
                 isMobile
                     ?
                     <>
                         <Typography component="h4" variant="h4" color='primary'>PROMEDIO GENERAL:</Typography>
-                        <Typography component="h3" variant="h3" color='primary'>{promedio}</Typography>
+                        <Typography component="h3" variant="h3" color='primary'>{ calificacionData?.promedio_general || '' }</Typography>
                     </>
                     :
                     <Typography
                         color='primary'
                         component={!betweenDevice ? "h2" : "h3"}
                         variant={!betweenDevice ? "h2" : "h3"}
-                    >PROMEDIO GENERAL: {promedio}</Typography>
+                    >PROMEDIO GENERAL: { calificacionData?.promedio_general || '' }</Typography>
             }
         </Box>
     );
 
-    // const TabsSection = (periodos: number[]) => (
-    //     <PeriodosTabs periodos={periodos.length} tabChange={(newValue) => setTabValue(newValue)} />
-    // );
+    const TabsSection = (periodos: number[]) => (
+        <PeriodosTabs periodos={periodos.length} tabChange={handleTabChange} tabSelected={tabPreviewSelected} />
+    );
+
+    const Listado = () => {
+        const data = calificacionData?.cursos || [];
+        
+        if(isLoading) {
+            return <LoadingCircular Text="Cargando Calificaciones..."/>;
+        }else{
+            if(data.length > 0) {
+                if(isMobile) {
+                    return ListadoMateriaVistaMobil(data, data.map((item) => item.periodo));
+                }else{
+                    return ListadoMateriasVistaDesktop(data, data.map((item) => item.periodo));
+                }
+            }
+        }
+    };
+
+    const ListadoMateriaVistaMobil = (data: any[], periodos: number[]) => (
+        <Grid container>
+            <Grid size={{md: 12}} sx={{ width: '100%'}}>
+                {
+                    TabsSection(periodos)
+                }
+                {
+                    data &&
+                    data.map((item, index) => (
+                        <TabPanel value={value} index={index} key={index}>
+                            <Box sx={{ marginBottom: '24px', pt: '16px' }}>
+                                <Box sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                    {item.cursos.map((curso: CalificacionCurso, idx: number) => (
+                                        <Box key={idx}>
+                                            {MateriaCard(curso)}
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Box>
+                        </TabPanel>
+                    ))
+                }
+            </Grid>
+        </Grid>
+    );
+
+    const ListadoMateriasVistaDesktop = (data: any[], periodos: number[]) => (
+        <Grid container>
+            <Grid size={{md: 12}} sx={{ width: '100%'}}>
+                {                                
+                    !betweenDevice ?
+                    <>
+                        {
+                            TabsSection(periodos)
+                        }
+                        {
+                            periodos.map((_, i) => (
+                                <TabPanel value={value} index={i} key={i}>
+                                    <Box sx={{ p:4}}>
+                                        <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
+                                        {
+                                            data && data.filter((item) => item.id === i).map((item, kix) => (
+                                                <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
+                                                    {item.cursos.map((curso: CalificacionCurso, idx: number) => (
+                                                        <Box key={idx}>
+                                                            {MateriaCard(curso)}
+                                                        </Box>
+                                                    ))}
+                                                </Box>
+                                            ))
+                                        }
+                                    </Box>
+                                </TabPanel>
+                            ))
+                        }
+                    </>
+                    :
+                    ListadoMateriaVistaMobil(data, periodos)
+                }                            
+            </Grid>
+        </Grid>
+    );
 
     return (
         <>
@@ -112,16 +199,8 @@ const Calificaciones: React.FC = () => {
                         {Leyenda}
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '30px', paddingTop: '20px' }}>
                             {BotonVerGlosario('contained')}
-                            {promedio("8.6")}
-                            <PeriodosTabs periodos={9} tabChange={(newValue) => setTabValue(newValue)} />
-
-                            {
-                                Array.from({ length: 9 }).map((_, index) => (
-                                    <TabPanel value={tabValue} index={index} key={index}>
-                                        {MateriaCard()}
-                                    </TabPanel>
-                                ))
-                            }
+                            {promedio()}
+                            {Listado()}
                         </Box>
                     </>
                     :
@@ -129,57 +208,18 @@ const Calificaciones: React.FC = () => {
                         title={TitleScreen.CALIFICACIONES}
                         description={DescripcionesPantallas.CALIFICACIONES}
                         actions={
-                            promedio("8.6")
-                        }
+                            promedio()
+                        } 
                         column1Size={9}
                         column2Size={3}
                         specialButton={
                             BotonVerGlosario('outlined')
                         }
                     >
-                        <Grid container>
-                            <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
-                                <>
-                                    <PeriodosTabs periodos={9} tabChange={(newValue) => setTabValue(newValue)} />
-                                    {
-                                        Array.from({ length: 9 }).map((_, i) => (
-                                            <TabPanel value={tabValue} index={i} key={i}>
-                                                <Box sx={{ p: 4, display: 'flex', justifyContent: 'center' }}>
-                                                    <Box sx={{ width: '90%' }}>
-                                                        <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
-                                                        {
-                                                            MateriaCard()
-                                                            // data && data.filter((item) => item.id === i).map((item, kix) => (
-                                                            //     <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
-                                                            //         {item.materias.map((materia: Materia, idx: number) => (
-                                                            //             <Box key={idx}>
-                                                            //                 {materiaItem(materia.id_curso, materia.titulo, materia.status as 'Finalizada' | 'Cursando' | 'Inscribirme', true)}
-                                                            //             </Box>
-                                                            //         ))}
-                                                            //     </Box>
-                                                            // ))
-                                                        }
-                                                    </Box>
-                                                </Box>
-                                            </TabPanel>
-                                        ))
-                                    }
-                                </>
-                            </Grid>
-                        </Grid>
-                        {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
-                        <PeriodosTabs periodos={9} tabChange={(newValue) => setTabValue(newValue)} />
-                        {
-                            Array.from({length: 9}).map((_, index) => (
-                                <TabPanel value={tabValue} index={index} key={index}>
-                                    {MateriaCard()}
-                                </TabPanel>
-                            ))
-                        }
-                    </Box> */}
+                        {Listado()}
                     </ContainerDesktop>
             }
-            <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} />
+            <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} glosario={calificacionData?.glosario} />
         </>
     );
 };
