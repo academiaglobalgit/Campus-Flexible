@@ -41,7 +41,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: '8px', justifyContent: 'space-between', width: '100%' }}>
               <Typography
                 component="span"
-                variant="subtitle1"
+                variant="body3"
                 sxProps={{
                   color: (theme) => `${sxProps === undefined ? theme.palette.grey[200] : theme.palette.grey[500]}`
                 }}

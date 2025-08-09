@@ -78,7 +78,7 @@ const ServiciosEscolares: React.FC = () => {
                 <Grid size={isMobile ? 12 : 5}>
                     <Typography
                         component="span"
-                        variant="body2"
+                        variant="body3"
                     >
                         {item.descripcion}
                     </Typography>
