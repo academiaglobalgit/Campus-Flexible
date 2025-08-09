@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Edit1 } from "@iconsCustomizeds";
 import { flexColumn } from "@styles";
 import RichText from "../../RichText/RichText";
 import type { RichTextEditorRef } from "mui-tiptap";
+import theme from "../../../../themes/theme";
 
 type ComentariosDialogProps = {
     type: 'Comentar' | 'Editar' | 'Responder';
@@ -17,6 +18,8 @@ type ComentariosDialogProps = {
 }
 
 export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOpen, close, save, textAccion }) => {
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState('');
 
@@ -83,7 +86,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
 
     const handleSave = () => {
         const html = editorRef.current?.editor?.getHTML() || "";
-        if(html === "") return;
+        if (html === "") return;
         setOpen(false);
         if (save) {
             save({ htmlContent: html, type });
@@ -94,7 +97,7 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
     }
 
     return (
-        <Dialog isOpen={open} sxProps={{ width: '350px' }} >
+        <Dialog isOpen={open} sxProps={{ width: isMobile ? '350px' : '768px' }} >
             <Box
                 sx={[
                     { ...flexColumn, alignItems: 'flex-start', padding: '20px', gap: '16px' },
