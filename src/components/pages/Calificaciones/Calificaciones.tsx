@@ -25,8 +25,6 @@ const Calificaciones: React.FC = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     
     const {data: calificacionData, isLoading } = useGetCalificaciones();
-    
-    const estado: string = 'Cursando'
 
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, _setPreviewTabSelected] = React.useState(0);
@@ -75,8 +73,8 @@ const Calificaciones: React.FC = () => {
                     <StatusIcon estado={curso.estatus_curso_alumno} />
                 </Box>
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
-                    <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
-                    <Typography component={"span"} variant={"body3"} color={estado == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
+                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
+                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: '15px' }}>
