@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, TextField, useMediaQuery, useTheme } from "@mui/material";
 import Button from "../../atoms/Button/Button";
 import { Accordion } from "../../molecules/Accordion/Accordion";
-import { accordionStyle, flexColumn, flexRows } from "@styles";
+import { accordionStyle, flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { useParams } from "react-router-dom";
 import { updateActividad, useGetActividades } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
@@ -274,24 +274,7 @@ export const Actividades: React.FC = () => {
                                             
                                         <Box
                                             dangerouslySetInnerHTML={{ __html: item.contenido_elemento }}
-                                            sx={{
-                                                '& h1, h2': {
-                                                    font: theme.typography.h4
-                                                },
-                                                '& h1, h2, h3': {
-                                                    color: 'primary.main',
-                                                },
-                                                '& p': {
-                                                    marginBottom: '1rem',
-                                                    lineHeight: 1.6,
-                                                    color: 'text.primary'
-                                                },
-                                                '& ul': {
-                                                    paddingLeft: '1.5rem',
-                                                    listStyleType: 'disc',
-                                                },
-                                                pl: 3, pr: 3
-                                            }}
+                                            sx={{...innerHTMLStyle}}
                                         />
                                         <Box sx={{ pl: 3, pr: 3, pb: 3 }}>
                                             <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
@@ -366,14 +349,14 @@ export const Actividades: React.FC = () => {
                                                             </>
                                                         </Box>
                                                     :
-                                                    <Button
-                                                        fullWidth
-                                                        onClick={() => handleSaveActivity(item.id_recurso)}
-                                                        sxProps={{ mt: 2 }}
-                                                        isLoading={isSaving}
-                                                    >
-                                                        Finalizar Actividad
-                                                    </Button>
+                                                        item.calificacion === null && <Button
+                                                            fullWidth
+                                                            onClick={() => handleSaveActivity(item.id_recurso)}
+                                                            sxProps={{ mt: 2 }}
+                                                            isLoading={isSaving}
+                                                        >
+                                                            Finalizar Actividad
+                                                        </Button>
                                             }
 
                                         </Box>
