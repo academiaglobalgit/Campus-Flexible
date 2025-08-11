@@ -3,7 +3,7 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Edit1 } from "@iconsCustomizeds";
-import { flexColumn } from "@styles";
+import { flexColumn, innerHTMLStyle } from "@styles";
 import RichText from "../../RichText/RichText";
 import type { RichTextEditorRef } from "mui-tiptap";
 import theme from "../../../../themes/theme";
@@ -116,21 +116,22 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
 
                     <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' || type === 'Comentar' ? String(textoMostrar || '') : '' }}
+                        sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }}
                     >
 
                     </Typography>
                 </Box>
-                    {(textAccion?.mensaje?.length ?? 0) > limiteCaracteres && (
-                        <Typography
-                            component="span"
-                            variant="body3"
-                            color="primary"
-                            onClick={() => setExpandido(!expandido)}
-                            sx={{ cursor: 'pointer' }}
-                        >
-                            {expandido ? "Ver menos" : "Ver más"}
-                        </Typography>
-                    )}
+                {(textAccion?.mensaje?.length ?? 0) > limiteCaracteres && (
+                    <Typography
+                        component="span"
+                        variant="body1"
+                        color="primary"
+                        onClick={() => setExpandido(!expandido)}
+                        sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                    >
+                        {expandido ? "Ver menos" : "Ver más"}
+                    </Typography>
+                )}
 
                 <Box
                     sx={{
