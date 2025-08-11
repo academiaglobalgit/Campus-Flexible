@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import {Foros as ForosIcon, Edit1 } from "@iconsCustomizeds";
+import { Foros as ForosIcon, Edit1 } from "@iconsCustomizeds";
 import { DividerSection } from "../../molecules/DividerSection/DividerSection";
 import Button from "../../atoms/Button/Button";
 import { innerHTMLStyle } from "@styles";
@@ -14,21 +14,23 @@ import { ChatForoSalaConversacion } from "../../organisms/ChatForoSalaConversaci
 
 const Foros: React.FC = () => {
     const theme = useTheme();
-    const { id } = useParams<{id:string}>();
-    const { refetch } = GetTemaForoById(Number(id!), {enabled: false});    
+    const { id } = useParams<{ id: string }>();
+    const { refetch } = GetTemaForoById(Number(id!), { enabled: false });
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     const [isOpenComentarDialog, setIsOpenComentarDialog] = React.useState(false);
     const [temaData, setTemaData] = React.useState<any>();
+    const [textoForo, SettextoForo] = React.useState('');
+
     const idTipoSala = 3;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const foroSelected = getForoSelected();
-                if(foroSelected !== "") {
+                if (foroSelected !== "") {
                     setTemaData(JSON.parse(foroSelected));
-                }else{
+                } else {
                     const response = await refetch();
                     const dataArray = response.data?.data[0];
                     setTemaData(dataArray);
@@ -41,15 +43,21 @@ const Foros: React.FC = () => {
         fetchData();
     }, [id, refetch]);
 
+    const handleSetcomentarioForo = () => {
+        const text = getForoSelected();
+        setIsOpenComentarDialog(true)
+        SettextoForo(JSON.parse(text).contenido_elemento)
+    };
+
     const ComentarButtonSection = () => {
-        return( temaData && 
+        return (temaData &&
             <Box>
-                <DividerSection Title={ temaData.titulo_elemento } />
-                <Box sx={{...innerHTMLStyle}} dangerouslySetInnerHTML={{__html: temaData.contenido_elemento}} />
+                <DividerSection Title={temaData.titulo_elemento} />
+                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: temaData.contenido_elemento }} />
                 <Box sx={{ width: '100%', mt: '32px' }}>
-                    <Button 
+                    <Button
                         fullWidth
-                        onClick={() => setIsOpenComentarDialog(true)}
+                        onClick={() => handleSetcomentarioForo()}
                         icon={<Edit1 />}
                     >
                         Comentar
@@ -59,39 +67,41 @@ const Foros: React.FC = () => {
         );
     }
 
-  return (
-    <>
-        {
-            isMobile 
-                ?
+    return (
+        <>
+            {
+                isMobile
+                    ?
                     <>
                         <TituloIcon Titulo="Foros" Icon={ForosIcon} />
                         <ComentarButtonSection />
-                        <ChatForoSalaConversacion 
+                        <ChatForoSalaConversacion
                             idTipoSala={idTipoSala}
-                            idRecurso={Number(id!)} 
-                            showFiltros={true} 
-                            showPagination={true} 
+                            idRecurso={Number(id!)}
+                            showFiltros={true}
+                            showPagination={true}
                             showComentarDialog={isOpenComentarDialog}
-                            onCloseComentarDialog={() => setIsOpenComentarDialog(false)} 
+                            forotext={textoForo}
+                            onCloseComentarDialog={() => setIsOpenComentarDialog(false)}
                         />
                     </>
-                :
+                    :
                     <ContainerDesktop title="Foros">
                         <ComentarButtonSection />
-                        <ChatForoSalaConversacion 
+                        <ChatForoSalaConversacion
                             idTipoSala={idTipoSala}
-                            idRecurso={Number(id!)} 
-                            showFiltros={true} 
-                            showPagination={true} 
+                            idRecurso={Number(id!)}
+                            showFiltros={true}
+                            showPagination={true}
                             showComentarDialog={isOpenComentarDialog}
-                            onCloseComentarDialog={() => setIsOpenComentarDialog(false)} 
+                            forotext={textoForo}
+                            onCloseComentarDialog={() => setIsOpenComentarDialog(false)}
                         />
                     </ContainerDesktop>
-        }
-    </>
-    
-  );
+            }
+        </>
+
+    );
 }
 
 export default Foros;
