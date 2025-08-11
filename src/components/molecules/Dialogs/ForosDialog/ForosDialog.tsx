@@ -116,22 +116,26 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
                 <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
 
                     <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' || type === 'Comentar' ? String(textoMostrar || '') : '' }}
-                        sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }}
+                        sx={{
+                            ...innerHTMLStyle, pl: 0, pr: 0, '& p': {
+                                marginBottom: '5px'
+                            }
+                        }}
                     >
 
                     </Typography>
+                    {(textAccion?.mensaje?.length ?? 0) > limiteCaracteres && (
+                        <Typography
+                            component="span"
+                            variant="body1"
+                            color="primary"
+                            onClick={() => setExpandido(!expandido)}
+                            sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                        >
+                            {expandido ? "Ver menos" : "Ver más"}
+                        </Typography>
+                    )}
                 </Box>
-                {(textAccion?.mensaje?.length ?? 0) > limiteCaracteres && (
-                    <Typography
-                        component="span"
-                        variant="body1"
-                        color="primary"
-                        onClick={() => setExpandido(!expandido)}
-                        sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                        {expandido ? "Ver menos" : "Ver más"}
-                    </Typography>
-                )}
 
                 <Box
                     sx={{
