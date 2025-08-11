@@ -28,6 +28,9 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
 
     const editorRef = React.useRef<RichTextEditorRef>(null);
 
+    const [expandido, setExpandido] = React.useState(false);
+    const limiteCaracteres = 400;
+
     useEffect(() => {
         setOpen(isOpen ?? false);
     }, [isOpen]);
@@ -96,6 +99,11 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
         setTimeout(() => setIsDisabled(html === '<p></p>'), 50);
     }
 
+    const textoMostrar = expandido
+        ? textAccion?.mensaje ?? ""
+        : (textAccion?.mensaje?.slice(0, limiteCaracteres) ?? "") +
+        ((textAccion?.mensaje?.length ?? 0) > limiteCaracteres ? "..." : "");
+
     return (
         <Dialog isOpen={open} sxProps={{ width: isMobile ? '350px' : '768px' }} >
             <Box
@@ -105,10 +113,25 @@ export const ComentariosDialog: React.FC<ComentariosDialogProps> = ({ type, isOp
             >
                 <Typography component="h4" variant="h4" children={title} color="primary" />
 
-                <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' ? String(textAccion?.mensaje || '') : '' }}
-                >
+                <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
 
-                </Typography>
+                    <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: type === 'Responder' || type === 'Comentar' ? String(textoMostrar || '') : '' }}
+                    >
+
+                    </Typography>
+                </Box>
+                    {(textAccion?.mensaje?.length ?? 0) > limiteCaracteres && (
+                        <Typography
+                            component="span"
+                            variant="body3"
+                            color="primary"
+                            onClick={() => setExpandido(!expandido)}
+                            sx={{ cursor: 'pointer' }}
+                        >
+                            {expandido ? "Ver menos" : "Ver más"}
+                        </Typography>
+                    )}
+
                 <Box
                     sx={{
                         width: '100%',
