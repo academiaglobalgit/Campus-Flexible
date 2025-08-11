@@ -17,13 +17,14 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import LoadingDialog from "../../molecules/Dialogs/LoadingDialog/LoadingDialog";
 
 type ChatForoSalaConversacionProps = {
-    idTipoSala:         number;
-    idRecurso:          number;
-    showFiltros:        boolean;
-    showPagination:     boolean;
+    idTipoSala: number;
+    idRecurso: number;
+    showFiltros: boolean;
+    showPagination: boolean;
     showComentarDialog: boolean;
     saveComentarioExterno?: { htmlContent: string, type: string } | null;
-    orderMessages?:     number | undefined;
+    orderMessages?: number | undefined;
+    forotext?: string;
     onCloseComentarDialog?: () => void;
     onSaveComentarioExterno?: () => void;
 }
@@ -38,23 +39,24 @@ const GetTipoOrden = (orden: number): string => (orden === 0 ? 'DESC' : 'ASC');
 
 export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> = (
     {
-        idTipoSala, 
-        idRecurso, 
-        showFiltros, 
-        showPagination, 
-        showComentarDialog, 
+        idTipoSala,
+        idRecurso,
+        showFiltros,
+        showPagination,
+        showComentarDialog,
         saveComentarioExterno,
         orderMessages,
-        onCloseComentarDialog, 
+        forotext,
+        onCloseComentarDialog,
         onSaveComentarioExterno,
     }
 ) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     const { showNotification } = useNotification();
     const queryClient = useQueryClient();
-    
+
     const [paginaActual, setPaginaActual] = React.useState(1);
     const [totalPaginas, setTotalPaginas] = React.useState(1);
     const [todosComentarios, setTodosComentarios] = React.useState(1);
@@ -95,7 +97,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
     React.useEffect(() => {
         if (showComentarDialog) {
-            handleOpenComentariosDialog('Comentar', undefined);
+            handleOpenComentariosDialog('Comentar', { mensaje: forotext, autor: '' });
         }
     }, [showComentarDialog]);
 
@@ -104,28 +106,28 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             setTotalPaginas(Mensajes.data.totalPaginas);
         }
     }, [Mensajes]);
-    
+
     const handleComentar = (val: { htmlContent: string, type: string }) => {
         setIsOpenForosDialog(false);
 
-        if(onCloseComentarDialog) onCloseComentarDialog();
+        if (onCloseComentarDialog) onCloseComentarDialog();
 
         setIsOpenLoading(true);
         setTextoLoading("Guardando...");
-        if(val.type === 'Editar' || val.type === 'Comentar') {
+        if (val.type === 'Editar' || val.type === 'Comentar') {
             createMutation.mutate({ id_mensaje: val.type === 'Comentar' ? null : idMensaje, id_recurso: idRecurso, mensaje: val.htmlContent, id_mensaje_respuesta: null });
-        }else{
+        } else {
             createMutation.mutate({ id_mensaje: null, id_recurso: idRecurso, mensaje: val.htmlContent, id_mensaje_respuesta: idMensaje });
         }
     }
-    
+
     const createMutation = useMutation({
         mutationFn: SaveComentarioForo,
         onSuccess: async (_newComment: ForosSaveResponse) => {
             setIdMensaje(0);
 
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
-            if(idTipoSala === 4) {
+            if (idTipoSala === 4) {
                 keys.pop(); //quitamos paginasize para SalaConversacion
             }
 
@@ -134,9 +136,9 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                 exact: true
             });
 
-            showNotification(`Comentario guardado satisfactorimente`,"success");
+            showNotification(`Comentario guardado satisfactorimente`, "success");
             setIsOpenLoading(false);
-            if(onSaveComentarioExterno) onSaveComentarioExterno();
+            if (onSaveComentarioExterno) onSaveComentarioExterno();
         },
         onError: (error) => {
             console.log(error)
@@ -147,22 +149,22 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             console.log('La mutación ha finalizado');
         }
     });
-    
+
     const handleEliminarComentario = (isDelete: boolean) => {
-            setIsOpenEliminarComentarioDialog(false);
-        if(isDelete) {
+        setIsOpenEliminarComentarioDialog(false);
+        if (isDelete) {
             setIsOpenLoading(true);
             setTextoLoading("Eliminando comentario");
             deleteMutation.mutate(idMensaje);
         }
     }
-    
+
     const deleteMutation = useMutation({
         mutationFn: DeleteMensaje,
         onSuccess: async (_data) => {
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
-            
-            if(idTipoSala === 4) {
+
+            if (idTipoSala === 4) {
                 keys.pop(); //quitamos paginasize para SalaConversacion
             }
 
@@ -172,10 +174,10 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                 queryKey: keys,
                 exact: true
             });
-            
-            showNotification(`Comentario eliminado satisfactorimente`,"success");
+
+            showNotification(`Comentario eliminado satisfactorimente`, "success");
             setIsOpenLoading(false);
-            
+
             setIdMensaje(0);
         },
         onError: (error) => {
@@ -191,7 +193,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
         setTypeDialog(type);
         setIsOpenForosDialog(true);
 
-        if(mensaje) {
+        if (mensaje) {
             setTextComentario({ mensaje: mensaje.mensaje, autor: mensaje.autor || '' });
             setIdMensaje(mensaje.id_mensaje);
         }
@@ -203,28 +205,28 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
     };
 
     const handleCloseComentarDialog = () => {
-         setIsOpenForosDialog(false);
-         if(onCloseComentarDialog) onCloseComentarDialog();
+        setIsOpenForosDialog(false);
+        if (onCloseComentarDialog) onCloseComentarDialog();
     }
 
     const ComentarioCard = (item: any) => (
-        <Box 
-            sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
                 pb: '20px',
             }}
         >
-            <CardMensajeForoSala 
-                item={item} 
-                onComentar={ (e)=> handleOpenComentariosDialog(e.type, e.mensaje)} 
-                onDelete={ (e)=> handleOpenEliminarComentarioDialog(e)} 
+            <CardMensajeForoSala
+                item={item}
+                onComentar={(e) => handleOpenComentariosDialog(e.type, e.mensaje)}
+                onDelete={(e) => handleOpenEliminarComentarioDialog(e)}
             />
             {
                 item.respuestas && item.respuestas.length > 0 && (
-                    <Box 
-                        sx={{ 
-                            ml: '20px', 
+                    <Box
+                        sx={{
+                            ml: '20px',
                             mt: 2,
                             borderLeft: '2px solid #e0e0e0',
                             paddingLeft: '20px',
@@ -245,18 +247,18 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
     const ComentariosCard = () => {
         return (
-            isLoading 
-            ?
+            isLoading
+                ?
                 <LoadingCircular Text="Cargando Mensajes..." sxProps={{ height: undefined, py: 5 }} />
-            :
-            Mensajes && Mensajes.data?.mensajes.map((item, index) => (
-                <ComentarioCard key={index} {...item} />
-            ))
+                :
+                Mensajes && Mensajes.data?.mensajes.map((item, index) => (
+                    <ComentarioCard key={index} {...item} />
+                ))
         );
     }
 
     const FiltrosSection = (flexDirection = 'column') => {
-        return(
+        return (
             <Box sx={{ mt: '46px' }}>
                 <DividerSection Title="Discusión" />
                 <Box sx={{ display: 'flex', flexDirection, gap: '20px', pb: '20px' }}>
@@ -264,27 +266,27 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                         name="comentarios"
                         control={control}
                         render={({ field }) => (
-                            <FormControl 
-                                fullWidth 
+                            <FormControl
+                                fullWidth
                                 error={!!errors.comentarios}
                             >
-                            <InputLabel id="mostrar-label">Mostrar</InputLabel>
-                            <Select
-                                labelId="mostrar-label"
-                                label="Mostrar"
-                                {...field}
-                                onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value);
-                                    setTodosComentarios(value);
-                                }}
-                            >
-                                {Filtros.comentarios.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                <InputLabel id="mostrar-label">Mostrar</InputLabel>
+                                <Select
+                                    labelId="mostrar-label"
+                                    label="Mostrar"
+                                    {...field}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        field.onChange(value);
+                                        setTodosComentarios(value);
+                                    }}
+                                >
+                                    {Filtros.comentarios.map((item) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                             </FormControl>
                         )}
                     />
@@ -293,27 +295,27 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                         name="ordenar"
                         control={control}
                         render={({ field }) => (
-                            <FormControl 
-                                fullWidth 
+                            <FormControl
+                                fullWidth
                                 error={!!errors.ordenar}
                             >
-                            <InputLabel id="ordenar-label">Ordenar por</InputLabel>
-                            <Select
-                                labelId="ordenar-label"
-                                label="Ordenar por"
-                                {...field}
-                                onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value);
-                                    setOrden(value);
-                                }}
-                            >
-                                {Filtros.order.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                <InputLabel id="ordenar-label">Ordenar por</InputLabel>
+                                <Select
+                                    labelId="ordenar-label"
+                                    label="Ordenar por"
+                                    {...field}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        field.onChange(value);
+                                        setOrden(value);
+                                    }}
+                                >
+                                    {Filtros.order.map((item) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                             </FormControl>
                         )}
                     />
@@ -322,27 +324,27 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                         name="limite"
                         control={control}
                         render={({ field }) => (
-                            <FormControl 
-                                fullWidth 
+                            <FormControl
+                                fullWidth
                                 error={!!errors.limite}
                             >
-                            <InputLabel id="limite-label">Limite de resultados</InputLabel>
-                            <Select
-                                labelId="limite-label"
-                                label="Limite de resultados"
-                                {...field}
-                                onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value);
-                                    setPaginaSize(value);
-                                }}
-                            >
-                                {Filtros.limite.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                <InputLabel id="limite-label">Limite de resultados</InputLabel>
+                                <Select
+                                    labelId="limite-label"
+                                    label="Limite de resultados"
+                                    {...field}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        field.onChange(value);
+                                        setPaginaSize(value);
+                                    }}
+                                >
+                                    {Filtros.limite.map((item) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                             </FormControl>
                         )}
                     />
@@ -357,35 +359,35 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
     const PaginationSection = () => {
         return (
-            <Box sx={{...flexRows, pb: 3 }}>
-                <Pagination 
+            <Box sx={{ ...flexRows, pb: 3 }}>
+                <Pagination
                     count={totalPaginas}
                     page={paginaActual}
-                    shape="rounded" 
-                    onChange={handlePagination} 
+                    shape="rounded"
+                    onChange={handlePagination}
                 />
             </Box>
         );
     }
 
-    return(
+    return (
         <>
             <>
-                { showFiltros && FiltrosSection(!isMobile ? 'row' : 'column') }
+                {showFiltros && FiltrosSection(!isMobile ? 'row' : 'column')}
                 <ComentariosCard />
-                { showPagination && PaginationSection() }
+                {showPagination && PaginationSection()}
             </>
-            
-            <ComentariosDialog 
-                isOpen={isOpenForosDialog} 
-                close={handleCloseComentarDialog} 
-                type={typeDialog} 
+
+            <ComentariosDialog
+                isOpen={isOpenForosDialog}
+                close={handleCloseComentarDialog}
+                type={typeDialog}
                 save={(val) => handleComentar(val)}
                 textAccion={textComentario ?? undefined}
             />
-            <EliminarComentarioDialog 
-                isOpen={isOpenEliminarComentarioDialog} 
-                close={(val: boolean) => handleEliminarComentario(val)} 
+            <EliminarComentarioDialog
+                isOpen={isOpenEliminarComentarioDialog}
+                close={(val: boolean) => handleEliminarComentario(val)}
             />
             <LoadingDialog isOpen={isOpenLoading} Text={textoLoading} />
         </>
