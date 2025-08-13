@@ -15,7 +15,7 @@ import { perfilSchema, type PerfilFormData } from "../../../schemas/perfilSchema
 
 import {Location as LocationIcon, CheckCircle} from "@iconsCustomizeds";
 import { TextMaskCustom } from "../../molecules/TextMask/TextMask";
-import { AppRoutingPaths, TitleScreen, type PerfilResponse, type User } from "@constants";
+import { TitleScreen, type PerfilResponse, type User } from "@constants";
 
 import { Calendar, Mail, User as IUser, Contacto, WhatsApp, Right } from "../../../assets/icons";
 import DsSvgIcon from "../../atoms/Icon/Icon";
@@ -136,7 +136,7 @@ const MiPerfil: React.FC = () => {
 
     const handleLogout = () => {
         logout();
-        navigate(AppRoutingPaths.LOGIN);
+        navigate("/");
     }
 
     const onSubmit = async (data: PerfilFormData) => {

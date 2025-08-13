@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build --base=/agc-react/",
+    "build": "tsc -b && vite build --mode production",
+    "git-page": "tsc -b && vite build --base=/agc-react/",
     "lint": "eslint .",
     "preview": "vite preview"
   },

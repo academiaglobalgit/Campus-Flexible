@@ -25,7 +25,7 @@ const PreguntasFrecuentes: React.FC = () => {
     setIsExternal(location.pathname === AppRoutingPaths.PREGUNTAS_FRECUENTES);
   },[]);
   
-  const onBack = () => navigate(isExternal ? AppRoutingPaths.LOGIN : AppRoutingPaths.HOME);
+  const onBack = () => navigate(isExternal ? "/" : AppRoutingPaths.HOME);
 
   return (
     <Container maxWidth={isMobile ? 'xs' : 'lg' } sx={{ pt: 7, pb: 7 }}>

@@ -24,7 +24,7 @@ const CursosTabs = [
 
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
-    const curso = JSON.parse(getCursoSelected());
+    const curso = JSON.parse(getCursoSelected() || '{}');
     const [value, setValue] = React.useState(0);
 
     React.useEffect(() => {

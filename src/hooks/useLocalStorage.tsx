@@ -16,15 +16,15 @@ export const checkAuthStatus = async (): Promise<{ isAuth: boolean; tokenExpired
 
     if (!decoded?.exp) {
       console.warn('Token does not have an expiration time');
-      return { isAuth: true, tokenExpired: true };
+      return { isAuth: false, tokenExpired: false };
     }
     
     const expired = Date.now() >= decoded.exp * 1000;
 
-    return { isAuth: true, tokenExpired: expired };
+    return { isAuth: !expired, tokenExpired: expired };
   } catch (error) {
     console.error('Error decoding token', error);
-    return { isAuth: true, tokenExpired: false };
+    return { isAuth: false, tokenExpired: false };
   }
 };
 
@@ -71,7 +71,7 @@ export const setCursoSelected = (curso: string) => {
 }
 
 export const getCursoSelected = (): string => {
-  return localStorage.getItem(CURSO_SELECTED) || '';
+  return localStorage.getItem(CURSO_SELECTED) || '{}';
 }
 
 export const setTabSelected = (tab: { tab: string, index: number }) => {
