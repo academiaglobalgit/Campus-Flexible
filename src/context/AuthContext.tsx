@@ -24,14 +24,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
-    const [isLogout, setIsLogout] = useState(false);
     const [aceptoTerminos, setAceptoTerminos] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [isLogout, setIsLogout] = useState(false);
     const [_nombrePrograma, setNombrePrograma] = useState("");
 
     const { refetch } = useGetPerfilUsuario("Login", { enabled: false });
@@ -41,28 +41,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Verificar autenticación al montar el componente
     useEffect(() => {
         const checkAuth = async () => {
-            try {
-                const authStatus = await checkAuthStatus();
-                if(!authStatus.isAuth) {
-                    setIsAuthenticated(false);
-                }else if (authStatus.tokenExpired) {
-                    setIsTokenExpired(true);
-                }
+            setIsInitializing(true);
 
-                if (authStatus.isAuth) {
+            try {
+                const { isAuth, tokenExpired } = await checkAuthStatus();
+                setIsAuthenticated(isAuth);
+                setIsTokenExpired(tokenExpired);
+                if (isAuth && !tokenExpired) {
                     const userData = await getAuthModel();
                     setUser(userData);
-                    setAceptoTerminos(userData.aceptoTerminos);
+                    setAceptoTerminos(userData?.aceptoTerminos);
                     setNombrePrograma(userData.nombrePrograma);
                 }
-                setIsAuthenticated(authStatus.isAuth);
             } catch (error) {
                 console.error("Error checking auth:", error);
-                setIsAuthenticated(false);
-            } finally {
-                setIsLoading(false);
-                setIsInitializing(false);
             }
+            setIsLoading(false);
+            setIsInitializing(false);
         };
 
         checkAuth();
@@ -242,7 +237,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

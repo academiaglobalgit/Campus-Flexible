@@ -20,16 +20,41 @@ export const ProtectedRoute: React.FC = () => {
         return () => {
             unsubscribe();
         };
-    }, [handleUnauthorized]);    
+    }, [handleUnauthorized]);
     
+
     if (isInitializing) {
-        return <LoadingCircular Text='' />; // show un spinner mientras verifica
+        return <LoadingCircular Text="" />;
     }
 
-    if(isLogout) return <Navigate to={AppRoutingPaths.LOGIN} state={{ from: location }} replace />;
-
-    if (!isAuthenticated || isTokenExpired) {
-        return <Navigate to={AppRoutingPaths.SESSION_EXPIRED} state={{ from: location }} replace />;
+    if (isLogout) {
+        return (
+            <Navigate
+                to={"/"}
+                state={{ from: location }}
+                replace
+            />
+        );
+    }
+    
+    if (!isAuthenticated && !isTokenExpired) {
+        return (
+            <Navigate
+                to={"/"}
+                state={{ from: location }}
+                replace
+            />
+        );
+    }
+    
+    if (isTokenExpired) {
+        return (
+            <Navigate
+                to={AppRoutingPaths.SESSION_EXPIRED}
+                state={{ from: location }}
+                replace
+            />
+        );
     }
     
     if(!aceptoTerminos) {

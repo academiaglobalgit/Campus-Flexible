@@ -18,7 +18,7 @@ import type { CalificacionCurso } from '../../../types/Calificaciones.interface'
 import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
 import { useQueryClient } from '@tanstack/react-query';
 import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
-import { getTabSelected, setTabSelected } from '../../../hooks/useLocalStorage';
+import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -55,12 +55,21 @@ const Calificaciones: React.FC = () => {
         navigate(AppRoutingPaths.CALIFICACIONES_DETALLE.replace(":id", id_curso.toString()))
     );
 
-    const handleIrCurso = (id_curso: number) => {
+    const handleIrCurso = (item: CalificacionCurso) => {
         setTabSelected({tab: 'cursos-detalle', index: 0});
-        queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, id_curso, "Contenido"] });
+        queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, item.id_curso, "Contenido"] });
         
+
+        const curso = {
+            id_curso: item.id_curso,
+            titulo: item.nombre_curso,
+            estatus: item.estatus_curso_alumno
+        };
+
+        setCursoSelected(JSON.stringify(curso));
+
         setTimeout(() => 
-            navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", id_curso.toString()))
+            navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", item.id_curso.toString()))
         ,500);
     };
 
@@ -94,7 +103,7 @@ const Calificaciones: React.FC = () => {
 
                 <Box sx={{ display: 'flex', gap: '15px' }}>
                     <><Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button></>
-                    <><Button onClick={() => handleIrCurso(curso.id_curso)} fullWidth>Ir al Curso</Button></>
+                    <><Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button></>
                 </Box>
             </Box>
         );

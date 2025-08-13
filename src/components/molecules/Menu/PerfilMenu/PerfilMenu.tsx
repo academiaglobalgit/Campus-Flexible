@@ -21,7 +21,7 @@ export const PerfilMenu: React.FC<PerfilMenuProps> = ({anchorEl, onClose}) => {
     const handleNavigation = (item: any) => {
         if(item.path === "logout") {
             logout();
-            navigate(AppRoutingPaths.LOGIN);
+            navigate("/");
         }else{
             navigate(item.path);
             if (onClose) {

@@ -2,14 +2,14 @@ import { Box, Container,  Grid, useMediaQuery, useTheme } from "@mui/material";
 import { Footer } from '../../atoms/Footer/Footer';
 import { TopBar } from "../../molecules/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
-import { AppRoutingPaths, TitleScreen } from "@constants";
+import { TitleScreen } from "@constants";
 import Home from "../../../assets/ayuda_ext.png";
 import AyudaLoginForm from "./AyudaLoginForm";
 
 const AyudaLogin: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const onBack = () => navigate(AppRoutingPaths.LOGIN);
+  const onBack = () => navigate("/");
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   
