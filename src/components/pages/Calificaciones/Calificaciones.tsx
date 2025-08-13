@@ -48,7 +48,7 @@ const Calificaciones: React.FC = () => {
     );
 
     const BotonVerGlosario = (variant: 'outlined' | 'contained' = 'contained') => (
-        <Button onClick={handleGlosario} fullWidth variant={variant}>Click para ver el Glosario</Button>
+        <Button onClick={handleGlosario} fullWidth variant={variant}>Clic para ver el Glosario</Button>
     );
 
     const handleDetalle = (id_curso: number) => (

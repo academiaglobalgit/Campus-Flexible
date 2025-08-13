@@ -93,7 +93,7 @@ const CursosActivosDetalles: React.FC = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <TituloIcon Titulo={curso.titulo} Icon={CursosActivosDetalle} />
             <Box sx={{ pl: '30px' }} >
-                <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Click para descargar contenido</Typography>
+                <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Clic para descargar contenido</Typography>
             </Box>
 
             <Divider textAlign="center">
