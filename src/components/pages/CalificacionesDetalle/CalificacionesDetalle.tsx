@@ -75,7 +75,7 @@ const CalificacionesDetalle: React.FC = () => {
                 ?
                 <>
                     <TituloIcon Titulo="Práctica y Colaboración Ciudadana I" Icon={Users} />
-                    <Typography component="span" variant="body2" sxProps={{ pl: 4 }}>Click para descargar contenido</Typography>
+                    <Typography component="span" variant="body2" sxProps={{ pl: 4 }}>Clic para descargar contenido</Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', paddingTop: '20px' }}>
                         {PeriodosAccordion()}
                     </Box>
