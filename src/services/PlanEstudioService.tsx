@@ -5,14 +5,15 @@ import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
 import { useQuery } from "@tanstack/react-query";
 
 import { useGetManuales } from "./ManualesService";
+import { useGetDatosModulos } from "./ModulosCampus";
 
-export const useGetPlanEstudio = () => {
-     const query =  useQuery<PlanEstudioResponse, Error>({
-         queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.key],
-         queryFn: async () => await apiClient.get<PlanEstudioResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.path}`),
-         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
-     });
-
+export const useGetPlanEstudio = (options?: { enabled?: boolean }) => {
+    const query =  useQuery<PlanEstudioResponse, Error>({
+        queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.key],
+        queryFn: async () => await apiClient.get<PlanEstudioResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.path}`),
+        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        ...options
+    });
 
     const mapData = (data: PlanEstudio[]): PlanEstudioMateriasResponse[] => {
         // const statusMap: Record<number, string> = {
@@ -48,10 +49,11 @@ export const useGetPlanEstudio = () => {
 
     return {
         ...query,
-        data: React.useMemo(
-            () => mapData(query.data?.data ?? []),
-            [query.data]
-        )
+        data: React.useMemo(() => mapData(query.data?.data ?? []), [query.data]),
+        refetchMapeado: React.useCallback(async () => {
+            const result = await query.refetch();
+            return mapData(result.data?.data ?? []);
+        }, [query])
     }
 }
 
@@ -61,14 +63,14 @@ export const useGetInformacion = (idCurso: number) => {
          queryFn: async () => await apiClient.get<PlanEstudioInformacionResponse>(`${PLAN_ESTUDIO_ENDPOINTS.GET_INFORMACION_MATERIAS.path}?id_curso=${idCurso}`),
          staleTime: 1000 * 60 * 5, // 5 minutos de stale time
      });
-    
 }
 
 export const useGetVideoMapa = () => {
     const mapaCurricular = useGetManuales("Mapa Curricular", "alumnos");
     const video = useGetManuales("Video de Bienvenida", "alumnos");
+    const dataModulo = useGetDatosModulos(1);
 
-    return { mapaCurricular, video };
+    return { mapaCurricular, video, dataModulo };
 }
 
 export const useCreateConfirmar = async (id_curso: number): Promise<any> => {

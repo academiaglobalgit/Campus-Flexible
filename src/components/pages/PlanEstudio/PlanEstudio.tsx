@@ -11,7 +11,6 @@ import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDi
 import { InscribirmeDialog } from "../../molecules/Dialogs/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
 import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
@@ -23,9 +22,11 @@ const PlanEstudio: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-    const { data: materiaData, isLoading } = useGetPlanEstudio();
-    const { data: planEstudioData } = useGetDatosModulos(1);
-    const { mapaCurricular, video } = useGetVideoMapa();
+    const { refetchMapeado } = useGetPlanEstudio({ enabled: false });
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const { mapaCurricular, video, dataModulo: planEstudioData } = useGetVideoMapa();
+    const [materiaData, setMateriaData] = React.useState<PlanEstudioMateriasResponse[]>([]);
 
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
     const [urlVideo, setUrlVideo] = React.useState("");
@@ -44,6 +45,22 @@ const PlanEstudio: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                
+                const response = await refetchMapeado();
+                
+                setMateriaData(response ?? []);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleVideoBienvenida = () => {
         setUrlVideo(video.data?.url ?? "");
@@ -210,15 +227,11 @@ const PlanEstudio: React.FC = () => {
     const Listado = () => {
         const data = materiaData || [];
 
-        if (isLoading) {
-            return <LoadingCircular Text="Cargando Plan de Estudio..." />;
-        } else {
-            if (data.length > 0) {
-                if (isMobile) {
-                    return ListadoMateriaVistaMobil(data, data.map((item) => item.periodo));
-                } else {
-                    return ListadoMateriasVistaDesktop(data, data.map((item) => item.periodo));
-                }
+        if (data.length > 0) {
+            if (isMobile) {
+                return ListadoMateriaVistaMobil(data, data.map((item) => item.periodo));
+            } else {
+                return ListadoMateriasVistaDesktop(data, data.map((item) => item.periodo));
             }
         }
     };
@@ -226,20 +239,23 @@ const PlanEstudio: React.FC = () => {
     return (
         <>
             {
+                isLoading 
+                ?
+                <LoadingCircular Text="Cargando Plan de Estudio..." />
+                :
                 isMobile
                     ?
-                    <>
-                        <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} Icon={Home} />
-                        <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: planEstudioData?.data?.descripcion_html ?? '' }}>
-                        </Typography>
-                        {BotonesVideoMapa()}
-                        {Listado()}
-                    </>
+                        <>
+                            <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} Icon={Home} />
+                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: planEstudioData?.data?.data.descripcion_html ?? '' }}>
+                            </Typography>
+                            {BotonesVideoMapa()}
+                            {Listado()}
+                        </>
                     :
-                    <>
                         <ContainerDesktop
                             title={TitleScreen.PLAN_ESTUDIOS}
-                            description={planEstudioData?.data?.descripcion_html ?? ''}
+                            description={planEstudioData?.data?.data.descripcion_html ?? ''}
                             actions={
                                 BotonesVideoMapa(!betweenDevice ? "column" : "row")
                             }
@@ -248,7 +264,6 @@ const PlanEstudio: React.FC = () => {
                                 Listado()
                             }
                         </ContainerDesktop>
-                    </>
             }
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} urlVideo={urlVideo} />
             <InscribirmeDialog idCurso={idCursoSelected} isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />

@@ -1,14 +1,12 @@
 import React from "react";
-import { ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { Typography } from "../../../atoms/Typography/Typography";
 
 import { MenuRoutes as MenuItems, MenuInformacion, type MenuType, TitleScreen } from "@constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
-// import ContactoDialog from "../../Dialogs/ContactoDialog/ContactoDialog";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
-// import { ForosDialog } from "../../Dialogs/ForosDialog/ForosDialog";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -25,11 +23,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [menuRootStyle, setMenuRootStyle] = useState({});
     const [menuBordersStyle, setMenuBordersStyle] = useState({});
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    // const [isOpenContactoDialog, setIsOpenContactoDialog] = React.useState(false);
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
     const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
-    const menuRoutes = [...MenuItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const menuRoutes = [...MenuItems.filter((item) => item.menu === "main")].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
@@ -133,7 +130,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                     ))
                 }
             </Menu>
-            {/* <ContactoDialog isOpen={isOpenContactoDialog} close={() => setIsOpenContactoDialog(false)} data={{ telefono: ["(667) 712 41 72"], email: ["daniela.cazares@umi.edu.mx"] }} /> */}
+            <Box sx={{height: '50px', width: '100%'}}></Box>
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} menutype={menuTypeDialog} />
         </>
     );
