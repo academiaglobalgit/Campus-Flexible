@@ -1,5 +1,5 @@
 import { Box, Button, Divider, useMediaQuery, useTheme } from "@mui/material";
-import { AppRoutingPaths, DescripcionesPantallas, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
+import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -8,14 +8,16 @@ import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetCursos } from "../../../services/CursosActivosService";
+import { useGetDatosModulos } from "../../../services/ModulosCampus";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { accordionStyle } from "@styles";
+import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { data: cursosData, isLoading } = useGetCursos();
+    const { data: cursosDatos } = useGetDatosModulos(2);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -53,7 +55,7 @@ const CursoActivo: React.FC = () => {
                 key={index}
                 sxProps={accordionStyle}
                 title={item.titulo_curso}
-                customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus}  sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
+                customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus} sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
             >
 
                 <Box sx={{ display: 'flex', width: '100%', flexFlow: 'column wrap' }}>
@@ -125,13 +127,11 @@ const CursoActivo: React.FC = () => {
             ?
             <>
                 <TituloIcon Titulo={TitleScreen.CURSOS_ACTIVOS} Icon={CursosActivos} />
-                <Typography component="span" variant="body1">
-                    {DescripcionesPantallas.CURSOS_ACTIVOS}
-                </Typography>
+                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: cursosDatos?.data?.descripcion_html ?? '' }} />
                 {Materias}
             </>
             :
-            <ContainerDesktop title={TitleScreen.CURSOS_ACTIVOS} description={DescripcionesPantallas.CURSOS_ACTIVOS}>
+            <ContainerDesktop title={TitleScreen.CURSOS_ACTIVOS} description={cursosDatos?.data?.descripcion_html ?? ''}>
                 {Materias}
             </ContainerDesktop>
     );

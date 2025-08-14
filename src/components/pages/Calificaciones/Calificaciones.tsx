@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
-import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from '@constants';
+import { AppRoutingPaths, TitleScreen } from '@constants';
 import { Calificaciones as CalificacionesIcon } from "@iconsCustomizeds";
 import { Typography } from '../../atoms/Typography/Typography';
 import Button from '../../atoms/Button/Button';
@@ -9,11 +9,12 @@ import { GlosarioTerminosDialog } from '../../molecules/Dialogs/GlosarioTerminos
 import { ContainerDesktop } from '../../organisms/ContainerDesktop/ContainerDesktop';
 import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';
-import { flexRows } from '@styles';
+import { flexRows, innerHTMLStyle } from '@styles';
 import { useNavigate } from 'react-router-dom';
 import { toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
+import { useGetDatosModulos } from "../../../services/ModulosCampus";
 import type { CalificacionCurso } from '../../../types/Calificaciones.interface';
 import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
 import { useQueryClient } from '@tanstack/react-query';
@@ -28,8 +29,10 @@ const Calificaciones: React.FC = () => {
     const queryClient = useQueryClient();
 
     const [isOpen, setIsOpen] = React.useState(false);
-    
-    const {data: calificacionData, isLoading } = useGetCalificaciones();
+
+    const { data: calificacionData, isLoading } = useGetCalificaciones();
+    const { data: CalificacionesDatos } = useGetDatosModulos(11);
+
 
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
@@ -37,14 +40,12 @@ const Calificaciones: React.FC = () => {
     const handleGlosario = () => (setIsOpen(true));
 
     React.useEffect(() => {
-        const indexTab = getTabSelected('calificaciones'); 
+        const indexTab = getTabSelected('calificaciones');
         setPreviewTabSelected(indexTab);
-    },[]);
+    }, []);
 
     const Leyenda = (
-        <Typography component="span" variant="body1">
-            Aquí encontrarás la calificación final de cada curso, una vez que has realizado los exámenes correspondientes. El porcentaje de avance señala el total de bloques que se han evaluado al momento de tu consulta.
-        </Typography>
+        <Box sx={{ ...innerHTMLStyle,pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
     );
 
     const BotonVerGlosario = (variant: 'outlined' | 'contained' = 'contained') => (
@@ -75,7 +76,7 @@ const Calificaciones: React.FC = () => {
 
     const handleTabChange = (val: number) => {
         setValue(val);
-        setTabSelected({tab: 'calificaciones', index: val});
+        setTabSelected({ tab: 'calificaciones', index: val });
     }
 
     const MateriaCard = (curso: CalificacionCurso) => {
@@ -116,14 +117,14 @@ const Calificaciones: React.FC = () => {
                     ?
                     <>
                         <Typography component="h4" variant="h4" color='primary'>PROMEDIO GENERAL:</Typography>
-                        <Typography component="h3" variant="h3" color='primary'>{ calificacionData?.promedio_general || '' }</Typography>
+                        <Typography component="h3" variant="h3" color='primary'>{calificacionData?.promedio_general || ''}</Typography>
                     </>
                     :
                     <Typography
                         color='primary'
                         component={!betweenDevice ? "h2" : "h3"}
                         variant={!betweenDevice ? "h2" : "h3"}
-                    >PROMEDIO GENERAL: { calificacionData?.promedio_general || '' }</Typography>
+                    >PROMEDIO GENERAL: {calificacionData?.promedio_general || ''}</Typography>
             }
         </Box>
     );
@@ -134,14 +135,14 @@ const Calificaciones: React.FC = () => {
 
     const Listado = () => {
         const data = calificacionData?.cursos || [];
-        
-        if(isLoading) {
-            return <LoadingCircular Text="Cargando Calificaciones..."/>;
-        }else{
-            if(data.length > 0) {
-                if(isMobile) {
+
+        if (isLoading) {
+            return <LoadingCircular Text="Cargando Calificaciones..." />;
+        } else {
+            if (data.length > 0) {
+                if (isMobile) {
                     return ListadoMateriaVistaMobil(data, data.map((item) => item.periodo));
-                }else{
+                } else {
                     return ListadoMateriasVistaDesktop(data, data.map((item) => item.periodo));
                 }
             }
@@ -150,7 +151,7 @@ const Calificaciones: React.FC = () => {
 
     const ListadoMateriaVistaMobil = (data: any[], periodos: number[]) => (
         <Grid container>
-            <Grid size={{md: 12}} sx={{ width: '100%'}}>
+            <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
                 {
                     TabsSection(periodos)
                 }
@@ -176,37 +177,37 @@ const Calificaciones: React.FC = () => {
 
     const ListadoMateriasVistaDesktop = (data: any[], periodos: number[]) => (
         <Grid container>
-            <Grid size={{md: 12}} sx={{ width: '100%'}}>
-                {                                
+            <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
+                {
                     !betweenDevice ?
-                    <>
-                        {
-                            TabsSection(periodos)
-                        }
-                        {
-                            periodos.map((_, i) => (
-                                <TabPanel value={value} index={i} key={i}>
-                                    <Box sx={{ p:4}}>
-                                        <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
-                                        {
-                                            data && data.filter((item) => item.id === i).map((item, kix) => (
-                                                <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column'}}>
-                                                    {item.cursos.map((curso: CalificacionCurso, idx: number) => (
-                                                        <Box key={idx}>
-                                                            {MateriaCard(curso)}
-                                                        </Box>
-                                                    ))}
-                                                </Box>
-                                            ))
-                                        }
-                                    </Box>
-                                </TabPanel>
-                            ))
-                        }
-                    </>
-                    :
-                    ListadoMateriaVistaMobil(data, periodos)
-                }                            
+                        <>
+                            {
+                                TabsSection(periodos)
+                            }
+                            {
+                                periodos.map((_, i) => (
+                                    <TabPanel value={value} index={i} key={i}>
+                                        <Box sx={{ p: 4 }}>
+                                            <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
+                                            {
+                                                data && data.filter((item) => item.id === i).map((item, kix) => (
+                                                    <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column' }}>
+                                                        {item.cursos.map((curso: CalificacionCurso, idx: number) => (
+                                                            <Box key={idx}>
+                                                                {MateriaCard(curso)}
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                ))
+                                            }
+                                        </Box>
+                                    </TabPanel>
+                                ))
+                            }
+                        </>
+                        :
+                        ListadoMateriaVistaMobil(data, periodos)
+                }
             </Grid>
         </Grid>
     );
@@ -228,10 +229,10 @@ const Calificaciones: React.FC = () => {
                     :
                     <ContainerDesktop
                         title={TitleScreen.CALIFICACIONES}
-                        description={DescripcionesPantallas.CALIFICACIONES}
+                        description={CalificacionesDatos?.data?.descripcion_html ?? ''}
                         actions={
                             promedio()
-                        } 
+                        }
                         column1Size={9}
                         column2Size={3}
                         specialButton={
