@@ -50,7 +50,7 @@ export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, g
                 >
                     <Typography component="span" variant="body2" color="primary">Glosario de Términos</Typography>
                 </Divider>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px'}}>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px',height:'60vh',overflow:'scroll'}}>
                     {glosario && glosario.map((item) => (
                         <Typography key={item.id_glosario} component="span" variant="body2" color="primary">
                             {item.termino}: <Typography component="span" variant="body1">{item.descripcion}</Typography>
