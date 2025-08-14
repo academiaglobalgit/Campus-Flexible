@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
-import { AppRoutingPaths } from '@constants';
 import { cleanStorage } from '../../../hooks/useLocalStorage';
 import { useAuth } from '../../../hooks';
 
@@ -10,10 +9,9 @@ const SessionExpired: React.FC = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
     const handleRedirectToLogin = () => {
-        // Puedes limpiar storage aquí si es necesario
         logout();
         cleanStorage();
-        navigate(AppRoutingPaths.LOGIN);
+        navigate("/");
     };
 
     return (

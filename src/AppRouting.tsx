@@ -12,7 +12,7 @@ export const AppRouting = createHashRouter([
     Component: App,
     children: [
       {
-        path: AppRoutingPaths.LOGIN,
+        index: true,
         Component: Component.LoginPage,
       },
       {
@@ -25,10 +25,6 @@ export const AppRouting = createHashRouter([
           {
             Component: Component.MainTemplate, // Layout para las rutas protegidas
             children: [
-              {
-                path: AppRoutingPaths.BLANK,
-                Component: Component.Home
-              },
               {
                 path: AppRoutingPaths.CALIFICACIONES,
                 Component: Component.Calificaciones
