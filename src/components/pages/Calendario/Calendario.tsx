@@ -6,7 +6,7 @@ import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetManuales } from "../../../services/ManualesService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
-import { ModulosCampusIds } from "../../../types/modulosCampus";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
 
 

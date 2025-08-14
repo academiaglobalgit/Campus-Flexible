@@ -10,7 +10,7 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { SalaConversacion as IconSalaConversacion } from "@iconsCustomizeds";
 import { GetIdConversacion } from "../../../services/ForosService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
-import { ModulosCampusIds } from "../../../types/modulosCampus";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import type { RichTextEditorRef } from "mui-tiptap";
 import { innerHTMLStyle } from "@styles";

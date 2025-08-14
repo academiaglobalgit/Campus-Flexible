@@ -15,7 +15,7 @@ import { toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
-import { ModulosCampusIds } from "../../../types/modulosCampus";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import type { CalificacionCurso } from '../../../types/Calificaciones.interface';
 import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
 import { useQueryClient } from '@tanstack/react-query';

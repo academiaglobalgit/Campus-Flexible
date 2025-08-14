@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetCursos } from "../../../services/CursosActivosService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
-import { ModulosCampusIds } from "../../../types/modulosCampus";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";

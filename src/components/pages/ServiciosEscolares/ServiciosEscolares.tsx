@@ -13,7 +13,7 @@ import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { useGetServiciosEscolares } from "../../../services/ServiciosEscolaresService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
-import { ModulosCampusIds } from "../../../types/modulosCampus";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 import type { Servicios, ServicioSeccion } from "../../../types/ServiciosEscolares.interface";
