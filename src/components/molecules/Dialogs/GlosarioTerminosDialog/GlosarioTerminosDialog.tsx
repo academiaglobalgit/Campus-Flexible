@@ -11,14 +11,14 @@ type GlosarioDialogProps = {
     close: () => void;
 }
 
-export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, glosario, close}) => {
+export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({ isOpen, glosario, close }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         setOpen(isOpen ?? false);
-    },[isOpen]);
+    }, [isOpen]);
 
     const handleClose = () => {
         setOpen(false);
@@ -26,31 +26,31 @@ export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, g
     };
 
     const closeButton = (
-        <Button 
+        <Button
             fullWidth
             onClick={handleClose}
         >
             CERRAR
         </Button>
     );
-    
-    return(
+
+    return (
         <Dialog isOpen={open} sxProps={{ margin: '5px', ...(isMobile ? { width: '100%' } : {}) }} >
             <Box sx={[
-                {display: 'flex', flexDirection: 'column'},
-                isMobile ? {padding: '15px'} : {padding: '30px'},
-                !isMobile && { width: '700px'}
+                { display: 'flex', flexDirection: 'column' },
+                isMobile ? { padding: '15px' } : { padding: '30px' },
+                !isMobile && { width: '700px' }
             ]}>
                 <Divider sx={{
-                        '& .MuiDivider-wrapper': {
+                    '& .MuiDivider-wrapper': {
                         borderRadius: '50px',
                         padding: '5px 10px 5px 10px',
-                        },
-                    }}
+                    },
+                }}
                 >
                     <Typography component="span" variant="body2" color="primary">Glosario de Términos</Typography>
                 </Divider>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px',height:'60vh',overflow:'scroll'}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px', height: '60vh', overflowY: 'scroll', pr: 2, mb: 2 }}>
                     {glosario && glosario.map((item) => (
                         <Typography key={item.id_glosario} component="span" variant="body2" color="primary">
                             {item.termino}: <Typography component="span" variant="body1">{item.descripcion}</Typography>
@@ -58,7 +58,7 @@ export const GlosarioTerminosDialog: React.FC<GlosarioDialogProps> = ({isOpen, g
                     ))}
                 </Box>
                 {closeButton}
-                <Box sx={{paddingTop:'10px'}}></Box>
+                <Box sx={{ paddingTop: '10px' }}></Box>
             </Box>
         </Dialog>
     );
