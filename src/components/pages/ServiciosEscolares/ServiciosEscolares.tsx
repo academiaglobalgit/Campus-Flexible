@@ -1,17 +1,19 @@
 import React from "react";
-import { AppRoutingPaths, DescripcionesPantallas, TitleScreen } from "@constants";
+import { AppRoutingPaths, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { ServiciosEscolares as IconServiciosEscolares } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
 import { Box, Card, CardMedia, Grid, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import Button from "../../atoms/Button/Button";
-import { accordionStyle, flexColumn } from "@styles";
+import { accordionStyle, flexColumn, innerHTMLStyle } from "@styles";
 import { InformacionServiciosEscolaresDialog } from "../../molecules/Dialogs/InformacionServiciosEscolaresDialog/InformacionServiciosEscolaresDialog";
 
 import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { useGetServiciosEscolares } from "../../../services/ServiciosEscolaresService";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampus";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 import type { Servicios, ServicioSeccion } from "../../../types/ServiciosEscolares.interface";
@@ -24,6 +26,9 @@ const ServiciosEscolares: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isOpenInformacionDialog, setIsOpenInformacionDialog] = React.useState(false);
     const { data: cardData, isLoading } = useGetServiciosEscolares();
+    const { data: servicioDatos } = useGetDatosModulos(ModulosCampusIds.SERVICIOS_ESCOLARES);
+
+
     const [value, setValue] = React.useState(0);
 
     const handleInformacion = () => {
@@ -171,15 +176,13 @@ const ServiciosEscolares: React.FC = () => {
                     ?
                     <>
                         <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={IconServiciosEscolares} />
-                        <Typography component="span" variant="body1">
-                            {DescripcionesPantallas.SERVICIOS_ESCOLARES}
-                        </Typography>
+                        <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: servicioDatos?.data?.descripcion_html ?? '' }} />
                         {
                             isLoading ? <LoadingCircular Text="Cargando Servicios Escolares" /> : <TabsServicios />
                         }
                     </>
                     :
-                    <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={DescripcionesPantallas.SERVICIOS_ESCOLARES}>
+                    <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={servicioDatos?.data?.descripcion_html ?? ''}>
                         {
                             isLoading ? <LoadingCircular Text="Cargando Servicios Escolares" /> : <TabsServicios />
                         }

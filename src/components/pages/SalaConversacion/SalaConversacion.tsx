@@ -9,7 +9,8 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { SalaConversacion as IconSalaConversacion } from "@iconsCustomizeds";
 import { GetIdConversacion } from "../../../services/ForosService";
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampus";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import type { RichTextEditorRef } from "mui-tiptap";
 import { innerHTMLStyle } from "@styles";
@@ -26,8 +27,7 @@ const SalaConversacion: React.FC = () => {
     const idTipoSala = 4;
 
     const { data: DatosSalaConversacion, isLoading } = GetIdConversacion(idTipoSala);
-    const { data: salaDatos } = useGetDatosModulos(4);
-
+    const { data: salaDatos } = useGetDatosModulos(ModulosCampusIds.SALA_CONVERSACION);
 
     const [idConversacion, setIdConversacion] = React.useState(0);
     const [isDisabled, setIsDisabled] = React.useState(true);

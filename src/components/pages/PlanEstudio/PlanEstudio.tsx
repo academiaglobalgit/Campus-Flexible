@@ -11,7 +11,8 @@ import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDi
 import { InscribirmeDialog } from "../../molecules/Dialogs/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampus";
 import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
@@ -24,7 +25,7 @@ const PlanEstudio: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const { data: materiaData, isLoading } = useGetPlanEstudio();
-    const { data: planEstudioData } = useGetDatosModulos(1);
+    const { data: planEstudioData } = useGetDatosModulos(ModulosCampusIds.PLAN_ESTUDIO);
     const { mapaCurricular, video } = useGetVideoMapa();
 
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
