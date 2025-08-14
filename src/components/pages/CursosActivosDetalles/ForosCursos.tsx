@@ -45,7 +45,7 @@ export const ForosCursos: React.FC = () => {
 
             <Accordion key={index}
                 title={`Unidad ${toRoman(Number(unidad))}`}
-                customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus_respuesta} /> : undefined}
+                customHeader={!isMobile ? <AccordionStatus tittle={contenidos?.[0]?.modulo} status={contenidos?.[0]?.estatus_respuesta} /> : undefined}
                 sxProps={accordionStyle}>
                 {
                     isMobile && <TituloIcon key={1} Titulo={'Foros'} Icon={Foros} />

@@ -235,7 +235,7 @@ export const Actividades: React.FC = () => {
                             key={index}
                             title={`Unidad ${toRoman(Number(unidad))}`}
                             sxProps={accordionStyle}
-                            customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
+                            customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))} - ${contenidos?.[0]?.titulo_elemento}`} status={contenidos?.[0]?.estatus} /> : undefined}
                         >
                             {
                                 isMobile && <Box sx={{ padding: '10px' }}>
