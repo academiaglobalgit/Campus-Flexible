@@ -5,7 +5,7 @@ import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
 import { useQuery } from "@tanstack/react-query";
 
 import { useGetManuales } from "./ManualesService";
-import { useGetDatosModulos } from "./ModulosCampus";
+import { useGetDatosModulos } from "./ModulosCampusService";
 
 export const useGetPlanEstudio = (options?: { enabled?: boolean }) => {
     const query =  useQuery<PlanEstudioResponse, Error>({
