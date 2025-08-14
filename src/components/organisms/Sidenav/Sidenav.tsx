@@ -261,7 +261,7 @@ const Sidenav: React.FC = () => {
             />
             {Listado("Menú", open, "main")}
             <Divider sx={{ width: open ? '90%' : '50%'}} />
-            {Listado("Más", open, "more")}
+            {/* {Listado("Más", open, "more")} */}
         </Box>
                
         <Box sx={[{height: '70px', display: 'flex', alignItems:'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start'}, open && {paddingLeft: '20px'}]}>
