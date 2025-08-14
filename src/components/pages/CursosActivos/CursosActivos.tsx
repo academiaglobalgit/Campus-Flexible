@@ -8,7 +8,8 @@ import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetCursos } from "../../../services/CursosActivosService";
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";
@@ -17,7 +18,7 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { data: cursosData, isLoading } = useGetCursos();
-    const { data: cursosDatos } = useGetDatosModulos(2);
+    const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
