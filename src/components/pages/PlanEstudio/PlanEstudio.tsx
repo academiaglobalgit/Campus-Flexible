@@ -22,6 +22,7 @@ const PlanEstudio: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
     const { refetchMapeado } = useGetPlanEstudio({ enabled: false });
     const [isLoading, setIsLoading] = React.useState(false);
 

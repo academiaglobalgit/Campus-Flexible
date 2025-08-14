@@ -14,7 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import type { CalificacionCurso } from '../../../types/Calificaciones.interface';
 import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular';
 import { useQueryClient } from '@tanstack/react-query';
@@ -31,8 +32,7 @@ const Calificaciones: React.FC = () => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     const { data: calificacionData, isLoading } = useGetCalificaciones();
-    const { data: CalificacionesDatos } = useGetDatosModulos(11);
-
+    const { data: CalificacionesDatos } = useGetDatosModulos(ModulosCampusIds.CALIFICACIONES);
 
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);

@@ -1,5 +1,5 @@
 import { apiClient } from "./ApiConfiguration/httpClient";
-import type { ModulosDatosResponse } from "../types/modulosCampus";
+import type { ModulosDatosResponse } from "../types/modulosCampus.interface";
 import { MODULOS_CAMPUS } from "../types/endpoints";
 import { useQuery } from "@tanstack/react-query";
 

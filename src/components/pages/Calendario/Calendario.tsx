@@ -5,7 +5,8 @@ import { Typography } from "../../atoms/Typography/Typography";
 import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetManuales } from "../../../services/ManualesService";
-import { useGetDatosModulos } from "../../../services/ModulosCampus";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
 
 
@@ -13,7 +14,7 @@ const Calendario: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { data: calendario, isLoading } = useGetManuales('Calendario', 'alumnos');
-  const { data: CalendarioDatos } = useGetDatosModulos(3);
+  const { data: CalendarioDatos } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
 
 
   const PDFSection = (
