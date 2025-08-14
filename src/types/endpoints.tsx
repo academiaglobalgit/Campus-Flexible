@@ -19,14 +19,14 @@ export const PERFIL_ENDPOINTS = {
 export const PLAN_ESTUDIO_ENDPOINTS = {
     GET_MATERIAS: { path: '/plan-estudios', key: 'materias' },
     GET_INFORMACION_MATERIAS: { path: '/plan-estudios/cursos/informacion', key: 'informacion' },
-    POST_CARGAR_CURSO: { path: '/plan-estudios/cargar-curso' }
+    POST_CARGAR_CURSO: { path: '/plan-estudios/cargar-curso' },
 }
 
 export const CURSOS_ACTIVOS_ENDPOINTS = {
-    GET_MATERIAS: { path:'/cursos-activos', key: 'cursos-act-materias' },
-    GET_CURSOS_CONTENIDO_BY_ID: { path:'/cursos-activos/contenido', key: 'cursos-contenido-id' },
-    GET_MAPA_CURRICULAR: { path:'/cursos-activos/mapa-curricular', key: 'cursos-act-mapa-curricular' },
-    GET_LISTA_PROGRESO: { path:'/cursos-activos/lista-progreso', key: 'lista-progreso' },
+    GET_MATERIAS: { path: '/cursos-activos', key: 'cursos-act-materias' },
+    GET_CURSOS_CONTENIDO_BY_ID: { path: '/cursos-activos/contenido', key: 'cursos-contenido-id' },
+    GET_MAPA_CURRICULAR: { path: '/cursos-activos/mapa-curricular', key: 'cursos-act-mapa-curricular' },
+    GET_LISTA_PROGRESO: { path: '/cursos-activos/lista-progreso', key: 'lista-progreso' },
     POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' }
 }
 
@@ -86,10 +86,15 @@ export const SALA_CONVERSACION = {
 }
 
 export const CONSEJERIA_ESTUDIANTIL = {
-    GET_MOTIVOS: {path: '/consejeria-estudiantil/citas/motivos', key: 'consejeria-motivos'},
-    POST_AGENDR_CITA: {path: '/consejeria-estudiantil/citas/guardar'}
+    GET_MOTIVOS: { path: '/consejeria-estudiantil/citas/motivos', key: 'consejeria-motivos' },
+    POST_AGENDR_CITA: { path: '/consejeria-estudiantil/citas/guardar' }
 }
 
 export const TERMINOS_CONDICIONES = {
-    POST_TERMINOS: {path: '/documentos/tyc/aceptar'}
+    POST_TERMINOS: { path: '/documentos/tyc/aceptar' }
 }
+
+export const MODULOS_CAMPUS = {
+    GET_DATOS_MODULOS: { path: '/modulos-campus/detalle', key: 'datos-modulos' },
+}
+
