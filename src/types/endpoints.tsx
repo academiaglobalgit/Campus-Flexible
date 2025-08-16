@@ -92,7 +92,8 @@ export const CONSEJERIA_ESTUDIANTIL = {
 }
 
 export const TERMINOS_CONDICIONES = {
-    POST_TERMINOS: { path: '/documentos/tyc/aceptar' }
+    POST_TERMINOS: { path: '/documentos/tyc/aceptar' },
+    GET_TERMINOS: { path: '/documentos/tyc', key: 'terminos-condiciones' },
 }
 
 export const MODULOS_CAMPUS = {
