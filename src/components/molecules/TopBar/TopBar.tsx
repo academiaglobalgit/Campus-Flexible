@@ -25,6 +25,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
   const avatar = user?.photo;
 
   const showBackMenuRoutes = ShowBackMenuRoutes;
+  titleScreen = "Regresar"
     
   const showBackMenu = showBackMenuRoutes.some(route =>
     location.pathname.startsWith(route)
@@ -52,7 +53,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
         <DsSvgIcon component={LeftCircle} color='primary' />
       </IconButton>
       <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
-        Regresar
+        {titleScreen}
       </Typography>
     </Toolbar>
   );

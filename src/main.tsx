@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import { AppRouting as router } from './AppRouting';
 import { QueryProvider } from './providers/QueryProvider';
 import './index.scss';
-import { Box, CssBaseline, Fade, LinearProgress, ThemeProvider, useMediaQuery, useTheme, Zoom } from '@mui/material';
+import { Box, CssBaseline, Fade, LinearProgress, ThemeProvider, useMediaQuery, useTheme } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './providers/NotificationProvider';
 import { getPlataformaFromSubdomain } from './config/plataformaConfig';
@@ -25,7 +25,7 @@ function AppLoader() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadAppConfig().then(cfg => {
+    loadAppConfig().then(() => {
       // setConfig(cfg);
       setLoading(false);
       // setTimeout(() => setLoading(false), 300);
