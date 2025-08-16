@@ -16,6 +16,7 @@ import { Footer } from "../../atoms/Footer/Footer";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AppRoutingPaths } from "@constants";
 import { ChangePasswordDialog } from "../../molecules/Dialogs/ChangePasswordDialog/ChangePasswordDialog";
+import { loadConfig } from "../../../config/configStorage";
 
 interface AccessLoginItem {
     id: string;
@@ -36,7 +37,8 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const [captchaValido, setCaptchaValido] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userName, setUserName] = useState("");
-    const nombrePlataforma = localStorage.getItem("programa") || "";
+    // const nombrePlataforma = localStorage.getItem("programa") || "";
+    const [config, setConfig] = React.useState<any>(null);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,6 +48,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
+
+    React.useEffect(() => {
+        loadConfig().then(cfg => {
+            setConfig(cfg);
+        });
+    },[]);
 
     const onSubmit = async (data: LoginFormData) => {
 
@@ -87,7 +95,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             >
                 <Box
                     component="img"
-                    src={Logo}
+                    src={config?.data.logo_url || Logo}
                     alt="AG College Logo"
                     sx={{
                         mt: 4,
@@ -113,7 +121,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         fontSize: '20px'
                     }}
                 >
-                    { nombrePlataforma }
+                    { config?.data.nombre_plan || '' }
                 </Typography>
                 <Typography
                     

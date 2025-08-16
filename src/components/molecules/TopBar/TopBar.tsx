@@ -52,7 +52,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
         <DsSvgIcon component={LeftCircle} color='primary' />
       </IconButton>
       <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
-        { titleScreen }
+        Regresar
       </Typography>
     </Toolbar>
   );

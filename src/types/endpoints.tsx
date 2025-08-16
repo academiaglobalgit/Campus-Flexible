@@ -3,6 +3,7 @@ export const LOGIN_ENDPOINTS = {
     POST_LOGIN: { path: '/auth/login' },
     POST_LOGOUT: { path: '/auth/logout' },
     POST_NEW_PASSWORD: { path: '/auth/complete-new-password' },
+    GET_PLAN_ESTUDIO: { path: '/plan-estudios/perfil-programa', key: 'plan-estudio-url' },
 }
 
 export const NOTIFICATIONS_ENDPOINTS = {

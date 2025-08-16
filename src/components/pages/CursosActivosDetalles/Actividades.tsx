@@ -15,6 +15,7 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { RetroalimentacionDialog } from "../../molecules/Dialogs/RetroalimentacionDialog/RetroalimentacionDialog";
+import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 
 type PreviewFile = {
     file: File;
@@ -107,8 +108,10 @@ export const Actividades: React.FC = () => {
         onSuccess: async () => {
             showNotification(`La actividades se guardo satisfactoriamente`, "success");
 
-            await queryClient.invalidateQueries({ queryKey: ["Actividades"] });
+            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)] });            
             setIsSaving(false);
+            
+            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key] });
         },
         onError: (error) => {
             console.error(error);
