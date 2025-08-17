@@ -36,6 +36,14 @@ export interface ListadoVideotecaResponse {
 }
 
 export interface ListadoVideoteca {
+    id_grupo: number;
+    seccion: string;
+    parent_id: number;
+    orden_seccion: number;
+    tipo_seccion: string;
+    recurso: ListadoVideotecaRecursos[] | any[];
+}
+export interface ListadoVideotecaRecursos {
     id_recurso:      number;
     titulo:          string;
     descripcion:     string;
