@@ -46,7 +46,7 @@ export interface CursosActividadesResponse {
 
 export interface CursosActividades {
     actividades:          Actividad[];
-    manuales_actividades: ManualesActividad[];
+    manual: ManualesActividad[];
 }
 
 export interface Actividad {

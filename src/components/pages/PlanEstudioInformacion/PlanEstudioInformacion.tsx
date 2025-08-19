@@ -1,52 +1,58 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
-import { Informacion } from "./Informacion";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
-import { Cursamiento } from "./Cursamiento";
-import { Tutor } from "./Tutor";
+import { CursamientoAutoridad } from "./CursamientoAutoridad";
 import { useGetInformacion } from "../../../services/PlanEstudioService";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 const PlanEstudioInformacion: React.FC = () => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));    
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const {id} = useParams<{id:string}>();
-    const {data: informacion, isLoading} = useGetInformacion(Number(id!));
+    const { id } = useParams<{ id: string }>();
+    const { data: informacion, isLoading } = useGetInformacion(Number(id!));
 
     const [value, setValue] = React.useState(0);
     const [title, setTitle] = React.useState("");
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
-        if(newValue > 0) {
-           setTitle(InformacionTabs[newValue]?.tab ?? "")
-        }else{
+        if (newValue > 0) {
+            setTitle(InformacionTabs[newValue]?.tab ?? "")
+        } else {
             setTitle(informacion?.data.informacion.nombre_curso ?? "");
         }
     };
 
     const InformacionTabs = [
         {
+            tab: "Cursamiento",
+            content: informacion?.data.cursamiento
+                ? <CursamientoAutoridad data={informacion.data.cursamiento} descripcion={informacion?.data.informacion.descripcion ?? ""} />
+                : null
+        },
+        /*    {
             tab: "Información",
             content: informacion?.data.informacion
                 ? <Informacion data={informacion.data.informacion} />
                 : null
-        }, 
-        {   tab: "Cursamiento", 
+        },
+        {
+            tab: "Cursamiento",
             content: informacion?.data.cursamiento
                 ? <Cursamiento data={informacion.data.cursamiento} />
                 : null
-        }, 
-        {   tab: "Tutor", 
+        },
+        {
+            tab: "Tutor",
             content: informacion?.data.tutor
                 ? <Tutor data={informacion.data.tutor} />
                 : null
-        }
+        }, */
     ];
-    
+
     const Contents = () => (
         <>
             <Box>
@@ -59,7 +65,7 @@ const PlanEstudioInformacion: React.FC = () => {
             {
                 InformacionTabs.map((tab, i) => (
                     <TabPanel value={value} index={i} key={i}>
-                        { tab.content }
+                        {tab.content}
                     </TabPanel>
                 ))
             }
@@ -69,17 +75,17 @@ const PlanEstudioInformacion: React.FC = () => {
     const Loading = () => <LoadingCircular Text="Cargando Informacion..." />
 
     return (
-        isMobile 
-        ?
-            isLoading 
-            ? <Loading />
-            : <Contents />
-        :
-            isLoading 
-            ? <Loading />
-            : <ContainerDesktop title={ title !== "" ? title : informacion?.data.informacion.nombre_curso ?? ""}>
-                <Contents />
-              </ContainerDesktop>
+        isMobile
+            ?
+            isLoading
+                ? <Loading />
+                : <Contents />
+            :
+            isLoading
+                ? <Loading />
+                : <ContainerDesktop title={title !== "" ? title : informacion?.data.informacion.nombre_curso ?? ""}>
+                    <Contents />
+                </ContainerDesktop>
     );
 }
 

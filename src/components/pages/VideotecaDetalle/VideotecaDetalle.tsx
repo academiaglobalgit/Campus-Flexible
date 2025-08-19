@@ -18,6 +18,8 @@ const VideotecaDetalle: React.FC = () => {
     const [value, setValue] = React.useState(0);
 
     const {data: Listado, isLoading} = useGetListadoVideoteca();
+
+    console.log(Listado)
     
     const handleValue = (val: number) => {
         setValue(val);
@@ -43,17 +45,17 @@ const VideotecaDetalle: React.FC = () => {
                     <Box sx={{ marginBottom: '24px', pt: '16px' }}>
                         {
                             Listado.materias
-                                .filter((item) => item.id_periodo === periodo)
+                                .filter((item) => item.orden_seccion === Number(periodo))
                                 .map((item, index) => {
-                                    const showDivider = mat !== item.nombre_curso;
-                                    mat = item.nombre_curso;
+                                    const showDivider = mat !== item.seccion;
+                                    mat = item.seccion;
 
                                     return (
                                         <React.Fragment key={`group-${index}`}>
                                             {showDivider && (
                                                 <Divider textAlign="center" sx={{ my: 2 }}>
                                                     <Typography component="span" variant="subtitle1" color="primary" >
-                                                        {item.nombre_curso.replace("Descripción del curso de ", "")}
+                                                        {item.seccion.replace("Descripción del curso de ", "")}
                                                     </Typography>
                                                 </Divider>
                                             )}
@@ -99,7 +101,7 @@ const VideotecaDetalle: React.FC = () => {
                                                                         controls={true}
                                                                         autoPlay={false}
                                                                         muted={false}
-                                                                        title={materia.titulo}
+                                                                        title={materia.titulo ?? 'Titulo del video'}
                                                                         description={materia.descripcion}
                                                                         fontSizeTitle="h4"
                                                                     />

@@ -12,7 +12,7 @@ import { ComentariosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDial
 import { EliminarComentarioDialog } from "../../molecules/Dialogs/EliminarComentarioDialog/EliminarComentarioForosDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ForosSaveResponse } from "@constants";
-import { SALA_CONVERSACION } from "../../../types/endpoints";
+import { CURSOS_ACTIVOS_ENDPOINTS, SALA_CONVERSACION } from "../../../types/endpoints";
 import { useNotification } from "../../../providers/NotificationProvider";
 import LoadingDialog from "../../molecules/Dialogs/LoadingDialog/LoadingDialog";
 
@@ -131,10 +131,18 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                 keys.pop(); //quitamos paginasize para SalaConversacion
             }
 
+            if (idTipoSala !== 4) {
+                //pedir estados despues de comentar un foro
+                await queryClient.invalidateQueries({
+                    queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key], 
+                });
+            }
+
             await queryClient.invalidateQueries({
                 queryKey: keys,
                 exact: true
             });
+
 
             showNotification(`Comentario guardado satisfactorimente`, "success");
             setIsOpenLoading(false);

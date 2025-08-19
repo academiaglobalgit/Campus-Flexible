@@ -81,12 +81,7 @@ const ServiciosEscolares: React.FC = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Grid container sx={{ justifyContent: 'space-between', paddingInline: isMobile ? '0px' : '75px' }}>
                 <Grid size={isMobile ? 12 : 5}>
-                    <Typography
-                        component="span"
-                        variant="body3"
-                    >
-                        {item.descripcion}
-                    </Typography>
+                    <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: item.descripcion ?? '' }} />
                 </Grid>
                 <Grid size={isMobile ? 12 : 5} sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {!isMobile && ImageSection(item.imagen)}
@@ -104,7 +99,7 @@ const ServiciosEscolares: React.FC = () => {
                 key={index}
                 title={item.nombre}
                 sxProps={{
-                    ...accordionStyle
+                    ...accordionStyle,
                 }}
                 isExpanded={index === 0}
             >
@@ -118,7 +113,7 @@ const ServiciosEscolares: React.FC = () => {
         <Box sx={{ mb: 4, mt: isMobile ? 2 : 5 }}>
             <>
                 {isMobile && ImageSection(servicios.imagen)}
-                <Box sx={{ ...flexColumn, pt: 2, width: '100%', alignItems: isMobile ? 'center' : 'flex-start' }}>
+                <Box sx={{ ...flexColumn, pt: 2, mb: 2, width: '100%', alignItems: isMobile ? 'center' : 'flex-start' }}>
                     <Typography component="h3" variant="h3" color="primary">
                         {servicios.nombre_seccion}
                     </Typography>

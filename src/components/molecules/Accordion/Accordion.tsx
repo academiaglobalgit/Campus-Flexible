@@ -43,7 +43,8 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
                 component="span"
                 variant="body3"
                 sxProps={{
-                  color: (theme) => `${sxProps === undefined ? theme.palette.grey[200] : theme.palette.grey[500]}`
+                  color: (theme) => `${sxProps === undefined ? theme.palette.grey[200] : theme.palette.grey[500]}`,
+                  fontWeight:'bold'
                 }}
               >
                 {title}

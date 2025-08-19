@@ -70,7 +70,7 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
         if (!query.data) return undefined;
 
         const actividades = query.data.data.actividades ?? [];
-        const manuales = query.data.data.manuales_actividades ?? [];
+        const manuales = query.data.data.manual ?? [];
 
         const agrupadoPorUnidad = actividades.reduce<Record<string, Actividad[]>>((acc, contenido) => {
             if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
