@@ -114,22 +114,22 @@ export const useGetListadoVideoteca = () => {
     // ];
 
     const periodos = Array.from(new Set(data.map(item => item.orden_seccion))).sort((a, b) => a - b);
+    const groupedByCurso = data.reduce<{ periodo: number; grupos: ListadoVideotecaRecursos[][] }[]>((acc, item) => {
+      const periodo = item.recursos[0]?.periodo;
+      let existente = acc.find(p => p.periodo === periodo);
 
-    const groupedByCurso = data.reduce<{ orden_seccion: number, id_grupo: number, seccion: string, recursos: ListadoVideotecaRecursos[] }[]>((acc, item) => {
-      console.log(acc, item);
-      const existingCurso = acc.find(c => c.id_grupo === item.id_grupo);
-      if (existingCurso) {
-        existingCurso.recursos.push(item);
-      } else {
-        acc.push({
-          id_periodo: item.periodo,
-          id_curso: item.id_curso,
-          nombre_curso: item.nombre_curso,
-          recursos: [item]
-        });
+      if (!existente) {
+        existente = { periodo, grupos: [] };
+        acc.push(existente);
       }
+      
+      existente.grupos.push(item.recursos);
+
       return acc;
     }, []);
+
+    // ordenar periodos por número
+    groupedByCurso.sort((a, b) => a.periodo - b.periodo);
 
     return {
       periodos,

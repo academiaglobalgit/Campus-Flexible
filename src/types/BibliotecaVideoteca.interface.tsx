@@ -41,9 +41,10 @@ export interface ListadoVideoteca {
     parent_id: number;
     orden_seccion: number;
     tipo_seccion: string;
-    recurso: ListadoVideotecaRecursos[] | any[];
+    recursos: ListadoVideotecaRecursos[];
 }
 export interface ListadoVideotecaRecursos {
+    curso?: string;
     id_recurso:      number;
     titulo:          string;
     descripcion:     string;
@@ -53,4 +54,5 @@ export interface ListadoVideotecaRecursos {
     id_tipo_recurso: number;
     id_curso:        number;
     nombre_curso:    string;
+
 }

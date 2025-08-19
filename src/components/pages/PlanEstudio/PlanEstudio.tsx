@@ -50,9 +50,9 @@ const PlanEstudio: React.FC = () => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                
+
                 const response = await refetchMapeado();
-                
+
                 setMateriaData(response ?? []);
                 setIsLoading(false);
             } catch (error) {
@@ -143,14 +143,15 @@ const PlanEstudio: React.FC = () => {
                     fullWidth
                     icon={!isMobile ? <OndemandVideoIcon /> : undefined}
                     iconPosition={!isMobile ? "start" : undefined}
+                    disabled={video.data?.url?.length === 0}
                 >
                     Video de Bienvenida
                 </Button>
             </>
             <>
-                <Button onClick={handleMapaCurricular} fullWidth variant="outlined" >Mapa Curricular</Button>
+                <Button onClick={handleMapaCurricular} disabled={mapaCurricular.data?.url?.length === 0} fullWidth variant="outlined" >Mapa Curricular</Button>
             </>
-        </Box>
+        </Box >
     );
 
     const handleTabChange = (val: number) => {
@@ -240,12 +241,12 @@ const PlanEstudio: React.FC = () => {
     return (
         <>
             {
-                isLoading 
-                ?
-                <LoadingCircular Text="Cargando Plan de Estudio..." />
-                :
-                isMobile
+                isLoading
                     ?
+                    <LoadingCircular Text="Cargando Plan de Estudio..." />
+                    :
+                    isMobile
+                        ?
                         <>
                             <TituloIcon Titulo={TitleScreen.PLAN_ESTUDIOS} Icon={Home} />
                             <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: planEstudioData?.data?.data.descripcion_html ?? '' }}>
@@ -253,7 +254,7 @@ const PlanEstudio: React.FC = () => {
                             {BotonesVideoMapa()}
                             {Listado()}
                         </>
-                    :
+                        :
                         <ContainerDesktop
                             title={TitleScreen.PLAN_ESTUDIOS}
                             description={planEstudioData?.data?.data.descripcion_html ?? ''}

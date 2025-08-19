@@ -32,7 +32,7 @@ export const ForosCursos: React.FC = () => {
             !isMobile && { width: '300px' },
             isMobile && { pb: 2 }
         ]}>
-            <Button onClick={() => window.open(manuales[0].url_archivo, '_blank')} fullWidth>Instrumento de Evaluación</Button>
+            <Button onClick={() => window.open(manuales[0].url_archivo, '_blank')} disabled={manuales[0].url_archivo?.length === 0} fullWidth>Instrumento de Evaluación</Button>
         </Box>
     )
 
