@@ -205,7 +205,7 @@ export const Actividades: React.FC = () => {
                     {
                         dataMapped?.manuales && Object.entries(dataMapped.manuales).map(([_, item], index) =>
                             <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={index}>
-                                <Button onClick={() => handleLink(item.url_archivo)} fullWidth >{item.titulo}</Button>
+                                <Button onClick={() => handleLink(item.url_archivo)} disabled={item.url_archivo?.length === 0} fullWidth >{item.titulo}</Button>
                             </Box>
                         )
                     }
