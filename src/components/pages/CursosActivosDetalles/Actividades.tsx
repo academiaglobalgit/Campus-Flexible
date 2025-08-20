@@ -96,21 +96,29 @@ export const Actividades: React.FC = () => {
     };
 
     const handleSaveActivity = (id_recurso: number) => {
+
         setIsSaving(true);
         const contenidoText = contenido[id_recurso] || '';
         const archivos = archivosPorId[id_recurso] || [];
         const files = archivos.map((item) => item.file);
+
+        if (files.length === 0 && contenidoText.length === 0) {
+            setIsSaving(false);
+            showNotification(`Debes comentar o subir archivos`, "warning");
+            return;
+        }
+
         createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar: [], id_entrega: null });
     }
 
     const createMutationActivity = useMutation({
         mutationFn: updateActividad,
         onSuccess: async () => {
-            showNotification(`La actividades se guardo satisfactoriamente`, "success");
+            showNotification(`La actividades se guardo satisfactoriamente`, "warning");
 
-            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)] });            
+            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)] });
             setIsSaving(false);
-            
+
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key] });
         },
         onError: (error) => {
@@ -252,16 +260,16 @@ export const Actividades: React.FC = () => {
                                         key={i}
                                     >
                                         {
-                                            item.calificacion && 
+                                            item.calificacion &&
                                             <Box sx={[
-                                                    {...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1},
-                                                    isMobile && { flexDirection: 'column', gap: '10px' }
-                                                ]}>
+                                                { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
+                                                isMobile && { flexDirection: 'column', gap: '10px' }
+                                            ]}>
                                                 <Box sx={{ display: 'flex', gap: '10px' }}>
                                                     <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
-                                                    <Typography component="h3" variant="h3" >{ item.calificacion }</Typography>
+                                                    <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
                                                 </Box>
-                                                <Box sx={{ width: '250px'}}>
+                                                <Box sx={{ width: '250px' }}>
                                                     {
                                                         item.retroalimentacion && <Button
                                                             fullWidth
@@ -274,10 +282,10 @@ export const Actividades: React.FC = () => {
                                                 </Box>
                                             </Box>
                                         }
-                                            
+
                                         <Box
                                             dangerouslySetInnerHTML={{ __html: item.contenido_elemento }}
-                                            sx={{...innerHTMLStyle}}
+                                            sx={{ ...innerHTMLStyle }}
                                         />
                                         <Box sx={{ pl: 3, pr: 3, pb: 3 }}>
                                             <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
@@ -331,35 +339,35 @@ export const Actividades: React.FC = () => {
                                             {
                                                 item.hasEntrega === 1
                                                     ?
-                                                        item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
-                                                            <>
-                                                                <Button
-                                                                    fullWidth
-                                                                    onClick={() => handleEditActivity(item.id_recurso)}
-                                                                    isLoading={isSaving}
-                                                                >
-                                                                    Modificar
-                                                                </Button>
-                                                            </>
-                                                            <>
-                                                                <Button
-                                                                    fullWidth
-                                                                    onClick={() => handleCancel(item.id_recurso)}
-                                                                    variant="outlined"
-                                                                >
-                                                                    Cancelar
-                                                                </Button>
-                                                            </>
-                                                        </Box>
+                                                    item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
+                                                        <>
+                                                            <Button
+                                                                fullWidth
+                                                                onClick={() => handleEditActivity(item.id_recurso)}
+                                                                isLoading={isSaving}
+                                                            >
+                                                                Modificar
+                                                            </Button>
+                                                        </>
+                                                        <>
+                                                            <Button
+                                                                fullWidth
+                                                                onClick={() => handleCancel(item.id_recurso)}
+                                                                variant="outlined"
+                                                            >
+                                                                Cancelar
+                                                            </Button>
+                                                        </>
+                                                    </Box>
                                                     :
-                                                        item.calificacion === null && <Button
-                                                            fullWidth
-                                                            onClick={() => handleSaveActivity(item.id_recurso)}
-                                                            sxProps={{ mt: 2 }}
-                                                            isLoading={isSaving}
-                                                        >
-                                                            Finalizar Actividad
-                                                        </Button>
+                                                    item.calificacion === null && <Button
+                                                        fullWidth
+                                                        onClick={() => handleSaveActivity(item.id_recurso)}
+                                                        sxProps={{ mt: 2 }}
+                                                        isLoading={isSaving}
+                                                    >
+                                                        Finalizar Actividad
+                                                    </Button>
                                             }
 
                                         </Box>
