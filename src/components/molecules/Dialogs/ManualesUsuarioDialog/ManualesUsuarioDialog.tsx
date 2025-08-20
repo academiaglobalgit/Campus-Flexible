@@ -42,19 +42,19 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
         if (url) {
             window.open(url, '_blank');
         } else {
-            console.warn(`No se encontró un manual con ID ${id}`);
+            return false
         }
     };
 
     const manuales = [
-        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => abrirManualPorId(15), type: 'manuales' },
-        { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => abrirManualPorId(16), type: 'manuales' },
-        { id: 'formato', icon: Document2, label: 'Manual Formato APA', action: () => abrirManualPorId(17), type: 'manuales' },
-        { id: 'manual-actividades', icon: Paperclip, label: 'Manual de Actividades', action: () => abrirManualPorId(18), type: 'manuales' },
-        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar', action: () => abrirManualPorId(11), type: 'lineamientos' },
-        { id: 'aviso-privacidad', icon: ManualInduccion, label: 'Aviso de Privacidad', action: () => abrirManualPorId(12), type: 'lineamientos' },
-        { id: 'terminos', icon: ManualInduccion, label: 'Terminos y Condiciones', action: () => abrirManualPorId(13), type: 'lineamientos' },
-        { id: 'lineamiento-responsable', icon: ManualInduccion, label: 'Lineamientos Para el uso Responsable de la IA', action: () => abrirManualPorId(14), type: 'lineamientos' },
+        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => abrirManualPorId(15), type: 'manuales', url: obtenerUrlPorIdManual(15) },
+        { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => abrirManualPorId(16), type: 'manuales', url: obtenerUrlPorIdManual(16) },
+        { id: 'formato', icon: Document2, label: 'Manual Formato APA', action: () => abrirManualPorId(17), type: 'manuales', url: obtenerUrlPorIdManual(17) },
+        { id: 'manual-actividades', icon: Paperclip, label: 'Manual de Actividades', action: () => abrirManualPorId(18), type: 'manuales', url: obtenerUrlPorIdManual(18) },
+        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar', action: () => abrirManualPorId(11), type: 'lineamientos', url: obtenerUrlPorIdManual(11) },
+        { id: 'aviso-privacidad', icon: ManualInduccion, label: 'Aviso de Privacidad', action: () => abrirManualPorId(12), type: 'lineamientos', url: obtenerUrlPorIdManual(12) },
+        { id: 'terminos', icon: ManualInduccion, label: 'Terminos y Condiciones', action: () => abrirManualPorId(13), type: 'lineamientos', url: obtenerUrlPorIdManual(13) },
+        { id: 'lineamiento-responsable', icon: ManualInduccion, label: 'Lineamientos Para el uso Responsable de la IA', action: () => abrirManualPorId(14), type: 'lineamientos', url: obtenerUrlPorIdManual(14) },
     ];
 
     useEffect(() => {
@@ -84,16 +84,21 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
                 height: '139px',
                 border: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '3px',
-                cursor: 'pointer',
-                backgroundColor: 'white !important',
-                boxShadow: '0px 4px 4px 0px #00000040'
+                boxShadow: '0px 4px 4px 0px #00000040',
+                ...(item.url === null ? {
+                    cursor: 'not-allowed',
+                    backgroundColor: '#cccccc',
+                } : {
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                })
             }} onClick={item.action}>
 
                 {/* <IconLabel icon={item.icon} label={item.label} action={item.action} /> */}
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px 10px' }}>
-                    <DsSvgIcon component={item.icon} />
-                    <Typography component="h4" variant="h4" color={"primary"} >
+                    <DsSvgIcon component={item.icon} sxProps={{ color: item.url === null ? "gray" : "primary" }} />
+                    <Typography component="h4" variant="h4" color={item.url === null ? "disabled" : "primary"} >
                         {item.label}
                     </Typography>
                 </Box>
