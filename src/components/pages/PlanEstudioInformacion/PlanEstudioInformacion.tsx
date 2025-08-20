@@ -28,7 +28,7 @@ const PlanEstudioInformacion: React.FC = () => {
 
     const InformacionTabs = [
         {
-            tab: "Cursamiento",
+            tab: "Evaluación",
             content: informacion?.data.cursamiento
                 ? <CursamientoAutoridad data={informacion.data.cursamiento} descripcion={informacion?.data.informacion.descripcion ?? ""} />
                 : null
