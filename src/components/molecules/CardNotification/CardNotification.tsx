@@ -1,6 +1,6 @@
 import React from "react";
 import type { Notificaciones } from "@constants";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
 import { Box, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
 
@@ -9,6 +9,7 @@ import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import { Typography } from "../../atoms/Typography/Typography";
 import { tiempoTranscurrido } from "../../../utils/Helpers";
+import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
 
 type NotificacionProps = {
     item: Notificaciones;
@@ -21,6 +22,7 @@ type NotificacionProps = {
 export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, setLoadingItems, setMarkedRead }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const queryClient = useQueryClient();
 
     const startLoading = (id: number) => {
         setLoadingItems(prev => new Set(prev).add(id));
@@ -33,6 +35,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
         startLoading(id);
         try {
             await createMutation.mutateAsync(id);
+            await queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS_TOP_BAR.key] });
             setMarkedRead(id);
             goTo(item);
         } catch (error) {

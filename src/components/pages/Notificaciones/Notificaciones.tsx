@@ -32,7 +32,11 @@ const NotificacionesDesktop: React.FC = () => {
     const [loadingIds, setLoadingIds] = React.useState<Set<number>>(new Set());
     const [isOpenLoading, setIsOpenLoading] = React.useState(false);
     const [textoLoading, setTextoLoading] = React.useState("");
-    const handleRefetch = () => queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] })
+
+    const handleRefetch = () => {
+        queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key] });
+        queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS_TOP_BAR.key] });
+    };
 
     useEffect(() => {
         if (notiData?.data) {

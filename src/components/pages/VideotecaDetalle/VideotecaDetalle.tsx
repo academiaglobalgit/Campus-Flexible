@@ -38,7 +38,7 @@ const VideotecaDetalle: React.FC = () => {
         let mat = '';
 
         return (
-            Listado.periodos.map((periodo, indexPanel) => (
+            Listado.periodos.map((_periodo, indexPanel) => (
                 <TabPanel value={value} index={indexPanel} key={indexPanel}>
                     <Box sx={{ marginBottom: '24px', pt: '16px' }}>
                         {

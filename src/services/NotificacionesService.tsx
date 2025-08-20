@@ -4,6 +4,16 @@ import { apiClient } from "./ApiConfiguration/httpClient";
 import type { NotificacionesResponse } from "@constants";
 import type { NotificacionesReadAllResponse } from "../types/Notificaciones.interface";
 
+export const useGetNotificacionesTopBar = () => {
+    return useQuery<NotificacionesResponse, Error>({
+        queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS_TOP_BAR.key],
+        queryFn: async () => await apiClient.get<NotificacionesResponse>(NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.path),
+        refetchInterval: 1000 * 60 * 3, // 3 minutos
+        refetchIntervalInBackground: true,
+        staleTime: 0,
+    });
+}
+
 export const useGetNotificaciones = () => {
     return useQuery<NotificacionesResponse, Error>({
         queryKey: [NOTIFICATIONS_ENDPOINTS.GET_NOTIFICATIONS.key],

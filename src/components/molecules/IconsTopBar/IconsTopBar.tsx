@@ -4,7 +4,7 @@ import { Badge, Box, IconButton, Menu, useTheme } from "@mui/material";
 import { Ayuda, Notificaciones as NotificacionesIcon, PreguntasFrecuentes } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
 import { AppRoutingPaths, type Notificaciones } from "@constants";
-import { useGetNotificaciones } from "../../../services/NotificacionesService";
+import { useGetNotificacionesTopBar } from "../../../services/NotificacionesService";
 import { LoadingCircular } from "../LoadingCircular/LoadingCircular";
 import { CardNotification } from "../CardNotification/CardNotification";
 
@@ -17,7 +17,7 @@ export const IconsTopBar: React.FC = () => {
         setAnchorEl(event.currentTarget);
     };
 
-    const { data: notifications, isLoading } = useGetNotificaciones();
+    const { data: notifications, isLoading } = useGetNotificacionesTopBar();
     
     const handleClose = () => setAnchorEl(null);
 
