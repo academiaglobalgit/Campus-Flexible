@@ -113,18 +113,111 @@ export const useGetListadoVideoteca = () => {
     //           }
     // ];
 
-    const periodos = Array.from(new Set(data.map(item => item.orden_seccion))).sort((a, b) => a - b);
-    const groupedByCurso = data.reduce<{ periodo: number; grupos: ListadoVideotecaRecursos[][] }[]>((acc, item) => {
-      const periodo = item.recursos[0]?.periodo;
-      let existente = acc.find(p => p.periodo === periodo);
+    //    const periodos = Array.from(new Set(data.map(item => item.parent_id === null))).sort((a, b) => a - b);
 
-      if (!existente) {
-        existente = { periodo, grupos: [] };
-        acc.push(existente);
+    /* const dataprueba = [
+      {
+        "id_grupo": 16,
+        "seccion": "Periodo 1",
+        "parent_id": null,
+        "orden_seccion": 1,
+        "tipo_seccion": "PERIODO",
+        "recursos": []
+      },
+      {
+        "id_grupo": 26,
+        "seccion": "Fundamentos de Contabilidad",
+        "parent_id": 16,
+        "orden_seccion": 2,
+        "tipo_seccion": "SECCION",
+        "recursos": [
+          {
+            "id_recurso": 56,
+            "titulo": "COMPUTACIÓN Unidad 1 Componentes de una Computadora",
+            "url_recurso": "https://vimeo.com/776262386/6a062762cd",
+            "id_grupo": 16,
+            "id_curso": null,
+            "curso": null,
+            "periodo": null,
+            "id_tipo_recurso": 4,
+            "tipo_recurso": "Video Vimeo"
+          },
+          {
+            "id_recurso": 56,
+            "titulo": "COMPUTACIÓN Unidad 1 Componentes de una Computadora",
+            "url_recurso": "https://vimeo.com/776262386/6a062762cd",
+            "id_grupo": 16,
+            "id_curso": null,
+            "curso": null,
+            "periodo": null,
+            "id_tipo_recurso": 4,
+            "tipo_recurso": "Audio"
+          },
+          {
+            "id_recurso": 56,
+            "titulo": "COMPUTACIÓN Unidad 1 Componentes de una Computadora",
+            "url_recurso": "https://vimeo.com/776262386/6a062762cd",
+            "id_grupo": 16,
+            "id_curso": null,
+            "curso": null,
+            "periodo": null,
+            "id_tipo_recurso": 4,
+            "tipo_recurso": "Lectura"
+          },
+
+        ]
+      },
+      {
+        "id_grupo": 27,
+        "seccion": "Fundamentos de Contabilidad 2",
+        "parent_id": 16,
+        "orden_seccion": 2,
+        "tipo_seccion": "SECCION",
+        "recursos": [
+          {
+            "id_recurso": 56,
+            "titulo": "COMPUTACIÓN Unidad 1 Componentes de una Computadora",
+            "url_recurso": "https://vimeo.com/776262386/6a062762cd",
+            "id_grupo": 16,
+            "id_curso": null,
+            "curso": null,
+            "periodo": null,
+            "id_tipo_recurso": 4,
+            "tipo_recurso": "Video Vimeo"
+          },
+
+        ]
+      },
+    ] */
+
+    const periodos = data
+      .filter(item => item.parent_id === null) // solo los root
+      .map(item => {
+        const match = item.seccion.match(/Periodo\s+(\d+)/i);
+        return match ? Number(match[1]) : item.id_grupo;
+      })
+      .sort((a, b) => a - b);
+
+
+    const groupedByCurso = data.reduce<
+      { periodo: number; seccion: string; grupos: ListadoVideotecaRecursos[][] }[]
+    >((acc, item) => {
+      if (item.parent_id === null) {
+        // Detectar "Periodo X"
+        const match = item.seccion.match(/Periodo\s+(\d+)/i);
+        const periodo = match ? Number(match[1]) : item.id_grupo;
+
+        // Buscar los hijos de ese periodo
+        const hijos = data.filter(h => h.parent_id === item.id_grupo);
+
+        hijos.forEach(hijo => {
+          acc.push({
+            periodo,
+            seccion: hijo.seccion,
+            grupos: [hijo.recursos],
+          });
+        });
       }
-      
-      existente.grupos.push(item.recursos);
-
       return acc;
     }, []);
 
