@@ -147,15 +147,18 @@ const MiPerfil: React.FC = () => {
 
         const telefonos = [
           {
-            id_telefono: telefono?.id_telefono, //Actualizar Telefono
+            id_telefono: telefono?.id_telefono,
+            id_tipo_telefono: 1,
             numero: data.telefono.replace(/\D/g, "")
           },
           {
-            id_telefono: whatsApp?.id_telefono, //Actualizar Telefono
+            id_telefono: whatsApp?.id_telefono,
+            id_tipo_telefono: 2,
             numero: data.whatsApp.replace(/\D/g, "")
           },
           {
-            id_telefono: telefonoContacto?.id_telefono, //Actualizar Telefono
+            id_telefono: telefonoContacto?.id_telefono,
+            id_tipo_telefono: 4,
             numero: data.telefonoContacto.replace(/\D/g, "")
           }
         ];
@@ -185,6 +188,9 @@ const MiPerfil: React.FC = () => {
             });
 
             const perfil = await refetch();
+
+            setPerfil(perfil.data);
+
             if(perfil) {
               const auth: User = {
                 ...user,
