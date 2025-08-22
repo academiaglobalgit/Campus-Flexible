@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import { VideoCard } from "../../molecules/VideoCard/VideoCard";
 import TabPanel from "../../molecules/TabPanel/TabPanel";
-import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
+import PeriodosTabsVideos from "../../molecules/PeriodosTabs/PeriodosTabsVideos";
 import { Typography } from "../../atoms/Typography/Typography";
 import { useGetListadoVideoteca } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
@@ -11,6 +11,7 @@ import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import { Lectura } from "@iconsCustomizeds";
 import type { ListadoVideotecaRecursos } from "../../../types/BibliotecaVideoteca.interface";
 import { flexColumn } from "@styles";
+
 
 const VideotecaDetalle: React.FC = () => {
     const theme = useTheme();
@@ -189,7 +190,7 @@ const VideotecaDetalle: React.FC = () => {
             <LoadingCircular Text="Cargando Videoteca..." />
             :
             <>
-                <PeriodosTabs periodos={Listado.periodos} tabChange={(newValue) => handleValue(newValue)} />
+                <PeriodosTabsVideos periodos={Listado.periodos} tabChange={(newValue) => handleValue(newValue)} />
                 {ListadoVideoteca()}
             </>
     )
