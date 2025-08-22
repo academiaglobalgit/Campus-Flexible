@@ -29,31 +29,20 @@ const VideotecaDetalle: React.FC = () => {
         return (
             <Box sx={{ ...flexColumn, alignItems: 'flex-start', height: '120px', borderTop: '1px solid #AAB1B6', borderBottom: '1px solid #AAB1B6', cursor: 'pointer' }}
                 onClick={() => window.open(item.url_recurso, '_blank')}>
-                <TituloIcon Titulo={item.titulo} Icon={Lectura} />
+                <TituloIcon Titulo={item.titulo} Icon={item.id_tipo_recurso === 1 ? Lectura : AudiotrackIcon} />
                 <Typography component="span" variant="body1" >
                     {item.curso}
                 </Typography>
             </Box>
         )
     }
-    const Audio = (item: ListadoVideotecaRecursos) => {
-        return (
-            <Box sx={{ ...flexColumn, alignItems: 'flex-start', height: '120px', borderTop: '1px solid #AAB1B6', borderBottom: '1px solid #AAB1B6', cursor: 'pointer' }}
-                onClick={() => window.open(item.url_recurso, '_blank')}>
-                <TituloIcon Titulo={item.titulo} Icon={AudiotrackIcon} />
-                <Typography component="span" variant="body1" >
-                    {item.curso}
-                </Typography>
-            </Box>
-        )
-    }
+
 
     const Recursos = (materia: any, key: number) => {
-        switch (materia.tipo_recurso) {
-            case "Audio":
-                return <Audio {...materia} key={key} />;
-
-            case "Video Vimeo":
+        switch (materia.id_tipo_recurso) {
+            case 1:
+                return <Documento {...materia} key={key} />;
+            case 2:
                 return (
 
                     isMobile ? <VideoCard
@@ -77,12 +66,13 @@ const VideotecaDetalle: React.FC = () => {
                             fontSizeTitle="h4"
                         />
                 );
-
-            case "Lectura":
+            case 3:
                 return <Documento {...materia} key={key} />;
+            case 4:
+                return <Box dangerouslySetInnerHTML={{ __html: materia.descripcion }}></Box>;
 
             default:
-                return <Box> Por el momento no se cuenta con recurso. </Box>;
+                return <Box > Por el momento no se cuenta con recursos. </Box>;
         }
     }
 
@@ -121,24 +111,67 @@ const VideotecaDetalle: React.FC = () => {
                                                     }}
                                                     gap={2}
                                                 >
-                                                    {materia.grupos.map((grupo, i) =>
-                                                        grupo.map((recurso, j) => (
-                                                            <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
-                                                                {Recursos(recurso, j)}
-                                                            </React.Fragment>
-                                                        ))
+                                                    {materia.grupos.length > 0 ? (
+                                                        materia.grupos.map((grupo, i) =>
+                                                            grupo.length > 0 ? (
+                                                                grupo.map((recurso, j) => (
+                                                                    <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
+                                                                        {Recursos(recurso, j)}
+                                                                    </React.Fragment>
+                                                                ))
+                                                            ) : (
+                                                                <Typography
+                                                                    key={`no-recursos-${materiaIndex}-${i}`}
+                                                                    variant="body2"
+                                                                    color="primary"
+                                                                    component={"span"}                                                                >
+                                                                    No hay recursos por el momento
+                                                                </Typography>
+                                                            )
+                                                        )
+                                                    ) : (
+                                                        <Typography
+                                                            key={`no-recursos-${materiaIndex}`}
+                                                            variant="body2"
+                                                            color="primary"
+                                                            component={"span"}
+                                                        >
+                                                            No hay recursos por el momento
+                                                        </Typography>
                                                     )}
+
 
                                                 </Box>
                                             </Box>
                                         ) : (
                                             <>
-                                                {materia.grupos.map((grupo, i) =>
-                                                    grupo.map((recurso, j) => (
-                                                        <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
-                                                            {Recursos(recurso, j)}
-                                                        </React.Fragment>
-                                                    ))
+                                                {materia.grupos.length > 0 ? (
+                                                    materia.grupos.map((grupo, i) =>
+                                                        grupo.length > 0 ? (
+                                                            grupo.map((recurso, j) => (
+                                                                <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
+                                                                    {Recursos(recurso, j)}
+                                                                </React.Fragment>
+                                                            ))
+                                                        ) : (
+                                                            <Typography
+                                                                key={`no-recursos-${materiaIndex}-${i}`}
+                                                                variant="body2"
+                                                                color="primary"
+                                                                component={"span"}                                                                >
+                                                                No hay recursos por el momento
+                                                            </Typography>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <Typography
+                                                        key={`no-recursos-${materiaIndex}`}
+                                                        variant="body2"
+                                                        color="primary"
+                                                        component={"span"}
+                                                    >
+                                                        No hay recursos por el momento
+                                                    </Typography>
                                                 )}
 
                                             </>
@@ -159,7 +192,7 @@ const VideotecaDetalle: React.FC = () => {
             <LoadingCircular Text="Cargando Videoteca..." />
             :
             <>
-                <PeriodosTabs periodos={Object.keys(Listado.periodos).length} tabChange={(newValue) => handleValue(newValue)} />
+                <PeriodosTabs periodos={Listado.periodos} tabChange={(newValue) => handleValue(newValue)} />
                 {ListadoVideoteca()}
             </>
     )
