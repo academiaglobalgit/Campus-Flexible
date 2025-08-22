@@ -15,8 +15,10 @@ import { Terminos } from "@iconsCustomizeds";
 import Button from "../../atoms/Button/Button";
 import { innerHTMLStyle } from "@styles";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { useAuth } from "../../../context/AuthContext";
 
 const TerminosCondiciones: React.FC = () => {
+    const { setAceptoTerminos } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const { showNotification } = useNotification()
@@ -41,6 +43,7 @@ const TerminosCondiciones: React.FC = () => {
         try {
             setIsLoading(true);
             await createMutation.mutateAsync({ documentos_legales: [1, 2, 3] });
+            if(setAceptoTerminos) setAceptoTerminos(true);
             navigate(AppRoutingPaths.PLAN_ESTUDIOS);
         } catch (error) {
             showNotification("Hubo un error al registrar: " + error, "error");
