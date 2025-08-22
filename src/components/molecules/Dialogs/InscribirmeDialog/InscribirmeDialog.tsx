@@ -5,9 +5,8 @@ import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Avatar } from "../../../atoms/Avatar/Avatar";
 import { Typography } from "../../../atoms/Typography/Typography";
 import check_circle from "../../../../assets/check_circle.png";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useCreateConfirmar } from "../../../../services/PlanEstudioService";
-import { PLAN_ESTUDIO_ENDPOINTS } from "../../../../types/endpoints";
 import { useNotification } from "../../../../providers/NotificationProvider";
 
 type DialogProps = {
@@ -17,7 +16,6 @@ type DialogProps = {
 }
 
 export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close}) => {
-    const queryClient = useQueryClient();
     const { showNotification } = useNotification();
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
