@@ -38,12 +38,7 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
 
     const createMutation = useMutation({
         mutationFn: useCreateConfirmar,
-        onSuccess: async () => {
-            
-            await queryClient.invalidateQueries({
-                queryKey: [PLAN_ESTUDIO_ENDPOINTS.GET_MATERIAS.key],
-            });
-            
+        onSuccess: () => {
             showNotification(`Se inscribio satisfactorimente al curso`,"success");
             setLoading(false);
             setOpen(false);

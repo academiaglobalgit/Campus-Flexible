@@ -82,8 +82,14 @@ const PlanEstudio: React.FC = () => {
         if (mapaCurricular) window.open(mapaCurricular.data?.url, "_blank");
     };
 
-    const handleConfirmar = (_isConfirmar: boolean) => {
-        setIsOpenInscribirmeDialog(false);
+    const handleConfirmar = async (isConfirmar: boolean) => {
+        if(isConfirmar) {
+            const response = await refetchMapeado();
+            setMateriaData(response ?? []);
+            setIsOpenInscribirmeDialog(false);
+        }else{
+            setIsOpenInscribirmeDialog(false);
+        }
     }
 
     const InformacionStatusButtons = (materia: Materia, color: "success" | "primary" | "info" | "warning" | undefined) => (

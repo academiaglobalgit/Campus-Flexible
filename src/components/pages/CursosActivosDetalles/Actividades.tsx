@@ -114,9 +114,10 @@ export const Actividades: React.FC = () => {
     const createMutationActivity = useMutation({
         mutationFn: updateActividad,
         onSuccess: async () => {
-            showNotification(`La actividades se guardo satisfactoriamente`, "warning");
+            showNotification(`La actividad se guardo satisfactoriamente`, "success");
 
-            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)] });
+            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)], exact: true });
+            await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
             setIsSaving(false);
 
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key] });
