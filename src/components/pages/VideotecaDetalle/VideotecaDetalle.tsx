@@ -19,8 +19,6 @@ const VideotecaDetalle: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const { data: Listado, isLoading } = useGetListadoVideoteca();
 
-    console.log(Listado)
-
     const handleValue = (val: number) => {
         setValue(val);
     }
@@ -36,7 +34,6 @@ const VideotecaDetalle: React.FC = () => {
             </Box>
         )
     }
-
 
     const Recursos = (materia: any, key: number) => {
         switch (materia.id_tipo_recurso) {
