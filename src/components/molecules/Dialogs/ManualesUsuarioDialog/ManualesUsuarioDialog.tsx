@@ -82,23 +82,24 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
                 ...flexRows,
                 width: '230px',
                 height: '139px',
-                border: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: '3px',
-                boxShadow: '0px 4px 4px 0px #00000040',
                 ...(item.url === null ? {
                     cursor: 'not-allowed',
-                    backgroundColor: '#cccccc',
+                    backgroundColor: '#ffffff95',
+                    border: `1px solid rgb(0, 0, 0, .12)`,
                 } : {
                     cursor: 'pointer',
-                    backgroundColor: 'white',
+                    backgroundColor: '#fff',
+                    boxShadow: '0px 4px 4px 0px #00000040',
+                    border: `1px solid ${theme.palette.primary.main}`,
                 })
             }} onClick={item.action}>
 
                 {/* <IconLabel icon={item.icon} label={item.label} action={item.action} /> */}
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px 10px' }}>
-                    <DsSvgIcon component={item.icon} sxProps={{ color: item.url === null ? "gray" : "primary" }} />
-                    <Typography component="h4" variant="h4" color={item.url === null ? "disabled" : "primary"} >
+                    <DsSvgIcon component={item.icon} sxProps={{ color: item.url === null ? "rgba(0, 0, 0, 0.3)" : "primary" }} />
+                    <Typography component="h4" variant="h4" color={"primary"} sxProps={{ color: item.url === null ? 'rgba(0, 0, 0, 0.3)' : '' }}>
                         {item.label}
                     </Typography>
                 </Box>
