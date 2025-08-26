@@ -10,7 +10,7 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import { Lectura } from "@iconsCustomizeds";
 import type { ListadoVideotecaRecursos } from "../../../types/BibliotecaVideoteca.interface";
-import { flexColumn } from "@styles";
+import { flexColumn, flexRows } from "@styles";
 
 
 const VideotecaDetalle: React.FC = () => {
@@ -19,7 +19,7 @@ const VideotecaDetalle: React.FC = () => {
 
     const [value, setValue] = React.useState(0);
     const { data: Listado, isLoading } = useGetListadoVideoteca();
-
+    console.log(Listado)
     const handleValue = (val: number) => {
         setValue(val);
     }
@@ -32,6 +32,14 @@ const VideotecaDetalle: React.FC = () => {
                 <Typography component="span" variant="body1" >
                     {item.curso}
                 </Typography>
+            </Box>
+        )
+    }
+
+    const VideoFrame = (item: any) => {
+        return (
+            <Box sx={{ ...flexRows, flexDirection: 'row' }}>
+                <Box dangerouslySetInnerHTML={{ __html: item.descripcion }}></Box>
             </Box>
         )
     }
@@ -67,7 +75,8 @@ const VideotecaDetalle: React.FC = () => {
             case 3:
                 return <Documento {...materia} key={key} />;
             case 4:
-                return <Box dangerouslySetInnerHTML={{ __html: materia.descripcion }}></Box>;
+                return <VideoFrame {...materia} key={key} />;
+
 
             default:
                 return <Box > Por el momento no se cuenta con recursos. </Box>;
@@ -80,35 +89,77 @@ const VideotecaDetalle: React.FC = () => {
         return (
             Listado.periodos.map((_periodo, indexPanel) => (
                 <TabPanel value={value} index={indexPanel} key={indexPanel}>
-                    <Box sx={{ marginBottom: "24px", pt: "16px" }}>
+
+                    <Box sx={{
+                        marginBottom: "24px", pt: "16px", ...(_periodo.tipo_seccion !== 'PERIODO' && {
+                            display: 'flex',
+                            width: '100%',
+                            overflowX: 'scroll',
+                            mt: 2,
+                            gap: 2
+                        })
+                    }}>
+
                         {Listado.materias
-                            .filter(m => m.periodo === _periodo) // solo materias de este periodo
+                            .filter(m => m.periodo === _periodo.periodo)
                             .map((materia, materiaIndex) => {
+                                console.log(materia)
                                 const seccion = materia.seccion ?? "";
                                 const showDivider = mat !== seccion;
                                 mat = seccion;
 
                                 return (
                                     <React.Fragment key={`materia-${materiaIndex}`}>
-                                        {showDivider && (
+
+                                        {showDivider && materia.tipo_seccion === 'PERIODO' && (
                                             <Divider textAlign="center" sx={{ my: 2 }}>
                                                 <Typography component="span" variant="subtitle1" color="primary">
-                                                    {seccion.replace("Descripción del curso de ", "")}
+                                                    {seccion}
                                                 </Typography>
                                             </Divider>
                                         )}
 
-                                        {!isMobile ? (
-                                            <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
-                                                <Box
-                                                    display="grid"
-                                                    gridTemplateColumns={{
-                                                        xs: "1fr",
-                                                        sm: "1fr 1fr",
-                                                        md: "1fr 1fr 1fr",
-                                                    }}
-                                                    gap={2}
-                                                >
+                                        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+
+                                            {!isMobile ? (
+                                                <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+                                                    <Box
+                                                        sx={{ display: 'flex', gap: 2 }}
+                                                    >
+                                                        {materia.grupos.length > 0 ? (
+                                                            materia.grupos.map((grupo, i) =>
+                                                                grupo.length > 0 ? (
+                                                                    grupo.map((recurso, j) => (
+                                                                        <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
+                                                                            {Recursos(recurso, j)}
+                                                                        </React.Fragment>
+                                                                    ))
+                                                                ) : (
+                                                                    <Typography
+                                                                        key={`no-recursos-${materiaIndex}-${i}`}
+                                                                        variant="body2"
+                                                                        color="primary"
+                                                                        component={"span"}                                                                >
+                                                                        No hay recursos por el momento
+                                                                    </Typography>
+                                                                )
+                                                            )
+                                                        ) : (
+                                                            <Typography
+                                                                key={`no-recursos-${materiaIndex}`}
+                                                                variant="body2"
+                                                                color="primary"
+                                                                component={"span"}
+                                                            >
+                                                                No hay recursos por el momento
+                                                            </Typography>
+                                                        )}
+
+
+                                                    </Box>
+                                                </Box>
+                                            ) : (
+                                                <>
                                                     {materia.grupos.length > 0 ? (
                                                         materia.grupos.map((grupo, i) =>
                                                             grupo.length > 0 ? (
@@ -138,42 +189,9 @@ const VideotecaDetalle: React.FC = () => {
                                                         </Typography>
                                                     )}
 
-
-                                                </Box>
-                                            </Box>
-                                        ) : (
-                                            <>
-                                                {materia.grupos.length > 0 ? (
-                                                    materia.grupos.map((grupo, i) =>
-                                                        grupo.length > 0 ? (
-                                                            grupo.map((recurso, j) => (
-                                                                <React.Fragment key={`${materiaIndex}-${i}-${j}`}>
-                                                                    {Recursos(recurso, j)}
-                                                                </React.Fragment>
-                                                            ))
-                                                        ) : (
-                                                            <Typography
-                                                                key={`no-recursos-${materiaIndex}-${i}`}
-                                                                variant="body2"
-                                                                color="primary"
-                                                                component={"span"}                                                                >
-                                                                No hay recursos por el momento
-                                                            </Typography>
-                                                        )
-                                                    )
-                                                ) : (
-                                                    <Typography
-                                                        key={`no-recursos-${materiaIndex}`}
-                                                        variant="body2"
-                                                        color="primary"
-                                                        component={"span"}
-                                                    >
-                                                        No hay recursos por el momento
-                                                    </Typography>
-                                                )}
-
-                                            </>
-                                        )}
+                                                </>
+                                            )}
+                                        </Box>
                                     </React.Fragment>
                                 );
                             })}
