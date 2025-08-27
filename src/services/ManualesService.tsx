@@ -3,6 +3,7 @@ import type { ManualesResponse, ManualesUsuarioResponse, LineamientosUsuarioResp
 import { MANUALES_ENDPOINTS } from "../types/endpoints";
 import { apiClient } from "./ApiConfiguration/httpClient";
 import { TipoManuales } from '../types/tipoManuales';
+import type { DocumentosResponse } from "../types/Documentos.interface";
 
 
 export const useGetManuales = (nombre_tipo: string, type: 'alumnos' | '' = '', id_plan_estudio: number = 0) => {
@@ -36,4 +37,13 @@ export const useGetLineamientossUsuario = () => {
         queryFn: async () => await apiClient.get<LineamientosUsuarioResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     }).data;
+}
+
+export const useGetAllDocuments = () => {
+    const url = `${MANUALES_ENDPOINTS.GET_MANUALES_TODOS.path}`;
+    return useQuery<DocumentosResponse, Error>({
+        queryKey: [MANUALES_ENDPOINTS.GET_MANUALES_TODOS.key],
+        queryFn: async () => await apiClient.get<DocumentosResponse>(url),
+        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+    });
 }

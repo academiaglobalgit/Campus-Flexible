@@ -81,12 +81,15 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
   const menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
 
+  const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
+
   const handleToggleSubmenu = (label: string) => {
     setOpenSubmenu((prev) => (prev === label ? null : label));
   };
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, index: number) => {
     navigate(path);
+    setSelectedIndex(index);
   };
 
   return(
@@ -111,7 +114,7 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     
       <List sx={{ width: '100%' }}>
         {
-          menuRoutes.filter((item) => item.visible === 1).map((item) => {
+          menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
             const hasChildren = item.children.length > 0;
             const isOpen = openSubmenu === item.text;
 
@@ -119,7 +122,8 @@ const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
               <React.Fragment key={item.text}>
                 <ListItem disablePadding sx={{ display: 'block' }}>
                   <ListItemButton
-                    onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path)}
+                    selected={selectedIndex === index}
+                    onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path, index)}
                     sx={[
                       {
                         minHeight: 48,

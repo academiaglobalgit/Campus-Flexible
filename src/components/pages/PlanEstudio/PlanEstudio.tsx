@@ -18,10 +18,14 @@ import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-e
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { getTabSelected, setCursoSelected, setTabSelected } from "../../../hooks/useLocalStorage";
+// import { useDocumentos } from "../../../context/DocumentosContext";
+// import type { Documento } from "../../../types/Documentos.interface";
 
 const PlanEstudio: React.FC = () => {
-    const navigate = useNavigate();
     const theme = useTheme();
+    // const { documentos } = useDocumentos();
+    const navigate = useNavigate();
+
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
@@ -44,11 +48,21 @@ const PlanEstudio: React.FC = () => {
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
     const [idCursoSelected, setIdCursoSelected] = React.useState(0);
 
+    // const [videoBienvenida, setVideoBienvenida] = React.useState<Documento | undefined>(undefined);
+    // const [mapaCurricular, setMapaCurricular] = React.useState<Documento | undefined>(undefined);
+
     useEffect(() => {
         const indexTab = getTabSelected('plan-estudio');
         setValue(indexTab);
         setPreviewTabSelected(indexTab);
     }, []);
+
+    // useEffect(() => {
+    //     if (documentos && documentos.length > 0) {
+    //         setMapaCurricular(documentos.find(doc => doc.id_tipo_manual === 5));
+    //         setVideoBienvenida(documentos.find(doc => doc.id_tipo_manual === 6));
+    //     }
+    // }, [documentos]);
 
     useEffect(() => {
         const fetchData = async () => {
