@@ -12,9 +12,12 @@ type AccordionProps = {
   customHeader?: React.ReactNode;
   backgroundDetails?: SxProps<Theme> | undefined;
   isExpanded?: boolean;
+  isDisabled?: boolean;
 };
 
-export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded = false }) => {
+export const Accordion: React.FC<AccordionProps> = (
+  { title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded = false, isDisabled = false }
+) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {
@@ -30,6 +33,7 @@ export const Accordion: React.FC<AccordionProps> = ({ title, children, sxProps =
       expanded={expanded}
       onChange={handleChange}
       sx={sxProps}
+      disabled={isDisabled}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {

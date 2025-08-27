@@ -14,6 +14,16 @@ export const Evaluaciones: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const setTitleAccordion = (unidad: string, index: number) => {
+        const totalUnidades = Object.keys(contenido).length;
+
+        if ((index + 1) === totalUnidades) {
+            return "Examen Final";
+        }
+
+        return `Unidad ${toRoman(Number(unidad))}`;
+    }
+
     return (
         isLoading ?
             <LoadingCircular Text="Cargando Evaluaciones..." />
@@ -22,8 +32,10 @@ export const Evaluaciones: React.FC = () => {
             Object.entries(contenido).map(([unidad, contenidos], index) =>
                 <Accordion key={index}
                     title={`Unidad ${toRoman(Number(unidad))}`}
-                    customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
-                    sxProps={accordionStyle}>
+                    customHeader={!isMobile ? <AccordionStatus tittle={setTitleAccordion(unidad, index)} status={contenidos?.[0]?.estatus} /> : undefined}
+                    sxProps={accordionStyle}
+                    isDisabled={contenidos?.[0]?.estatus === 'Finalizado'}
+                >
                     {
                         isMobile && <Box sx={{ padding: '10px' }}>
                             <StatusIcon estado={contenidos?.[0]?.estatus} />

@@ -34,16 +34,17 @@ function AppLoader() {
 
   if (loading) {
     return <Box 
-            sx={{ width: '100%', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8F8F9' }}>
-      <Box sx={{ width: !isMobile ? '15%' : '50%', textAlign: 'center' }}>
-        <Box
-            component="img"
-            src={LogoAG}
-            sx={{ mb: 1 }}
-        />
-        <LinearProgress />
-      </Box>
-    </Box>;
+              sx={{ width: '100%', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8F8F9' }}
+            >
+              <Box sx={{ width: !isMobile ? '15%' : '50%', textAlign: 'center' }}>
+                <Box
+                    component="img"
+                    src={LogoAG}
+                    sx={{ mb: 1 }}
+                />
+                  <LinearProgress />
+              </Box>
+            </Box>;
   }
 
   return (

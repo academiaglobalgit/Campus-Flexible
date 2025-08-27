@@ -11,10 +11,10 @@ import { flexRows } from "@styles";
 import { ComentariosDialog } from "../../molecules/Dialogs/ForosDialog/ForosDialog";
 import { EliminarComentarioDialog } from "../../molecules/Dialogs/EliminarComentarioDialog/EliminarComentarioForosDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ForosSaveResponse } from "@constants";
 import { CURSOS_ACTIVOS_ENDPOINTS, SALA_CONVERSACION } from "../../../types/endpoints";
 import { useNotification } from "../../../providers/NotificationProvider";
 import LoadingDialog from "../../molecules/Dialogs/LoadingDialog/LoadingDialog";
+import { getForoSelected } from "../../../hooks/useLocalStorage";
 
 type ChatForoSalaConversacionProps = {
     idTipoSala: number;
@@ -123,7 +123,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
     const createMutation = useMutation({
         mutationFn: SaveComentarioForo,
-        onSuccess: async (_newComment: ForosSaveResponse) => {
+        onSuccess: async () => {
             setIdMensaje(0);
 
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
@@ -132,9 +132,13 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             }
 
             if (idTipoSala !== 4) {
+                const foroSelected = getForoSelected();
                 //pedir estados despues de comentar un foro
                 await queryClient.invalidateQueries({
                     queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key], 
+                });
+                await queryClient.resetQueries({ 
+                    queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(JSON.parse(foroSelected).id_curso)], exact: true 
                 });
             }
 
@@ -169,7 +173,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
 
     const deleteMutation = useMutation({
         mutationFn: DeleteMensaje,
-        onSuccess: async (_data) => {
+        onSuccess: async () => {
             const keys = [SALA_CONVERSACION.GET_MENSAJES.key, idTipoSala, idRecurso, paginaActual, todosComentarios, GetTipoOrden(orden), paginaSize];
 
             if (idTipoSala === 4) {

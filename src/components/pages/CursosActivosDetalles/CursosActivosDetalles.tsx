@@ -56,7 +56,7 @@ const CursosActivosDetalles: React.FC = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: '15px', justifyContent: 'space-around', alignContent: 'center', alignItems: 'center', width: '100%', marginBottom: '23px' }}>
 
                     <Typography component="span" variant="body3" sxProps={{ color: theme.palette.primary.main }}>
-                        No iniciado
+                        Sin Iniciar
                     </Typography>
                     <Typography component="span" variant="body3" sxProps={{ color: theme.palette.primary.main }}>
                         En Curso

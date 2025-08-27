@@ -27,6 +27,7 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const query = useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
+        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
     });
 
     const mapData = (data: CursosTabs[]) => {

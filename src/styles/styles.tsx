@@ -19,5 +19,13 @@ export const innerHTMLStyle = {
                                         paddingLeft: '1.5rem',
                                         listStyleType: 'disc',
                                     },
+                                    '& a': {
+                                        color: theme.palette.primary.main,
+                                        fontWeight: 600,
+                                        textDecoration: 'none',
+                                        '&:hover': {
+                                            textDecoration: 'underline',
+                                        }
+                                    },
                                     pl: 3, pr: 3
                                 };
