@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { AxiosError } from "axios";
+
 import { Box, Grid, useMediaQuery, useTheme, Typography } from "@mui/material";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
@@ -34,6 +36,8 @@ const PlanEstudio: React.FC = () => {
     const [materiaData, setMateriaData] = React.useState<PlanEstudioMateriasResponse[]>([]);
 
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
+    const [videoStatus, setDisableVideo] = React.useState(true);
+    const [mapaStatus, setDisableMapa] = React.useState(true);
     const [urlVideo, setUrlVideo] = React.useState("");
 
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
@@ -77,7 +81,35 @@ const PlanEstudio: React.FC = () => {
         fetchData();
     }, []);
 
+useEffect(() => {
+    const fetchStatus = async () => {
+        try {
+            // Re-fetch de video
+            const videoResult = await video.refetch();
+            if (!(videoResult.error as any)?.response?.data?.message) {
+                setDisableVideo(false);
+            }
+
+            // Re-fetch de mapa curricular
+            const mapaResult = await mapaCurricular.refetch();
+            if (!(mapaResult.error as any)?.response?.data?.message) {
+                setDisableMapa(false);
+            }
+        } catch (error) {
+            console.error("Error refetching video/mapa:", error);
+        }
+    };
+
+    fetchStatus();
+}, []); 
+
+
+
+
     const handleVideoBienvenida = () => {
+
+        console.log()
+
         setUrlVideo(video.data?.url ?? "");
         setIsOpenVideo(true);
     }
@@ -97,11 +129,11 @@ const PlanEstudio: React.FC = () => {
     };
 
     const handleConfirmar = async (isConfirmar: boolean) => {
-        if(isConfirmar) {
+        if (isConfirmar) {
             const response = await refetchMapeado();
             setMateriaData(response ?? []);
             setIsOpenInscribirmeDialog(false);
-        }else{
+        } else {
             setIsOpenInscribirmeDialog(false);
         }
     }
@@ -163,13 +195,15 @@ const PlanEstudio: React.FC = () => {
                     fullWidth
                     icon={!isMobile ? <OndemandVideoIcon /> : undefined}
                     iconPosition={!isMobile ? "start" : undefined}
-                    disabled={video.data?.url?.length === 0}
+                    disabled={videoStatus}
+
                 >
                     Video de Bienvenida
                 </Button>
             </>
             <>
-                <Button onClick={handleMapaCurricular} disabled={mapaCurricular.data?.url?.length === 0} fullWidth variant="outlined" >Mapa Curricular</Button>
+                <Button onClick={handleMapaCurricular} disabled={mapaStatus}
+                    fullWidth variant="outlined" >Mapa Curricular</Button>
             </>
         </Box >
     );

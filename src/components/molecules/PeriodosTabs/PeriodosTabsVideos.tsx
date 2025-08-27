@@ -38,22 +38,15 @@ const PeriodosTabsVideos: React.FC<PeriodosTabsProps> = ({ periodos, tabSelected
             >
                 {
                     periodos.map((periodoId: any, i: number) => {
-                        const label =
-                            periodoId >= 1 && periodoId <= 11
-                                ? `Periodo ${toRoman(periodoId)}`
-                                : "SECCIÓN";
-
                         return (
                             <Tab
-                                label={label}
+                                label={periodoId.seccion}
                                 value={i}
-                                key={periodoId}
+                                key={periodoId.periodo}
                                 sx={{ minWidth: "108px", padding: "0px" }}
                             />
                         );
                     })
-
-
                 }
             </Tabs>
         </Box>

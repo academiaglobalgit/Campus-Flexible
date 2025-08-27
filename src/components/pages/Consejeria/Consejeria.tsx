@@ -19,24 +19,24 @@ const Consejeria: React.FC = () => {
     const navigate = useNavigate();
 
     const Buttons = [
-        {label: 'Nosotros', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 0},
-        {label: 'Encuestas', url: ''},
-        {label: 'Blog', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 1},
-        {label: 'Recursos', url: ''},
-        {label: 'Agenda una cita', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 2},
+        { label: 'Nosotros', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 0 },
+        { label: 'Encuestas', url: '' },
+        { label: 'Blog', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 1 },
+        { label: 'Recursos', url: '' },
+        { label: 'Agenda una cita', url: AppRoutingPaths.CONSEJERIAINFO, tabIndex: 2 },
     ];
 
     const handleAction = (item: any) => {
-        setTabSelected({tab: 'consejeria-info', index: item.tabIndex});
+        setTabSelected({ tab: 'consejeria-info', index: item.tabIndex });
         navigate(item.url);
     }
 
     const BienvenidoText = () => {
         const fontSize = isMobile ? 'h4' : 'h2';
-        return(
+        return (
             <Box>
                 <Typography component={fontSize} variant={fontSize} color='primary' sxProps={{ mt: '32px', textAlign: 'center' }}>
-                    Bienvenido (a)                        
+                    Bienvenido (a)
                 </Typography>
                 <Typography component={fontSize} variant={fontSize} color='primary' sxProps={{ mb: '20px', textAlign: 'center' }}>
                     ¡Estamos para apoyarte!
@@ -44,14 +44,14 @@ const Consejeria: React.FC = () => {
             </Box>
         )
     }
-        
+
     const ButtonSection = () => {
-        return(
+        return (
             <>
                 {
                     Buttons.map((item, i) => {
 
-                        if(i === 4) {
+                        if (i === 4) {
                             return (<Button key={i}
                                 fullWidth
                                 variant="contained"
@@ -61,12 +61,13 @@ const Consejeria: React.FC = () => {
                             >
                                 {item.label}
                             </Button>)
-                        }else{
-                            return(
+                        } else {
+                            return (
                                 <Button
                                     key={i}
                                     fullWidth
                                     variant="outlined"
+                                    disabled={item.url?.length === 0}
                                     onClick={() => handleAction(item)}
                                 >
                                     {item.label}
@@ -80,13 +81,13 @@ const Consejeria: React.FC = () => {
     }
 
     const imagen = () => (
-        <Box sx={{...flexRows}}>
-            <Box 
-                component="img" 
-                src={imgConsejeria} 
+        <Box sx={{ ...flexRows }}>
+            <Box
+                component="img"
+                src={imgConsejeria}
                 sx={[
-                   isMobile && { width: '100%', maxWidth: '100%' },
-                   !isMobile && { width: '100%', height: '500px' }
+                    isMobile && { width: '100%', maxWidth: '100%' },
+                    !isMobile && { width: '100%', height: '500px' }
                 ]}
             />
         </Box>
@@ -94,18 +95,18 @@ const Consejeria: React.FC = () => {
 
     return (
         isMobile
-        ?
+            ?
             <>
                 <TituloIcon Titulo={TitleScreen.CONSEJERIA} Icon={ConsejeriaEstudiantil} />
                 <Box sx={{ ...flexColumn, width: '100%' }}>
                     <Box sx={{ width: '100%' }}>
                         <Box sx={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
-                            <Box 
-                                component="img" 
-                                src={imgConsejeria} 
+                            <Box
+                                component="img"
+                                src={imgConsejeria}
                                 sx={[
                                     !isMobile && { width: '624px', height: '507px' }
-                                ]} 
+                                ]}
                             />
                         </Box>
                     </Box>
@@ -115,12 +116,12 @@ const Consejeria: React.FC = () => {
                     </Box>
                 </Box>
             </>
-        :
+            :
             <>
                 <ContainerDesktop title={TitleScreen.CONSEJERIA} >
-                    <Grid container spacing={2}>  
-                        <Grid 
-                            size={{ md: 6 }} 
+                    <Grid container spacing={2}>
+                        <Grid
+                            size={{ md: 6 }}
                             order={{ xs: 2, md: 1 }}
                             sx={[
                                 {
@@ -128,12 +129,12 @@ const Consejeria: React.FC = () => {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 },
-                                betweenDevice && {width: '100%'}
+                                betweenDevice && { width: '100%' }
                             ]}
                         >
                             <Box sx={{ ...flexColumn, gap: '20px', width: '100%' }}>
-                            {BienvenidoText()}
-                            {ButtonSection()}
+                                {BienvenidoText()}
+                                {ButtonSection()}
                             </Box>
                         </Grid>
                         <Grid
@@ -145,7 +146,7 @@ const Consejeria: React.FC = () => {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 },
-                                betweenDevice && {width: '100%'}
+                                betweenDevice && { width: '100%' }
                             ]}
                         >
                             <Box sx={{ width: '100%', maxWidth: '600px' }}>

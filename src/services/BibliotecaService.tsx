@@ -33,88 +33,6 @@ export const useGetListadoVideoteca = () => {
 
   const mapData = (data: ListadoVideoteca[]) => {
 
-    //         data = [
-    //           {
-    //             periodo: 1,
-    //             id_curso: 1,
-    //             nombre_curso: "Materia 1",
-    //             id_recurso: 1,
-    //             titulo: "Manual de Inducción",
-    //             descripcion: "Documento introductorio con normas y estructura académica.",
-    //             url_recurso: "https://cdn.plataforma.com/docs/manual-induccion.pdf",
-    //             orden: 1,
-    //             id_tipo_recurso: 1,
-    //           },
-    //           {
-    //             periodo: 1,
-    //             id_curso: 1,
-    //             nombre_curso: "Materia 1",
-    //             id_recurso: 2,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           },
-    //           {
-    //             periodo: 1,
-    //             id_curso: 2,
-    //             nombre_curso: "Materia 2",
-    //             id_recurso: 3,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           },
-    //           {
-    //             periodo: 1,
-    //             id_curso: 2,
-    //             nombre_curso: "Materia 2",
-    //             id_recurso: 4,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           },
-    //           {
-    //             periodo: 2,
-    //             id_curso: 3,
-    //             nombre_curso: "Materia 3",
-    //             id_recurso: 3,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           },
-    //           {
-    //             periodo: 2,
-    //             id_curso: 4,
-    //             nombre_curso: "Materia 4",
-    //             id_recurso: 4,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           },
-    //           {
-    //             periodo: 3,
-    //             id_curso: 5,
-    //             nombre_curso: "Materia 5",
-    //             id_recurso: 4,
-    //             titulo: "Video de Bienvenida",
-    //             descripcion: "Mensaje de bienvenida del coordinador académico.",
-    //             url_recurso: "https://cdn.plataforma.com/videos/bienvenida.mp4",
-    //             orden: 2,
-    //             id_tipo_recurso: 2,
-    //           }
-    // ];
-
-    //    const periodos = Array.from(new Set(data.map(item => item.parent_id === null))).sort((a, b) => a - b);
-
     /*     const dataprueba = [
           {
             "id_grupo": 16,
@@ -266,31 +184,70 @@ export const useGetListadoVideoteca = () => {
     
             ]
           },
-        ] */
-
+          {
+            "id_grupo": 61,
+            "seccion": "Propedéuticos Inglés ",
+            "parent_id": null,
+            "orden_seccion": 10,
+            "tipo_seccion": "SECCION",
+            "recursos": [
+              {
+                "id_recurso": 9,
+                "titulo": "Video #1 Curso Básico de Inglés desde Cero. Genitivo Sajón, Adjetivos y Pronombres Posesivos",
+                "url_recurso": "https://vimeo.com/683479928/ebad425d01",
+                "descripcion": "<iframe src=\"https://player.vimeo.com/video/683479928?h=ebad425d01&amp;badge=0&amp;autopause=0&amp;quality_selector=1&amp;player_id=0&amp;app_id=58479\" width=\"600\" height=\"336\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture\" title=\"GENITIVO SAJÓN, ADJETIVOS Y PRONOMBRES POSESIVOS CURSO BÁSICO DE INGLÉS DESDE CERO.mp4\"></iframe>",
+                "id_grupo": 61,
+                "id_curso": null,
+                "curso": null,
+                "periodo": null,
+                "id_tipo_recurso": 4,
+                "tipo_recurso": "Video Vimeo"
+              },
+              {
+                "id_recurso": 9,
+                "titulo": "Video #1 Curso Básico de Inglés desde Cero. Genitivo Sajón, Adjetivos y Pronombres Posesivos",
+                "url_recurso": "https://vimeo.com/683479928/ebad425d01",
+                "descripcion": "<iframe src=\"https://player.vimeo.com/video/683479928?h=ebad425d01&amp;badge=0&amp;autopause=0&amp;quality_selector=1&amp;player_id=0&amp;app_id=58479\" width=\"600\" height=\"336\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture\" title=\"GENITIVO SAJÓN, ADJETIVOS Y PRONOMBRES POSESIVOS CURSO BÁSICO DE INGLÉS DESDE CERO.mp4\"></iframe>",
+                "id_grupo": 61,
+                "id_curso": null,
+                "curso": null,
+                "periodo": null,
+                "id_tipo_recurso": 4,
+                "tipo_recurso": "Video Vimeo"
+              },
+            ]
+          }
+    
+        ]
+     */
     const periodos = data
-      .filter(item => item.parent_id === null) // solo los root
+      .filter(item => item.parent_id === null)
       .map(item => {
         const match = item.seccion.match(/Periodo\s+(\d+)/i);
-        return match ? Number(match[1]) : item.id_grupo;
+        return {
+          periodo: match ? Number(match[1]) : item.id_grupo,
+          seccion: item.seccion,
+          tipo_seccion: item.tipo_seccion,
+        };
       })
-      .sort((a, b) => a - b);
+      .sort((a, b) => a.periodo - b.periodo);
 
     const groupedByCurso = data.reduce<
-      { periodo: number; seccion: string; grupos: ListadoVideotecaRecursos[][] }[]
+      {
+        tipo_seccion: string; periodo: number; seccion: string; grupos: ListadoVideotecaRecursos[][]
+      }[]
     >((acc, item) => {
       // Caso 1: Periodo raíz
       if (item.tipo_seccion === "PERIODO" && item.parent_id === null) {
         const match = item.seccion.match(/Periodo\s+(\d+)/i);
         const periodo = match ? Number(match[1]) : item.id_grupo;
-
-        // Buscar hijos de ese periodo
         const hijos = data.filter(h => h.parent_id === item.id_grupo);
 
         hijos.forEach(hijo => {
           acc.push({
             periodo,
             seccion: hijo.seccion,
+            tipo_seccion: item.tipo_seccion,
             grupos: [hijo.recursos],
           });
         });
@@ -300,9 +257,22 @@ export const useGetListadoVideoteca = () => {
       if (item.tipo_seccion === "SECCION" && item.recursos.length > 0) {
         item.recursos.forEach(recurso => {
           acc.push({
-            periodo: recurso.id_grupo, // aquí usas el id_grupo del recurso
+            periodo: recurso.id_grupo,
             seccion: item.seccion,
-            grupos: [[recurso]], // lo metemos como array de un recurso
+            tipo_seccion: item.tipo_seccion,
+            grupos: [[recurso]],
+          });
+        });
+      }
+
+      // Caso : Cursos con recursos propios
+      if (item.tipo_seccion === "CURSO" && item.recursos.length > 0) {
+        item.recursos.forEach(recurso => {
+          acc.push({
+            periodo: recurso.id_grupo,
+            seccion: item.seccion,
+            tipo_seccion: item.tipo_seccion,
+            grupos: [[recurso]],
           });
         });
       }

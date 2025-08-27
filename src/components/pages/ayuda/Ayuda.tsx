@@ -45,7 +45,7 @@ const Ayuda: React.FC = () => {
             setValue(newValue);
         };
 
-        const arrayTab = ["Ayuda General","Contacto con tutor"];
+        const arrayTab = ["Ayuda General","Contacto con docente"];
 
         return(
             <Box sx={{ width: '100%', paddingTop: '50px'}}>
