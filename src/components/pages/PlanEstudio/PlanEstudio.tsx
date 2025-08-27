@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { Box, Grid, useMediaQuery, useTheme, Typography } from "@mui/material";
 import { AppRoutingPaths, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
@@ -11,18 +10,17 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { InscribirmeDialog } from "../../molecules/Dialogs/InscribirmeDialog/InscribirmeDialog";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { useGetVideoMapa, useGetPlanEstudio } from "../../../services/PlanEstudioService";
+import { useDatosModulos, useGetPlanEstudio } from "../../../services/PlanEstudioService";
 import { toRoman } from "../../../utils/Helpers";
 import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-estudio.interface";
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { getTabSelected, setCursoSelected, setTabSelected } from "../../../hooks/useLocalStorage";
-// import { useDocumentos } from "../../../context/DocumentosContext";
-// import type { Documento } from "../../../types/Documentos.interface";
+import type { Documento } from "../../../types/Documentos.interface";
+import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 
 const PlanEstudio: React.FC = () => {
     const theme = useTheme();
-    // const { documentos } = useDocumentos();
     const navigate = useNavigate();
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -31,12 +29,10 @@ const PlanEstudio: React.FC = () => {
     const { refetchMapeado } = useGetPlanEstudio({ enabled: false });
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const { mapaCurricular, video, dataModulo: planEstudioData } = useGetVideoMapa();
+    const { dataModulo: planEstudioData } = useDatosModulos();
     const [materiaData, setMateriaData] = React.useState<PlanEstudioMateriasResponse[]>([]);
 
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
-    const [videoStatus, setDisableVideo] = React.useState(true);
-    const [mapaStatus, setDisableMapa] = React.useState(true);
     const [urlVideo, setUrlVideo] = React.useState("");
 
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
@@ -47,21 +43,11 @@ const PlanEstudio: React.FC = () => {
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
     const [idCursoSelected, setIdCursoSelected] = React.useState(0);
 
-    // const [videoBienvenida, setVideoBienvenida] = React.useState<Documento | undefined>(undefined);
-    // const [mapaCurricular, setMapaCurricular] = React.useState<Documento | undefined>(undefined);
-
     useEffect(() => {
         const indexTab = getTabSelected('plan-estudio');
         setValue(indexTab);
         setPreviewTabSelected(indexTab);
     }, []);
-
-    // useEffect(() => {
-    //     if (documentos && documentos.length > 0) {
-    //         setMapaCurricular(documentos.find(doc => doc.id_tipo_manual === 5));
-    //         setVideoBienvenida(documentos.find(doc => doc.id_tipo_manual === 6));
-    //     }
-    // }, [documentos]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,36 +66,8 @@ const PlanEstudio: React.FC = () => {
         fetchData();
     }, []);
 
-useEffect(() => {
-    const fetchStatus = async () => {
-        try {
-            // Re-fetch de video
-            const videoResult = await video.refetch();
-            if (!(videoResult.error as any)?.response?.data?.message) {
-                setDisableVideo(false);
-            }
-
-            // Re-fetch de mapa curricular
-            const mapaResult = await mapaCurricular.refetch();
-            if (!(mapaResult.error as any)?.response?.data?.message) {
-                setDisableMapa(false);
-            }
-        } catch (error) {
-            console.error("Error refetching video/mapa:", error);
-        }
-    };
-
-    fetchStatus();
-}, []); 
-
-
-
-
-    const handleVideoBienvenida = () => {
-
-        console.log()
-
-        setUrlVideo(video.data?.url ?? "");
+    const handleVideoBienvenida = (manual: Documento) => {
+        setUrlVideo(manual.url_archivo ?? "");
         setIsOpenVideo(true);
     }
 
@@ -123,16 +81,12 @@ useEffect(() => {
         }
     }
 
-    const handleMapaCurricular = () => {
-        if (mapaCurricular) window.open(mapaCurricular.data?.url, "_blank");
-    };
-
     const handleConfirmar = async (isConfirmar: boolean) => {
-        if (isConfirmar) {
+        if(isConfirmar) {
             const response = await refetchMapeado();
             setMateriaData(response ?? []);
             setIsOpenInscribirmeDialog(false);
-        } else {
+        }else{
             setIsOpenInscribirmeDialog(false);
         }
     }
@@ -189,20 +143,10 @@ useEffect(() => {
     const BotonesVideoMapa = (flexDirection: string = "row") => (
         <Box sx={{ paddingTop: '32px', paddingBottom: '8px', display: 'flex', flexDirection, gap: '15px', justifyContent: 'space-between' }}>
             <>
-                <Button
-                    onClick={handleVideoBienvenida}
-                    fullWidth
-                    icon={!isMobile ? <OndemandVideoIcon /> : undefined}
-                    iconPosition={!isMobile ? "start" : undefined}
-                    disabled={videoStatus}
-
-                >
-                    Video de Bienvenida
-                </Button>
+                <ManualsButton idTipoManual={6} icon={!isMobile ? <OndemandVideoIcon /> : undefined} onClick={handleVideoBienvenida} />
             </>
             <>
-                <Button onClick={handleMapaCurricular} disabled={mapaStatus}
-                    fullWidth variant="outlined" >Mapa Curricular</Button>
+                <ManualsButton idTipoManual={5} variant="outlined" />
             </>
         </Box >
     );

@@ -16,6 +16,8 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { RetroalimentacionDialog } from "../../molecules/Dialogs/RetroalimentacionDialog/RetroalimentacionDialog";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
+import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
+import { TipoManualesIds } from "@constants";
 
 type PreviewFile = {
     file: File;
@@ -40,6 +42,13 @@ export const Actividades: React.FC = () => {
     const [contenido, setContenido] = useState<Record<number, string>>({});
     const [openRetroDialog, setOpenRetroDialog] = useState(false);
     const [retroalimentacion, setRetroalimentacion] = useState<string>("");
+
+    const manuales = [
+        TipoManualesIds.INSTRUMENTO_EVALUACION,
+        TipoManualesIds.PORTADA,
+        TipoManualesIds.MANUAL_APA,
+        TipoManualesIds.ACTIVIDADES_INTEGRATORIAS
+    ];
 
     const handleFilesChange = (id: number, files: PreviewFile[]) => {
         setArchivosPorId((prev) => ({
@@ -194,10 +203,6 @@ export const Actividades: React.FC = () => {
         }
     }
 
-    const handleLink = (link: string) => {
-        window.open(link, '_blank');
-    }
-
     const ButtonSection = (isDesktop: boolean = true) => (
         <Box
             sx={
@@ -208,18 +213,17 @@ export const Actividades: React.FC = () => {
                 ]
             }
         >
-            {
-                !isLoading &&
                 <>
                     {
-                        dataMapped?.manuales && Object.entries(dataMapped.manuales).map(([_, item], index) =>
-                            <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={index}>
-                                <Button onClick={() => handleLink(item.url_archivo)} disabled={item.url_archivo?.length === 0} fullWidth >{item.titulo}</Button>
+                        !isLoading && 
+                        manuales.map((item, i) => (
+                            <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={i}>
+                                <ManualsButton idTipoManual={item} />
                             </Box>
-                        )
+                        ))
                     }
                 </>
-            }
+            
         </Box>
     );
 

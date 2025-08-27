@@ -1,3 +1,20 @@
+export const TipoManualesIds = {
+    INDUCCION: 1,
+    REGLAMENTO_GENERAL: 3,
+    MAPA_CURRICULAR: 5,
+    VIDEO_BIENVENIDA: 6,
+    CALENDARIO: 7,
+    MANUAL_BIBLIOTECA: 8,
+    INSTRUMENTO_EVALUACION: 9,
+    PORTADA: 10,
+    MANUAL_APA: 11,
+    ACTIVIDADES_INTEGRATORIAS: 12,
+    AVISO_PRIVACIDAD: 12,
+    TERMINOS_CONDICIONES: 17,
+}
+
+export type TipoManualesIds = typeof TipoManualesIds;
+
 export const TipoManuales = [
     {
         "id_tipo_manual": 1,

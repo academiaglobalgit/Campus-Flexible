@@ -1,20 +1,19 @@
-import { TitleScreen } from "@constants";
+import { TipoManualesIds, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Calendario as IconCalendario } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
 import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { useGetManuales } from "../../../services/ManualesService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
-
+import { useDocumentos } from "../../../context/DocumentosContext";
 
 const Calendario: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { data: calendario, isLoading } = useGetManuales('Calendario', 'alumnos');
-  const { data: CalendarioDatos } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
+  const { documentos } = useDocumentos();
+  const { data: CalendarioDatos, isLoading } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
 
 
   const PDFSection = (
@@ -30,7 +29,7 @@ const Calendario: React.FC = () => {
       :
       <Box sx={{ paddingTop: '32px', paddingBottom: '32px', height: '100vh', overflow: 'hidden' }}>
         <iframe
-          src={calendario?.url}
+          src={documentos.find(doc => doc.id_tipo_manual === TipoManualesIds.CALENDARIO)?.url_archivo || ''}
           style={{
             width: "100%",
             height: "100vh",

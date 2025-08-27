@@ -4,7 +4,6 @@ import type { PlanEstudio, PlanEstudioInformacionResponse, PlanEstudioMateriasRe
 import { PLAN_ESTUDIO_ENDPOINTS } from "../types/endpoints";
 import { useQuery } from "@tanstack/react-query";
 
-import { useGetManuales } from "./ManualesService";
 import { useGetDatosModulos } from "./ModulosCampusService";
 
 export const useGetPlanEstudio = (options?: { enabled?: boolean }) => {
@@ -65,12 +64,10 @@ export const useGetInformacion = (idCurso: number) => {
      });
 }
 
-export const useGetVideoMapa = () => {
-    const mapaCurricular = useGetManuales("Mapa Curricular", "alumnos");
-    const video = useGetManuales("Video de Bienvenida", "alumnos");
+export const useDatosModulos = () => {
     const dataModulo = useGetDatosModulos(1);
 
-    return { mapaCurricular, video, dataModulo };
+    return { dataModulo };
 }
 
 export const useCreateConfirmar = async (id_curso: number): Promise<any> => {
