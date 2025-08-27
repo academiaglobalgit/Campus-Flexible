@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { AxiosError } from "axios";
 
 import { Box, Grid, useMediaQuery, useTheme, Typography } from "@mui/material";
 import { AppRoutingPaths, TitleScreen } from "@constants";
