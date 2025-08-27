@@ -10,7 +10,7 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import { Lectura } from "@iconsCustomizeds";
 import type { ListadoVideotecaRecursos } from "../../../types/BibliotecaVideoteca.interface";
-import { flexColumn, flexRows } from "@styles";
+import { flexColumn } from "@styles";
 
 
 const VideotecaDetalle: React.FC = () => {
@@ -19,7 +19,6 @@ const VideotecaDetalle: React.FC = () => {
 
     const [value, setValue] = React.useState(0);
     const { data: Listado, isLoading } = useGetListadoVideoteca();
-    console.log(Listado)
     const handleValue = (val: number) => {
         setValue(val);
     }
@@ -30,7 +29,7 @@ const VideotecaDetalle: React.FC = () => {
                 onClick={() => window.open(item.url_recurso, '_blank')}>
                 <TituloIcon Titulo={item.titulo} Icon={item.id_tipo_recurso === 1 ? Lectura : AudiotrackIcon} />
                 <Typography component="span" variant="body1" >
-                    {item.curso}
+                    {item.titulo}
                 </Typography>
             </Box>
         )
@@ -38,8 +37,11 @@ const VideotecaDetalle: React.FC = () => {
 
     const VideoFrame = (item: any) => {
         return (
-            <Box sx={{ ...flexRows, flexDirection: 'row' }}>
+            <Box sx={{ ...flexColumn, gap: 2 }}>
                 <Box dangerouslySetInnerHTML={{ __html: item.descripcion }}></Box>
+                <Typography component="h5" variant="h5" color="primary" sxProps={{textAlign:'center'}} >
+                    {item.titulo}
+                </Typography>
             </Box>
         )
     }
@@ -122,7 +124,7 @@ const VideotecaDetalle: React.FC = () => {
                                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
 
                                             {!isMobile ? (
-                                                <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+                                                <Box sx={{ maxHeight: 450, overflowY: "auto" }}>
                                                     <Box
                                                         sx={{ display: 'flex', gap: 2 }}
                                                     >
