@@ -66,11 +66,11 @@ export const useGetInformacion = (idCurso: number) => {
 }
 
 export const useGetVideoMapa = () => {
-    // const mapaCurricular = useGetManuales("Mapa Curricular", "alumnos");
-    // const video = useGetManuales("Video de Bienvenida", "alumnos");
+    const mapaCurricular = useGetManuales("Mapa Curricular", "alumnos");
+    const video = useGetManuales("Video de Bienvenida", "alumnos");
     const dataModulo = useGetDatosModulos(1);
 
-    return { dataModulo };
+    return { mapaCurricular, video, dataModulo };
 }
 
 export const useCreateConfirmar = async (id_curso: number): Promise<any> => {

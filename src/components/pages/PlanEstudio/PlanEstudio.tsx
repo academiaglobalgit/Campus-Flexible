@@ -16,12 +16,12 @@ import type { Materia, PlanEstudioMateriasResponse } from "../../../types/plan-e
 import PeriodosTabs from "../../molecules/PeriodosTabs/PeriodosTabs";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { getTabSelected, setCursoSelected, setTabSelected } from "../../../hooks/useLocalStorage";
-import { useDocumentos } from "../../../context/DocumentosContext";
-import type { Documento } from "../../../types/Documentos.interface";
+// import { useDocumentos } from "../../../context/DocumentosContext";
+// import type { Documento } from "../../../types/Documentos.interface";
 
 const PlanEstudio: React.FC = () => {
     const theme = useTheme();
-    const { documentos } = useDocumentos();
+    // const { documentos } = useDocumentos();
     const navigate = useNavigate();
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -30,7 +30,7 @@ const PlanEstudio: React.FC = () => {
     const { refetchMapeado } = useGetPlanEstudio({ enabled: false });
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const { dataModulo: planEstudioData } = useGetVideoMapa();
+    const { mapaCurricular, video, dataModulo: planEstudioData } = useGetVideoMapa();
     const [materiaData, setMateriaData] = React.useState<PlanEstudioMateriasResponse[]>([]);
 
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
@@ -44,8 +44,8 @@ const PlanEstudio: React.FC = () => {
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
     const [idCursoSelected, setIdCursoSelected] = React.useState(0);
 
-    const [videoBienvenida, setVideoBienvenida] = React.useState<Documento | undefined>(undefined);
-    const [mapaCurricular, setMapaCurricular] = React.useState<Documento | undefined>(undefined);
+    // const [videoBienvenida, setVideoBienvenida] = React.useState<Documento | undefined>(undefined);
+    // const [mapaCurricular, setMapaCurricular] = React.useState<Documento | undefined>(undefined);
 
     useEffect(() => {
         const indexTab = getTabSelected('plan-estudio');
@@ -53,12 +53,12 @@ const PlanEstudio: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
-    useEffect(() => {
-        if (documentos && documentos.length > 0) {
-            setMapaCurricular(documentos.find(doc => doc.id_tipo_manual === 5));
-            setVideoBienvenida(documentos.find(doc => doc.id_tipo_manual === 6));
-        }
-    }, [documentos]);
+    // useEffect(() => {
+    //     if (documentos && documentos.length > 0) {
+    //         setMapaCurricular(documentos.find(doc => doc.id_tipo_manual === 5));
+    //         setVideoBienvenida(documentos.find(doc => doc.id_tipo_manual === 6));
+    //     }
+    // }, [documentos]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -163,18 +163,13 @@ const PlanEstudio: React.FC = () => {
                     fullWidth
                     icon={!isMobile ? <OndemandVideoIcon /> : undefined}
                     iconPosition={!isMobile ? "start" : undefined}
-                    disabled={videoBienvenida?.url_archivo === null}
+                    disabled={video.data?.url?.length === 0}
                 >
                     Video de Bienvenida
                 </Button>
             </>
             <>
-                <Button 
-                    fullWidth 
-                    onClick={handleMapaCurricular} 
-                    disabled={mapaCurricular?.url_archivo === null } 
-                    variant="outlined"
-                >Mapa Curricular</Button>
+                <Button onClick={handleMapaCurricular} disabled={mapaCurricular.data?.url?.length === 0} fullWidth variant="outlined" >Mapa Curricular</Button>
             </>
         </Box >
     );
