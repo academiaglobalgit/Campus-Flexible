@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Box, Tab, Tabs, tabsClasses } from "@mui/material";
-import { toRoman } from "../../../utils/Helpers";
 
 type PeriodosTabsProps = {
     periodos: any;
