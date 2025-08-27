@@ -35,11 +35,6 @@ export const useGetCursosTabs = (id: number, tab: string) => {
             if (!acc[contenido.unidad]) {
                 acc[contenido.unidad] = [];
             }
-
-            if(contenido.id_modulo === 1) {
-                contenido.estatus = "Finalizado";
-            }
-
             acc[contenido.unidad].push(contenido);
             return acc;
             }, {});
