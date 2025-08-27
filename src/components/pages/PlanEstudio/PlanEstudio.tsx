@@ -195,7 +195,7 @@ useEffect(() => {
                     fullWidth
                     icon={!isMobile ? <OndemandVideoIcon /> : undefined}
                     iconPosition={!isMobile ? "start" : undefined}
-                    disabled={ (video?.error as any)?.response?.data?.message ? true : false }
+                    disabled={videoStatus}
 
                 >
                     Video de Bienvenida
