@@ -117,18 +117,29 @@ const theme = createTheme({
         root: ({ theme }) => ({
           border: `1px solid ${theme.palette.primary.main}`,
           borderRadius: '4px',
-          marginBottom: theme.spacing(3),
+          marginBottom: theme.spacing(2),
           '&:before': {
             display: 'none',
           },
           boxShadow: 'none',
           '&.Mui-expanded': {
-            margin: theme.spacing(3, 0),
+            margin: theme.spacing(2, 0),
           },
           '&.Mui-disabled': {
-            borderColor: theme.palette.action.disabled,
+            backgroundColor: 'rgba(0,0,0,0.06)',
+            opacity: 1,
+            boxShadow: 'none',
           },
         }),
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          '&.Mui-disabled': {
+            opacity: 1,
+          },
+        },
       },
     },
     MuiTextField: {
