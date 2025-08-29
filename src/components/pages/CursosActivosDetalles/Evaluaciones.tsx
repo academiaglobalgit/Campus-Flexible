@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toRoman } from "../../../utils/Helpers";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { usePostMessageListener } from "../../../hooks/usePostMessageListener";
 
 export const Evaluaciones: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -49,6 +50,35 @@ export const Evaluaciones: React.FC = () => {
 
         return `Unidad ${toRoman(Number(unidad))}`;
     }
+
+    usePostMessageListener(["*"], (data) => {
+        console.log("✅ Mensaje seguro recibido:", data);
+
+        if (data.action === "finish") {
+        console.log("Finalizó curso:", data.cursoId);
+        // Aquí disparas un refetch o lógica extra
+        }
+    });
+
+    // useEffect(() => {
+    //     const handleMessage = (event: MessageEvent) => {
+    //         console.log(event.origin);
+    //         // if (event.origin !== "https://tusitio.com") {
+    //         //     console.warn("Mensaje bloqueado: origen no confiable", event.origin);
+    //         //     return;
+    //         // }
+
+    //         console.log("Mensaje seguro recibido:", event.data);
+
+    //         // Aquí procesas el mensaje
+    //         // if (event.data.action === "finish") {
+    //         // // Lógica de tu aplicación
+    //         // }
+    //     }
+
+    //     window.addEventListener('message', handleMessage);
+    //     return () => window.removeEventListener('message', handleMessage);
+    // },[]);
 
     return (
         isLoading ?
