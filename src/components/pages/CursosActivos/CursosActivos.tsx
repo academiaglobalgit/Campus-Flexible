@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Box, Button, Divider, useMediaQuery, useTheme } from "@mui/material";
 import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
@@ -14,15 +15,23 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
+import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
+    const [openEncuesta, setOpenEncuesta] = React.useState(false);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (cursosData?.data.some(item => item.estatus === "Finalizado")) {
+            setOpenEncuesta(true);
+        }
+    }, [cursosData]);
 
     const goToInformacion = (item: ICursoActivo) => {
         const curso = {
@@ -118,23 +127,30 @@ const CursoActivo: React.FC = () => {
                     :
                     cursosData?.data.map((item, index) => (
                         materiaItem(item, index)
+
                     ))
             }
         </>
     );
 
     return (
-        isMobile
-            ?
-            <>
-                <TituloIcon Titulo={TitleScreen.CURSOS_ACTIVOS} Icon={CursosActivos} />
-                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: cursosDatos?.data?.descripcion_html ?? '' }} />
-                {Materias}
-            </>
-            :
-            <ContainerDesktop title={TitleScreen.CURSOS_ACTIVOS} description={cursosDatos?.data?.descripcion_html ?? ''}>
-                {Materias}
-            </ContainerDesktop>
+        <>
+            {isMobile
+                ?
+                <>
+                    <TituloIcon Titulo={TitleScreen.CURSOS_ACTIVOS} Icon={CursosActivos} />
+                    <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: cursosDatos?.data?.descripcion_html ?? '' }} />
+                    {Materias}
+                </>
+                :
+                <ContainerDesktop title={TitleScreen.CURSOS_ACTIVOS} description={cursosDatos?.data?.descripcion_html ?? ''}>
+                    {Materias}
+                </ContainerDesktop>
+            }
+
+            <EncuestasModal isOpen={openEncuesta} close={() => setOpenEncuesta(false)} />
+
+        </>
     );
 };
 

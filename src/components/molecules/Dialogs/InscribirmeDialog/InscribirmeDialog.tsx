@@ -42,9 +42,9 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
             setOpen(false);
             close(true);
         },
-        onError: (error) => {
-            showNotification(`Error al registrar: ${error.message}`, "error");
-            setLoading(false);
+        onError: (error : any) => {
+            const msg = error?.response?.data?.message ?? "Ocurrió un error inesperado";
+            showNotification(msg, "error");            setLoading(false);
         },
         onSettled: () => {
             console.log('La mutación ha finalizado');

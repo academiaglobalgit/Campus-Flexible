@@ -105,7 +105,6 @@ const VideotecaDetalle: React.FC = () => {
                         {Listado.materias
                             .filter(m => m.periodo === _periodo.periodo)
                             .map((materia, materiaIndex) => {
-                                console.log(materia)
                                 const seccion = materia.seccion ?? "";
                                 const showDivider = mat !== seccion;
                                 mat = seccion;
