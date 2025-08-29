@@ -15,7 +15,7 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
-import { EncuestasModal } from "../../molecules/Encuestas/Encuestas";
+import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();

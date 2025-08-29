@@ -1,8 +1,8 @@
 import { Box, Divider, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
-import Button from "../../atoms/Button/Button";
-import { Dialog } from "../../atoms/Dialog/Dialog";
-import type { Encuesta } from "../../../types/Encuestas.interface";
+import Button from "../../../atoms/Button/Button";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
+import type { Encuesta } from "../../../../types/Encuestas.interface";
 import { stylesEvaluaciones } from "@styles";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
