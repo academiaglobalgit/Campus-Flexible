@@ -40,6 +40,8 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     // const nombrePlataforma = localStorage.getItem("programa") || "";
     const [config, setConfig] = React.useState<any>(null);
 
+    const CAPTCHA = import.meta.env.VITE_APP_CAPTCHA;
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -53,7 +55,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         loadConfig().then(cfg => {
             setConfig(cfg);
         });
-    },[]);
+    }, []);
 
     const onSubmit = async (data: LoginFormData) => {
 
@@ -66,14 +68,14 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         const result = await login(data.username, data.password);
         // enviar formulario
         if (result.success) {
-            if(result.aceptoTerminos)
+            if (result.aceptoTerminos)
                 navigate(AppRoutingPaths.PLAN_ESTUDIOS);
             else
                 navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
         } else {
-            if(result.cambiarPassword) {
+            if (result.cambiarPassword) {
                 setShowChangePassword(true);
-            }else{
+            } else {
                 showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
             }
         }
@@ -121,10 +123,10 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         fontSize: '20px'
                     }}
                 >
-                    { config?.data.nombre_plan || '' }
+                    {config?.data.nombre_plan || ''}
                 </Typography>
                 <Typography
-                    
+
                     component="p"
                     variant="body2"
                     sx={{
@@ -182,7 +184,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     />
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                         <ReCAPTCHA
-                            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                            sitekey={CAPTCHA}
                             onChange={onCaptchaChange}
                         />
                     </Box>
