@@ -8,12 +8,16 @@ import { toRoman } from "../../../utils/Helpers";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { usePostMessageListener } from "../../../hooks/usePostMessageListener";
+import { useQueryClient } from "@tanstack/react-query";
+import type { CursosTabsResponse } from "@constants";
+import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 
 export const Evaluaciones: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { data: contenido, isLoading } = useGetCursosTabs(Number(id!), "Evaluaciones");
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const queryClient = useQueryClient();
 
     // detectar si hay alguno en "Cursando"
     const indexCursando = Object.entries(contenido).findIndex(([_, cursos]) => cursos[0].estatus === "Cursando");
@@ -51,34 +55,48 @@ export const Evaluaciones: React.FC = () => {
         return `Unidad ${toRoman(Number(unidad))}`;
     }
 
-    usePostMessageListener(["*"], (data) => {
-        console.log("✅ Mensaje seguro recibido:", data);
+    const changeStatus = (data: { id_curso: number; id_recurso: number; estatus: string }) => {
+        queryClient.setQueryData<CursosTabsResponse>(
+            [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Evaluaciones", Number(id!)],
+            (old) => {
+            if (!old) return old;
 
-        if (data.action === "finish") {
-        console.log("Finalizó curso:", data.cursoId);
-        // Aquí disparas un refetch o lógica extra
+            return {
+                ...old,
+                data: old.data.map((item) =>
+                item.id_curso === Number(data.id_curso) && item.id_recurso === Number(data.id_recurso)
+                    ? { ...item, estatus: data.estatus }
+                    : item
+                ),
+            };
+            }
+        );
+    };
+
+    usePostMessageListener(["*"], (data) => {
+        if (!data) return;
+
+        switch (data.accion) {
+            case "abierto":
+                changeStatus({
+                    id_curso: data.id_curso,
+                    id_recurso: data.id_recurso,
+                    estatus: data.estatus,
+                });
+                queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
+            break;
+
+            case "cerrado":
+                changeStatus({
+                    id_curso: data.id_curso,
+                    id_recurso: data.id_recurso,
+                    estatus: data.estatus,
+                });
+                queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
+                queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Evaluaciones", Number(id!)], exact: true });
+            break;
         }
     });
-
-    // useEffect(() => {
-    //     const handleMessage = (event: MessageEvent) => {
-    //         console.log(event.origin);
-    //         // if (event.origin !== "https://tusitio.com") {
-    //         //     console.warn("Mensaje bloqueado: origen no confiable", event.origin);
-    //         //     return;
-    //         // }
-
-    //         console.log("Mensaje seguro recibido:", event.data);
-
-    //         // Aquí procesas el mensaje
-    //         // if (event.data.action === "finish") {
-    //         // // Lógica de tu aplicación
-    //         // }
-    //     }
-
-    //     window.addEventListener('message', handleMessage);
-    //     return () => window.removeEventListener('message', handleMessage);
-    // },[]);
 
     return (
         isLoading ?

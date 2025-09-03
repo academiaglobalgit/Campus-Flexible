@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useCreateConfirmar } from "../../../../services/PlanEstudioService";
 import { useNotification } from "../../../../providers/NotificationProvider";
 
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+
 type DialogProps = {
     idCurso: number;
     isOpen?: boolean;
@@ -19,6 +21,8 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
     const { showNotification } = useNotification();
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
+    const [hasError, setHasError] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     useEffect(() => {
         setOpen(isOpen ?? false);
@@ -26,7 +30,9 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
 
     const handleClose = () => {
         setOpen(false);
-        close(false); 
+        close(false);
+        setHasError(false);
+        setErrorMessage("");
     };
 
     const handleConfirmar = () => {
@@ -43,8 +49,9 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
             close(true);
         },
         onError: (error : any) => {
-            const msg = error?.response?.data?.message ?? "Ocurrió un error inesperado";
-            showNotification(msg, "error");            setLoading(false);
+            setErrorMessage(error?.response?.data?.message ?? "Ocurrió un error inesperado");
+            setLoading(false);
+            setHasError(true);
         },
         onSettled: () => {
             console.log('La mutación ha finalizado');
@@ -55,20 +62,37 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
         <Dialog isOpen={open} sxProps={{ margin: '5px', width: '350px', height: '342px'}} >
             <DialogContent>
                 <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '30px', flexDirection: 'column'}}>
-                    <Avatar src={check_circle} width={150} height={150} />
-                    <Typography component="h3" variant="h3" color="primary">¿Deseas Inscribirte?</Typography>
-                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%'}}>
-                        <>
-                            <Button onClick={handleConfirmar} fullWidth isLoading={loading}>
-                                Confirmar
-                            </Button>
-                        </>
-                        <>
-                            <Button onClick={handleClose} fullWidth variant="outlined" color="primary" disabled={loading}>
-                                Cancelar
-                            </Button>
-                        </>
-                    </Box>
+                    {
+                        !hasError
+                        ?
+                            <>
+                                <Avatar src={check_circle} width={150} height={150} />
+                                <Typography component="h3" variant="h3" color="primary">¿Deseas Inscribirte?</Typography>
+                                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%'}}>
+                                    <>
+                                        <Button onClick={handleConfirmar} fullWidth isLoading={loading}>
+                                            Confirmar
+                                        </Button>
+                                    </>
+                                    <>
+                                        <Button onClick={handleClose} fullWidth variant="outlined" color="primary" disabled={loading}>
+                                            Cancelar
+                                        </Button>
+                                    </>
+                                </Box>
+                            </>
+                        :
+                            <>
+                                <WarningAmberOutlinedIcon sx={{ fontSize: '96px', color: '#D9A514' }} />
+                                <Typography component="h5" variant="h5" color="primary" sxProps={{textAlign: 'center'}}>{errorMessage}</Typography>
+                                <Box sx={{width: '100%'}}>
+                                    <Button onClick={handleClose} fullWidth>
+                                        Aceptar
+                                    </Button>
+                                </Box>
+                            </>
+                    }
+                    
                 </Box>
             </DialogContent>
         </Dialog>

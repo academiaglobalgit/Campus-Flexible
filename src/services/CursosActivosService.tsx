@@ -27,7 +27,7 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const query = useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
-        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        staleTime: 1000 * 60 * (idRecurso === 2 ? 99 : 5), // 99 minutos de stale time
     });
 
     const mapData = (data: CursosTabs[]) => {
@@ -38,7 +38,6 @@ export const useGetCursosTabs = (id: number, tab: string) => {
             acc[contenido.unidad].push(contenido);
             return acc;
             }, {});
-        
         return agrupadoPorUnidad;
     }
 
