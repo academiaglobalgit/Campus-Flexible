@@ -29,6 +29,8 @@ export const CURSOS_ACTIVOS_ENDPOINTS = {
     GET_CURSOS_CONTENIDO_BY_ID: { path: '/cursos-activos/contenido', key: 'cursos-contenido-id' },
     GET_MAPA_CURRICULAR: { path: '/cursos-activos/mapa-curricular', key: 'cursos-act-mapa-curricular' },
     GET_LISTA_PROGRESO: { path: '/cursos-activos/lista-progreso', key: 'lista-progreso' },
+    GET_ENCUESTAS_ASIGNACIONES: { path: '/encuestas/asignaciones/todas', key: 'encuestas-asignacion' },
+    SET_ENCUESTAS_ASIGNACIONES: { path: 'encuestas/asignaciones/2/respuestas', key: 'encuestas-asignacion-guardar' },
     POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' }
 }
 

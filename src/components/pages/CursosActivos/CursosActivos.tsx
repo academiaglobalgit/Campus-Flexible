@@ -8,7 +8,7 @@ import { LinearProgressWithLabel } from "../../molecules/LinearProgress/LinearPr
 import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { useGetCursos } from "../../../services/CursosActivosService";
+import { useGetCursos, useGetEncuestas } from "../../../services/CursosActivosService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
@@ -16,20 +16,37 @@ import { accordionStyle, innerHTMLStyle } from "@styles";
 import { setCursoSelected } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
+import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
+    const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
+    const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (cursosData?.data.some(item => item.estatus === "Finalizado")) {
-            setOpenEncuesta(true);
+        if (!cursosData?.data) return;
+
+        const hasCursosFinalizados = cursosData.data.some(item => item.estatus === "Finalizado");
+
+        if (hasCursosFinalizados) {
+            refetch()
+                .then(response => {
+                    const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "activa") ?? [];
+                    
+                    if (encuestasActivas.length > 0) {
+                        setEncuestaData(encuestasActivas);
+                        setOpenEncuesta(true);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching encuestas:", error);
+                });
         }
     }, [cursosData]);
 
@@ -147,8 +164,9 @@ const CursoActivo: React.FC = () => {
                     {Materias}
                 </ContainerDesktop>
             }
-
-            <EncuestasModal isOpen={openEncuesta} close={() => setOpenEncuesta(false)} />
+            {
+                <EncuestasModal isOpen={openEncuesta} data={encuestaData[0]} />
+            }
 
         </>
     );
