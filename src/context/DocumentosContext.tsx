@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Documento } from "../types/Documentos.interface";
 import { useGetAllDocuments as getAllDocuments } from "../services/ManualesService";
 import { decryptData, encryptData } from "../utils/crypto";
+import { getSubdomainKey } from '../utils/Helpers';
 
 type DocumentosContextType = {
   documentos: Documento[];
@@ -11,7 +12,7 @@ type DocumentosContextType = {
 
 const DocumentosContext = createContext<DocumentosContextType | undefined>(undefined);
 
-const STORAGE_KEY = "documentos";
+const STORAGE_KEY = import.meta.env.VITE_APP_DOCUMENTOS + getSubdomainKey();
 
 export const DocumentosProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data } = getAllDocuments();

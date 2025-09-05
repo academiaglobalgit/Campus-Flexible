@@ -7,7 +7,6 @@ import type { DocumentosResponse } from "../types/Documentos.interface";
 
 
 export const useGetManuales = (nombre_tipo: string, type: 'alumnos' | '' = '', id_plan_estudio: number = 0) => {
-
     const tipoInduccion = TipoManuales.find(
         (tipo) => tipo.nombre_tipo === nombre_tipo
     );

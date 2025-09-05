@@ -7,11 +7,20 @@ import { Document } from "../../../assets/icons";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { useGetPreguntasFrecuentes } from "../../../services/FaqsService";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import { loadConfig } from "../../../config/configStorage";
 
 const PreguntasFrecuentesInternas: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { data, isLoading } = useGetPreguntasFrecuentes(1);
+  const [config, setConfig] = React.useState<any>(null);
+    
+  React.useEffect(() => {
+      loadConfig().then(cfg => {
+          setConfig(cfg);
+      });
+  }, []);
+
+  const { data, isLoading } = useGetPreguntasFrecuentes(config?.data?.id_plan_estudio); 
 
   const accordionPreguntas = () => (
       !isLoading ?
@@ -31,16 +40,17 @@ const PreguntasFrecuentesInternas: React.FC = () => {
   );
 
   return (
-    isMobile 
-    ? 
-      <>
-          <TituloIcon Titulo={TitleScreen.PREGUNTAS_FRECUENTES} Icon={ Document } />
+    config && 
+      isMobile 
+      ? 
+        <>
+            <TituloIcon Titulo={TitleScreen.PREGUNTAS_FRECUENTES} Icon={ Document } />
+            {accordionPreguntas()}
+        </>
+      :
+        <ContainerDesktop title={TitleScreen.PREGUNTAS_FRECUENTES}>
           {accordionPreguntas()}
-      </>
-    :
-      <ContainerDesktop title={TitleScreen.PREGUNTAS_FRECUENTES}>
-        {accordionPreguntas()}
-      </ContainerDesktop>
+        </ContainerDesktop>
   );
 };
 

@@ -16,12 +16,23 @@ import Home from "../../../assets/home.png";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
+import { loadConfig } from '../../../config/configStorage';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
   const Navigation = useNavigate();
-  const { data: contacto } = useGetContacto(1);
-  const { data: manual } = useGetManuales('Inducción','',1);
+
+  const [config, setConfig] = React.useState<any>(null);
+            
+  React.useEffect(() => {
+      loadConfig().then(cfg => {
+          setConfig(cfg);
+      });
+  }, []);
+  
+
+  const { data: contacto } = useGetContacto(config?.data?.id_plan_estudio);
+  const { data: manual } = useGetManuales('Inducción','', config?.data?.id_plan_estudio);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));

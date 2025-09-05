@@ -37,7 +37,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const [captchaValido, setCaptchaValido] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userName, setUserName] = useState("");
-    // const nombrePlataforma = localStorage.getItem("programa") || "";
     const [config, setConfig] = React.useState<any>(null);
 
     const CAPTCHA = import.meta.env.VITE_APP_CAPTCHA;

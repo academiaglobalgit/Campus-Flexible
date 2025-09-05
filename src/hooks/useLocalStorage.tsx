@@ -1,11 +1,12 @@
 import { jwtDecode } from 'jwt-decode';
 import { decryptData } from '../utils/crypto';
+import { getSubdomainKey } from '../utils/Helpers';
 
-const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN;
-const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH;
-const FORO_KEY = import.meta.env.VITE_APP_FORO;
-const TAB_SELECTED_KEY = import.meta.env.VITE_APP_TAB_SELECTED;
-const CURSO_SELECTED = import.meta.env.VITE_APP_CURSO;
+const TOKEN_STORAGE_KEY = import.meta.env.VITE_APP_AUTH_TOKEN + getSubdomainKey();
+const AUTH_MODEL_STORAGE_KEY = import.meta.env.VITE_APP_AUTH + getSubdomainKey();
+const FORO_KEY = import.meta.env.VITE_APP_FORO  + getSubdomainKey();
+const TAB_SELECTED_KEY = import.meta.env.VITE_APP_TAB_SELECTED  + getSubdomainKey();
+const CURSO_SELECTED = import.meta.env.VITE_APP_CURSO  + getSubdomainKey();
 
 export const checkAuthStatus = async (): Promise<{ isAuth: boolean; tokenExpired: boolean }> => {
   const token = getToken();
@@ -92,4 +93,4 @@ export const getTabSelected = (tab: string) => {
   const tabs: { tab: string; index: number }[] = JSON.parse(localStorage.getItem(TAB_SELECTED_KEY) || '[]');
 
   return tabs.find((item) => item.tab === tab)?.index || 0;
-}
+};

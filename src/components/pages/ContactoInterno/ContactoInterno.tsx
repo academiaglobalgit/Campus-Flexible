@@ -11,15 +11,23 @@ import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { flexColumn } from "@styles";
 import { useContactoInterno } from "../../../services/ContactoService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { loadConfig } from "../../../config/configStorage";
 
 
 const ContactoInterno: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [value, setValue] = React.useState(1);
-    const { data: interno, isLoading } = useContactoInterno(1);
 
-    console.log(interno)
+    const [config, setConfig] = React.useState<any>(null);
+          
+    React.useEffect(() => {
+        loadConfig().then(cfg => {
+            setConfig(cfg);
+        });
+    }, []);
+
+    const { data: interno, isLoading } = useContactoInterno(config?.data?.id_plan_estudio);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);

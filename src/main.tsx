@@ -1,10 +1,10 @@
-import { StrictMode } from 'react'
+import { StrictMode, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom';
 import { AppRouting as router } from './AppRouting';
 import { QueryProvider } from './providers/QueryProvider';
 import './index.scss';
-import { Box, CssBaseline, Fade, LinearProgress, ThemeProvider, useMediaQuery, useTheme } from '@mui/material';
+import { Box, createTheme, CssBaseline, Fade, LinearProgress, ThemeProvider, useMediaQuery, useTheme } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './providers/NotificationProvider';
 import { getPlataformaFromSubdomain } from './config/plataformaConfig';
@@ -13,24 +13,39 @@ import { getThemeByPlataforma } from './themes';
 import { loadAppConfig } from './config/configLoader';
 import LogoAG from './assets/logo_ag.svg';
 
-const plataforma = getPlataformaFromSubdomain();
-const theme = getThemeByPlataforma(plataforma);
-
 import { useEffect, useState } from 'react';
 
 function AppLoader() {
   const themeMui = useTheme();
   const isMobile = useMediaQuery(themeMui.breakpoints.down('sm'));
-  // const [config, setConfig] = useState<any>(null);
+  const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const plataforma = getPlataformaFromSubdomain();
+  const baseTheme = getThemeByPlataforma(plataforma);
+
   useEffect(() => {
-    loadAppConfig().then(() => {
-      // setConfig(cfg);
+    loadAppConfig().then((cfg) => {
+      setConfig(cfg);
       setLoading(false);
-      // setTimeout(() => setLoading(false), 300);
     });
   }, []);
+
+  // fusionar theme base con el color dinámico de la API
+  const theme = useMemo(
+    () =>
+      createTheme({
+        ...baseTheme,
+        palette: {
+          ...baseTheme.palette,
+          primary: {
+            ...baseTheme.palette.primary,
+            main: config?.color_primary || baseTheme.palette.primary.main,
+          },
+        },
+      }),
+    [config, baseTheme]
+  );
 
   if (loading) {
     return <Box 

@@ -160,3 +160,16 @@ export const tiempoTranscurrido = (fechaISO: string): string => {
 };
 
 export const FormatearFecha = (fecha: string) => format(new Date(fecha), 'dd/MM/yyyy HH:mm a');
+
+export const getSubdomainKey = () => {
+  const host = window.location.hostname;
+
+  if (host === "localhost") {
+    return "_local";
+  }
+  
+  const parts = host.split(".");
+  const subdomain = parts.length > 2 ? parts[0] : "root";
+
+  return `_${subdomain}`;
+};

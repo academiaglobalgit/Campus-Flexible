@@ -1,6 +1,20 @@
 import { encryptData, decryptData } from '../utils/crypto';
 
-export const CONFIG_KEY = 'appConfig';
+
+const getConfigKey = () => {
+  const host = window.location.hostname;
+
+  if (host === "localhost") {
+    return "appConfig_local";
+  }
+  
+  const parts = host.split(".");
+  const subdomain = parts.length > 2 ? parts[0] : "root";
+
+  return `appConfig_${subdomain}`;
+};
+
+export const CONFIG_KEY = getConfigKey();
 
 export const saveConfig = async (config: any) => {
   const encrypted = await encryptData(config);

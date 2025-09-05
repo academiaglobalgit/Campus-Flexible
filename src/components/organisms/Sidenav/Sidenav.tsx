@@ -13,9 +13,8 @@ import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
-import { AppRoutingPaths, MenuRoutes as MenuItems } from '@constants';
+import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
-import Logo from '../../../assets/logo_ag.svg';
 import miniLogo from '../../../assets/miniLogo.png';
 import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
@@ -25,6 +24,9 @@ import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 import { LeftCircle } from '../../../assets/icons';
 import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 import { useAuth } from '../../../hooks';
+import { loadConfig } from '../../../config/configStorage';
+import { useGetCursos } from '../../../services/CursosActivosService';
+
 
 const drawerWidth = 240;
 
@@ -76,127 +78,26 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
-  const navigate = useNavigate();
-  const menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
-
-  const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
-
-  const handleToggleSubmenu = (label: string) => {
-    setOpenSubmenu((prev) => (prev === label ? null : label));
-  };
-
-  const handleNavigation = (path: string, index: number) => {
-    navigate(path);
-    setSelectedIndex(index);
-  };
-
-  return(
-    <>
-      <Box sx={[
-            { display: 'flex', width: '100%' }, 
-            !open && { justifyContent: 'center' },
-            open
-              && { ml: 6 }
-      ]}>
-        <Typography 
-          variant='body1' 
-          color='primary' 
-          sx={[
-            menuType === "more" && { color: (theme) => theme.palette.grey[600] },
-            { fontWeight: 700}, open && {fontSize: '18px'}]
-          }
-        >
-          {title}
-        </Typography>
-      </Box>
-    
-      <List sx={{ width: '100%' }}>
-        {
-          menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
-            const hasChildren = item.children.length > 0;
-            const isOpen = openSubmenu === item.text;
-
-            return (
-              <React.Fragment key={item.text}>
-                <ListItem disablePadding sx={{ display: 'block' }}>
-                  <ListItemButton
-                    selected={selectedIndex === index}
-                    onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path, index)}
-                    sx={[
-                      {
-                        minHeight: 48,
-                        px: 3.5,
-                      },
-                      open ? { justifyContent: 'initial' } : { justifyContent: 'center' },
-                    ]}
-                  >
-                    <ListItemIcon
-                      sx={[
-                        { minWidth: 0, justifyContent: 'center' },
-                        open ? { mr: 3 } : { mr: 'auto' },
-                      ]}
-                    >
-                      <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                    {
-                      (item.hasCount && open) && 
-                        <Box 
-                          component="span" 
-                          sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
-                        >
-                          12
-                        </Box>
-                    }
-                    {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
-                </ListItem>
-
-                {hasChildren && (
-                  <Collapse in={isOpen && open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {item.children.map((child) => (
-                        <ListItemButton
-                          key={child.text}
-                          sx={{
-                            pl: open ? 9 : 4,
-                            justifyContent: open ? 'initial' : 'center',
-                          }}
-                        >
-                          <ListItemText
-                            primary={child.text}
-                            sx={{ opacity: open ? 1 : 0 }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </React.Fragment>
-            );
-          })
-        }
-      </List>
-    </>
-  );
-};
-
 const Sidenav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const showBackMenuRoutes = ShowBackMenuRoutes;
+
+  const { data: cursosData } = useGetCursos();
   
   const showBackMenu = showBackMenuRoutes.some(route =>
     location.pathname.startsWith(route)
   );
   
   const [open, setOpen] = React.useState(false);
+  const [config, setConfig] = React.useState<any>(null);
+
+  React.useEffect(() => {
+      loadConfig().then(cfg => {
+          setConfig(cfg);
+      });
+  }, []);
 
   const handleMiPerfil = () => {
     navigate(AppRoutingPaths.MI_PERFIL);
@@ -204,7 +105,7 @@ const Sidenav: React.FC = () => {
 
   const handleNavigate = () => {
     window.history.back();
-  }
+  };
 
   const AppBarSection = () => {
     return(
@@ -240,6 +141,122 @@ const Sidenav: React.FC = () => {
     )
   };
 
+  const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
+    const navigate = useNavigate();
+    const menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
+
+    const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
+
+    const handleToggleSubmenu = (label: string) => {
+      setOpenSubmenu((prev) => (prev === label ? null : label));
+    };
+
+    const handleNavigation = (path: string, index: number) => {
+      navigate(path);
+      setSelectedIndex(index);
+    };    
+
+    const getCounter = (item: typeof menuRoutes[number]) => {
+      if (item.text === TitleScreen.CURSOS_ACTIVOS) {
+        return cursosData?.data.length || 0;
+      }
+    }
+
+    return(
+      <>
+        <Box sx={[
+              { display: 'flex', width: '100%' }, 
+              !open && { justifyContent: 'center' },
+              open
+                && { ml: 6 }
+        ]}>
+          <Typography 
+            variant='body1' 
+            color='primary' 
+            sx={[
+              menuType === "more" && { color: (theme) => theme.palette.grey[600] },
+              { fontWeight: 700}, open && {fontSize: '18px'}]
+            }
+          >
+            {title}
+          </Typography>
+        </Box>
+      
+        <List sx={{ width: '100%' }}>
+          {
+            menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
+              const hasChildren = item.children.length > 0;
+              const isOpen = openSubmenu === item.text;
+
+              return (
+                <React.Fragment key={item.text}>
+                  <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItemButton
+                      selected={selectedIndex === index}
+                      onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path, index)}
+                      sx={[
+                        {
+                          minHeight: 48,
+                          px: 3.5,
+                        },
+                        open ? { justifyContent: 'initial' } : { justifyContent: 'center' },
+                      ]}
+                    >
+                      <ListItemIcon
+                        sx={[
+                          { minWidth: 0, justifyContent: 'center' },
+                          open ? { mr: 3 } : { mr: 'auto' },
+                        ]}
+                      >
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.text}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                      {
+                        (item.hasCount && open) && 
+                          <Box 
+                            component="span" 
+                            sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
+                          >
+                            {getCounter(item)}
+                          </Box>
+                      }
+                      {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+                    </ListItemButton>
+                  </ListItem>
+
+                  {hasChildren && (
+                    <Collapse in={isOpen && open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {item.children.map((child) => (
+                          <ListItemButton
+                            key={child.text}
+                            sx={{
+                              pl: open ? 9 : 4,
+                              justifyContent: open ? 'initial' : 'center',
+                            }}
+                          >
+                            <ListItemText
+                              primary={child.text}
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              );
+            })
+          }
+        </List>
+      </>
+    );
+  };
+
   return (
     <Box>
       <CssBaseline />
@@ -256,14 +273,14 @@ const Sidenav: React.FC = () => {
         <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2}}>
             <Box
                   component="img"
-                  src={open ? Logo : miniLogo}
+                  src={open ? config?.data.logo_url : miniLogo}
                   alt="AG College Logo"
                   sx={{
                       mt: 4,
                       mb: '29px',
                   }}
             />
-            {Listado("Menú", open, "main")}
+            {Listado("Menú", open, "main", cursosData)}
             <Divider sx={{ width: open ? '90%' : '50%'}} />
             {/* {Listado("Más", open, "more")} */}
         </Box>

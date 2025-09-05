@@ -187,8 +187,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 nombrePrograma: programa,
             };
 
-            localStorage.setItem("programa", programa ?? "");
-
             setUser(auth);
 
             const encry = await encryptData(auth);
