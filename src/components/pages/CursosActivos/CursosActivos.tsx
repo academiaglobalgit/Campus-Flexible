@@ -30,22 +30,25 @@ const CursoActivo: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!cursosData) return;
-        if (cursosData?.data.some(item => item.estatus === "Finalizado")) {
-        const fetchData = async () => {
-            try {
-                const response = await refetch();
-                setEncuestaData(
-                    response.data?.data.filter(encuesta => encuesta.estatus.toLowerCase() === "activa") ?? []
-                );
-                setOpenEncuesta(true);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        fetchData();
+        if (!cursosData?.data) return;
+
+        const hasCursosFinalizados = cursosData.data.some(item => item.estatus === "Finalizado");
+
+        if (hasCursosFinalizados) {
+            refetch()
+                .then(response => {
+                    const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "activa") ?? [];
+                    
+                    if (encuestasActivas.length > 0) {
+                        setEncuestaData(encuestasActivas);
+                        setOpenEncuesta(true);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching encuestas:", error);
+                });
         }
-    }, [cursosData, refetch]);
+    }, [cursosData]);
 
     const goToInformacion = (item: ICursoActivo) => {
         const curso = {
