@@ -193,3 +193,9 @@ export const useGetEncuestas = (options?: { enabled?: boolean }) => {
 
     return query
 };
+
+
+export const SaveEncuesta = async (payload:{ id_pregunta: number, respuesta_texto: string}): Promise<EncuestasResponse> => {
+    const encryptedPayload = await apiClient.encryptData({...payload});
+    return await apiClient.post<EncuestasResponse>(CURSOS_ACTIVOS_ENDPOINTS.SET_ENCUESTAS_ASIGNACIONES.path, { data: encryptedPayload });
+};

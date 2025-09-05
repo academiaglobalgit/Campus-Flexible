@@ -4,8 +4,11 @@ import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import type { EncuestasDatosResponse, Preguntas } from "../../../../types/Encuestas.interface";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNotification } from "../../../../providers/NotificationProvider";
 import { CheckBoxLabel } from "../../../atoms/Checkbox/Checkbox";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
+import { SaveEncuesta } from "../../../../services/CursosActivosService";
 
 
 type EncuestaDialogProps = {
@@ -21,8 +24,10 @@ type Respuesta =
 export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, close }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const queryClient = useQueryClient();
+	const { showNotification } = useNotification();
 	const [open, setOpen] = React.useState(false);
-	const [isDisabled, setIsDisabled] = React.useState(false);
+	const [isDisabled, setIsDisabled] = React.useState(true);
 	const [isSending, setIsSending] = React.useState(false);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
 	const [selectedByQuestion, setSelectedByQuestion] = useState<Record<number, number | null>>({});
@@ -57,6 +62,10 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 		return next;
 	}
 
+	useEffect(() => {
+		validarEncuesta(respuestas);
+	}, [respuestas]);
+
 	const handleSelect = (id_pregunta: number, id_opcion: number) => {
 		setSelectedByQuestion(prev => ({
 			...prev,
@@ -73,7 +82,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 			// Si marcas otra opción, guarda id_opcion y elimina respuesta_texto si existía
 			return upsertRespuesta(prev, { id_pregunta, id_opcion });
 		});
-		console.log(respuestas)
 	};
 
 	const handleTextChange = (id_pregunta: number, value: string) => {
@@ -88,26 +96,43 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 			// Guarda la respuesta de texto (y elimina id_opcion si existía)
 			return upsertRespuesta(prev, { id_pregunta, respuesta_texto: value });
 		});
-		console.log(respuestas)
 	};
 
 	function validarEncuesta(respuesta: any) {
-		const totalRespuestas = respuestas.length
-		console.log(totalPreguntas)
-		console.log(totalRespuestas)
-
-		(totalPreguntas === totalRespuestas)
+		const totalRespuestas = respuesta.length
+		totalPreguntas === totalRespuestas ? setIsDisabled(false) : setIsDisabled(true)
 	}
 
 	const handlSetEncuesta = (respuestas: any) => {
 
-
-
 		setIsSending(true);
 		setIsDisabled(true);
+		createMutation.mutate(respuestas);
 
 		console.log(respuestas)
 	}
+
+	const createMutation = useMutation({
+		mutationFn: SaveEncuesta,
+		onSuccess: async () => {
+
+			await queryClient.resetQueries({
+				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key], exact: true
+			})
+
+			showNotification(`Comentario guardado satisfactorimente`, "success");
+			setIsSending(false);
+
+		},
+		onError: (error) => {
+			console.log(error)
+			setIsSending(false);
+			showNotification(`Error al registrar: ${error.message}`, "error");
+		},
+		onSettled: () => {
+			console.log('La mutación ha finalizado');
+		}
+	});
 
 
 	const siguiente = (
