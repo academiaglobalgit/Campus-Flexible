@@ -28,7 +28,7 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const query = useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
-        //staleTime: 1000 * 60 * (idRecurso === 2 ? 99 : 5), // 99 minutos de stale time
+        staleTime: 1000 * 60 * (idRecurso === 2 ? 99 : 5), // 99 minutos de stale time
     });
 
     const mapData = (data: CursosTabs[]) => {
@@ -195,7 +195,7 @@ export const useGetEncuestas = (options?: { enabled?: boolean }) => {
 };
 
 
-export const SaveEncuesta = async (payload:{ id_pregunta: number, respuesta_texto: string}): Promise<EncuestasResponse> => {
-    const encryptedPayload = await apiClient.encryptData({...payload});
+export const SaveEncuesta = async (payload: any): Promise<EncuestasResponse> => {
+    const encryptedPayload = await apiClient.encryptData({ ...payload });
     return await apiClient.post<EncuestasResponse>(CURSOS_ACTIVOS_ENDPOINTS.SET_ENCUESTAS_ASIGNACIONES.path, { data: encryptedPayload });
 };

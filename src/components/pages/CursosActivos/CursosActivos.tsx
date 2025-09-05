@@ -23,35 +23,29 @@ const CursoActivo: React.FC = () => {
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
-    const [openEncuesta, setOpenEncuesta] = React.useState(true);
-    const [isLoadingEncuesta, setIsLoading] = React.useState(false);
+    const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     const navigate = useNavigate();
 
     useEffect(() => {
-        //if (cursosData?.data.some(item => item.estatus === "Finalizado")) {
-        console.log('refetch')
+        if (!cursosData) return;
+        if (cursosData?.data.some(item => item.estatus === "Finalizado")) {
         const fetchData = async () => {
             try {
-                setIsLoading(true);
                 const response = await refetch();
-                console.log(response.data?.data)
                 setEncuestaData(
-                    response.data?.data.filter(encuesta => encuesta.estatus.toLowerCase() === "completada") ?? []
+                    response.data?.data.filter(encuesta => encuesta.estatus.toLowerCase() === "activa") ?? []
                 );
-                setIsLoading(false);
+                setOpenEncuesta(true);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-
         fetchData();
-        setOpenEncuesta(true);
-        //}
-    }, [cursosData]);
+        }
+    }, [cursosData, refetch]);
 
     const goToInformacion = (item: ICursoActivo) => {
         const curso = {
@@ -168,12 +162,7 @@ const CursoActivo: React.FC = () => {
                 </ContainerDesktop>
             }
             {
-
-                isLoadingEncuesta
-                    ?
-                    <LoadingCircular Text="Cargando Encuestas..." />
-                    :
-                    <EncuestasModal isOpen={openEncuesta} data={encuestaData[0]} close={() => setOpenEncuesta(false)} />
+                <EncuestasModal isOpen={openEncuesta} data={encuestaData[0]} />
             }
 
         </>

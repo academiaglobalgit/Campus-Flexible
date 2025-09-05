@@ -14,14 +14,13 @@ import { SaveEncuesta } from "../../../../services/CursosActivosService";
 type EncuestaDialogProps = {
 	isOpen?: boolean;
 	data?: EncuestasDatosResponse;
-	close: () => void;
 }
 
 type Respuesta =
-	| { id_pregunta: number; id_opcion: number }                 // opción elegida
-	| { id_pregunta: number; respuesta_texto: string };          // respuesta abierta
+	| { id_pregunta: number; id_opcion: number }
+	| { id_pregunta: number; respuesta_texto: string };
 
-export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, close }) => {
+export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const queryClient = useQueryClient();
@@ -37,20 +36,13 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 		setOpen(isOpen ?? false);
 	}, [isOpen]);
 
-	const handleClose = () => {
-		setOpen(false);
-		close();
-	};
-
-
-	// Inserta o reemplaza la respuesta de una pregunta, limpiando el otro campo.
 	function upsertRespuesta(
 		prev: Respuesta[],
 		nueva: Respuesta
 	): Respuesta[] {
 		const i = prev.findIndex(r => r.id_pregunta === nueva.id_pregunta);
 
-		// Normaliza para que solo exista UNO de los campos (id_opcion O respuesta_texto)
+		// solo exista uno de los campos (id_opcion O respuesta_texto)
 		const limpia =
 			'id_opcion' in nueva
 				? { id_pregunta: nueva.id_pregunta, id_opcion: nueva.id_opcion } as Respuesta
@@ -74,26 +66,19 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 
 		setRespuestas(prev => {
 			const yaSeleccionado = selectedByQuestion[id_pregunta] === id_opcion;
-			// Si quieres permitir desmarcar (dejar sin respuesta):
 			if (yaSeleccionado) {
-				// elimina la respuesta de esa pregunta
 				return prev.filter(r => r.id_pregunta !== id_pregunta);
 			}
-			// Si marcas otra opción, guarda id_opcion y elimina respuesta_texto si existía
 			return upsertRespuesta(prev, { id_pregunta, id_opcion });
 		});
 	};
 
 	const handleTextChange = (id_pregunta: number, value: string) => {
-		// Si escriben texto, limpiamos cualquier check previo
 		setSelectedByQuestion(prev => ({ ...prev, [id_pregunta]: null }));
-
 		setRespuestas(prev => {
 			if (!value.trim()) {
-				// Si el texto queda vacío, eliminamos la respuesta de esa pregunta
 				return prev.filter(r => r.id_pregunta !== id_pregunta);
 			}
-			// Guarda la respuesta de texto (y elimina id_opcion si existía)
 			return upsertRespuesta(prev, { id_pregunta, respuesta_texto: value });
 		});
 	};
@@ -103,30 +88,31 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 		totalPreguntas === totalRespuestas ? setIsDisabled(false) : setIsDisabled(true)
 	}
 
-	const handlSetEncuesta = (respuestas: any) => {
-
+	const handlSetEncuesta = (respuesta: any) => {
 		setIsSending(true);
 		setIsDisabled(true);
-		createMutation.mutate(respuestas);
-
-		console.log(respuestas)
+		createMutation.mutate({ respuestas: respuesta });
 	}
 
 	const createMutation = useMutation({
 		mutationFn: SaveEncuesta,
 		onSuccess: async () => {
-
-			await queryClient.resetQueries({
-				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key], exact: true
-			})
-
-			showNotification(`Comentario guardado satisfactorimente`, "success");
+			
 			setIsSending(false);
+			setOpen(false);
+			showNotification(`Encuesta guardada satisfactorimente`, "success");
+
+			await queryClient.invalidateQueries({
+				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
+				exact: true,
+			});
+
 
 		},
 		onError: (error) => {
 			console.log(error)
 			setIsSending(false);
+			setOpen(false);
 			showNotification(`Error al registrar: ${error.message}`, "error");
 		},
 		onSettled: () => {
@@ -148,17 +134,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 			Enviar encuesta
 		</Button>
 	);
-	/* const anterior = (
-		<Button
-			fullWidth
-			variant="outlined"
-			iconPosition={'start'}
-			icon={<ArrowBackIcon />}
-			onClick={handleClose}
-		>
-			Anterior
-		</Button>
-	); */
 
 	const Preguntas = (item: Preguntas, index: number) => (
 		<>
@@ -184,7 +159,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 				</Typography>
 			</Box>
 
-			{/* Opciones (exclusivas tipo radio con CheckBoxLabel controlado) */}
 			{item.tipo_pregunta === "escala" && (
 				<Box key={"preguntas-" + item.id_pregunta} sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
 					{item.opciones.map((opcion) => {
@@ -211,7 +185,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, cl
 				</Box>
 			)}
 
-			{/* Respuesta abierta */}
 			{item.tipo_pregunta === "abierta" && (
 				<TextField
 					fullWidth
