@@ -8,6 +8,7 @@ export interface CursoActivo {
     titulo_curso:     string;
     progreso:         number;
     id_usuario_tutor: number;
+    calificacion_final: number;
     nombre_tutor:     string;
     correo:           string;
     fecha_inicio:     string;
