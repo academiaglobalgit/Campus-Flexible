@@ -35,7 +35,7 @@ const CursosActivosDetalles: React.FC = () => {
 
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                CursosTabs = CursosTabs.filter(item => item.id !== 2 && item.id !== 5); // Remover Foros y Evaluaciones
+                CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5); // Remover Foros y Evaluaciones
                 CursosTabs = CursosTabs.map((item) => {
                     if(item.id === 3) { // Foros
                         return { ...item, tab: 'Momentos' };
