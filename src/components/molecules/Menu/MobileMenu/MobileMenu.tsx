@@ -32,12 +32,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     let menuRoutes = [...MenuItems.filter((item) => item.menu === "main")].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-    const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
-
-    switch(configPlataforma?.id_plan_estudio) {
+    let items = (menuType === 'menuRoutes' ? menuRoutes : menuInformacion) as any[];
+    
+    switch (configPlataforma?.id_plan_estudio) {
         case 17: // Diplomados
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
-        break;
+            items = items.filter(item => item.text !== "Servicios Escolares");
+            break;
     }
 
     const handleNavigation = (item: any) => {
@@ -114,32 +115,26 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                     {menuType === 'menuRoutes' ? 'Menú' : 'Más información'}
                 </Typography>
                 {
-                    items.filter((item) => item.visible === 1).map((item, index) => (
-                        <MenuItem
-                            key={index}
-                            onClick={() => handleNavigation(item)}
-                            sx={[
-                                { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
-                                !isMobile && { width: '100%', maxWidth: '232px' }
-                            ]}
-                        >
-                            {
-                                menuType === 'menuRoutes'
-                                    ?
-                                    item.text
-                                    :
-                                    <>
-                                        <ListItemIcon>
-                                            <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300] }} />
-                                        </ListItemIcon>
-                                        <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
-                                    </>
-                            }
-                        </MenuItem>
-                    ))
+                    items.filter((item) => item.visible === 1).map((item, index) => {
+                        return (<MenuItem key={index} onClick={() => handleNavigation(item)} sx={[
+                            { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
+                            !isMobile && { width: '100%', maxWidth: '232px' }
+                        ]}>
+                            {menuType === 'menuRoutes'
+                                ?
+                                item.text
+                                :
+                                <>
+                                    <ListItemIcon>
+                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300] }} />
+                                    </ListItemIcon>
+                                    <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
+                                </>}
+                        </MenuItem>);
+                    })
                 }
             </Menu>
-            <Box sx={{height: '50px', width: '100%'}}></Box>
+            <Box sx={{ height: '50px', width: '100%' }}></Box>
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} menutype={menuTypeDialog} />
         </>
     );

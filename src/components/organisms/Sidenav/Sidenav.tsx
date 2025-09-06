@@ -146,7 +146,7 @@ const Sidenav: React.FC = () => {
 
     switch(config?.data?.id_plan_estudio) {
       case 17: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 5); // Remover Plan de estudios y Sala de conversacion
       break;
     }
 
