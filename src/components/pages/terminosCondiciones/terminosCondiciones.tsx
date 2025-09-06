@@ -18,7 +18,7 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import { useAuth } from "../../../context/AuthContext";
 
 const TerminosCondiciones: React.FC = () => {
-    const { setAceptoTerminos } = useAuth();
+    const { setAceptoTerminos, configPlataforma: config } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
     const { showNotification } = useNotification()
@@ -44,11 +44,22 @@ const TerminosCondiciones: React.FC = () => {
             setIsLoading(true);
             await createMutation.mutateAsync({ documentos_legales: [1, 2, 3] });
             if(setAceptoTerminos) setAceptoTerminos(true);
-            navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            goToPage();
         } catch (error) {
             showNotification("Hubo un error al registrar: " + error, "error");
             setIsLoading(false);
             console.error(error);
+        }
+    }
+
+    const goToPage = () => {
+        switch(config?.id_plan_estudio) {
+            case 17: 
+                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+            break;
+            default:
+                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            break;
         }
     }
 

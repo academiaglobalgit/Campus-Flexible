@@ -40,7 +40,7 @@ function AppLoader() {
           ...baseTheme.palette,
           primary: {
             ...baseTheme.palette.primary,
-            main: config?.color_primary || baseTheme.palette.primary.main,
+            main: config?.data.color_primary || baseTheme.palette.primary.main,
           },
         },
       }),

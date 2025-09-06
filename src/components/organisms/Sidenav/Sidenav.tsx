@@ -15,7 +15,6 @@ import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-route
 import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
 import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
-import miniLogo from '../../../assets/miniLogo.png';
 import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
@@ -143,7 +142,14 @@ const Sidenav: React.FC = () => {
 
   const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     const navigate = useNavigate();
-    const menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    switch(config?.data?.id_plan_estudio) {
+      case 17: // Diplomados
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
+      break;
+    }
+
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
 
     const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
@@ -217,12 +223,12 @@ const Sidenav: React.FC = () => {
                       />
                       {
                         (item.hasCount && open) && 
-                          <Box 
-                            component="span" 
-                            sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
-                          >
-                            {getCounter(item)}
-                          </Box>
+                            getCounter(item) !== 0 && <Box 
+                              component="span" 
+                              sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
+                            >
+                              {getCounter(item)}
+                            </Box>
                       }
                       {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
                     </ListItemButton>
@@ -273,7 +279,7 @@ const Sidenav: React.FC = () => {
         <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2}}>
             <Box
                   component="img"
-                  src={open ? config?.data.logo_url : miniLogo}
+                  src={open ? config?.data.logo_url : config?.data.logo_url_mini}
                   alt="AG College Logo"
                   sx={{
                       mt: 4,

@@ -12,24 +12,39 @@ import { Evaluaciones } from "./Evaluaciones";
 import { Tutorias } from "./Tutorias";
 import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
+import { useAuth } from "../../../hooks";
 
-const CursosTabs = [
-    { tab: 'Contenido', content: <Contenido /> },
-    { tab: 'Actividades', content: <Actividades /> },
-    { tab: 'Foros', content: <ForosCursos /> },
-    { tab: 'Clases', content: <Tutorias /> },
-    { tab: 'Evaluaciones', content: <Evaluaciones /> },
-    { tab: 'Lista de pendientes', content: <ListaPendientes /> },
+let CursosTabs = [
+    { id:1, tab: 'Contenido', content: <Contenido /> },
+    { id:2, tab: 'Actividades', content: <Actividades /> },
+    { id:3, tab: 'Foros', content: <ForosCursos /> },
+    { id:4, tab: 'Clases', content: <Tutorias /> },
+    { id:5, tab: 'Evaluaciones', content: <Evaluaciones /> },
+    { id:6, tab: 'Lista de pendientes', content: <ListaPendientes /> },
 ];
 
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
+    const { configPlataforma } = useAuth();
     const curso = JSON.parse(getCursoSelected() || '{}');
     const [value, setValue] = React.useState(0);
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
         setValue(indexTab);
+
+        switch(configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                CursosTabs = CursosTabs.filter(item => item.id !== 2 && item.id !== 5); // Remover Foros y Evaluaciones
+                CursosTabs = CursosTabs.map((item) => {
+                    if(item.id === 3) { // Foros
+                        return { ...item, tab: 'Momentos' };
+                    }
+                    return item;
+                });
+            break;
+        }
+
     },[]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {

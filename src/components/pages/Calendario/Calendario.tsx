@@ -15,7 +15,7 @@ const Calendario: React.FC = () => {
   const { documentos } = useDocumentos();
   const { data: CalendarioDatos, isLoading } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
 
-
+console.log(documentos.find(doc => doc.id_tipo_manual === TipoManualesIds.CALENDARIO)?.url_archivo);
   const PDFSection = (
 
     isLoading

@@ -4,6 +4,8 @@ import { useAuthLogin as loginApi, useLogout as logoutApi, useAuthNewPassword, u
 import type { User } from '@constants';
 import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
 import { encryptData } from '../utils/crypto';
+import type { ConfigPlataforma } from '../types/ConfigPlataforma.interface';
+import { loadConfig } from '../config/configStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -13,12 +15,13 @@ interface AuthContextType {
   isInitializing: boolean;
   isTokenExpired: boolean;
   isLogout: boolean;
+  aceptoTerminos: boolean;
+  configPlataforma: ConfigPlataforma | null;
   clearError: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
   newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-  aceptoTerminos: boolean;
   setAceptoTerminos?: (acepto: boolean) => void;
 }
 
@@ -34,11 +37,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [error, setError] = useState<string | null>(null);
     const [isLogout, setIsLogout] = useState(false);
     const [_nombrePrograma, setNombrePrograma] = useState("");
+    const [configPlataforma, setConfigPlataforma] = useState<ConfigPlataforma | null>(null);
 
     const { refetch } = useGetPerfilUsuario("Login", { enabled: false });
 
     const queryClient = useQueryClient();
     
+    useEffect(() => {
+        loadConfig().then((cfg) => {
+          setConfigPlataforma(cfg.data || null);
+        });
+    }, []);
+
     // Verificar autenticación al montar el componente
     useEffect(() => {
         const checkAuth = async () => {
@@ -226,6 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isTokenExpired,
         isLogout,
         aceptoTerminos,
+        configPlataforma,
         login: handleLogin,
         logout: handleLogout,
         clearError,
