@@ -280,7 +280,7 @@ const Sidenav: React.FC = () => {
                       mb: '29px',
                   }}
             />
-            {Listado("Menú", open, "main", cursosData)}
+            {Listado("Menú", open, "main")}
             <Divider sx={{ width: open ? '90%' : '50%'}} />
             {/* {Listado("Más", open, "more")} */}
         </Box>
