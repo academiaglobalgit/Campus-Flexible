@@ -40,8 +40,12 @@ export const useGetCalificaciones = () => {
 
 export const useGetCalificacionesDetalles = (cursoId: number) => {
   return useQuery<CalificacionDetalleResponse, Error>({
-      queryKey: [CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.key, cursoId],
-      queryFn: async () => await apiClient.get<CalificacionDetalleResponse>(`${CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.path}?id_curso=${cursoId}`),
-      staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+    queryKey: [CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.key, cursoId],
+    queryFn: async () => await apiClient.get<CalificacionDetalleResponse>(`${CALIFICACIONES_ENDPOINTS.GET_CALIFICACIONES_DETALLES.path}?id_curso=${cursoId}`),
+    staleTime: 1000 * 60 * 5, // 5 minutos de stale time
   });
 }
+
+export const usePromediarCurso = async (id_curso: number): Promise<any> => {
+  return await apiClient.post<any>(`${CALIFICACIONES_ENDPOINTS.POST_CALIFICACIONES_PROMEDIAR.path}/${id_curso}/finalizar-promedio`);
+};
