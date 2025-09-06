@@ -10,6 +10,7 @@ export const useGetContacto = (id_plan_estudios: number) => {
         queryKey: [CONTACTO_ENDPOINTS.GET_CONTACTO.key, id_plan_estudios],
         queryFn: async () => await apiClient.get<ContactoResponse>(`${CONTACTO_ENDPOINTS.GET_CONTACTO.path}?id_plan_estudio=${id_plan_estudios}&principal=1`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        enabled: id_plan_estudios !== undefined && id_plan_estudios !== null && id_plan_estudios > 0,
     });
 
     const mapData = (data: Contacto[]) => {
@@ -29,10 +30,12 @@ export const useGetContacto = (id_plan_estudios: number) => {
 }
 
 export const useContactoInterno = (id_plan_estudios: number) => {
+    const url = `${CONTACTO_ENDPOINTS.GET_CONTACTO_INTERNO.path}?id_plan_estudio=${id_plan_estudios}&principal=0`;
     const query = useQuery<ContactoInternoResponse, Error>({
         queryKey: [CONTACTO_ENDPOINTS.GET_CONTACTO_INTERNO.key],
-        queryFn: async () => await apiClient.get<ContactoInternoResponse>(`${CONTACTO_ENDPOINTS.GET_CONTACTO_INTERNO.path}?id_plan_estudio=${id_plan_estudios}&principal=0`),
+        queryFn: async () => await apiClient.get<ContactoInternoResponse>(url),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        enabled: id_plan_estudios !== undefined && id_plan_estudios !== null && id_plan_estudios > 0,
     });
 
     const mapData = (data: ContactoInterno[]) => {

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
+import { useAuth } from "../../../../hooks";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -17,6 +18,8 @@ type MobileMenuProps = {
 export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuType = 'menuRoutes' }) => {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { configPlataforma } = useAuth();
+
     const menuOpen = Boolean(anchorEl);
     const [maxWidth, setMaxWidth] = useState(370);
     const [menuItemStyle, setMenuItemStyle] = useState({});
@@ -26,10 +29,16 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
     const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
-    const menuRoutes = [...MenuItems.filter((item) => item.menu === "main")].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    let menuRoutes = [...MenuItems.filter((item) => item.menu === "main")].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     const items = menuType === 'menuRoutes' ? menuRoutes : menuInformacion;
+
+    switch(configPlataforma?.id_plan_estudio) {
+        case 17: // Diplomados
+            menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
+        break;
+    }
 
     const handleNavigation = (item: any) => {
         if (item.text === TitleScreen.MANUALES_USUARIOS || item.text === TitleScreen.LINEAMIENTOS) {

@@ -68,7 +68,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         // enviar formulario
         if (result.success) {
             if (result.aceptoTerminos)
-                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+                goToPage();
             else
                 navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
         } else {
@@ -79,6 +79,17 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             }
         }
     };
+
+    const goToPage = () => {
+        switch(config?.data?.id_plan_estudio) {
+            case 17: 
+                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+            break;
+            default:
+                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            break;
+        }
+    }
 
     const onCaptchaChange = () => {
         setCaptchaValido(true);

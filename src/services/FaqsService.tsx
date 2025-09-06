@@ -13,6 +13,7 @@ export const useGetPreguntasFrecuentes = (id_plan_estudios: number) => {
         queryKey: [FAQS_ENDPOINTS.GET_FAQS.key, id_plan_estudios],
         queryFn: async () => await apiClient.get(`${FAQS_ENDPOINTS.GET_FAQS.path}?id_plan_estudio=${id_plan_estudios}`),
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        enabled: id_plan_estudios !== undefined && id_plan_estudios !== null && id_plan_estudios > 0,
     });
 
     const mapData = (data: Pregunta[]) => {

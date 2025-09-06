@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
+import HomeDiplomado from "../../../assets/home_diplomado.png";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
@@ -22,11 +23,20 @@ const LoginPage: React.FC = () => {
   const theme = useTheme();
   const Navigation = useNavigate();
 
+  const [backgroundImage, setBackgroundImage] = React.useState("");
   const [config, setConfig] = React.useState<any>(null);
-            
+  
   React.useEffect(() => {
       loadConfig().then(cfg => {
           setConfig(cfg);
+          switch (cfg?.data?.id_plan_estudio) {
+            case 17: // Diplomado
+              setBackgroundImage(HomeDiplomado);
+            break;
+            default:
+              setBackgroundImage(Home);
+            break;
+          }
       });
   }, []);
   
@@ -67,11 +77,11 @@ const LoginPage: React.FC = () => {
               <Grid size={{ md: 8 }} >
                 <Box
                   component="img"
-                  src={Home}
+                  src={backgroundImage}
                   alt="Login"
                   sx={{
                     width: '100%',
-                    height: '100%',
+                  //   height: '100%',
                     objectFit: 'cover',
                   }}
                 />

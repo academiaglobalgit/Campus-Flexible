@@ -22,12 +22,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
 import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
 
+import { useAuth } from '../../../hooks';
+
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
-    const theme = useTheme();
+    const theme = useTheme();    
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
+    const { configPlataforma } = useAuth();
 
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -101,13 +104,34 @@ const Calificaciones: React.FC = () => {
                     <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
                     <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
                 </Box>
-
-                <Box sx={{ display: 'flex', gap: '15px' }}>
-                    <><Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button></>
-                    <><Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button></>
-                </Box>
+                {
+                    (curso.estatus_curso_alumno === 'Finalizado' || curso.estatus_curso_alumno === 'Cursando') &&
+                        <Box sx={{ display: 'flex', gap: '15px' }}>
+                        {  
+                            botonesCalificacion(curso)
+                        }
+                    </Box>
+                }                
             </Box>
         );
+    };
+
+    const botonesCalificacion = (curso: CalificacionCurso) => {
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                return (
+                    <React.Fragment>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                    </React.Fragment>
+                );
+            default:
+                return (
+                    <React.Fragment>
+                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                    </React.Fragment>
+                );
+        }
     };
 
     const promedio = () => (
