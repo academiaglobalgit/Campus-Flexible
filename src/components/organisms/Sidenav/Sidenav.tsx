@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
+import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -10,204 +10,322 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
+import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
+import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
-import {
-  Dashboard as DashboardIcon,
-  ShoppingCart as OrdersIcon,
-  ExpandLess,
-  ExpandMore,
-} from '@mui/icons-material';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material';
-import { AppRoutingPaths } from '@constants';
+import { Avatar } from '../../atoms/Avatar/Avatar';
+import DsSvgIcon from '../../atoms/Icon/Icon';
+import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
+import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
+import { FabMenu } from '../../molecules/FabMenu/FabMenu';
+import { LeftCircle } from '../../../assets/icons';
+import { ShowBackMenuRoutes } from '../../../utils/Helpers';
+import { useAuth } from '../../../hooks';
+import { loadConfig } from '../../../config/configStorage';
+import { useGetCursos } from '../../../services/CursosActivosService';
+
 
 const drawerWidth = 240;
 
-interface NavigationItem {
-  text: string;
-  icon: React.ReactElement;
-  path?: string;
-  children?: NavigationItem[];
-}
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
 
-const navigationItems: NavigationItem[] = [
-  {
-    text: 'Main items',
-    icon: <></>,
-    children: [
-      { text: 'Home', icon: <DashboardIcon />, path: AppRoutingPaths.HOME },
-      { text: 'Calificaciones', icon: <OrdersIcon />, path: AppRoutingPaths.CALIFICACIONES },
-      { text: 'Mi Ruta', icon: <OrdersIcon />, path: AppRoutingPaths.MIRUTA },
-      // { text: 'ToDo', icon: <OrdersIcon />, path: AppRoutingPaths.TODO },
-    ],
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(10)} + 2px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(11)} + 2px)`,
   },
-  // {
-  //   text: 'Analytics',
-  //   icon: <></>,
-  //   children: [
-  //     { text: 'Reports', icon: <ReportsIcon />, path: AppRoutingPaths.HOME },
-  //     { text: 'Integrations', icon: <ReportsIcon />, path: AppRoutingPaths.HOME },
-  //   ],
-  // },
-];
+  
+});
 
-type SidenavProps = {
-    isOpen: boolean;
-    onClose: () => void;
-  };
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    variants: [
+      {
+        props: ({ open }) => open,
+        style: {
+          ...openedMixin(theme),
+          '& .MuiDrawer-paper': openedMixin(theme),
+        },
+      },
+      {
+        props: ({ open }) => !open,
+        style: {
+          ...closedMixin(theme),
+          '& .MuiDrawer-paper': closedMixin(theme),
+        },
+      },
+    ],
+  }),
+);
 
-const Sidenav = ({ isOpen }: SidenavProps) => {
-  const [expandedItems, setExpandedItems] = React.useState<string[]>(['Main items', 'Analytics']);
-
-  const [_mobileOpen, setMobileOpen] = React.useState(false);
-  const [_isClosing, setIsClosing] = React.useState(false);
-  const theme = useTheme();
+const Sidenav: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const showBackMenuRoutes = ShowBackMenuRoutes;
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
+  const { data: cursosData } = useGetCursos();
+  
+  const showBackMenu = showBackMenuRoutes.some(route =>
+    location.pathname.startsWith(route)
+  );
+  
+  const [open, setOpen] = React.useState(false);
+  const [config, setConfig] = React.useState<any>(null);
+
+  React.useEffect(() => {
+      loadConfig().then(cfg => {
+          setConfig(cfg);
+      });
+  }, []);
+
+  const handleMiPerfil = () => {
+    navigate(AppRoutingPaths.MI_PERFIL);
   };
 
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
+  const handleNavigate = () => {
+    window.history.back();
   };
 
-  // const handleDrawerToggle = () => {
-  //   if (!isClosing) {
-  //     setMobileOpen(!mobileOpen);
-  //   }
-  // };
+  const AppBarSection = () => {
+    return(
+      <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
+        
+          <Box sx={
+            [
+              showBackMenu && {display: 'flex', justifyContent: 'space-between'}
+            ]
+          }>
+            
+          {showBackMenu && (
+            <Toolbar onClick={handleNavigate}>
+              <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px',}}>
+                <IconButton >
+                  <DsSvgIcon component={LeftCircle} color='primary' />
+                </IconButton>
+                <Typography component="h4" variant="h4" sx={{ ml: '2px' }}>
+                  Regresar
+                </Typography>
+              </Box>
+            </Toolbar>
+          )}
+            
+            <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
+              <Typography variant="h4" component="h4" color='primary'>
+                {user?.nombrePrograma}
+              </Typography>
+              <IconsTopBar />
+            </Toolbar>
+          </Box>
+      </AppBar>
+    )
+  };
 
-  const handleExpandClick = (text: string) => {
-    setExpandedItems(prev => 
-      prev.includes(text) 
-        ? prev.filter(item => item !== text)
-        : [...prev, text]
+  const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
+    const navigate = useNavigate();
+    let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    switch(config?.data?.id_plan_estudio) {
+      case 17: // Diplomados
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 5); // Remover Plan de estudios y Sala de conversacion
+      break;
+    }
+
+    const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
+
+    const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
+
+    const handleToggleSubmenu = (label: string) => {
+      setOpenSubmenu((prev) => (prev === label ? null : label));
+    };
+
+    const handleNavigation = (path: string, index: number) => {
+      navigate(path);
+      setSelectedIndex(index);
+    };    
+
+    const getCounter = (item: typeof menuRoutes[number]) => {
+      if (item.text === TitleScreen.CURSOS_ACTIVOS) {
+        return cursosData?.data.length || 0;
+      }
+    }
+
+    return(
+      <>
+        <Box sx={[
+              { display: 'flex', width: '100%' }, 
+              !open && { justifyContent: 'center' },
+              open
+                && { ml: 6 }
+        ]}>
+          <Typography 
+            variant='body1' 
+            color='primary' 
+            sx={[
+              menuType === "more" && { color: (theme) => theme.palette.grey[600] },
+              { fontWeight: 700}, open && {fontSize: '18px'}]
+            }
+          >
+            {title}
+          </Typography>
+        </Box>
+      
+        <List sx={{ width: '100%' }}>
+          {
+            menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
+              const hasChildren = item.children.length > 0;
+              const isOpen = openSubmenu === item.text;
+
+              return (
+                <React.Fragment key={item.text}>
+                  <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItemButton
+                      selected={selectedIndex === index}
+                      onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path, index)}
+                      sx={[
+                        {
+                          minHeight: 48,
+                          px: 3.5,
+                        },
+                        open ? { justifyContent: 'initial' } : { justifyContent: 'center' },
+                      ]}
+                    >
+                      <ListItemIcon
+                        sx={[
+                          { minWidth: 0, justifyContent: 'center' },
+                          open ? { mr: 3 } : { mr: 'auto' },
+                        ]}
+                      >
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.text}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                      {
+                        (item.hasCount && open) && 
+                            getCounter(item) !== 0 && <Box 
+                              component="span" 
+                              sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
+                            >
+                              {getCounter(item)}
+                            </Box>
+                      }
+                      {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+                    </ListItemButton>
+                  </ListItem>
+
+                  {hasChildren && (
+                    <Collapse in={isOpen && open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {item.children.map((child) => (
+                          <ListItemButton
+                            key={child.text}
+                            sx={{
+                              pl: open ? 9 : 4,
+                              justifyContent: open ? 'initial' : 'center',
+                            }}
+                          >
+                            <ListItemText
+                              primary={child.text}
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Collapse>
+                  )}
+                </React.Fragment>
+              );
+            })
+          }
+        </List>
+      </>
     );
   };
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    // if (isMobile) {
-    //   setMobileOpen(false);
-    // }
-  };
-
-  const renderNavigationItems = (items: NavigationItem[], level = 0) => {
-    return items.map((item) => {
-      if (item.children) {
-        const isExpanded = expandedItems.includes(item.text);
-        return (
-          <React.Fragment key={item.text}>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => handleExpandClick(item.text)}
-                sx={{ pl: 2 + level * 2 }}
-              >
-                <ListItemText 
-                  primary={item.text} 
-                  primaryTypographyProps={{
-                    variant: 'caption',
-                    color: 'text.secondary',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                  }}
-                />
-                {isExpanded ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-            </ListItem>
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {renderNavigationItems(item.children, level + 1)}
-              </List>
-            </Collapse>
-          </React.Fragment>
-        );
-      }
-
-      const isActive = location.pathname === item.path;
-      return (
-        <ListItem key={item.text} disablePadding>
-          <ListItemButton
-            onClick={() => item.path && handleNavigation(item.path)}
-            selected={isActive}
-            sx={{
-              pl: 2 + level * 2,
-              '&.Mui-selected': {
-                backgroundColor: theme.palette.primary.main + '20',
-                borderRight: `3px solid ${theme.palette.primary.main}`,
-                '&:hover': {
-                  backgroundColor: theme.palette.primary.main + '30',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ color: isActive ? theme.palette.primary.main : 'inherit' }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItemButton>
-        </ListItem>
-      );
-    });
-  };
-
-  const drawer = (
-    <div>
-      <Toolbar />
-      <Divider />
-      <List>
-        {renderNavigationItems(navigationItems)}
-      </List>
-    </div>
-  );
-
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box>
       <CssBaseline />
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
+      
+      <Drawer 
+        variant="permanent" 
+        open={open}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        sx={{
+          boxShadow: "0px 2px 4px 0px #6BBBE44D",
+        }}
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Drawer
-          variant="temporary"
-          open={isOpen}
-          onTransitionEnd={handleDrawerTransitionEnd}
-          onClose={handleDrawerClose}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          slotProps={{
-            root: {
-              keepMounted: true,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-      >
-        <Toolbar />
-        <Outlet />
+        <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2}}>
+            <Box
+                  component="img"
+                  src={open ? config?.data.logo_url : config?.data.logo_url_mini}
+                  alt="AG College Logo"
+                  sx={{
+                      mt: 4,
+                      mb: '29px',
+                  }}
+            />
+            {Listado("Menú", open, "main")}
+            <Divider sx={{ width: open ? '90%' : '50%'}} />
+            {/* {Listado("Más", open, "more")} */}
+        </Box>
+               
+        <Box sx={[{height: '70px', display: 'flex', alignItems:'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start'}, open && {paddingLeft: '20px'}]}>
+              <IconButton sx={{ p: 0 }}>
+                <Avatar width={48} height={48} onClick={handleMiPerfil} alt={user?.name} src={user?.photo} />
+              </IconButton>
+              {
+                open && 
+                <Badge onClick={handleMiPerfil} sx={{cursor: 'pointer'}}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  badgeContent={
+                    <ArrowCircleUpOutlinedIcon color='primary' sx={{ transform: 'rotate(40deg)', ml:5}} />
+                  }
+                >
+                  <Box>
+                    <Typography variant="body1" component="div">
+                      {user?.name}
+                    </Typography>
+                    <Typography variant="body1" component="div" color='disabled'>
+                      {user?.city}
+                    </Typography>
+                  </Box>
+                </Badge>                
+              }
+        </Box>
+      </Drawer>
+      <Box sx={{ paddingTop: '90px' }}>
+          <AppBarSection />
+          <Outlet/>
+          <ScrollRestoration />
+          <FabMenu />
       </Box>
     </Box>
   );
 }
+
 export default Sidenav;

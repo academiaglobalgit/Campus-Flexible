@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import ButtonMUI from '@mui/material/Button';
 import type { SxProps, Theme } from '@mui/material/styles';
 
@@ -11,9 +12,11 @@ type dsButtonProps = {
     children: React.ReactNode;
     sxProps?: SxProps<Theme>;
     isLoading?: boolean;
+    icon?: ReactElement;
+    iconPosition?: 'start' | 'end';
 };
 
-const Button = ({ color = 'primary', variant = 'contained', size = 'medium', children, disabled, onClick, sxProps, fullWidth, isLoading }: dsButtonProps) => {
+const Button = ({ color = 'primary', variant = 'contained', size = 'medium', children, disabled, onClick, sxProps, fullWidth, isLoading, icon, iconPosition = 'end' }: dsButtonProps) => {
     return (
         <ButtonMUI 
             fullWidth={fullWidth}
@@ -25,6 +28,8 @@ const Button = ({ color = 'primary', variant = 'contained', size = 'medium', chi
             sx={sxProps}
             loading={isLoading}
             loadingPosition="end"
+            startIcon={iconPosition === 'start' ? icon : undefined}
+            endIcon={iconPosition === 'end' ? icon : undefined}
         >{children}</ButtonMUI>
     );
 }

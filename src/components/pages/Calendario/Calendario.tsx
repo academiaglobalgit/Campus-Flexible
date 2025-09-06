@@ -1,39 +1,58 @@
-import { TitleScreen } from "@constants";
+import { TipoManualesIds, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Calendario as IconCalendario } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box } from "@mui/material";
+import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
+import { innerHTMLStyle } from "@styles";
+import { useDocumentos } from "../../../context/DocumentosContext";
 
 const Calendario: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { documentos } = useDocumentos();
+  const { data: CalendarioDatos, isLoading } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
 
-    const renderCalendarioItem = (text1: string, text2: string) => (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap:'2px'}}>
-            <Typography component="h4" variant="h4" color="primary">
-                {text1}
-            </Typography>
-            <Typography component="span" variant="body1">
-                {text2}
-            </Typography>
-        </Box>
-    );
+console.log(documentos.find(doc => doc.id_tipo_manual === TipoManualesIds.CALENDARIO)?.url_archivo);
+  const PDFSection = (
 
-    return(
-        <>
-          <TituloIcon Titulo={TitleScreen.CALENDARIO} Icon={ IconCalendario } />
-          <Typography component="span" variant="body1">
-            El calendario contiene las actividades académicas programadas durante el año vigente, tales como fechas de inicio y fin de cada cuatrimestre, las fechas de inicio de cada curso, así como los periodos de recuperación.
-          </Typography>
-          <Box sx={{ paddingTop: '32px', paddingBottom: '32px', height: 'calc(100vh - 300px)' }}>
-            <Typography component="h4" variant="h4">
-                AQUI SE MOSTRARA EL PDF
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap:'20px'}}>
-            {renderCalendarioItem("Inicio de curso:", "1ro de cada mes")}
-            {renderCalendarioItem("Entrega de documentos para inscripción de programa:", "25 y 26 de cada mes")}
-          </Box>
-        </>
-    );
+    isLoading
+      ?
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', height: '50vh', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+        <Typography component="h4" variant="h4" color="primary">
+          Cargando calendario...
+        </Typography>
+      </Box>
+      :
+      <Box sx={{ paddingTop: '32px', paddingBottom: '32px', height: '100vh', overflow: 'hidden' }}>
+        <iframe
+          src={documentos.find(doc => doc.id_tipo_manual === TipoManualesIds.CALENDARIO)?.url_archivo || ''}
+          style={{
+            width: "100%",
+            height: "100vh",
+            border: "none",
+          }}
+          title="PDF Viewer"
+        />
+      </Box>
+  );
+
+  return (
+    isMobile
+      ?
+      <>
+        <TituloIcon Titulo={TitleScreen.CALENDARIO} Icon={IconCalendario} />
+        <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalendarioDatos?.data?.descripcion_html ?? '' }} />
+        {PDFSection}
+      </>
+      :
+      <ContainerDesktop title={TitleScreen.CALENDARIO} description={CalendarioDatos?.data?.descripcion_html ?? ''}>
+        {PDFSection}
+      </ContainerDesktop>
+  );
 };
 
 export default Calendario;

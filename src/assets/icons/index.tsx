@@ -11,6 +11,10 @@ export { default as Close } from './Close.svg?react';
 export { default as Contacto } from './Contacto.svg?react';
 export { default as Copy } from './Copy.svg?react';
 export { default as Danger } from './Danger.svg?react';
+export { default as WhatsApp } from './Whatsapp.svg?react';
+export { default as Foros } from './Foros.svg?react';
+export { default as Tutorias } from './Tutorias.svg?react';
+export { default as ListaTareas } from './listaTareas.svg?react';
 
 // Iconos de documentos
 export { default as Document } from './Document.svg?react';
@@ -74,3 +78,9 @@ export { default as X } from './X.svg?react';
 
 // Iconos de navegación
 export { default as LeftCircle } from './LeftCircle.svg?react';
+export { default as PlusCircleWhite } from './PlusCircleWhite.svg?react';
+
+
+// Flechas
+export { default as Right } from './Right.svg?react';
+export { default as ArrowUp } from './ArrowUp.svg?react';

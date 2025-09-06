@@ -29,7 +29,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({childre
     return(
         <NotificationContext.Provider value={value}>
             {children}
-            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+            <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity={severity} variant="filled" sx={{ width: "100%"}}>
                     {message}
                 </Alert>

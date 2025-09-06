@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography, TextField, InputAdornment, IconButton } from "@mui/material";
 import { useForm } from "react-hook-form";
+import ReCAPTCHA from "react-google-recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Button from '../../atoms/Button/Button';
@@ -13,6 +14,9 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
 import { Footer } from "../../atoms/Footer/Footer";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AppRoutingPaths } from "@constants";
+import { ChangePasswordDialog } from "../../molecules/Dialogs/ChangePasswordDialog/ChangePasswordDialog";
+import { loadConfig } from "../../../config/configStorage";
 
 interface AccessLoginItem {
     id: string;
@@ -21,7 +25,7 @@ interface AccessLoginItem {
     action?: () => void;
 }
 
-type AccessLogin = {
+export type AccessLogin = {
     accessLogin: AccessLoginItem[];
 };
 
@@ -30,24 +34,65 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [showPassword, setShowPassword] = React.useState(false);
-            
+    const [captchaValido, setCaptchaValido] = useState(false);
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [config, setConfig] = React.useState<any>(null);
+
+    const CAPTCHA = import.meta.env.VITE_APP_CAPTCHA;
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
+
     const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = async (data: LoginFormData) => {
-        const result = await login(data.username, data.password);
+    React.useEffect(() => {
+        loadConfig().then(cfg => {
+            setConfig(cfg);
+        });
+    }, []);
 
-        if (result.success) {
-            navigate('/');
-        } else {
-            showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
+    const onSubmit = async (data: LoginFormData) => {
+
+        if (!captchaValido) {
+            showNotification("Por favor completa el CAPTCHA", "warning");
+            return;
         }
+
+        setUserName(data.username);
+        const result = await login(data.username, data.password);
+        // enviar formulario
+        if (result.success) {
+            if (result.aceptoTerminos)
+                goToPage();
+            else
+                navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
+        } else {
+            if (result.cambiarPassword) {
+                setShowChangePassword(true);
+            } else {
+                showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
+            }
+        }
+    };
+
+    const goToPage = () => {
+        switch(config?.data?.id_plan_estudio) {
+            case 17: 
+                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+            break;
+            default:
+                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
+            break;
+        }
+    }
+
+    const onCaptchaChange = () => {
+        setCaptchaValido(true);
     };
 
     return (
@@ -62,7 +107,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             >
                 <Box
                     component="img"
-                    src={Logo}
+                    src={config?.data.logo_url || Logo}
                     alt="AG College Logo"
                     sx={{
                         mt: 4,
@@ -81,6 +126,18 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                 <Typography
                     color='primary.main'
                     component="p"
+                    variant="body3"
+                    sx={{
+                        mt: '14px',
+                        textAlign: 'center',
+                        fontSize: '20px'
+                    }}
+                >
+                    {config?.data.nombre_plan || ''}
+                </Typography>
+                <Typography
+
+                    component="p"
                     variant="body2"
                     sx={{
                         mt: '8px',
@@ -90,7 +147,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                 >
                     Para iniciar sesión,<br />ingresa tu usuario y contraseña
                 </Typography>
-
                 <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <TextField
                         label="Usuario"
@@ -98,6 +154,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         {...register("username")}
                         error={!!errors.username}
                         helperText={errors.username?.message}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
+                            }
+                        }}
                     />
                     <TextField
                         label="Contraseña"
@@ -123,12 +185,23 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 ),
                             }
                         }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
+                            }
+                        }}
                     />
-                    <Button 
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                        <ReCAPTCHA
+                            sitekey={CAPTCHA}
+                            onChange={onCaptchaChange}
+                        />
+                    </Box>
+                    <Button
                         fullWidth
                         onClick={handleSubmit(onSubmit)}
                         sxProps={{
-                            mt: 3,
                             mb: '30px',
                             py: 1.5,
                         }}
@@ -138,17 +211,18 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     </Button>
                     <Grid container spacing={2}>
                         {
-                        accessLogin.map((access) => (
-                            <Grid size={{xs:6, sm:6}} key={access.id}>
-                            <IconLabel icon={access.icon} label={access.label} key={access.id} action={access.action} />
-                            </Grid>
-                        ))
+                            accessLogin.map((access) => (
+                                <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
+                                    <IconLabel icon={access.icon} label={access.label} key={access.id} action={access.action} />
+                                </Grid>
+                            ))
                         }
                     </Grid>
                 </Box>
             </Box>
 
             <Footer />
+            <ChangePasswordDialog isOpen={showChangePassword} userName={userName} />
         </>
     );
 };

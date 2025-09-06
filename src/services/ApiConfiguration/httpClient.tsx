@@ -2,10 +2,14 @@ import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getToken } from '../../hooks/useLocalStorage';
 
+import * as crypto from '../../utils/crypto';
+
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 class httpClient {
   private readonly instance: AxiosInstance;
+
+  private unauthorizedSubscribers: Array<() => void> = [];
 
   constructor() {
     this.instance = axios.create({
@@ -38,16 +42,31 @@ class httpClient {
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => response,
       (error) => {
-        if (error.response) {
-          console.error('Error response:', error.response.status, error.response.data);
-        } else if (error.request) {
-          console.error('Error request:', error.request);
-        } else {
-          console.error('Error message:', error.message);
+        if (error.response?.status === 401) {
+          console.warn("Token expirado. Notificando suscriptores...");
+          this.unauthorizedSubscribers.forEach((cb) => cb());
+        }else{
+          if (error.response) {
+            console.error('Error response:', error.response.status, error.response.data);
+          } else if (error.request) {
+            console.error('Error request:', error.request);
+          } else {
+            console.error('Error message:', error.message);
+          }
         }
+        
         return Promise.reject(error);
       }
     );
+  }
+
+  // Método para registrar handlers
+  public subscribeUnauthorized(callback: () => void): () => void {
+    this.unauthorizedSubscribers.push(callback);
+    // Retorna función para cancelar la suscripción
+    return () => {
+      this.unauthorizedSubscribers = this.unauthorizedSubscribers.filter(cb => cb !== callback);
+    };
   }
 
   /**
@@ -82,11 +101,19 @@ class httpClient {
    * @returns Promise con los datos tipados
    */
   public post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    // return this.request<T>({
+    //   ...config,
+    //   method: 'POST',
+    //   url,
+    //   data,
+    // });
+    const headers = data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {};
     return this.request<T>({
       ...config,
       method: 'POST',
       url,
       data,
+      headers: { ...headers, ...(config?.headers || {}) },
     });
   }
 
@@ -134,6 +161,10 @@ class httpClient {
       url,
       data,
     });
+  }
+
+  public encryptData(data?: unknown) {
+    return crypto.encryptData(data);
   }
 }
 

@@ -1,1 +1,16 @@
 @use './styles/style.scss' as *;
+
+@font-face {
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-Bold_0.otf') format('truetype'); /* o 'opentype' para .otf */
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}

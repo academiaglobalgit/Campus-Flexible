@@ -1,37 +1,34 @@
 import type { SxProps, Theme } from "@mui/material";
+import type { OverridableStringUnion } from "@mui/types";
+import type { SvgIconPropsColorOverrides } from "@mui/material/SvgIcon";
 import SvgIcon from "@mui/material/SvgIcon";
 
-type IconProps = {
-    component: any;
-    color: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'inherit';
-    sxProps?: SxProps<Theme>;
-}
+type IconColor = OverridableStringUnion<
+  'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'white' | 'disabled',
+  SvgIconPropsColorOverrides
+>;
 
-const DsSvgIcon = ({component, color = 'primary', sxProps}: IconProps) => {
-    return (
-        color === 'inherit'
-            ? <SvgIcon component={component} inheritViewBox sx={{ fill: "none" }} />
-            : (
-                <SvgIcon
-                    component={component}
-                    inheritViewBox
-                    sx={{
-                        fill: "none",
-                        "& path": {
-                            stroke: "currentColor",
-                        },
-                        "& circle": {
-                            stroke: "currentColor",
-                        },
-                        "& rect": {
-                            stroke: "currentColor",
-                        },
-                        ...sxProps
-                    }}
-                    color={color}
-                />
-            )
-    );
+type IconProps = {
+  component: any;
+  color?: IconColor;
+  sxProps?: SxProps<Theme>;
+};
+
+const DsSvgIcon = ({ component, color = 'primary', sxProps }: IconProps) => {
+  return (
+    <SvgIcon
+      component={component}
+      inheritViewBox
+      color={color}
+      sx={{
+        fill: 'none',
+        '& path': { stroke: 'currentColor' },
+        '& circle': { stroke: 'currentColor' },
+        '& rect': { stroke: 'currentColor' },
+        ...sxProps,
+      }}
+    />
+  );
 };
 
 export default DsSvgIcon;

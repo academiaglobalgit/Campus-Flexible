@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthLogin as loginApi, useLogout as logoutApi } from '../services/AuthService';
+import { useAuthLogin as loginApi, useLogout as logoutApi, useAuthNewPassword, useGetPerfilUsuario } from '../services/AuthService';
 import type { User } from '@constants';
-import { checkAuthStatus, cleanStorage, getAuthModel, setAuthModel, setToken } from '../hooks/useLocalStorage';
+import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
+import { encryptData } from '../utils/crypto';
+import type { ConfigPlataforma } from '../types/ConfigPlataforma.interface';
+import { loadConfig } from '../config/configStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -10,39 +13,62 @@ interface AuthContextType {
   isAuthenticated: boolean;
   error: string | null;
   isInitializing: boolean;
+  isTokenExpired: boolean;
+  isLogout: boolean;
+  aceptoTerminos: boolean;
+  configPlataforma: ConfigPlataforma | null;
   clearError: () => void;
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
   logout: () => Promise<void>;
+  setUser: (user: User) => void;
+  newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  setAceptoTerminos?: (acepto: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(true);
+    const [isTokenExpired, setIsTokenExpired] = useState(false);
+    const [aceptoTerminos, setAceptoTerminos] = useState(true);
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isInitializing, setIsInitializing] = useState(true);
+    const [isLogout, setIsLogout] = useState(false);
+    const [_nombrePrograma, setNombrePrograma] = useState("");
+    const [configPlataforma, setConfigPlataforma] = useState<ConfigPlataforma | null>(null);
+
+    const { refetch } = useGetPerfilUsuario("Login", { enabled: false });
 
     const queryClient = useQueryClient();
     
+    useEffect(() => {
+        loadConfig().then((cfg) => {
+          setConfigPlataforma(cfg.data || null);
+        });
+    }, []);
+
     // Verificar autenticación al montar el componente
     useEffect(() => {
         const checkAuth = async () => {
+            setIsInitializing(true);
+
             try {
-                const authStatus = await checkAuthStatus();
-                if (authStatus) {
+                const { isAuth, tokenExpired } = await checkAuthStatus();
+                setIsAuthenticated(isAuth);
+                setIsTokenExpired(tokenExpired);
+                if (isAuth && !tokenExpired) {
                     const userData = await getAuthModel();
                     setUser(userData);
+                    setAceptoTerminos(userData?.aceptoTerminos);
+                    setNombrePrograma(userData.nombrePrograma);
                 }
-                setIsAuthenticated(authStatus);
             } catch (error) {
                 console.error("Error checking auth:", error);
-                setIsAuthenticated(false);
-            } finally {
-                setIsLoading(false);
-                setIsInitializing(false);
             }
+            setIsLoading(false);
+            setIsInitializing(false);
         };
 
         checkAuth();
@@ -55,35 +81,91 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     });
 
+    const newPasswordMutation = useMutation({
+        mutationFn: useAuthNewPassword,
+        onError: (err: any) => {
+            setError(err.response?.data?.message || 'Error al iniciar sesión');
+        }
+    });
+
     const logoutMutation = useMutation({
         mutationFn: logoutApi,
         onSuccess: () => {
             cleanStorage();
             setUser(null);
+            setIsLogout(true);
             setIsAuthenticated(false);
+            setIsTokenExpired(false);
             queryClient.clear();
         }
     });
 
     const handleLogin = async(email: string, password: string) => {
         try {
-            setIsLoading(true);
-            setError(null);
+            initValues();
 
             const username = email;
-            const response = await loginMutation.mutateAsync({ email, password, username });
+            const response = await loginMutation.mutateAsync({ password, username });
             
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
-            setIsLoading(false);
+            if(response?.session) {
+                localStorage.setItem("session", response.session);
+                return { success: false, data: null, cambiarPassword: true };
+            }
 
-            if (response?.AccessToken) {
-                setUser(response.data);
-                setAuthModel(response.data);
-                setToken(response?.AccessToken);
-                setIsAuthenticated(true);
-                return { success: true, data: response.data };
+            if (response?.token) {
+                setToken(response?.token);
+                setAceptoTerminos(response?.acepto_terminos);     
+                setNombrePrograma(response?.programa);           
+                
+                await procesarPerfil(response?.acepto_terminos, response?.programa);
+
+                setIsAuthenticated(true);                
+                setIsLoading(false);
+                
+                return { success: true, data: null, cambiarPassword: false, aceptoTerminos: aceptoTerminos };
             } else {
+                setIsLoading(false);
+                const errorMessage = response?.message || 'Autenticación fallida';
+                setError(errorMessage);
+                return { success: false, message: errorMessage, cambiarPassword: false };
+            }
+        } catch (error: any) {
+            setIsLoading(false);
+            const errorMessage = error.response?.data?.message || 
+                            error.message || 
+                            'Error al conectar con el servidor';
+            setError(errorMessage);
+            return { success: false, message: errorMessage, cambiarPassword: false };
+        }
+    }
+
+    const handleNewPassword = async(email: string, password: string) => {
+        try {
+            initValues();
+
+            const username = email;
+            const token = localStorage.getItem("session") || "";
+            const response = await newPasswordMutation.mutateAsync({ newPassword: password, username, token });
+            
+            localStorage.removeItem("session");
+
+            queryClient.invalidateQueries({ queryKey: ['currentUser']});
+
+            if (response?.token) {
+                setToken(response?.token);
+                setAceptoTerminos(response?.acepto_terminos);     
+                setNombrePrograma(response?.programa);           
+                
+                await procesarPerfil(response?.acepto_terminos, response?.programa);
+                
+                setIsAuthenticated(true);
+                setIsLoading(false);
+                
+                return { success: true, data: null, aceptoTerminos: false };
+            } else {
+                setIsLoading(false);
                 const errorMessage = response?.message || 'Autenticación fallida';
                 setError(errorMessage);
                 return { success: false, message: errorMessage };
@@ -98,13 +180,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
+    const procesarPerfil = async(aceptoTerminos: boolean | undefined, programa: string | undefined) => {
+        const perfil = await refetch();
+
+        if (perfil.data) {
+            const datos = perfil.data.data;
+            
+            const auth = {
+                name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
+                email: datos.correo,
+                photo: datos.foto_perfil_url,
+                city: datos.nombre_ciudad,
+                phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
+                perfil: datos,
+                aceptoTerminos: aceptoTerminos,
+                nombrePrograma: programa,
+            };
+
+            setUser(auth);
+
+            const encry = await encryptData(auth);
+            setAuthModel(encry);
+        } else {
+            setUser(null);
+        }
+    };
+
+
     const handleLogout = async () => {
-        await logoutMutation.mutate(user!.id);
+        setIsLogout(true);
+        setIsAuthenticated(false);
+        setIsTokenExpired(false);
+        await logoutMutation.mutate();
     };
     
     const clearError = () => {
         setError(null);
     };
+
+    const initValues = () => {
+        setUser(null);
+        setIsLoading(true);
+        setIsAuthenticated(false);
+        setError(null);
+        setIsTokenExpired(false);   
+        setIsLogout(false);     
+    }
 
     const value = {
         user,
@@ -112,15 +233,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated,
         error,
         isInitializing,
+        isTokenExpired,
+        isLogout,
+        aceptoTerminos,
+        configPlataforma,
         login: handleLogin,
         logout: handleLogout,
-        clearError
+        clearError,
+        setUser,
+        newPassword: handleNewPassword,
+        setAceptoTerminos,
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

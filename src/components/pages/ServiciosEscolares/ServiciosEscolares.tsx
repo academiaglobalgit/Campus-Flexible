@@ -1,67 +1,189 @@
-import { TitleScreen } from "@constants";
+import React from "react";
+import { AppRoutingPaths, TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
-import {ServiciosEscolares as IconServiciosEscolares} from "@iconsCustomizeds";
+import { ServiciosEscolares as IconServiciosEscolares } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box } from "@mui/material";
-import CardImage from "../../molecules/Card/CardImage";
+import { Box, Card, CardMedia, Grid, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
+import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
+import Button from "../../atoms/Button/Button";
+import { accordionStyle, flexColumn, innerHTMLStyle } from "@styles";
+import { InformacionServiciosEscolaresDialog } from "../../molecules/Dialogs/InformacionServiciosEscolaresDialog/InformacionServiciosEscolaresDialog";
 
-import serv_escolares from '../../../assets/serv_escolares.png';
-import examenes from '../../../assets/examenes.png';
-import constancia from '../../../assets/constancia.png';
-import credencial from '../../../assets/credencial.png';
+import { CardDuracion } from "../../molecules/CardDuracion/CardDuracion";
+import TabPanel from "../../molecules/TabPanel/TabPanel";
+import { useGetServiciosEscolares } from "../../../services/ServiciosEscolaresService";
+import { useGetDatosModulos } from "../../../services/ModulosCampusService";
+import { ModulosCampusIds } from "../../../types/modulosCampusIds";
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
-const cardData = [
-    { image:serv_escolares, titulo: "Inscripción y materias", servicios: "Inscripción Materias y/o mensualidad" },
-    { image:examenes, titulo: "Examenes", servicios: "Examen Estraordinario Examen Especial" },
-    { image:credencial, titulo: "Credencial", servicios: "Credencial de Estudiante\n(despues de 6 materias acreditadas" },
-    { image:constancia, titulo: "Constancia", servicios: "Constancia de estudios" },
-];
+import type { Servicios, ServicioSeccion } from "../../../types/ServiciosEscolares.interface";
+import { Accordion } from "../../molecules/Accordion/Accordion";
+import { useNavigate } from "react-router-dom";
 
 const ServiciosEscolares: React.FC = () => {
-    return(
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isOpenInformacionDialog, setIsOpenInformacionDialog] = React.useState(false);
+    const { data: cardData, isLoading } = useGetServiciosEscolares();
+    const { data: servicioDatos } = useGetDatosModulos(ModulosCampusIds.SERVICIOS_ESCOLARES);
+
+
+    const [value, setValue] = React.useState(0);
+
+    const handleInformacion = () => {
+        navigate(AppRoutingPaths.CONTACTO);
+    };
+
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    // const handlePagar = () => {
+    //     // navigate('/servicios-escolares/pagar');
+    //     window.open('https://academiaglobal.mx/servicios-escolares/pagar', '_blank');
+    // };
+
+    const ImageSection = (image: string) => (
+        <Card sx={{ borderRadius: '5px' }}>
+            <CardMedia
+                component="img"
+                height={isMobile ? 120 : 165}
+                width={isMobile ? 346 : 425}
+                image={image}
+                sx={[
+                    isMobile && { objectFit: 'cover' },
+                ]}
+            />
+        </Card>
+    );
+
+    const ButtonsSection = () => (
+        <Box sx={[
+            { ...flexColumn, width: '100%', gap: '10px', pt: isMobile ? 2 : 0 }
+        ]}>
+            {/* <>
+                <Button
+                    onClick={handlePagar}
+                    fullWidth
+                >
+                    Pagar Aquí
+                </Button>
+            </> */}
+            <>
+                <Button onClick={handleInformacion} fullWidth variant="outlined" >Más Información</Button>
+            </>
+        </Box>
+    );
+
+    const InformationSection = (item: Servicios) => (
+
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Grid container sx={{ justifyContent: 'space-between', paddingInline: isMobile ? '0px' : '75px' }}>
+                <Grid size={isMobile ? 12 : 5}>
+                    <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: item.descripcion ?? '' }} />
+                </Grid>
+                <Grid size={isMobile ? 12 : 5} sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {!isMobile && ImageSection(item.imagen)}
+                    <CardDuracion label="Costo" description={`$${item.precio} MNX`} sxProps={{ justifyContent: isMobile ? 'center' : 'flex-start', paddingInline: '10px', mt: isMobile ? 2.5 : 0 }} />
+                    {ButtonsSection()}
+                </Grid>
+            </Grid>
+        </Box >
+    )
+
+    const AccordionInformation = (items: Servicios[]) =>
+    (
+        items.map((item: Servicios, index) => (
+            <Accordion
+                key={index}
+                title={item.nombre}
+                sxProps={{
+                    ...accordionStyle,
+                }}
+                isExpanded={index === 0}
+            >
+                {InformationSection(item)}
+            </Accordion>
+        ))
+    )
+
+    const ContentCard = (servicios: ServicioSeccion) =>
+    (
+        <Box sx={{ mb: 4, mt: isMobile ? 2 : 5 }}>
+            <>
+                {isMobile && ImageSection(servicios.imagen)}
+                <Box sx={{ ...flexColumn, pt: 2, mb: 2, width: '100%', alignItems: isMobile ? 'center' : 'flex-start' }}>
+                    <Typography component="h3" variant="h3" color="primary">
+                        {servicios.nombre_seccion}
+                    </Typography>
+                </Box>
+                {AccordionInformation(servicios.servicios)}
+            </>
+        </Box>
+    );
+
+
+    const TabsServicios = () => {
+        return (
+            <>
+                <Box sx={{ width: "100%" }}>
+                    <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons
+                        allowScrollButtonsMobile
+                        aria-label="basic tabs example"
+                        sx={{
+                            [`& .${tabsClasses.scrollButtons}`]: {
+                                "&.Mui-disabled": { opacity: 0.3 },
+                            },
+                        }}
+                    >
+                        {
+                            cardData && cardData.map((item, i) => (
+                                <Tab
+                                    label={item.nombre_seccion}
+                                    value={i}
+                                    key={i}
+                                    sx={{ minWidth: isMobile ? '158px' : '108px', padding: '0px' }}
+                                />
+                            ))
+                        }
+                    </Tabs>
+                </Box>
+                {
+                    cardData && cardData.map((item, i) => (
+                        <TabPanel value={value} index={i} key={i}>
+                            {ContentCard(item)}
+                        </TabPanel>
+                    ))
+                }
+            </>
+        )
+    }
+
+    return (
         <>
-          <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={ IconServiciosEscolares } />
-          <Typography component="span" variant="body1">
-            Gestiona de forma sencilla tus inscripciones, documentos, pagos y trámites académicos. Todo en un solo lugar, siempre disponible.
-          </Typography>
-          <Box sx={{ paddingTop: '32px' }}>
             {
-                cardData && 
-                cardData.map((item, index) => (
-                    <Box sx={{ mb:4 }}>
-                        <CardImage key={index} image={item.image} >
-                            <Box sx={{ display: 'flex', flexDirection:'column', gap: '24px', paddingLeft: '32px' }}>
-                                <Typography component="h2" variant="h2" color="primary">
-                                    {item.titulo}
-                                </Typography>
-                                <Typography 
-                                    component="span" 
-                                    variant="body1"
-                                    sxProps={{ fontWeight:400, fontSize: '18px', lineHeight:'24px', color: (theme) => `${theme.palette.primary.main}E5` }}>
-                                    Servicios
-                                </Typography>
-                                <Typography 
-                                    component="span" 
-                                    variant="body1"
-                                    sxProps={{ fontWeight:400, fontSize: '14px', lineHeight:'18px', color: "#3B3F5C" }}>
-                                    { item.servicios }
-                                </Typography>
-                                <Box sx={{ padding: "8px 22px 8px 22px" }}>
-                                    <Typography 
-                                        component="span" 
-                                        variant="body1"
-                                        color="primary"
-                                        sxProps={{ fontWeight:400, fontSize: '18px', lineHeight:'24px', color: (theme: any) => `${theme.palette.primary[300]}CC` }}>
-                                        Ver Información
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </CardImage>
-                    </Box>
-                ))
+                isMobile
+                    ?
+                    <>
+                        <TituloIcon Titulo={TitleScreen.SERVICIOS_ESCOLORES} Icon={IconServiciosEscolares} />
+                        <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: servicioDatos?.data?.descripcion_html ?? '' }} />
+                        {
+                            isLoading ? <LoadingCircular Text="Cargando Servicios Escolares" /> : <TabsServicios />
+                        }
+                    </>
+                    :
+                    <ContainerDesktop title={TitleScreen.SERVICIOS_ESCOLORES} description={servicioDatos?.data?.descripcion_html ?? ''}>
+                        {
+                            isLoading ? <LoadingCircular Text="Cargando Servicios Escolares" /> : <TabsServicios />
+                        }
+                    </ContainerDesktop>
             }
-            
-          </Box>
+            <InformacionServiciosEscolaresDialog isOpen={isOpenInformacionDialog} close={() => setIsOpenInformacionDialog(false)} />
         </>
     );
 };

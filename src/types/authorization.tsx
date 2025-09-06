@@ -1,24 +1,26 @@
+import type { Perfil } from "./Perfil.interface";
+
 export interface LoginCredentials {
-  email: string;
   password: string;
-  username?: string; // Optional, used for login
+  username?: string;
 }
 
 export interface User {
-  id: number;
-  name: string;
+  name:  string;
   email: string;
-  token?: string;
+  photo: string;
+  city:  string;
+  phone:  string;
+  perfil?: Perfil;
+  aceptoTerminos?: boolean;
+  nombrePrograma?: string;
 }
 
 export interface AuthResponse {
-  status: string;
+  success: boolean;
   message: string;
-  data: User;
-  AccessToken:  string;
-  ExpiresIn:    number;
-  IdToken:      string;
-  RefreshToken: string;
-  TokenType:    string;
+  token:  string;
+  session:  string;
+  programa: string;
+  acepto_terminos: boolean;
 }
-

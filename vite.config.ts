@@ -15,9 +15,13 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@constants': path.resolve(__dirname, './src/types/index.tsx'),
         '@components': path.resolve(__dirname,'./src/components/index.tsx'),
-        '@iconsCustomizeds': path.resolve(__dirname, './src/assets/IconsCustomize')
+        '@iconsCustomizeds': path.resolve(__dirname, './src/assets/IconsCustomize'),
+        '@styles': path.resolve(__dirname, './src/styles/styles.tsx'),
       },
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    },
+    define: {
+      global: {}
     }
   }
 })
