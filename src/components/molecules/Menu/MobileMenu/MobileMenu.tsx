@@ -33,7 +33,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     let items = (menuType === 'menuRoutes' ? menuRoutes : menuInformacion) as any[];
-    
+
     switch (configPlataforma?.id_plan_estudio) {
         case 17: // Diplomados
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
@@ -116,7 +116,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 </Typography>
                 {
                     items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} onClick={() => handleNavigation(item)} sx={[
+                        return (<MenuItem key={index} disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false} onClick={() => handleNavigation(item)} sx={[
                             { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                             !isMobile && { width: '100%', maxWidth: '232px' }
                         ]}>

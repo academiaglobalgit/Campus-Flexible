@@ -9,18 +9,26 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetBiblioteca, useGetBibliotecaById } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { loadConfig } from '../../../config/configStorage';
 
 const BibliotecaVideoteca: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [value, setValue] = React.useState(0);
     const { data: biblioteca, isLoading } = useGetBiblioteca();
+    const [config, setConfig] = React.useState<any>(null);
 
     const id = biblioteca?.data?.id_modulo_campus;
 
     const { data: detalle, isLoading: loadingDetalle } = useGetBibliotecaById(id!, {
         enabled: !!id
     });
+
+    React.useEffect(() => {
+        loadConfig().then(cfg => {
+            setConfig(cfg);
+        });
+    }, []);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -38,23 +46,31 @@ const BibliotecaVideoteca: React.FC = () => {
         );
     };
 
-    const Contents = () => (
+    type ContentsProps = {
+        idPlanEstudio: number;
+    };
+
+    const Contents: React.FC<ContentsProps> = ({ idPlanEstudio }) => (
         <>
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                    <Tab label="Biblioteca" value={0} />
-                    <Tab label="Videoteca" value={1} />
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    {idPlanEstudio !== 17 && <Tab label="Biblioteca" value={0} />}
+                    <Tab label="Videoteca" value={idPlanEstudio !== 17 ? 1 : 0} />
                 </Tabs>
             </Box>
-            <TabPanel value={value} index={0}>
-                {isLoading || loadingDetalle ? (
-                    <LoadingCircular Text="Cargando Biblioteca..." />
-                ) : (
-                    detalle && <Biblioteca data={detalle.data[0]} />
-                )}
-            </TabPanel>
-            <TabPanel value={value} index={1}>
+
+            {idPlanEstudio !== 17 && (
+                <TabPanel value={value} index={0}>
+                    {isLoading || loadingDetalle ? (
+                        <LoadingCircular Text="Cargando Biblioteca..." />
+                    ) : (
+                        detalle && <Biblioteca data={detalle.data[0]} />
+                    )}
+                </TabPanel>
+            )}
+
+            <TabPanel value={value} index={idPlanEstudio !== 17 ? 1 : 0}>
                 {isLoading || loadingDetalle ? (
                     <LoadingCircular Text="Cargando Videoteca..." />
                 ) : (
@@ -64,16 +80,18 @@ const BibliotecaVideoteca: React.FC = () => {
         </>
     );
 
+
+
     return (
         isMobile
             ?
             <Box sx={[{ width: '100%', }, isMobile && { paddingTop: '28px', paddingBottom: '28px' }]}>
-                <Contents />
+                <Contents idPlanEstudio={config?.data?.id_plan_estudio} />
             </Box>
             :
             <ContainerDesktop title={""} >
                 <Box sx={{ pt: '12px' }}>
-                    <Contents />
+                    <Contents idPlanEstudio={config?.data?.id_plan_estudio} />
                 </Box>
             </ContainerDesktop>
     );

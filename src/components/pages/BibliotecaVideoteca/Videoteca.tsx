@@ -22,7 +22,7 @@ export const Videoteca: React.FC<BibliotecaProps> = ({ data }) => {
         <>
             <TituloIcon Titulo={TitleScreen.VIDEOS_LECTURAS} fontSize="h2"/>
             <Box>
-                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: data.descripcion_html }} />
+                <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: data?.descripcion_html ?? '<p></p>' }} />
                 <Box
                     sx={[
                         {
