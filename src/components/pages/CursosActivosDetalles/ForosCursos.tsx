@@ -9,7 +9,6 @@ import { accordionStyle, flexColumn, innerHTMLStyle } from "@styles";
 import { useGetForosManuales } from "../../../services/CursosActivosService";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { toRoman } from "../../../utils/Helpers";
 import { AppRoutingPaths, type CursosTabs } from "@constants";
 import { setForoSelected } from "../../../hooks/useLocalStorage";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
