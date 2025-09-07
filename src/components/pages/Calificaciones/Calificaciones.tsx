@@ -40,6 +40,16 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
+    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
+    
+    React.useEffect(() => {
+        switch(configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomado
+                setCalificacionesConfig({ titulo: TitleScreen.SEGUIMIENTO, loading: `Cagando ${TitleScreen.SEGUIMIENTO}...`, mostrarPromedio: false, mostrarGlosario: false})
+            break;
+        }
+    }, [configPlataforma]);
+
     const handleGlosario = () => (setIsOpen(true));
 
     React.useEffect(() => {
@@ -161,7 +171,7 @@ const Calificaciones: React.FC = () => {
         const data = calificacionData?.cursos || [];
 
         if (isLoading) {
-            return <LoadingCircular Text="Cargando Calificaciones..." />;
+            return <LoadingCircular Text={calificacionesConfig.loading} />;
         } else {
             if (data.length > 0) {
                 if (isMobile) {
@@ -199,6 +209,15 @@ const Calificaciones: React.FC = () => {
         </Grid>
     );
 
+    const getTituloIconAccordion = (index: number) => {
+        switch(configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                return `Certificaciones`;
+            default:
+                return `Periodo ${toRoman(index + 1)} - Tus materias`;
+        }
+    }
+
     const ListadoMateriasVistaDesktop = (data: any[], periodos: number[]) => (
         <Grid container>
             <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
@@ -212,7 +231,7 @@ const Calificaciones: React.FC = () => {
                                 periodos.map((_, i) => (
                                     <TabPanel value={value} index={i} key={i}>
                                         <Box sx={{ p: 4 }}>
-                                            <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
+                                            <TituloIcon Titulo={getTituloIconAccordion(i)} fontSize="h3" />
                                             {
                                                 data && data.filter((item) => item.id === i).map((item, kix) => (
                                                     <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column' }}>
@@ -242,25 +261,25 @@ const Calificaciones: React.FC = () => {
                 isMobile
                     ?
                     <>
-                        <TituloIcon Titulo={TitleScreen.CALIFICACIONES} Icon={CalificacionesIcon} />
+                        <TituloIcon Titulo={calificacionesConfig.titulo} Icon={CalificacionesIcon} />
                         {Leyenda}
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '30px', paddingTop: '20px' }}>
-                            {BotonVerGlosario('contained')}
-                            {promedio()}
+                            {calificacionesConfig.mostrarGlosario && BotonVerGlosario('contained')}
+                            {calificacionesConfig.mostrarPromedio && promedio()}
                             {Listado()}
                         </Box>
                     </>
                     :
                     <ContainerDesktop
-                        title={TitleScreen.CALIFICACIONES}
+                        title={calificacionesConfig.titulo}
                         description={CalificacionesDatos?.data?.descripcion_html ?? ''}
                         actions={
-                            promedio()
+                            calificacionesConfig.mostrarPromedio && promedio()
                         }
                         column1Size={9}
                         column2Size={3}
                         specialButton={
-                            BotonVerGlosario('outlined')
+                            calificacionesConfig.mostrarGlosario && BotonVerGlosario('outlined')
                         }
                     >
                         {Listado()}

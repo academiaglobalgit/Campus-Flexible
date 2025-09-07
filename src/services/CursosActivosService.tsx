@@ -164,10 +164,10 @@ export const useGetForosManuales = (id: number, tab: string) => {
     const mapData = (data: CursosTabs[], manuales: ManualesActividad[]) => {
 
         const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) {
-                acc[contenido.unidad] = [];
+            if (!acc[contenido.titulo_elemento]) {
+                acc[contenido.titulo_elemento] = [];
             }
-            acc[contenido.unidad].push(contenido);
+            acc[contenido.titulo_elemento].push(contenido);
             return acc;
         }, {});
 

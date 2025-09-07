@@ -7,6 +7,7 @@ import { toRoman } from "../../../utils/Helpers";
 import { accordionStyle } from "@styles";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { useAuth } from "../../../hooks";
 
 export const Contenido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -14,16 +15,26 @@ export const Contenido: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const { configPlataforma } = useAuth();
+
+    const getLabel = (unidad: string) => {
+        switch(configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                return `Contenido`;
+            default:
+                return `Unidad ${toRoman(Number(unidad))}`;
+        }
+    }
+
     return (
         isLoading ?
             <LoadingCircular Text="Cargando Contenido..." />
             :
-
             Object.entries(contenido).map(([unidad, contenidos], index) =>
 
                 <Accordion key={index}
-                    title={`Unidad ${toRoman(Number(unidad))}`}
-                    customHeader={!isMobile ? <AccordionStatus tittle={`Unidad ${toRoman(Number(unidad))}`} status={contenidos?.[0]?.estatus} /> : undefined}
+                    title={getLabel(unidad)}
+                    customHeader={!isMobile ? <AccordionStatus tittle={getLabel(unidad)} status={contenidos?.[0]?.estatus} /> : undefined}
                     sxProps={accordionStyle}>
                     {
                         isMobile && <Box sx={{ padding: '10px' }}>

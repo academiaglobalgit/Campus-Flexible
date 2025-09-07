@@ -28,6 +28,7 @@ const CursosActivosDetalles: React.FC = () => {
     const { configPlataforma } = useAuth();
     const curso = JSON.parse(getCursoSelected() || '{}');
     const [value, setValue] = React.useState(0);
+    const [tabs, setTabs] = React.useState(CursosTabs);
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
@@ -42,6 +43,7 @@ const CursosActivosDetalles: React.FC = () => {
                     }
                     return item;
                 });
+                setTabs(CursosTabs);
             break;
         }
 
@@ -136,12 +138,12 @@ const CursosActivosDetalles: React.FC = () => {
                         }}
                     >
                         {
-                            CursosTabs.map((item, i) => <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />)
+                            tabs.map((item, i) => <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />)
                         }
                     </Tabs>
                 </Box>
                 {
-                    CursosTabs.map((tab, i) => (
+                    tabs.map((tab, i) => (
                         <TabPanel key={i} value={value} index={i}>
                             <Box sx={{pt:2}}>
                                 { tab.content }

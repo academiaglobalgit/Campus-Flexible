@@ -48,6 +48,7 @@ export const TitleScreen = {
     BIBLIOTECA_VIRTUAL: "Biblioteca virtual",
     CALENDARIO: "Calendario",
     CALIFICACIONES: "Calificaciones",
+    SEGUIMIENTO: "Seguimiento",
     CURSOS_ACTIVOS: "Cursos Activos",
     CURSOS_CERTIFICACIONES: "Cursos y certificaciones",
     HOME: "Inicio",
