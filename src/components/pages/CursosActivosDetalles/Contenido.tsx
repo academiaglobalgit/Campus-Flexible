@@ -1,29 +1,20 @@
 import { useParams } from "react-router-dom";
-import { useGetCursosTabs } from "../../../services/CursosActivosService";
+import { useGetContenidoTabs } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import { toRoman } from "../../../utils/Helpers";
 import { accordionStyle } from "@styles";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
-import { useAuth } from "../../../hooks";
 
 export const Contenido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { data: contenido, isLoading } = useGetCursosTabs(Number(id!), "Contenido");
+    const { data: contenido, isLoading } = useGetContenidoTabs(Number(id!), "Contenido");
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { configPlataforma } = useAuth();
-
-    const getLabel = (unidad: string) => {
-        switch(configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
-                return `Contenido`;
-            default:
-                return `Unidad ${toRoman(Number(unidad))}`;
-        }
+    const getLabel = (contenidos: any) => {
+        return contenidos?.[0]?.titulo_elemento;
     }
 
     return (
@@ -33,8 +24,8 @@ export const Contenido: React.FC = () => {
             Object.entries(contenido).map(([unidad, contenidos], index) =>
 
                 <Accordion key={index}
-                    title={getLabel(unidad)}
-                    customHeader={!isMobile ? <AccordionStatus tittle={getLabel(unidad)} status={contenidos?.[0]?.estatus} /> : undefined}
+                    title={getLabel(contenidos)}
+                    customHeader={!isMobile ? <AccordionStatus tittle={getLabel(contenidos)} status={contenidos?.[0]?.estatus} /> : undefined}
                     sxProps={accordionStyle}>
                     {
                         isMobile && <Box sx={{ padding: '10px' }}>
@@ -43,7 +34,7 @@ export const Contenido: React.FC = () => {
                     }
 
                     {
-                        contenidos.filter((item) => item.unidad === Number(unidad)).map((item, i) => (
+                        contenidos.filter((item) => item.titulo_elemento === unidad).map((item, i) => (
                             <Box key={i}>
                                 <iframe
                                     src={item?.url}

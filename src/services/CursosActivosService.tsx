@@ -28,18 +28,45 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const query = useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
-        staleTime: 1000 * 60 * (idRecurso === 2 ? 99 : 5), // 99 minutos de stale time
     });
 
     const mapData = (data: CursosTabs[]) => {
         const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) {
-                acc[contenido.unidad] = [];
+            if (!acc[contenido.titulo_elemento]) {
+                acc[contenido.titulo_elemento] = [];
             }
-            acc[contenido.unidad].push(contenido);
+            acc[contenido.titulo_elemento].push(contenido);
             return acc;
         }, {});
         return agrupadoPorUnidad;
+    }
+
+    return {
+        ...query,
+        data: React.useMemo(
+            () => mapData(query.data?.data ?? []),
+            [query.data]
+        )
+    }
+};
+
+export const useGetContenidoTabs = (id: number, tab: string) => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    const query = useQuery<CursosTabsResponse, Error>({
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
+        queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
+    });
+
+    const mapData = (data: CursosTabs[]) => {
+        const agrupado = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
+            if (!acc[contenido.titulo_elemento]) {
+                acc[contenido.titulo_elemento] = [];
+            }
+            acc[contenido.titulo_elemento].push(contenido);
+            return acc;
+        }, {});
+        return agrupado;
     }
 
     return {
@@ -73,8 +100,8 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
         // const manuales = query.data.data.manual ?? [];
 
         const agrupadoPorUnidad = actividades.reduce<Record<string, Actividad[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
-            acc[contenido.unidad].push(contenido);
+            if (!acc[contenido.titulo_elemento]) acc[contenido.titulo_elemento] = [];
+            acc[contenido.titulo_elemento].push(contenido);
             return acc;
         }, {});
 

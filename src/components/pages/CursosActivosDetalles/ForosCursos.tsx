@@ -53,12 +53,16 @@ export const ForosCursos: React.FC = () => {
         <TituloIcon Titulo={foroConfig.titulo} Icon={Foros} />
     )
 
+    const getLabel = (contenidos: any) => {
+        return contenidos?.[0]?.titulo_elemento;
+    }
+
     const AccordionSection = () => (
         Object.entries(foros).map(([unidad, contenidos], index) =>
 
             <Accordion key={index}
-                title={unidad}
-                customHeader={!isMobile ? <AccordionStatus tittle={`${contenidos?.[0]?.titulo_elemento}`} status={contenidos?.[0]?.estatus_respuesta} /> : undefined}
+                title={getLabel(contenidos)}
+                customHeader={!isMobile ? <AccordionStatus tittle={getLabel(contenidos)} status={contenidos?.[0]?.estatus_respuesta} /> : undefined}
                 sxProps={accordionStyle}>
                 {
                     isMobile && <TituloIcon key={1} Titulo={foroConfig.titulo} Icon={Foros} />

@@ -57,6 +57,8 @@ export const ProtectedRoute: React.FC = () => {
         );
     }
     
+    console.log(aceptoTerminos);
+
     if(!aceptoTerminos) {
         return <Navigate to={AppRoutingPaths.TERMINOS_CONDICIONES} state={{ from: location }} replace />;
     }

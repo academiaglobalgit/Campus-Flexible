@@ -180,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async(aceptoTerminos: boolean | undefined, programa: string | undefined) => {
+    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined) => {
         const perfil = await refetch();
 
         if (perfil.data) {
@@ -193,7 +193,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 city: datos.nombre_ciudad,
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
-                aceptoTerminos: aceptoTerminos,
+                aceptoTerminos: pAceptoTerminos,
                 nombrePrograma: programa,
             };
 
