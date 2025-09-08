@@ -39,24 +39,18 @@ const CursoActivo: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!cursosData?.data) return;
+        refetch()
+            .then(response => {
+                const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
+                if (encuestasActivas.length > 0) {
+                    setEncuestaData(encuestasActivas);
+                    setOpenEncuesta(true);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching encuestas:", error);
+            });
 
-        const hasCursosFinalizados = cursosData.data.some(item => item.estatus === "Finalizado");
-
-        if (hasCursosFinalizados) {
-            refetch()
-                .then(response => {
-                    const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "activa") ?? [];
-
-                    if (encuestasActivas.length > 0) {
-                        setEncuestaData(encuestasActivas);
-                        setOpenEncuesta(true);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching encuestas:", error);
-                });
-        }
     }, [cursosData]);
 
     const goToDetalle = (curso: number) => {

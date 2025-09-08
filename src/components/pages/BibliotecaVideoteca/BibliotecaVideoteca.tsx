@@ -10,6 +10,7 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 import { useGetBiblioteca, useGetBibliotecaById } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { loadConfig } from '../../../config/configStorage';
+import { useAuth } from "../../../hooks";
 
 const BibliotecaVideoteca: React.FC = () => {
     const theme = useTheme();
@@ -17,6 +18,7 @@ const BibliotecaVideoteca: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const { data: biblioteca, isLoading } = useGetBiblioteca();
     const [config, setConfig] = React.useState<any>(null);
+    const { configPlataforma } = useAuth();
 
     const id = biblioteca?.data?.id_modulo_campus;
 
@@ -50,17 +52,28 @@ const BibliotecaVideoteca: React.FC = () => {
         idPlanEstudio: number;
     };
 
-    const Contents: React.FC<ContentsProps> = ({ idPlanEstudio }) => (
+    const idsExcluidos = [17]; // ids a ocultar
+
+    const validarPlanEstudio = (
+        idPlanEstudio?: number,
+        idsExcluidos: number[] = []
+    ) => {
+        return idsExcluidos.includes(idPlanEstudio ?? -1) ? 0 : 1;
+    };
+
+    const resultado = validarPlanEstudio(configPlataforma?.id_plan_estudio, idsExcluidos);
+
+    const Contents: React.FC<ContentsProps> = () => (
         <>
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    {idPlanEstudio !== 17 && <Tab label="Biblioteca" value={0} />}
-                    <Tab label="Videoteca" value={idPlanEstudio !== 17 ? 1 : 0} />
+                    {resultado === 1 && <Tab label="Biblioteca" value={0} />}
+                    <Tab label="Videoteca" value={resultado} />
                 </Tabs>
             </Box>
 
-            {idPlanEstudio !== 17 && (
+            {resultado === 1 && (
                 <TabPanel value={value} index={0}>
                     {isLoading || loadingDetalle ? (
                         <LoadingCircular Text="Cargando Biblioteca..." />
@@ -70,11 +83,11 @@ const BibliotecaVideoteca: React.FC = () => {
                 </TabPanel>
             )}
 
-            <TabPanel value={value} index={idPlanEstudio !== 17 ? 1 : 0}>
+            <TabPanel value={value} index={resultado}>
                 {isLoading || loadingDetalle ? (
                     <LoadingCircular Text="Cargando Videoteca..." />
                 ) : (
-                    detalle && <Videoteca data={detalle.data[1]} />
+                    detalle && <Videoteca data={detalle.data[resultado]} />
                 )}
             </TabPanel>
         </>
