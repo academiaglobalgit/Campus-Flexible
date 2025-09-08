@@ -52,25 +52,28 @@ const BibliotecaVideoteca: React.FC = () => {
         idPlanEstudio: number;
     };
 
-    const validarPlanEstudio = (idPlanEstudio?: number) => {
-        const idsExcluidos = [17];
-        return [idsExcluidos.includes(idPlanEstudio ?? -1) ? 0 : 1, idsExcluidos.includes(idPlanEstudio ?? -1) ? 0 : 1];
+    const idsExcluidos = [17]; // ids a ocultar
+
+    const validarPlanEstudio = (
+        idPlanEstudio?: number,
+        idsExcluidos: number[] = []
+    ) => {
+        return idsExcluidos.includes(idPlanEstudio ?? -1) ? 0 : 1;
     };
 
-    const [valor1, valor2] = validarPlanEstudio(configPlataforma?.id_plan_estudio);
+    const resultado = validarPlanEstudio(configPlataforma?.id_plan_estudio, idsExcluidos);
 
-
-    const Contents: React.FC<ContentsProps> = ({ idPlanEstudio }) => (
+    const Contents: React.FC<ContentsProps> = () => (
         <>
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    {idPlanEstudio !== 17 && <Tab label="Biblioteca" value={0} />}
-                    <Tab label="Videoteca" value={valor1} />
+                    {resultado === 1 && <Tab label="Biblioteca" value={0} />}
+                    <Tab label="Videoteca" value={resultado} />
                 </Tabs>
             </Box>
 
-            {idPlanEstudio !== 17 && (
+            {resultado === 1 && (
                 <TabPanel value={value} index={0}>
                     {isLoading || loadingDetalle ? (
                         <LoadingCircular Text="Cargando Biblioteca..." />
@@ -80,11 +83,11 @@ const BibliotecaVideoteca: React.FC = () => {
                 </TabPanel>
             )}
 
-            <TabPanel value={value} index={valor1}>
+            <TabPanel value={value} index={resultado}>
                 {isLoading || loadingDetalle ? (
                     <LoadingCircular Text="Cargando Videoteca..." />
                 ) : (
-                    detalle && <Videoteca data={detalle.data[valor2]} />
+                    detalle && <Videoteca data={detalle.data[resultado]} />
                 )}
             </TabPanel>
         </>
