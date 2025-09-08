@@ -74,7 +74,7 @@ const BibliotecaVideoteca: React.FC = () => {
                 {isLoading || loadingDetalle ? (
                     <LoadingCircular Text="Cargando Videoteca..." />
                 ) : (
-                    detalle && <Videoteca data={detalle.data[1]} />
+                    detalle && <Videoteca data={detalle.data[idPlanEstudio !== 17 ? 1 : 0]} />
                 )}
             </TabPanel>
         </>
