@@ -9,6 +9,7 @@ import { CheckBoxLabel } from "../../../atoms/Checkbox/Checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
 import { SaveEncuesta } from "../../../../services/CursosActivosService";
+import { innerHTMLStyle } from "@styles";
 
 
 type EncuestaDialogProps = {
@@ -221,8 +222,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 					</Typography>
 				</Divider>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px', height: '60vh', overflowY: 'scroll', pr: 2, mb: 2 }}>
-					<Typography component="span" variant="body2" color="text ">
-						{data?.descripcion}
+					<Typography sx={{...innerHTMLStyle}} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.descripcion ?? '' }}>
 					</Typography>
 
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
