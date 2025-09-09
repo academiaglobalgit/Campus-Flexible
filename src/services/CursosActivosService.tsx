@@ -53,29 +53,10 @@ export const useGetCursosTabs = (id: number, tab: string) => {
 export const useGetContenidoTabs = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
-    const query = useQuery<CursosTabsResponse, Error>({
+    return useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
     });
-
-    const mapData = (data: CursosTabs[]) => {
-        const agrupado = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.titulo_elemento]) {
-                acc[contenido.titulo_elemento] = [];
-            }
-            acc[contenido.titulo_elemento].push(contenido);
-            return acc;
-        }, {});
-        return agrupado;
-    }
-
-    return {
-        ...query,
-        data: React.useMemo(
-            () => mapData(query.data?.data ?? []),
-            [query.data]
-        )
-    }
 };
 
 export type ActividadesCacheData = {
@@ -180,34 +161,13 @@ export const useGetListaPendientes = (id: number) => {
 export const useGetForosManuales = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
-    const query = useQuery<CursosForosResponse, Error>({
+    return useQuery<CursosForosResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () =>
             apiClient.get<CursosForosResponse>(
                 `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
             ),
     });
-
-    const mapData = (data: CursosTabs[], manuales: ManualesActividad[]) => {
-
-        const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.titulo_elemento]) {
-                acc[contenido.titulo_elemento] = [];
-            }
-            acc[contenido.titulo_elemento].push(contenido);
-            return acc;
-        }, {});
-
-        return { agrupadoPorUnidad, manuales };
-    }
-
-    return {
-        ...query,
-        data: React.useMemo(
-            () => mapData(query.data?.data.foros ?? [], query.data?.data.manual ?? []),
-            [query.data]
-        )
-    }
 };
 
 export const useGetEncuestas = (options?: { enabled?: boolean }) => {

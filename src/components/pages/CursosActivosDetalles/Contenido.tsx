@@ -13,42 +13,33 @@ export const Contenido: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const getLabel = (contenidos: any) => {
-        return contenidos?.[0]?.titulo_elemento;
-    }
-
+    if(isLoading) 
+        return <LoadingCircular Text="Cargando Contenido..." />
+        
     return (
-        isLoading ?
-            <LoadingCircular Text="Cargando Contenido..." />
-            :
-            Object.entries(contenido).map(([unidad, contenidos], index) =>
-
-                <Accordion key={index}
-                    title={getLabel(contenidos)}
-                    customHeader={!isMobile ? <AccordionStatus tittle={getLabel(contenidos)} status={contenidos?.[0]?.estatus} /> : undefined}
-                    sxProps={accordionStyle}>
-                    {
-                        isMobile && <Box sx={{ padding: '10px' }}>
-                            <StatusIcon estado={contenidos?.[0]?.estatus} />
-                        </Box>
-                    }
-
-                    {
-                        contenidos.filter((item) => item.titulo_elemento === unidad).map((item, i) => (
-                            <Box key={i}>
-                                <iframe
-                                    src={item?.url}
-                                    style={{
-                                        width: "100%",
-                                        height: "100vh",
-                                        border: "none",
-                                    }}
-                                />
-                            </Box>
-                        ))
-                    }
-
-                </Accordion>
-            )
-    )
+        contenido?.data.map((item, index) => 
+            <Accordion 
+                key={index}
+                title={item.titulo_elemento}
+                customHeader={!isMobile ? <AccordionStatus tittle={item.titulo_elemento} status={item.estatus} /> : undefined}
+                sxProps={accordionStyle}
+            >
+                {
+                    isMobile && <Box sx={{ padding: '10px' }}>
+                        <StatusIcon estado={item.estatus} />
+                    </Box>
+                }
+                <Box>
+                    <iframe
+                        src={item?.url}
+                        style={{
+                            width: "100%",
+                            height: "100vh",
+                            border: "none",
+                        }}
+                    />
+                </Box>
+            </Accordion>
+        )
+    );
 };

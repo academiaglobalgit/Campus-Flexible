@@ -25,13 +25,19 @@ const LoginPage: React.FC = () => {
 
   const [backgroundImage, setBackgroundImage] = React.useState("");
   const [config, setConfig] = React.useState<any>(null);
-  
+  const [imgSettings, setImgSettings] = React.useState<any>({
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  });
+
   React.useEffect(() => {
       loadConfig().then(cfg => {
           setConfig(cfg);
           switch (cfg?.data?.id_plan_estudio) {
             case 17: // Diplomado
               setBackgroundImage(HomeDiplomado);
+              setImgSettings({ width: '100%', objectFit: 'cover' });
             break;
             default:
               setBackgroundImage(Home);
@@ -79,11 +85,7 @@ const LoginPage: React.FC = () => {
                   component="img"
                   src={backgroundImage}
                   alt="Login"
-                  sx={{
-                    width: '100%',
-                  //   height: '100%',
-                    objectFit: 'cover',
-                  }}
+                  sx={imgSettings}
                 />
               </Grid>
             }

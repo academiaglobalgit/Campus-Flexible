@@ -73,7 +73,7 @@ export const TopBar: React.FC<TopBarProps> = ({titleScreen = "Regresar", isExter
               <Toolbar sx={{ justifyContent: "space-between", paddingLeft: '8px', paddingRight: '8px' }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Avatar alt={ name } src={avatar} width={48} height={48} onClick={(event) => handleMenuClick(event)} />
-                  <Typography component="h4" variant="h4" color="textPrimary" sx={{ ml: 1, width: '170px' }} className="truncate-text">
+                  <Typography component="h4" variant="h4" color="textPrimary" sx={{ ml: 1, width: '160px' }} className="truncate-text">
                     { name }
                   </Typography>
                 </Box>

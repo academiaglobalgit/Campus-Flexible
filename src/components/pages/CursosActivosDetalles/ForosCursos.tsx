@@ -21,7 +21,7 @@ export const ForosCursos: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { configPlataforma } = useAuth();
     const { id } = useParams<{ id: string }>();
-    const { data: { agrupadoPorUnidad: foros, manuales }, isLoading } = useGetForosManuales(Number(id!), "Foros");
+    const { data, isLoading } = useGetForosManuales(Number(id!), "Foros");
 
     const [ foroConfig, setForoConfig ] = useState({ titulo: 'Foros', loading: 'Cargando Foros...', botonEntrar: 'Entrar al foro', mostrarBotonEvaluacion: true });
 
@@ -33,8 +33,6 @@ export const ForosCursos: React.FC = () => {
         }
     }, [configPlataforma]);
 
-    console.log(foros);
-
     const handleForo = (item: CursosTabs) => {
         setForoSelected(JSON.stringify(item));
         navigate(AppRoutingPaths.FOROS.replace(":id", `${item.id_recurso}`));
@@ -45,7 +43,7 @@ export const ForosCursos: React.FC = () => {
             !isMobile && { width: '300px' },
             isMobile && { pb: 2 }
         ]}>
-            <Button onClick={() => window.open(manuales[0].url_archivo, '_blank')} disabled={manuales[0].url_archivo?.length === 0} fullWidth>Instrumento de Evaluación</Button>
+            <Button onClick={() => window.open(data?.data.manual[0].url_archivo, '_blank')} disabled={data?.data.manual[0].url_archivo?.length === 0} fullWidth>Instrumento de Evaluación</Button>
         </Box>
     )
 
@@ -53,39 +51,29 @@ export const ForosCursos: React.FC = () => {
         <TituloIcon Titulo={foroConfig.titulo} Icon={Foros} />
     )
 
-    const getLabel = (contenidos: any) => {
-        return contenidos?.[0]?.titulo_elemento;
-    }
-
     const AccordionSection = () => (
-        Object.entries(foros).map(([unidad, contenidos], index) =>
-
+        data?.data.foros.map((item, index) =>
             <Accordion key={index}
-                title={getLabel(contenidos)}
-                customHeader={!isMobile ? <AccordionStatus tittle={getLabel(contenidos)} status={contenidos?.[0]?.estatus_respuesta} /> : undefined}
+                title={item.titulo_elemento}
+                customHeader={!isMobile ? <AccordionStatus tittle={item.titulo_elemento} status={item.estatus_respuesta} /> : undefined}
                 sxProps={accordionStyle}>
                 {
                     isMobile && <TituloIcon key={1} Titulo={foroConfig.titulo} Icon={Foros} />
                 }
-                {
-                    contenidos.filter((item) => item.titulo_elemento === unidad).map((item, i) => (
-                        <Box
-                            key={i}
-                            sx={{ ...flexColumn, gap: '20px', alignItems: 'flex-start' }}
-                        >
-                            <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} />
+                <Box
+                    sx={{ ...flexColumn, gap: '20px', alignItems: 'flex-start' }}
+                >
+                    <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: item.contenido_elemento }} />
 
-                            {
-                                isMobile && <Box sx={{ padding: '10px', width: '100%' }}>
-                                    <StatusIcon estado={contenidos?.[0]?.estatus_respuesta} />
-                                </Box>
-                            }
-                            <Box sx={{ pl: 3, pr: 3, width: '100%' }}>
-                                <Button onClick={() => handleForo(item)} variant="outlined" fullWidth iconPosition={'end'} icon={<EastIcon />}>{foroConfig.botonEntrar}</Button>
-                            </Box>
+                    {
+                        isMobile && <Box sx={{ padding: '10px', width: '100%' }}>
+                            <StatusIcon estado={item.estatus_respuesta} />
                         </Box>
-                    ))
-                }
+                    }
+                    <Box sx={{ pl: 3, pr: 3, width: '100%' }}>
+                        <Button onClick={() => handleForo(item)} variant="outlined" fullWidth iconPosition={'end'} icon={<EastIcon />}>{foroConfig.botonEntrar}</Button>
+                    </Box>
+                </Box>
             </Accordion>
         )
     )
