@@ -63,9 +63,7 @@ const CursoActivo: React.FC = () => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
                 if (encuestasActivas.length > 0) {
                     setEncuestaData(encuestasActivas);
-                    console.log("🚀 ~ CursoActivo ~ encuestasActivas:", encuestasActivas)
                     setIdAsignacion(encuestasActivas[0].id_asignacion);
-                    console.log("🚀 ~ CursoActivo ~ encuestasActivas[0].id_asignacion:", encuestasActivas[0].id_asignacion)
                     setOpenEncuesta(true);
                 }
             })
