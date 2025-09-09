@@ -49,6 +49,7 @@ export const TitleScreen = {
     CALENDARIO: "Calendario",
     CALIFICACIONES: "Calificaciones",
     SEGUIMIENTO: "Seguimiento",
+    REPORTE: "Reporte",
     CURSOS_ACTIVOS: "Cursos Activos",
     CURSOS_CERTIFICACIONES: "Cursos y certificaciones",
     HOME: "Inicio",

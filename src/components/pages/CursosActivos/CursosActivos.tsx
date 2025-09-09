@@ -32,6 +32,7 @@ const CursoActivo: React.FC = () => {
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
+    const [idAsignacion, setIdAsignacion] = React.useState(0);
     const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
@@ -47,7 +48,7 @@ const CursoActivo: React.FC = () => {
             case 17: // Diplomados
                 setTituloCursos('Certificaciones')
                 break;
-                default:
+            default:
                 setTituloCursos('Materias')
                 break;
         }
@@ -60,6 +61,9 @@ const CursoActivo: React.FC = () => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
                 if (encuestasActivas.length > 0) {
                     setEncuestaData(encuestasActivas);
+                    console.log("🚀 ~ CursoActivo ~ encuestasActivas:", encuestasActivas)
+                    setIdAsignacion(encuestasActivas[0].id_asignacion);
+                    console.log("🚀 ~ CursoActivo ~ encuestasActivas[0].id_asignacion:", encuestasActivas[0].id_asignacion)
                     setOpenEncuesta(true);
                 }
             })
@@ -230,7 +234,10 @@ const CursoActivo: React.FC = () => {
                 </ContainerDesktop>
             }
             {
-                <EncuestasModal isOpen={openEncuesta} data={encuestaData[0]} />
+                <EncuestasModal
+                    isOpen={openEncuesta}
+                    data={{ encuesta: encuestaData[0], idAsignacion }}
+                />
             }
             {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
