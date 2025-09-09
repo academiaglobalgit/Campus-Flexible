@@ -99,27 +99,39 @@ const Sidenav: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-      // Crear el elemento script
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.src = 'https://agent.d-id.com/v2/index.js';
-      script.setAttribute('data-mode', 'fabio');
-      script.setAttribute('data-client-key', 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0');
-      script.setAttribute('data-agent-id', 'v2_agt_4Yofx9b_');
-      script.setAttribute('data-name', 'did-agent');
-      script.setAttribute('data-monitor', 'true');
-      script.setAttribute('data-orientation', 'horizontal');
-      script.setAttribute('data-position', 'right');
-  
-      document.head.appendChild(script);
-  
-      // Cleanup
-      return () => {
-        if (document.head.contains(script)) {
-          document.head.removeChild(script);
-        }
-      };
-    }, []);
+  // Validar si ya existe el script
+  const existingScript = document.querySelector<HTMLScriptElement>(
+    'script[data-name="did-agent"]'
+  );
+
+  if (!existingScript) {
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://agent.d-id.com/v2/index.js';
+    script.setAttribute('data-mode', 'fabio');
+    script.setAttribute(
+      'data-client-key',
+      'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0'
+    );
+    script.setAttribute('data-agent-id', 'v2_agt_4Yofx9b_');
+    script.setAttribute('data-name', 'did-agent'); // 👈 clave para evitar duplicados
+    script.setAttribute('data-monitor', 'true');
+    script.setAttribute('data-position', 'right');
+
+    document.head.appendChild(script);
+  }
+
+  // Cleanup: solo borrar si el componente desmonta y el script existe
+  return () => {
+    const script = document.querySelector<HTMLScriptElement>(
+      'script[data-name="did-agent"]'
+    );
+    if (script) {
+      document.head.removeChild(script);
+    }
+  };
+}, []);
+
 
   const handleMiPerfil = () => {
     navigate(AppRoutingPaths.MI_PERFIL);
@@ -166,7 +178,7 @@ const Sidenav: React.FC = () => {
   const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     const navigate = useNavigate();
     let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    let colorSidenav = 0;
+  
     switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
         menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
@@ -177,11 +189,8 @@ const Sidenav: React.FC = () => {
           return item;
         });
 
-        colorSidenav = 400
         break;
-      default:
-        colorSidenav = 300
-        break;
+      
     }
 
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
@@ -249,7 +258,7 @@ const Sidenav: React.FC = () => {
                           open ? { mr: 3 } : { mr: 'auto' },
                         ]}
                       >
-                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[colorSidenav] }} />
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary}} />
                       </ListItemIcon>
                       <ListItemText
                         primary={item.text}
