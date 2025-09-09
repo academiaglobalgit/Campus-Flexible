@@ -139,7 +139,6 @@ const MiPerfil: React.FC = () => {
     const script = document.querySelector<HTMLScriptElement>('script[data-mode="fabio"]');
     if (script) {
       script.remove(); // lo elimina del DOM
-      console.log("Script con data-mode='fabio' eliminado ✅");
     }
     logout();
     navigate("/");
