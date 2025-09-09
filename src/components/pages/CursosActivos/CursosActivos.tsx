@@ -21,15 +21,18 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
+import { useAuth } from "../../../hooks";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
+    const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
+    const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
@@ -37,6 +40,19 @@ const CursoActivo: React.FC = () => {
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                setTituloCursos('Certificaciones')
+                break;
+                default:
+                setTituloCursos('Materias')
+                break;
+        }
+
+    }, []);
 
     useEffect(() => {
         refetch()
@@ -184,7 +200,7 @@ const CursoActivo: React.FC = () => {
     const Materias = (
         <>
             <Divider textAlign="center">
-                <Typography component="span" variant="body2" color="primary">Materias</Typography>
+                <Typography component="span" variant="body2" color="primary">{tituloCurosACtivos}</Typography>
             </Divider>
             {
                 isLoading
