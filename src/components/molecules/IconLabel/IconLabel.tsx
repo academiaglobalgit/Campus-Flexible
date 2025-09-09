@@ -7,6 +7,7 @@ type IconLabelProps = {
   label: string;
   color?: string;
   action?: () => void;
+  disabled?: number
 };
 
 export const IconLabel = ({
@@ -14,19 +15,22 @@ export const IconLabel = ({
   label,
   color = 'primary.main',
   action,
+  disabled
+
 }: IconLabelProps) => (
-  <div 
-    style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        flexDirection: 'column', 
-        gap: 4,
-        cursor: 'pointer',
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      gap: 4,
+      cursor: disabled === 17 && label === 'Manual de Inducción' ? 'not-allowed' : 'pointer',
+      pointerEvents: disabled === 17 && label === 'Manual de Inducción' ? 'none' : 'auto'
     }}
     onClick={() => action && action()}
->
+  >
     <DsSvgIcon component={icon} color='primary' />
-    <Typography color={color} component="p" variant="body1" sx={{textAlign:'center'}}>
+    <Typography color={color} component="p" variant="body1" sx={{ textAlign: 'center' }}>
       {label}
     </Typography>
   </div>

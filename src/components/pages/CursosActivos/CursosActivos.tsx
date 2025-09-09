@@ -21,15 +21,20 @@ import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
+import { useAuth } from "../../../hooks";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
+    const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
+    const [verTutor, setTutorVer] = React.useState(true);
+    const [idAsignacion, setIdAsignacion] = React.useState(0);
+    const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
@@ -38,12 +43,27 @@ const CursoActivo: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
+    React.useEffect(() => {
+
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                setTituloCursos('Certificaciones')
+                setTutorVer(false)
+                break;
+            default:
+                setTituloCursos('Materias')
+                break;
+        }
+
+    }, []);
+
     useEffect(() => {
         refetch()
             .then(response => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
                 if (encuestasActivas.length > 0) {
                     setEncuestaData(encuestasActivas);
+                    setIdAsignacion(encuestasActivas[0].id_asignacion);
                     setOpenEncuesta(true);
                 }
             })
@@ -146,6 +166,7 @@ const CursoActivo: React.FC = () => {
                             )
                         }
                         {
+                            verTutor &&
                             BoxInfoRow(
                                 <>
                                     <InfoRow label="Tutor Asignado:" value={item.nombre_tutor} />
@@ -184,7 +205,7 @@ const CursoActivo: React.FC = () => {
     const Materias = (
         <>
             <Divider textAlign="center">
-                <Typography component="span" variant="body2" color="primary">Materias</Typography>
+                <Typography component="span" variant="body2" color="primary">{tituloCurosACtivos}</Typography>
             </Divider>
             {
                 isLoading
@@ -214,7 +235,10 @@ const CursoActivo: React.FC = () => {
                 </ContainerDesktop>
             }
             {
-                <EncuestasModal isOpen={openEncuesta} data={encuestaData[0]} />
+                <EncuestasModal
+                    isOpen={openEncuesta}
+                    data={{ encuesta: encuestaData[0], idAsignacion }}
+                />
             }
             {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
