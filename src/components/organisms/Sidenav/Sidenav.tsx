@@ -19,7 +19,7 @@ import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
-import { FabMenu } from '../../molecules/FabMenu/FabMenu';
+//import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 import { LeftCircle } from '../../../assets/icons';
 import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 import { useAuth } from '../../../hooks';
@@ -31,7 +31,7 @@ const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
-  
+
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -49,7 +49,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(11)} + 2px)`,
   },
-  
+
 });
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -84,18 +84,18 @@ const Sidenav: React.FC = () => {
   const showBackMenuRoutes = ShowBackMenuRoutes;
 
   const { data: cursosData } = useGetCursos();
-  
+
   const showBackMenu = showBackMenuRoutes.some(route =>
     location.pathname.startsWith(route)
   );
-  
+
   const [open, setOpen] = React.useState(false);
   const [config, setConfig] = React.useState<any>(null);
 
   React.useEffect(() => {
-      loadConfig().then(cfg => {
-          setConfig(cfg);
-      });
+    loadConfig().then(cfg => {
+      setConfig(cfg);
+    });
   }, []);
 
   const handleMiPerfil = () => {
@@ -107,18 +107,18 @@ const Sidenav: React.FC = () => {
   };
 
   const AppBarSection = () => {
-    return(
+    return (
       <AppBar color='inherit' sx={{ boxShadow: "0px 4px 8px 0px #6BBBE466" }}>
-        
-          <Box sx={
-            [
-              showBackMenu && {display: 'flex', justifyContent: 'space-between'}
-            ]
-          }>
-            
+
+        <Box sx={
+          [
+            showBackMenu && { display: 'flex', justifyContent: 'space-between' }
+          ]
+        }>
+
           {showBackMenu && (
             <Toolbar onClick={handleNavigate}>
-              <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px',}}>
+              <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '100px', }}>
                 <IconButton >
                   <DsSvgIcon component={LeftCircle} color='primary' />
                 </IconButton>
@@ -128,14 +128,14 @@ const Sidenav: React.FC = () => {
               </Box>
             </Toolbar>
           )}
-            
-            <Toolbar sx={{display: 'flex', justifyContent: 'flex-end', gap: '20px'}}>
-              <Typography variant="h4" component="h4" color='primary'>
-                {user?.nombrePrograma}
-              </Typography>
-              <IconsTopBar />
-            </Toolbar>
-          </Box>
+
+          <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
+            <Typography variant="h4" component="h4" color='primary'>
+              {user?.nombrePrograma}
+            </Typography>
+            <IconsTopBar />
+          </Toolbar>
+        </Box>
       </AppBar>
     )
   };
@@ -143,17 +143,22 @@ const Sidenav: React.FC = () => {
   const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     const navigate = useNavigate();
     let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-    switch(config?.data?.id_plan_estudio) {
+    let colorSidenav = 0;
+    switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
         menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
         menuRoutes = menuRoutes.map((item) => {
-          if(item.id === 3) { // Cambiar nombre de Calificaciones a Seguimiento
+          if (item.id === 3) { // Cambiar nombre de Calificaciones a Seguimiento
             return { ...item, text: TitleScreen.SEGUIMIENTO };
           }
           return item;
         });
-      break;
+
+        colorSidenav = 400
+        break;
+      default:
+        colorSidenav = 300
+        break;
     }
 
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
@@ -167,7 +172,7 @@ const Sidenav: React.FC = () => {
     const handleNavigation = (path: string, index: number) => {
       navigate(path);
       setSelectedIndex(index);
-    };    
+    };
 
     const getCounter = (item: typeof menuRoutes[number]) => {
       if (item.text === TitleScreen.CURSOS_ACTIVOS) {
@@ -175,26 +180,26 @@ const Sidenav: React.FC = () => {
       }
     }
 
-    return(
+    return (
       <>
         <Box sx={[
-              { display: 'flex', width: '100%' }, 
-              !open && { justifyContent: 'center' },
-              open
-                && { ml: 6 }
+          { display: 'flex', width: '100%' },
+          !open && { justifyContent: 'center' },
+          open
+          && { ml: 6 }
         ]}>
-          <Typography 
-            variant='body1' 
-            color='primary' 
+          <Typography
+            variant='body1'
+            color='primary'
             sx={[
               menuType === "more" && { color: (theme) => theme.palette.grey[600] },
-              { fontWeight: 700}, open && {fontSize: '18px'}]
+              { fontWeight: 700 }, open && { fontSize: '18px' }]
             }
           >
             {title}
           </Typography>
         </Box>
-      
+
         <List sx={{ width: '100%' }}>
           {
             menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
@@ -221,20 +226,20 @@ const Sidenav: React.FC = () => {
                           open ? { mr: 3 } : { mr: 'auto' },
                         ]}
                       >
-                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300]}} />
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[colorSidenav] }} />
                       </ListItemIcon>
                       <ListItemText
                         primary={item.text}
                         sx={{ opacity: open ? 1 : 0 }}
                       />
                       {
-                        (item.hasCount && open) && 
-                            getCounter(item) !== 0 && <Box 
-                              component="span" 
-                              sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
-                            >
-                              {getCounter(item)}
-                            </Box>
+                        (item.hasCount && open) &&
+                        getCounter(item) !== 0 && <Box
+                          component="span"
+                          sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
+                        >
+                          {getCounter(item)}
+                        </Box>
                       }
                       {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
                     </ListItemButton>
@@ -272,9 +277,9 @@ const Sidenav: React.FC = () => {
   return (
     <Box>
       <CssBaseline />
-      
-      <Drawer 
-        variant="permanent" 
+
+      <Drawer
+        variant="permanent"
         open={open}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -282,53 +287,53 @@ const Sidenav: React.FC = () => {
           boxShadow: "0px 2px 4px 0px #6BBBE44D",
         }}
       >
-        <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2}}>
-            <Box
-                  component="img"
-                  src={open ? config?.data.logo_url : config?.data.logo_url_mini}
-                  alt="AG College Logo"
-                  sx={{
-                      mt: 4,
-                      mb: '29px',
-                  }}
-            />
-            {Listado("Menú", open, "main")}
-            <Divider sx={{ width: open ? '90%' : '50%'}} />
-            {/* {Listado("Más", open, "more")} */}
+        <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2 }}>
+          <Box
+            component="img"
+            src={open ? config?.data.logo_url : config?.data.logo_url_mini}
+            alt="AG College Logo"
+            sx={{
+              mt: 4,
+              mb: '29px',
+            }}
+          />
+          {Listado("Menú", open, "main")}
+          <Divider sx={{ width: open ? '90%' : '50%' }} />
+          {/* {Listado("Más", open, "more")} */}
         </Box>
-               
-        <Box sx={[{height: '70px', display: 'flex', alignItems:'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start'}, open && {paddingLeft: '20px'}]}>
-              <IconButton sx={{ p: 0 }}>
-                <Avatar width={48} height={48} onClick={handleMiPerfil} alt={user?.name} src={user?.photo} />
-              </IconButton>
-              {
-                open && 
-                <Badge onClick={handleMiPerfil} sx={{cursor: 'pointer'}}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  badgeContent={
-                    <ArrowCircleUpOutlinedIcon color='primary' sx={{ transform: 'rotate(40deg)', ml:5}} />
-                  }
-                >
-                  <Box>
-                    <Typography variant="body1" component="div">
-                      {user?.name}
-                    </Typography>
-                    <Typography variant="body1" component="div" color='disabled'>
-                      {user?.city}
-                    </Typography>
-                  </Box>
-                </Badge>                
+
+        <Box sx={[{ height: '70px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start' }, open && { paddingLeft: '20px' }]}>
+          <IconButton sx={{ p: 0 }}>
+            <Avatar width={48} height={48} onClick={handleMiPerfil} alt={user?.name} src={user?.photo} />
+          </IconButton>
+          {
+            open &&
+            <Badge onClick={handleMiPerfil} sx={{ cursor: 'pointer' }}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              badgeContent={
+                <ArrowCircleUpOutlinedIcon color='primary' sx={{ transform: 'rotate(40deg)', ml: 5 }} />
               }
+            >
+              <Box>
+                <Typography variant="body1" component="div">
+                  {user?.name}
+                </Typography>
+                <Typography variant="body1" component="div" color='disabled'>
+                  {user?.city}
+                </Typography>
+              </Box>
+            </Badge>
+          }
         </Box>
       </Drawer>
       <Box sx={{ paddingTop: '90px' }}>
-          <AppBarSection />
-          <Outlet/>
-          <ScrollRestoration />
-          <FabMenu />
+        <AppBarSection />
+        <Outlet />
+        <ScrollRestoration />
+        {/* <FabMenu /> */}
       </Box>
     </Box>
   );
