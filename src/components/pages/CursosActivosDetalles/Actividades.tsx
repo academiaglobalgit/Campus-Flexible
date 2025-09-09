@@ -36,7 +36,7 @@ export const Actividades: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isSaving, setIsSaving] = useState(false);
-    const [verBotones, serVerBotones] = useState(false);
+    const [verBotones, setVerBotones] = useState(false);
     const { id } = useParams<{ id: string }>();
     const { dataMapped, isLoading } = useGetActividades(Number(id!), "Actividades");
 
@@ -58,10 +58,10 @@ export const Actividades: React.FC = () => {
 
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                serVerBotones(false)
+                setVerBotones(false)
                 break;
             default:
-                serVerBotones(true)
+                setVerBotones(true)
                 break;
         }
 
