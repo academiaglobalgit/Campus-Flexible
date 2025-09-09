@@ -18,6 +18,8 @@ import { RetroalimentacionDialog } from "../../molecules/Dialogs/Retroalimentaci
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
+import React from "react";
+import { useAuth } from "../../../hooks";
 
 type PreviewFile = {
     file: File;
@@ -26,13 +28,15 @@ type PreviewFile = {
 
 export const Actividades: React.FC = () => {
     const theme = useTheme();
+    const { configPlataforma } = useAuth();
+
     const queryClient = useQueryClient();
     const { showNotification } = useNotification();
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isSaving, setIsSaving] = useState(false);
-
+    const [verBotones, serVerBotones] = useState(false);
     const { id } = useParams<{ id: string }>();
     const { dataMapped, isLoading } = useGetActividades(Number(id!), "Actividades");
 
@@ -49,6 +53,19 @@ export const Actividades: React.FC = () => {
         TipoManualesIds.MANUAL_APA,
         TipoManualesIds.ACTIVIDADES_INTEGRATORIAS
     ];
+
+    React.useEffect(() => {
+
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                serVerBotones(false)
+                break;
+            default:
+                serVerBotones(true)
+                break;
+        }
+
+    }, []);
 
     const handleFilesChange = (id: number, files: PreviewFile[]) => {
         setArchivosPorId((prev) => ({
@@ -213,17 +230,17 @@ export const Actividades: React.FC = () => {
                 ]
             }
         >
-                <>
-                    {
-                        !isLoading && 
-                        manuales.map((item, i) => (
-                            <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={i}>
-                                <ManualsButton idTipoManual={item} />
-                            </Box>
-                        ))
-                    }
-                </>
-            
+            <>
+                {
+                    !isLoading &&
+                    manuales.map((item, i) => (
+                        <Box sx={{ width: isDesktop ? '300px' : '100%' }} key={i}>
+                            <ManualsButton idTipoManual={item} />
+                        </Box>
+                    ))
+                }
+            </>
+
         </Box>
     );
 
@@ -241,9 +258,9 @@ export const Actividades: React.FC = () => {
             {
                 isMobile
                     ?
-                    ButtonSection(!isMobile)
+                    verBotones && ButtonSection(!isMobile)
                     :
-                    ButtonSection(betweenDevice ? false : true)
+                    verBotones && ButtonSection(betweenDevice ? false : true)
             }
             {
                 isLoading
