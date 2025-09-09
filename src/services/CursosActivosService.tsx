@@ -3,7 +3,7 @@ import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
 import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse, ListaPendientes } from '@constants';
 import React from 'react';
-import type { CursosForosResponse, CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
+import type { CursosForosResponse, CursosListaPendientesResponse } from '../types/Cursos.interface';
 import type { EncuestasResponse } from '../types/Encuestas.interface';
 
 export const useGetCursos = () => {
