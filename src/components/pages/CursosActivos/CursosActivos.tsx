@@ -32,6 +32,7 @@ const CursoActivo: React.FC = () => {
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
+    const [verTutor, setTutorVer] = React.useState(true);
     const [idAsignacion, setIdAsignacion] = React.useState(0);
     const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
@@ -47,6 +48,7 @@ const CursoActivo: React.FC = () => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 setTituloCursos('Certificaciones')
+                setTutorVer(false)
                 break;
             default:
                 setTituloCursos('Materias')
@@ -166,6 +168,7 @@ const CursoActivo: React.FC = () => {
                             )
                         }
                         {
+                            verTutor &&
                             BoxInfoRow(
                                 <>
                                     <InfoRow label="Tutor Asignado:" value={item.nombre_tutor} />

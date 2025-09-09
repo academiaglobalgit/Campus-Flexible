@@ -213,7 +213,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         {
                             accessLogin.map((access) => (
                                 <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
-                                    <IconLabel icon={access.icon} label={access.label} key={access.id} action={access.action} />
+                                    <IconLabel disabled={config?.data.id_plan_estudio ?? 0} icon={access.icon} label={access.label} key={access.id} action={access.action} />
                                 </Grid>
                             ))
                         }
