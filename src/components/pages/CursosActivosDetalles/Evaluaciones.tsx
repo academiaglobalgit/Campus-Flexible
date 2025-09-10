@@ -4,7 +4,6 @@ import { Box, useMediaQuery, useTheme } from "@mui/material"
 import { useGetCursosTabs } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useParams } from "react-router-dom";
-import { toRoman } from "../../../utils/Helpers";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { usePostMessageListener } from "../../../hooks/usePostMessageListener";
