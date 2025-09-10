@@ -72,7 +72,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
                             <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <WhatsAppContacto />
                                 <Typography component="p" variant='body2'>
-                                    {formatWithIMask(item.valor_contacto, "phone")} (WhatsApp)
+                                    {formatWithIMask(item.valor_contacto, "phone")}
                                 </Typography>
                             </Box>
                         )

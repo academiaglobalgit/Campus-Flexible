@@ -39,5 +39,6 @@ export type ContactoData = {
         horarios: string | null;
         telefonos: string | null;
         email: string | null;
+        tipo: string | null;
     };
 };
