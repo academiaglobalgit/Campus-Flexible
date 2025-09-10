@@ -60,16 +60,13 @@ export const useContactoInterno = (id_plan_estudios: number) => {
 
                 switch (id_tipo_contacto) {
                     case 1:
-                        acc[id_seccion_contacto].data.telefonos = formatWithIMask(valor_contacto, 'phone'); 
+                        acc[id_seccion_contacto].data.telefonos = valor_contacto;
                         break;
                     case 2:
                         acc[id_seccion_contacto].data.email = valor_contacto;
                         break;
                     case 3:
                         acc[id_seccion_contacto].data.horarios = valor_contacto;
-                        break;
-                    default:
-                        // Handle other types if necessary
                         break;
                 }
 
@@ -89,4 +86,3 @@ export const useContactoInterno = (id_plan_estudios: number) => {
     };
 
 }
-
