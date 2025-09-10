@@ -36,6 +36,13 @@ const PreguntasFrecuentes: React.FC = () => {
   
   const onBack = () => navigate(isExternal ? "/" : AppRoutingPaths.HOME);
 
+  const getTitleDivider = (grupo: string) => {
+    switch (config?.data?.id_plan_estudio) { 
+      case 17: return undefined;
+      default: return grupo;
+    }
+  }
+
   return (
     config &&
     <Container maxWidth={isMobile ? 'xs' : 'lg' } sx={{ pt: 7, pb: 7 }}>
@@ -51,7 +58,7 @@ const PreguntasFrecuentes: React.FC = () => {
           !isLoading ?
             Object.entries(data).map(([grupo, preguntas], index) =>
               (
-                <AccordionPregunta titleDivider={grupo} preguntas={preguntas} key={index} />
+                <AccordionPregunta titleDivider={getTitleDivider(grupo)} preguntas={preguntas} key={index} />
               )  
             )
           :

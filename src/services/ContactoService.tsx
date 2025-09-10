@@ -15,8 +15,8 @@ export const useGetContacto = (id_plan_estudios: number) => {
 
     const mapData = (data: Contacto[]) => {
         return {
-            telefono: data.filter((item) => item.id_tipo_contacto === 1).map((item) => formatWithIMask(item.valor_contacto, "phone")),
-            email: data.filter((item) => item.id_tipo_contacto === 2).map((item) => item.valor_contacto)
+            telefono: data.filter((item) => item.id_tipo_contacto === 1),
+            email: data.filter((item) => item.id_tipo_contacto === 2)
         };
     }
 

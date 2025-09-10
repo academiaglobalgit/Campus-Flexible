@@ -1,4 +1,3 @@
-// src/components/molecules/IconLabel/IconLabel.tsx
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import { Typography } from '@mui/material';
 
@@ -6,32 +5,33 @@ type IconLabelProps = {
   icon: any;
   label: string;
   color?: string;
+  isDisabled: boolean;
   action?: () => void;
-  disabled?: number
 };
 
-export const IconLabel = ({
-  icon,
-  label,
-  color = 'primary.main',
-  action,
-  disabled
+export const IconLabel = ({ icon, label, color = 'primary.main', isDisabled, action }: IconLabelProps) => {
 
-}: IconLabelProps) => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      flexDirection: 'column',
-      gap: 4,
-      cursor: disabled === 17 && label === 'Manual de Inducción' ? 'not-allowed' : 'pointer',
-      pointerEvents: disabled === 17 && label === 'Manual de Inducción' ? 'none' : 'auto'
-    }}
-    onClick={() => action && action()}
-  >
-    <DsSvgIcon component={icon} color='primary' />
-    <Typography color={color} component="p" variant="body1" sx={{ textAlign: 'center' }}>
-      {label}
-    </Typography>
-  </div>
-);
+  const handleAction = () => {
+    if(!isDisabled && action) {
+      action();
+    }
+  }
+
+  return(
+    <div 
+      style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          flexDirection: 'column', 
+          gap: 4,
+          cursor: !isDisabled ? 'pointer' : 'not-allowed',          
+      }}
+      onClick={handleAction}
+    >
+      <DsSvgIcon component={icon} color={!isDisabled ? 'primary' : 'disabled' } />
+      <Typography color={ !isDisabled ? color : 'textDisabled' } component="p" variant="body1" sx={{textAlign:'center'}}>
+        {label}
+      </Typography>
+    </div>
+  );
+}

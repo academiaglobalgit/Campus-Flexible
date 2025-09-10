@@ -22,6 +22,7 @@ interface AccessLoginItem {
     id: string;
     icon: any;
     label: string;
+    isDisabled: boolean;
     action?: () => void;
 }
 
@@ -209,15 +210,26 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     >
                         INGRESAR
                     </Button>
-                    <Grid container spacing={2}>
-                        {
-                            accessLogin.map((access) => (
-                                <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
-                                    <IconLabel disabled={config?.data.id_plan_estudio ?? 0} icon={access.icon} label={access.label} key={access.id} action={access.action} />
-                                </Grid>
-                            ))
-                        }
-                    </Grid>
+                    {
+                        accessLogin.length > 0 && (
+                            <Grid container spacing={2}>
+                                {
+                                    accessLogin.map((access) => (
+                                        <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
+                                            <IconLabel 
+                                                key={access.id} 
+                                                icon={access.icon} 
+                                                label={access.label} 
+                                                isDisabled={access.isDisabled}
+                                                action={access.action} 
+                                            />
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        )
+                    }
+                    
                 </Box>
             </Box>
 

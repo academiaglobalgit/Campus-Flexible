@@ -23,14 +23,23 @@ export const IconsTopBar: React.FC = () => {
 
     const open = Boolean(anchorEl);
     const openMasInfo = Boolean(anchorElMasInfo);
+    
+    const sortedMenuInformacion = React.useMemo(
+        () => [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+        []
+    );
 
-    let menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-    switch (configPlataforma?.id_plan_estudio) {
-        case 17: // Diplomados
-            menuInformacion = menuInformacion.filter(item => item.text !== "Servicios Escolares"); // Remover servicios escolares
-        break;
-    }
+    const menuInformacion = React.useMemo(() => {
+        if (configPlataforma?.id_plan_estudio === 17) {
+            return sortedMenuInformacion.map((item) => {
+                if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
+                    return { ...item, visible: 0 };
+                }
+                return item;
+            });
+        }
+        return sortedMenuInformacion;
+    }, [sortedMenuInformacion, configPlataforma?.id_plan_estudio]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -94,7 +103,18 @@ export const IconsTopBar: React.FC = () => {
         handleCloseMoreInfo();
     };
 
-    return (
+    // switch (configPlataforma?.id_plan_estudio) {
+    //     case 17: // Diplomados
+    //         menuInformacion = menuInformacion.map((item) => {
+    //             if (item.text === TitleScreen.SERVICIOS_ESCOLORES) { // Cambiar nombre de Calificaciones a Reporte
+    //                 return { ...item, visible: 0 };
+    //             }
+    //             return item;
+    //         });
+    //         break;
+    // }
+
+    return(
         <>
             <Box sx={{ display: 'flex' }}>
                 <IconButton onClick={handleFaqs}>
@@ -103,12 +123,10 @@ export const IconsTopBar: React.FC = () => {
                 <IconButton onClick={handleHelp}>
                     <Ayuda />
                 </IconButton>
-                <IconButton
-
-                >
-                    <Badge
-                        onClick={handleClick} sx={{ cursor: 'pointer' }}
-                        badgeContent={filteredNotifications?.filter((item) => item.leida === 0).length} color="error"
+                <IconButton>
+                    <Badge 
+                        onClick={handleClick} sx={{cursor: 'pointer'}}
+                        badgeContent={ filteredNotifications?.filter((item) => item.leida === 0).length } color="error"
                     >
                         <NotificacionesIcon />
                     </Badge>
@@ -226,12 +244,11 @@ export const IconsTopBar: React.FC = () => {
                 </Typography>
                 {
                     menuInformacion.filter((item) => item.visible === 1).map((item, index) => {
-                        return (
-
-                            <MenuItem
-                                key={index}
-                                disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false}
-                                onClick={() => handleNavigation(item)}
+                        return (                        
+                            <MenuItem 
+                                key={index} 
+                                disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false} 
+                                onClick={() => handleNavigation(item)} 
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                                     !isMobile && { width: '100%', maxWidth: '232px' }
