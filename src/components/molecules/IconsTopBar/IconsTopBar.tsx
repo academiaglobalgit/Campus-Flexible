@@ -17,21 +17,27 @@ export const IconsTopBar: React.FC = () => {
     const { configPlataforma } = useAuth();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [anchorElMasInfo, setAnchorElMasInfo] = React.useState<null | HTMLElement>(null);
-    
+
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [menuItemStyle, setMenuItemStyle] = React.useState({});
-    
+
     const open = Boolean(anchorEl);
     const openMasInfo = Boolean(anchorElMasInfo);
 
-    const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    let menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    switch (configPlataforma?.id_plan_estudio) {
+        case 17: // Diplomados
+            menuInformacion = menuInformacion.filter(item => item.text !== "Servicios Escolares"); // Remover servicios escolares
+        break;
+    }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
     const { data: notifications, isLoading } = useGetNotificacionesTopBar();
-    
+
     const handleClose = () => setAnchorEl(null);
     const handleCloseMoreInfo = () => setAnchorElMasInfo(null);
 
@@ -65,8 +71,8 @@ export const IconsTopBar: React.FC = () => {
     const handleHelp = () => navigate(AppRoutingPaths.AYUDA_INTERIOR);
 
     const getTextCountNotification = (total: number) => {
-        if(total === 1) return 'Tienes una notificación sin leer';
-        if(total > 1) return `Tienes ${total} notificaciones no leídas`;
+        if (total === 1) return 'Tienes una notificación sin leer';
+        if (total > 1) return `Tienes ${total} notificaciones no leídas`;
     }
 
     const handleMarkedRead = (id: number) => {
@@ -88,21 +94,21 @@ export const IconsTopBar: React.FC = () => {
         handleCloseMoreInfo();
     };
 
-    return(
+    return (
         <>
             <Box sx={{ display: 'flex' }}>
                 <IconButton onClick={handleFaqs}>
                     <PreguntasFrecuentes />
                 </IconButton>
-                <IconButton  onClick={handleHelp}>
+                <IconButton onClick={handleHelp}>
                     <Ayuda />
                 </IconButton>
                 <IconButton
-                    
+
                 >
-                    <Badge 
-                        onClick={handleClick} sx={{cursor: 'pointer'}}
-                        badgeContent={ filteredNotifications?.filter((item) => item.leida === 0).length } color="error"
+                    <Badge
+                        onClick={handleClick} sx={{ cursor: 'pointer' }}
+                        badgeContent={filteredNotifications?.filter((item) => item.leida === 0).length} color="error"
                     >
                         <NotificacionesIcon />
                     </Badge>
@@ -117,65 +123,65 @@ export const IconsTopBar: React.FC = () => {
                 open={open}
                 onClose={handleClose}
                 slotProps={{
-                paper: {
-                    elevation: 0,
-                    sx: {
-                        p:'15px',
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&::before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
+                    paper: {
+                        elevation: 0,
+                        sx: {
+                            p: '15px',
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            '&::before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
                         },
                     },
-                },
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '11px'}}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         <Typography component="h4" variant="h4">Notificaciones</Typography>
-                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100]}}>{getTextCountNotification(filteredNotifications?.filter((item) => item.leida === 0).length)}</Typography>
+                        <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>{getTextCountNotification(filteredNotifications?.filter((item) => item.leida === 0).length)}</Typography>
                     </Box>
                     <Box>
                         {
                             isLoading
-                            ?
+                                ?
                                 <LoadingCircular />
-                            :
-                                filteredNotifications?.slice(0,5).map((item, i) => (
-                                    <CardNotification 
-                                        key={i} 
-                                        item={item} 
-                                        index={i} 
-                                        loadingItems={loadingIds} 
+                                :
+                                filteredNotifications?.slice(0, 5).map((item, i) => (
+                                    <CardNotification
+                                        key={i}
+                                        item={item}
+                                        index={i}
+                                        loadingItems={loadingIds}
                                         setLoadingItems={setLoadingIds}
                                         setMarkedRead={(id) => handleMarkedRead(id)}
                                     />
                                 ))
                         }
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center', pt: '16px', cursor: 'pointer'}} onClick={handleAllNotifications}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', pt: '16px', cursor: 'pointer' }} onClick={handleAllNotifications}>
                             <Typography component="span" variant="body2" color="primary">Ver todas las notificaciones</Typography>
                         </Box>
                     </Box>
                 </Box>
-                
+
             </Menu>
 
             <Menu
@@ -184,33 +190,33 @@ export const IconsTopBar: React.FC = () => {
                 open={openMasInfo}
                 onClose={handleCloseMoreInfo}
                 slotProps={{
-                paper: {
-                    elevation: 0,
-                    sx: {
-                        p:'15px',
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&::before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
+                    paper: {
+                        elevation: 0,
+                        sx: {
+                            p: '15px',
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            '&::before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
                         },
                     },
-                },
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
@@ -221,11 +227,11 @@ export const IconsTopBar: React.FC = () => {
                 {
                     menuInformacion.filter((item) => item.visible === 1).map((item, index) => {
                         return (
-                        
-                            <MenuItem 
-                                key={index} 
-                                disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false} 
-                                onClick={() => handleNavigation(item)} 
+
+                            <MenuItem
+                                key={index}
+                                disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false}
+                                onClick={() => handleNavigation(item)}
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                                     !isMobile && { width: '100%', maxWidth: '232px' }
@@ -235,13 +241,13 @@ export const IconsTopBar: React.FC = () => {
                                     <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300] }} />
                                 </ListItemIcon>
                                 <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
-                        </MenuItem>);
+                            </MenuItem>);
                     })
-                }                
+                }
             </Menu>
 
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} menutype={menuTypeDialog} />
         </>
-        
+
     );
 }
