@@ -4,25 +4,29 @@ import { RouterProvider } from 'react-router-dom';
 import { AppRouting as router } from './AppRouting';
 import { QueryProvider } from './providers/QueryProvider';
 import './index.scss';
-import { Box, createTheme, CssBaseline, Fade, LinearProgress, ThemeProvider, useMediaQuery, useTheme } from '@mui/material';
+
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './providers/NotificationProvider';
-import { getPlataformaFromSubdomain } from './config/plataformaConfig';
 import { getThemeByPlataforma } from './themes';
 
 import { loadAppConfig } from './config/configLoader';
 import LogoAG from './assets/logo_ag.svg';
 
 import { useEffect, useState } from 'react';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Fade from '@mui/material/Fade';
+import CssBaseline from '@mui/material/CssBaseline';
 
 function AppLoader() {
   const themeMui = useTheme();
   const isMobile = useMediaQuery(themeMui.breakpoints.down('sm'));
   const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
-  const plataforma = getPlataformaFromSubdomain();
-  const baseTheme = getThemeByPlataforma(plataforma);
+  
+  const baseTheme = getThemeByPlataforma();
 
   useEffect(() => {
     loadAppConfig().then((cfg) => {

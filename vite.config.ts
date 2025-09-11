@@ -27,9 +27,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           // Generar nombres únicos para evitar cache
-          entryFileNames: 'assets/[name]-[hash].js',
-          chunkFileNames: 'assets/[name]-[hash].js',
-          assetFileNames: 'assets/[name]-[hash].[ext]'
+          entryFileNames: `assets/[name].${Date.now()}.[hash].js`,
+          chunkFileNames: `assets/[name].${Date.now()}.[hash].js`,
+          assetFileNames: `assets/[name].${Date.now()}.[hash].[ext]`
         }
       }
     },
