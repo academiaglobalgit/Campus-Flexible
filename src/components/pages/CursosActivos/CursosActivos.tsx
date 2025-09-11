@@ -88,7 +88,7 @@ const CursoActivo: React.FC = () => {
 
         if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado') {
             goToDetalle(item.id_curso)
-        } else if (curso.estatus.toLowerCase() === 'finalizado' && item.progreso === 100) {
+        } else if (curso.estatus.toLowerCase() === 'cursando' && item.progreso === 100) {
             setIsSending(true);
             setIsDisabled(true);
             setCursoId(item.id_curso)
