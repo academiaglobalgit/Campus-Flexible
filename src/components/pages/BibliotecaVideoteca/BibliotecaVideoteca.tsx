@@ -9,28 +9,18 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetBiblioteca, useGetBibliotecaById } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { loadConfig } from '../../../config/configStorage';
-import { useAuth } from "../../../hooks";
 
 const BibliotecaVideoteca: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [value, setValue] = React.useState(0);
     const { data: biblioteca, isLoading } = useGetBiblioteca();
-    const [config, setConfig] = React.useState<any>(null);
-    const { configPlataforma } = useAuth();
 
     const id = biblioteca?.data?.id_modulo_campus;
 
     const { data: detalle, isLoading: loadingDetalle } = useGetBibliotecaById(id!, {
         enabled: !!id
     });
-
-    React.useEffect(() => {
-        loadConfig().then(cfg => {
-            setConfig(cfg);
-        });
-    }, []);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -48,63 +38,42 @@ const BibliotecaVideoteca: React.FC = () => {
         );
     };
 
-    type ContentsProps = {
-        idPlanEstudio: number;
-    };
-
-    const idsExcluidos = [17]; // ids a ocultar
-
-    const validarPlanEstudio = (
-        idPlanEstudio?: number,
-        idsExcluidos: number[] = []
-    ) => {
-        return idsExcluidos.includes(idPlanEstudio ?? -1) ? 0 : 1;
-    };
-
-    const resultado = validarPlanEstudio(configPlataforma?.id_plan_estudio, idsExcluidos);
-
-    const Contents: React.FC<ContentsProps> = () => (
+    const Contents = () => (
         <>
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    {resultado === 1 && <Tab label="Biblioteca" value={0} />}
-                    <Tab label="Videoteca" value={resultado} />
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                    <Tab label="Biblioteca" value={0} />
+                    <Tab label="Videoteca" value={1} />
                 </Tabs>
             </Box>
-
-            {resultado === 1 && (
-                <TabPanel value={value} index={0}>
-                    {isLoading || loadingDetalle ? (
-                        <LoadingCircular Text="Cargando Biblioteca..." />
-                    ) : (
-                        detalle && <Biblioteca data={detalle.data[0]} />
-                    )}
-                </TabPanel>
-            )}
-
-            <TabPanel value={value} index={resultado}>
+            <TabPanel value={value} index={0}>
+                {isLoading || loadingDetalle ? (
+                    <LoadingCircular Text="Cargando Biblioteca..." />
+                ) : (
+                    detalle && <Biblioteca data={detalle.data[0]} />
+                )}
+            </TabPanel>
+            <TabPanel value={value} index={1}>
                 {isLoading || loadingDetalle ? (
                     <LoadingCircular Text="Cargando Videoteca..." />
                 ) : (
-                    detalle && <Videoteca data={detalle.data[resultado]} />
+                    detalle && <Videoteca data={detalle.data[1]} />
                 )}
             </TabPanel>
         </>
     );
 
-
-
     return (
         isMobile
             ?
             <Box sx={[{ width: '100%', }, isMobile && { paddingTop: '28px', paddingBottom: '28px' }]}>
-                <Contents idPlanEstudio={config?.data?.id_plan_estudio} />
+                <Contents />
             </Box>
             :
             <ContainerDesktop title={""} >
                 <Box sx={{ pt: '12px' }}>
-                    <Contents idPlanEstudio={config?.data?.id_plan_estudio} />
+                    <Contents />
                 </Box>
             </ContainerDesktop>
     );
