@@ -25,6 +25,23 @@ export const BottomBar: React.FC = () => {
 
     const handleHome = () => navigate(AppRoutingPaths.PLAN_ESTUDIOS);
 
+    const showHideIcons = () => {
+      switch (configPlataforma?.id_plan_estudio) {
+        case 17: 
+          return (
+          <BottomNavigationAction 
+              sx={{ visibility: 'hidden' }} 
+              disabled 
+          />);
+        default: 
+          return (
+          <BottomNavigationAction 
+            icon={<HomeOutlinedIcon />} 
+            onClick={handleHome}
+          />);
+      }
+    }
+
   return (
     <React.Fragment>
         <BottomNavigation
@@ -38,15 +55,15 @@ export const BottomBar: React.FC = () => {
             }}
         >
             {
-              configPlataforma?.id_plan_estudio !== 17 &&
-                <BottomNavigationAction 
-                  icon={<HomeOutlinedIcon />} 
-                  onClick={handleHome}
-                /> 
+              showHideIcons()
             }
             <BottomNavigationAction 
               icon={<AddCircleOutlineIcon color="primary" sx={{ fontSize: 40 }} />}
               onClick={(event) => handleMenuClick(event, "menuRoutes")}
+            />
+            <BottomNavigationAction 
+              sx={{ visibility: 'hidden' }} 
+              disabled 
             />
         </BottomNavigation>
         <MobileMenu anchorEl={anchorEl} onClose={handleMenuClose} menuType={menuType} />

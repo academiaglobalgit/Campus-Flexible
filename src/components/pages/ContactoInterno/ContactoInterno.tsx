@@ -55,6 +55,8 @@ const ContactoInterno: React.FC = () => {
         );
     };
 
+    console.log(interno);
+
     const Contents = () => (
 
         <>
@@ -86,17 +88,20 @@ const ContactoInterno: React.FC = () => {
                                                 <Tab
                                                     key={index}
                                                     label={section.label}
-                                                    value={section.valor}
+                                                    value={index + 1}
                                                     sx={{ minWidth: '150px', padding: '0px' }}
                                                 />
                                             ))
                                         }
                                     </Tabs>
                                 </Box>
-                                {interno.map((section, index) => (
-                                    <TabPanel key={index + 1} value={value} index={index + 1}>
-                                        {Contenido(section)}
-                                    </TabPanel>))}
+                                {
+                                    interno.map((section, index) => (
+                                        <TabPanel key={index} value={value} index={index + 1}>
+                                            {Contenido(section)}
+                                        </TabPanel>
+                                    ))
+                                }
                             </>
                             :
                             <>
