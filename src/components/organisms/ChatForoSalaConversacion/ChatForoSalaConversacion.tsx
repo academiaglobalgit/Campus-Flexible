@@ -148,7 +148,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             });
 
 
-            showNotification(`Comentario guardado satisfactorimente`, "success");
+            showNotification(`Comentario guardado satisfactoriamente`, "success");
             setIsOpenLoading(false);
             if (onSaveComentarioExterno) onSaveComentarioExterno();
         },
@@ -187,7 +187,7 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
                 exact: true
             });
 
-            showNotification(`Comentario eliminado satisfactorimente`, "success");
+            showNotification(`Comentario eliminado satisfactoriamente`, "success");
             setIsOpenLoading(false);
 
             setIdMensaje(0);

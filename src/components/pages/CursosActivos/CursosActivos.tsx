@@ -25,7 +25,7 @@ import { useAuth } from "../../../hooks";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma } = useAuth();
+    const { configPlataforma} = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -88,7 +88,7 @@ const CursoActivo: React.FC = () => {
 
         if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado') {
             goToDetalle(item.id_curso)
-        } else if (curso.estatus.toLowerCase() === 'cursando' && item.progreso === 100) {
+        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100) {
             setIsSending(true);
             setIsDisabled(true);
             setCursoId(item.id_curso)

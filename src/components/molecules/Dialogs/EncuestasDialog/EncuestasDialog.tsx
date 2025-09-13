@@ -103,7 +103,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 
 			setIsSending(false);
 			setOpen(false);
-			showNotification(`Encuesta guardada satisfactorimente`, "success");
+			showNotification(`Encuesta guardada satisfactoriamente`, "success");
 
 			await queryClient.invalidateQueries({
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],

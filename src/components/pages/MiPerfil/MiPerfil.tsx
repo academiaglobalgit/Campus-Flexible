@@ -180,7 +180,7 @@ const MiPerfil: React.FC = () => {
   const createMutation = useMutation({
     mutationFn: useCreatePerfil,
     onSuccess: async () => {
-      showNotification(`Perfil actualizado satisfactorimente`, "success");
+      showNotification(`Perfil actualizado satisfactoriamente`, "success");
       setNewImage(null);
       setShowCancelEditAvatar(false);
       setLoading(false);

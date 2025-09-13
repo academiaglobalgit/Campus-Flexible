@@ -79,11 +79,6 @@ const TerminosCondiciones: React.FC = () => {
                 {textos()}
             </Typography>
 
-            <Typography component="p" variant="h4" sxProps={{ color: theme.palette.primary.main, textAlign: isMobile ? 'center' : 'left' }}>
-                ¡Felicidades!
-                {isMobile && <br />}
-                {' has dado un gran paso en tu desarrollo profesional y personal.'}
-            </Typography>
             <FormGroup sx={{ gap: isMobile ? '32px' : '20px' }}>
                 <Controller
                     name="aceptoTerminos"
