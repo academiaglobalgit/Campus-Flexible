@@ -86,9 +86,9 @@ const CursoActivo: React.FC = () => {
             estatus: item.estatus ?? ''
         };
 
-        if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado') {
+        if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado' && configPlataforma?.id_plan_estudio === 1) {
             goToDetalle(item.id_curso)
-        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100) {
+        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 1) {
             setIsSending(true);
             setIsDisabled(true);
             setCursoId(item.id_curso)
