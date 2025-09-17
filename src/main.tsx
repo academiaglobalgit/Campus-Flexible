@@ -55,11 +55,11 @@ function AppLoader() {
     return <Box 
               sx={{ width: '100%', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F8F8F9' }}
             >
-              <Box sx={{ width: !isMobile ? '544px       ' : '50%', textAlign: 'center' }}>
+              <Box sx={{ width: !isMobile ? '544px' : '50%', textAlign: 'center' }}>
                 <Box
                     component="img"
                     src={LogoAG}
-                    sx={{ mb: 1 }}
+                    sx={{ mb: 4 }}
                     width='100%'
                 />
                   <LinearProgress/>
