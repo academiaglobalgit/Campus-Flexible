@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle, innerHTMLStyle } from "@styles";
-import { setCursoSelected } from "../../../hooks/useLocalStorage";
+import { getVervideoBienvenida, setCursoSelected, setVervideoBienvenida } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
@@ -31,7 +31,6 @@ const CursoActivo: React.FC = () => {
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { data: manual } = useGetManuales('Video de Bienvenida', '', configPlataforma?.id_plan_estudio);
-    console.log("manual", manual);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
@@ -55,8 +54,13 @@ const CursoActivo: React.FC = () => {
                 case 17: // Diplomados
                 setTituloCursos('Certificaciones')
                 setTutorVer(false)
-                setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
-                setIsOpenVideo(true);
+
+
+                console.log("🚀 ~ CursoActivo ~ getVervideoBienvenida:", getVervideoBienvenida())
+                if(getVervideoBienvenida() === ''){
+                    setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
+                    setIsOpenVideo(true);
+                }
                 break;
             default:
                 setTituloCursos('Materias')
@@ -114,6 +118,11 @@ const CursoActivo: React.FC = () => {
         } else {
             setIsOpenInscribirmeDialog(false);
         }
+    }
+    
+    const handleCerrarVideo = async () =>{
+        setIsOpenVideo(false)
+        setVervideoBienvenida('1')
     }
 
     const createMutation = useMutation({
@@ -252,7 +261,7 @@ const CursoActivo: React.FC = () => {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             }
             {
-                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} urlVideo={urlVideo} />
+                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} />
             }
 
         </>
