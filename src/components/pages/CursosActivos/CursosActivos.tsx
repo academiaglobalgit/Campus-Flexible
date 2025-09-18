@@ -23,14 +23,12 @@ import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
 import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
-import { useGetManuales } from "../../../services/ManualesService";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
-    const { data: manual } = useGetManuales('Video de Bienvenida', '', configPlataforma?.id_plan_estudio);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
@@ -44,20 +42,18 @@ const CursoActivo: React.FC = () => {
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
+    const [refreshEncuestas, setRefreshEncuestas] = React.useState(false);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
-        React.useEffect(() => {
-            
-            switch (configPlataforma?.id_plan_estudio) {
-                case 17: // Diplomados
+    React.useEffect(() => {
+
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
                 setTituloCursos('Certificaciones')
                 setTutorVer(false)
-
-
-                console.log("🚀 ~ CursoActivo ~ getVervideoBienvenida:", getVervideoBienvenida())
-                if(getVervideoBienvenida() === ''){
+                if (getVervideoBienvenida() === '') {
                     setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
                     setIsOpenVideo(true);
                 }
@@ -73,7 +69,7 @@ const CursoActivo: React.FC = () => {
         refetch()
             .then(response => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
-                if (encuestasActivas.length > 0) {
+                if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
                     setEncuestaData(encuestasActivas);
                     setIdAsignacion(encuestasActivas[0].id_asignacion);
                     setOpenEncuesta(true);
@@ -83,7 +79,7 @@ const CursoActivo: React.FC = () => {
                 console.error("Error fetching encuestas:", error);
             });
 
-    }, [cursosData]);
+    }, [cursosData, refreshEncuestas]);
 
     const goToDetalle = (curso: number) => {
         navigate(
@@ -119,11 +115,12 @@ const CursoActivo: React.FC = () => {
             setIsOpenInscribirmeDialog(false);
         }
     }
-    
-    const handleCerrarVideo = async () =>{
-        setIsOpenVideo(false)
-        setVervideoBienvenida('1')
-    }
+
+    const handleCerrarVideo = async () => {
+        setVervideoBienvenida('1');
+        setIsOpenVideo(false);
+        setRefreshEncuestas(prev => !prev);
+    };
 
     const createMutation = useMutation({
         mutationFn: usePromediarCurso,
