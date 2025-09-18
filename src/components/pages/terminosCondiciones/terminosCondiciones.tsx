@@ -37,7 +37,7 @@ const TerminosCondiciones: React.FC = () => {
         resolver: zodResolver(schema),
         defaultValues: {
             aceptoTerminos: false,
-            aceptoLineamientos: config?.id_plan_estudio === 17 ? undefined : false, // solo cuando aplique
+            aceptoLineamientos: config?.id_plan_estudio === 17 ? undefined : false, // Solo para planes que no son diplomados
             aceptoAvisos: false,
         },
     });
