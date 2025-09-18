@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
-import HomeDiplomado from "../../../assets/IMG Login.png";
+import HomeDiplomado from "../../../assets/login_diplomado.png";
 import LogoLogin from "../../../assets/logo_ag_login.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
