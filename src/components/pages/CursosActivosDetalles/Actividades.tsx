@@ -291,10 +291,10 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                {configPlataforma?.id_plan_estudio === 17 && <Box sx={{ display: 'flex', gap: '10px' }}>
                                                     <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
                                                     <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
-                                                </Box>
+                                                </Box>}
                                                 <Box sx={{ width: '250px' }}>
                                                     {
                                                         item.retroalimentacion && <Button
