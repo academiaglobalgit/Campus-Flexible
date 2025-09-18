@@ -157,9 +157,9 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 				}}>
 					{item.orden}
 				</Box>
-				<Typography component="span" variant="body2" color="text">
-					{item.titulo_pregunta}
+				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
 				</Typography>
+				
 			</Box>
 
 			{item.tipo_pregunta === "escala" && (
