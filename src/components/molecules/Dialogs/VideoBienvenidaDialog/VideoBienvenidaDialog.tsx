@@ -45,7 +45,7 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({urlVideo, isOpen, 
                 <VideoCard 
                     urlVideo={urlVideo} 
                     controls={true} 
-                    autoPlay={false} 
+                    autoPlay={true} 
                     muted={false} 
                     //title="Bienvenido / a" 
                     title="¡Tu futuro digital empieza aquí!" 
