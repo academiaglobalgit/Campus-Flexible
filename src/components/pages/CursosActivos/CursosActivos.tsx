@@ -22,18 +22,24 @@ import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/Encuesta
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
 import { useAuth } from "../../../hooks";
+import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
+import { useGetManuales } from "../../../services/ManualesService";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma} = useAuth();
+    const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
+    const { data: manual } = useGetManuales('Video de Bienvenida', '', configPlataforma?.id_plan_estudio);
+    console.log("manual", manual);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
     const [verTutor, setTutorVer] = React.useState(true);
     const [idAsignacion, setIdAsignacion] = React.useState(0);
+    const [urlVideo, setUrlVideo] = React.useState("");
+    const [isOpenVideo, setIsOpenVideo] = React.useState(false);
     const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
@@ -43,12 +49,14 @@ const CursoActivo: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
+        React.useEffect(() => {
+            
+            switch (configPlataforma?.id_plan_estudio) {
+                case 17: // Diplomados
                 setTituloCursos('Certificaciones')
                 setTutorVer(false)
+                setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
+                setIsOpenVideo(true);
                 break;
             default:
                 setTituloCursos('Materias')
@@ -242,6 +250,9 @@ const CursoActivo: React.FC = () => {
             }
             {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
+            }
+            {
+                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => setIsOpenVideo(false)} urlVideo={urlVideo} />
             }
 
         </>
