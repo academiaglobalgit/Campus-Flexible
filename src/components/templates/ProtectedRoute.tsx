@@ -5,11 +5,14 @@ import { useAuth } from '../../hooks';
 import { AppRoutingPaths } from '@constants';
 import { apiClient } from '../../services/ApiConfiguration/httpClient';
 import { LoadingCircular } from '../molecules/LoadingCircular/LoadingCircular';
+import { getTerminoCondiciones } from '../../hooks/useLocalStorage';
 
 export const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isInitializing, isTokenExpired, isLogout, aceptoTerminos } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const aceptoTerminosLocal = getTerminoCondiciones()
+
 
     const handleUnauthorized = React.useCallback(() => {
         navigate(AppRoutingPaths.SESSION_EXPIRED, { state: { from: location }, replace: true });
@@ -71,7 +74,7 @@ export const ProtectedRoute: React.FC = () => {
         );
     }
 
-    if (!aceptoTerminos) {
+    if (!aceptoTerminos && aceptoTerminosLocal === '') {
         return <Navigate to={AppRoutingPaths.TERMINOS_CONDICIONES} state={{ from: location }} replace />;
     }
 
