@@ -83,6 +83,15 @@ export const getVervideoBienvenida = (): string => {
   return localStorage.getItem('videoBienvenida') || ''
 }
 
+export const setTerminoCondiciones = (visto: string) => {
+  localStorage.setItem('aceptarTerminos', visto);
+}
+
+export const getTerminoCondiciones = (): string => {
+  return localStorage.getItem('aceptarTerminos') || ''
+}
+
+
 export const setTabSelected = (tab: { tab: string, index: number }) => {
   const tabs: { tab: string; index: number }[] = JSON.parse(localStorage.getItem(TAB_SELECTED_KEY) || '[]');
 
