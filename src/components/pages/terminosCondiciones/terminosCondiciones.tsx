@@ -15,6 +15,7 @@ import Button from "../../atoms/Button/Button";
 import { innerHTMLStyle } from "@styles";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useAuth } from "../../../context/AuthContext";
+import { setTerminoCondiciones } from "../../../hooks/useLocalStorage";
 
 const TerminosCondiciones: React.FC = () => {
     const { setAceptoTerminos, configPlataforma: config } = useAuth();
@@ -25,6 +26,7 @@ const TerminosCondiciones: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isSending, setIsLoading] = React.useState(false);
     const { data: TyCDatos, isLoading } = useGetTerminosDatos();
+
 
     const schema =
     config?.id_plan_estudio === 17 ? terminosSchemaDiplomados : terminosSchema;
@@ -56,6 +58,7 @@ const TerminosCondiciones: React.FC = () => {
             setIsLoading(true);
             await createMutation.mutateAsync({ documentos_legales: [1, 2, 3] });
             if (setAceptoTerminos) setAceptoTerminos(true);
+            setTerminoCondiciones('1')
             goToPage();
         } catch (error) {
             showNotification("Hubo un error al registrar: " + error, "error");
