@@ -101,7 +101,9 @@ const CursoActivo: React.FC = () => {
             setIsDisabled(true);
             setCursoId(item.id_curso)
             createMutation.mutate(item.id_curso);
-        } else {
+        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
+            createMutation.mutate(item.id_curso);
+        }   else {
             setCursoSelected(JSON.stringify(curso));
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${item.id_curso}`));
         }
@@ -128,8 +130,9 @@ const CursoActivo: React.FC = () => {
 
             setIsSending(false);
             setIsDisabled(false);
+            setRefreshEncuestas(prev => !prev);
 
-            if (response.success && response.data.estado.toLowerCase() === "finalizado" && response.data.calificacion_final >= 0) {
+            if (response.success && response.data.estado.toLowerCase() === "finalizado" && response.data.calificacion_final >= 0 && configPlataforma?.id_plan_estudio === 1) {
                 setIsOpenInscribirmeDialog(true);
                 setMEnsajeDialog("Has logrado ciertas competencias")
             }
