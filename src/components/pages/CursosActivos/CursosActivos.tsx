@@ -23,14 +23,15 @@ import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
 import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
+import { useGetManuales } from "../../../services/ManualesService";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
-    console.log("🚀 ~ CursoActivo ~ cursosData:", cursosData)
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
+    const { data: manual } = useGetManuales('Video de Bienvenida','alumnos', configPlataforma?.id_plan_estudio);
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
@@ -55,7 +56,7 @@ const CursoActivo: React.FC = () => {
                 setTutorVer(false);
 
                 if (getVervideoBienvenida() === '') {
-                    setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
+                    setUrlVideo(manual?.url ?? '');
                     setIsOpenVideo(true);
                 }
 
