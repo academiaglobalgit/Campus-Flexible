@@ -28,6 +28,7 @@ const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma } = useAuth();
     const { data: cursosData, isLoading } = useGetCursos();
+    console.log("🚀 ~ CursoActivo ~ cursosData:", cursosData)
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
@@ -48,22 +49,32 @@ const CursoActivo: React.FC = () => {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                setTituloCursos('Certificaciones')
-                setTutorVer(false)
+                setTituloCursos('Certificaciones');
+                setTutorVer(false);
+
                 if (getVervideoBienvenida() === '') {
                     setUrlVideo("https://agliteraturas.com.mx/generico/files/getfile/1/literaturas/4843_1758157508106_0.mp4");
                     setIsOpenVideo(true);
                 }
+
+                if (cursosData?.data) {
+                    const materiasDiplomados = cursosData.data.filter(
+                        materia =>
+                            materia.estatus.toLowerCase() === 'cursando' &&
+                            Number(materia.progreso) === 100
+                    );
+                    materiasDiplomados.forEach(item => promediarDiplomados(item));
+                }
+
                 break;
+
             default:
-                setTituloCursos('Materias')
+                setTituloCursos('Materias');
                 break;
         }
-
-    }, []);
+    }, [configPlataforma?.id_plan_estudio, cursosData]);
 
     useEffect(() => {
         refetch()
@@ -101,12 +112,16 @@ const CursoActivo: React.FC = () => {
             setIsDisabled(true);
             setCursoId(item.id_curso)
             createMutation.mutate(item.id_curso);
-        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
-            createMutation.mutate(item.id_curso);
-        }   else {
+        } else {
             setCursoSelected(JSON.stringify(curso));
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${item.id_curso}`));
         }
+    }
+
+    const promediarDiplomados = (item: ICursoActivo) =>{
+        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
+            createMutation.mutate(item.id_curso);
+        }   
     }
 
     const handleConfirmar = async (isConfirmar: boolean) => {
