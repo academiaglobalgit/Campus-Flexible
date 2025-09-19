@@ -102,8 +102,6 @@ const CursoActivo: React.FC = () => {
             setCursoId(item.id_curso)
             createMutation.mutate(item.id_curso);
         } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
-            setIsSending(true);
-            setIsDisabled(true);
             createMutation.mutate(item.id_curso);
         }   else {
             setCursoSelected(JSON.stringify(curso));
