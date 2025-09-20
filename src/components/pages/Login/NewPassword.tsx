@@ -28,19 +28,50 @@ export const NewPassword: React.FC<NewPasswordProps> = ({userName}) => {
     });
 
     const onSubmit = async (data: NewPasswordSchemaFormData) => {
+    const password = data.new_password;
 
-        if(data.new_password !== data.confirm_password) {
-            showNotification("La nueva contraseña y la confirmación deben ser iguales","warning");
-        }else{
-            setLoading(true);
-            const result = await newPassword(userName, data.new_password);
-            if (result.success) {
-                navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
-            } else {
-                showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
-            }
-        }        
-    };
+    if (password.length < 6) {
+        showNotification("La contraseña debe tener al menos 6 caracteres", "warning");
+        return;
+    }
+    if (!/[A-Z]/.test(password)) {
+        showNotification("La contraseña debe contener al menos una letra mayúscula", "warning");
+        return;
+    }
+
+    if (!/[a-z]/.test(password)) {
+        showNotification("La contraseña debe contener al menos una letra minúscula", "warning");
+        return;
+    }
+
+    if (!/\d/.test(password)) {
+        showNotification("La contraseña debe contener al menos un número", "warning");
+        return;
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        showNotification("La contraseña debe contener al menos un carácter especial", "warning");
+        return;
+    }
+
+    if (data.new_password !== data.confirm_password) {
+        showNotification("La nueva contraseña y la confirmación deben ser iguales", "warning");
+        return;
+    }
+
+    setLoading(true);
+    const result = await newPassword(userName, data.new_password);
+    console.log("🚀 ~ onSubmit ~ data.new_password:", data.new_password)
+    console.log("🚀 ~ onSubmit ~ userName:", userName)
+
+    if (result.success) {
+        navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
+    } else {
+        showNotification(result.message ?? "Ocurrió un error inesperado", "warning");
+        setLoading(false);
+    }
+};
+
 
     return(
         <Box component="form" sx={{ mt: 1, width: '100%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -51,7 +82,7 @@ export const NewPassword: React.FC<NewPasswordProps> = ({userName}) => {
                     <TextField
                         {...field}
                         id="new-password"
-                        label="Nueva Contraseña"
+                        label="Ejemplo: UnaClaveSegura456!"
                         fullWidth
                         error={!!errors.new_password}
                         helperText={errors.new_password?.message}
