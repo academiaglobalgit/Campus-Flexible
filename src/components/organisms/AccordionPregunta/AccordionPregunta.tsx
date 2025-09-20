@@ -41,7 +41,7 @@ export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivide
                 data && data.map((item, index) => (
                     <Accordion key={index} title={item.pregunta} sxProps={sxProps}>
                         <Typography key={index} component="span" variant="subtitle1">
-                            {item.respuesta}
+                            <span dangerouslySetInnerHTML={{ __html: item.respuesta }} />
                         </Typography>
                     </Accordion>
                 ))

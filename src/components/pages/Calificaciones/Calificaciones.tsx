@@ -26,7 +26,7 @@ import { useAuth } from '../../../hooks';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
-    const theme = useTheme();    
+    const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
@@ -41,8 +41,8 @@ const Calificaciones: React.FC = () => {
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
     const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
-    
-    React.useEffect(() => {
+
+   React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomado
                 setCalificacionesConfig({ titulo: TitleScreen.REPORTE, loading: `Cagando ${TitleScreen.REPORTE}...`, mostrarPromedio: false, mostrarGlosario: false})
@@ -57,7 +57,7 @@ const Calificaciones: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
-    const Leyenda = (
+   const Leyenda = (
         <Box sx={{ ...innerHTMLStyle,pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
     );
 
@@ -72,7 +72,7 @@ const Calificaciones: React.FC = () => {
     const handleIrCurso = (item: CalificacionCurso) => {
         setTabSelected({tab: 'cursos-detalle', index: 0});
         queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, item.id_curso, "Contenido"] });
-        
+
 
         const curso = {
             id_curso: item.id_curso,
@@ -82,7 +82,7 @@ const Calificaciones: React.FC = () => {
 
         setCursoSelected(JSON.stringify(curso));
 
-        setTimeout(() => 
+        setTimeout(() =>
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", item.id_curso.toString()))
         ,500);
     };
@@ -111,17 +111,41 @@ const Calificaciones: React.FC = () => {
                     <StatusIcon estado={curso.estatus_curso_alumno} />
                 </Box>
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
-                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
-                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
+                    <Typography component={"span"} variant={"body3"} color={
+                        curso.estatus_curso_alumno === 'Finalizado'
+                            ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                            : 'disabled'
+                    }>Calificación : </Typography>
+                    <Typography
+                        component={"span"}
+                        variant={"body3"}
+                        color={
+                            curso.estatus_curso_alumno === 'Finalizado'
+                                ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                                : 'disabled'
+                        }
+                    >
+                        {configPlataforma?.id_plan_estudio === 17
+                            ? (curso.calificacion === null
+                                ? 'Pendiente'
+                                : Number(curso.calificacion) === 0
+                                    ? 'No aprobado'
+                                    : 'Aprobado')
+                            : (curso.estatus_curso_alumno === 'Finalizado'
+                                ? curso.calificacion
+                                : 'Pendiente')}
+                    </Typography>
+
+
                 </Box>
                 {
                     (curso.estatus_curso_alumno === 'Finalizado' || curso.estatus_curso_alumno === 'Cursando') &&
-                        <Box sx={{ display: 'flex', gap: '15px' }}>
-                        {  
+                    <Box sx={{ display: 'flex', gap: '15px' }}>
+                        {
                             botonesCalificacion(curso)
                         }
                     </Box>
-                }                
+                }
             </Box>
         );
     };
@@ -210,7 +234,7 @@ const Calificaciones: React.FC = () => {
     );
 
     const getTituloIconAccordion = (index: number) => {
-        switch(configPlataforma?.id_plan_estudio) {
+        switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 return `Certificaciones`;
             default:

@@ -16,12 +16,14 @@ import { useMutation } from "@tanstack/react-query";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle, innerHTMLStyle } from "@styles";
-import { setCursoSelected } from "../../../hooks/useLocalStorage";
+import { getVervideoBienvenida, setCursoSelected, setVervideoBienvenida } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
 import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
 import { useAuth } from "../../../hooks";
+import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
+import { useGetManuales } from "../../../services/ManualesService";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
@@ -29,39 +31,57 @@ const CursoActivo: React.FC = () => {
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
+    const { data: manual } = useGetManuales('Video de Bienvenida','alumnos', configPlataforma?.id_plan_estudio);
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
     const [verTutor, setTutorVer] = React.useState(true);
     const [idAsignacion, setIdAsignacion] = React.useState(0);
+    const [urlVideo, setUrlVideo] = React.useState("");
+    const [isOpenVideo, setIsOpenVideo] = React.useState(false);
     const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
+    const [refreshEncuestas, setRefreshEncuestas] = React.useState(false);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
     React.useEffect(() => {
-
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                setTituloCursos('Certificaciones')
-                setTutorVer(false)
+                setTituloCursos('Certificaciones');
+                setTutorVer(false);
+
+                if (getVervideoBienvenida() === '') {
+                    setUrlVideo(manual?.url ?? '');
+                    setIsOpenVideo(true);
+                }
+
+                if (cursosData?.data) {
+                    const materiasDiplomados = cursosData.data.filter(
+                        materia =>
+                            materia.estatus.toLowerCase() === 'cursando' &&
+                            Number(materia.progreso) === 100
+                    );
+                    materiasDiplomados.forEach(item => promediarDiplomados(item));
+                }
+
                 break;
+
             default:
-                setTituloCursos('Materias')
+                setTituloCursos('Materias');
                 break;
         }
-
-    }, []);
+    }, [configPlataforma?.id_plan_estudio, cursosData]);
 
     useEffect(() => {
         refetch()
             .then(response => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
-                if (encuestasActivas.length > 0) {
+                if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
                     setEncuestaData(encuestasActivas);
                     setIdAsignacion(encuestasActivas[0].id_asignacion);
                     setOpenEncuesta(true);
@@ -71,7 +91,7 @@ const CursoActivo: React.FC = () => {
                 console.error("Error fetching encuestas:", error);
             });
 
-    }, [cursosData]);
+    }, [cursosData, refreshEncuestas]);
 
     const goToDetalle = (curso: number) => {
         navigate(
@@ -86,9 +106,9 @@ const CursoActivo: React.FC = () => {
             estatus: item.estatus ?? ''
         };
 
-        if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado') {
+        if (item.calificacion_final >= 0 && curso.estatus.toLowerCase() === 'finalizado' && configPlataforma?.id_plan_estudio === 1) {
             goToDetalle(item.id_curso)
-        } else if (curso.estatus.toLowerCase() === 'cursando' && item.progreso === 100) {
+        } else if (curso.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 1) {
             setIsSending(true);
             setIsDisabled(true);
             setCursoId(item.id_curso)
@@ -97,6 +117,12 @@ const CursoActivo: React.FC = () => {
             setCursoSelected(JSON.stringify(curso));
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", `${item.id_curso}`));
         }
+    }
+
+    const promediarDiplomados = (item: ICursoActivo) =>{
+        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
+            createMutation.mutate(item.id_curso);
+        }   
     }
 
     const handleConfirmar = async (isConfirmar: boolean) => {
@@ -108,14 +134,21 @@ const CursoActivo: React.FC = () => {
         }
     }
 
+    const handleCerrarVideo = async () => {
+        setVervideoBienvenida('1');
+        setIsOpenVideo(false);
+        setRefreshEncuestas(prev => !prev);
+    };
+
     const createMutation = useMutation({
         mutationFn: usePromediarCurso,
         onSuccess: (response) => {
 
             setIsSending(false);
             setIsDisabled(false);
+            setRefreshEncuestas(prev => !prev);
 
-            if (response.success && response.data.estado.toLowerCase() === "finalizado" && response.data.calificacion_final >= 0) {
+            if (response.success && response.data.estado.toLowerCase() === "finalizado" && response.data.calificacion_final >= 0 && configPlataforma?.id_plan_estudio === 1) {
                 setIsOpenInscribirmeDialog(true);
                 setMEnsajeDialog("Has logrado ciertas competencias")
             }
@@ -242,6 +275,9 @@ const CursoActivo: React.FC = () => {
             }
             {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
+            }
+            {
+                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} />
             }
 
         </>

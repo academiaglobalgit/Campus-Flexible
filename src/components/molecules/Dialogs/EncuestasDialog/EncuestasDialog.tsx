@@ -103,7 +103,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 
 			setIsSending(false);
 			setOpen(false);
-			showNotification(`Encuesta guardada satisfactorimente`, "success");
+			showNotification(`Encuesta guardada satisfactoriamente`, "success");
 
 			await queryClient.invalidateQueries({
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
@@ -134,7 +134,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 			icon={<ArrowForwardIcon />}
 
 		>
-			Enviar encuesta
+			Enviar
 		</Button>
 	);
 
@@ -157,9 +157,9 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 				}}>
 					{item.orden}
 				</Box>
-				<Typography component="span" variant="body2" color="text">
-					{item.titulo_pregunta}
+				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
 				</Typography>
+				
 			</Box>
 
 			{item.tipo_pregunta === "escala" && (

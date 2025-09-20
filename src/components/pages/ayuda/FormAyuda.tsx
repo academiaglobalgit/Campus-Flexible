@@ -57,7 +57,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
     const createMutationLogin = useMutation({
         mutationFn: useCreateAyuda,
         onSuccess: () => {
-            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
+            showNotification(`Hemos recibido tu solicitud. Nuestro equipo te responderá en un plazo máximo de 24 hrs.`,"success");
             reset();
             setLoading(false);
         },
@@ -73,7 +73,7 @@ export const FormAyuda: React.FC<FormAyudaProps> = ({isLogin = true}) => {
     const createMutationAlumnos = useMutation({
         mutationFn: useCreateAyudaAlumnos,
         onSuccess: () => {
-            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
+            showNotification(`Hemos recibido tu solicitud. Nuestro equipo te responderá en un plazo máximo de 24 hrs.`,"success");
             reset();
             setLoading(false);
             queryClient.invalidateQueries({ queryKey: [AYUDA_ENDPOINTS.GET_AYUDA.key] });

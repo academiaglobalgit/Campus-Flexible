@@ -13,11 +13,13 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
-import HomeDiplomado from "../../../assets/home_diplomado.png";
+import HomeDiplomado from "../../../assets/login_diplomado.png";
+import LogoLogin from "../../../assets/logo_ag_login.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
 import { loadConfig } from '../../../config/configStorage';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
@@ -25,11 +27,19 @@ const LoginPage: React.FC = () => {
 
   const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
   const [config, setConfig] = React.useState<any>(null);
+  const [verLogo, setVerLogo] = React.useState<boolean>(false);
   const [imgSettings, setImgSettings] = React.useState<any>({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
   });
+
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    queryClient.clear();
+  }, [queryClient]);
+  
 
   React.useEffect(() => {
       loadConfig().then(cfg => {
@@ -37,7 +47,8 @@ const LoginPage: React.FC = () => {
           switch (cfg?.data?.id_plan_estudio) {
             case 17: // Diplomado
               setBackgroundImage(HomeDiplomado);
-              setImgSettings({ width: '100%', height: '100vh', objectFit: 'cover' });
+              setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+              setVerLogo(true);
             break;
             default:
               setBackgroundImage(Home);
@@ -45,7 +56,6 @@ const LoginPage: React.FC = () => {
           }
       });
   }, []);
-  
 
   const { data: contacto, isLoading } = useGetContacto(config?.data?.id_plan_estudio);
   const { data: manual } = useGetManuales('Inducción','', config?.data?.id_plan_estudio);
@@ -71,20 +81,33 @@ const LoginPage: React.FC = () => {
           </Container>
           :
           <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
-            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
+            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} >
+              <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined}}>
                 <MobileLogin accessLogin={accessLogin} />
               </Box>
             </Grid>
             {
               !showImage &&
               <Grid size={{ md: 8 }} >
-                <Box
-                  component="img"
-                  src={backgroundImage}
-                  alt="Login"
-                  sx={imgSettings}
-                />
+                  <Box
+                    sx={{
+                      ...imgSettings,
+                      backgroundImage: `url(${backgroundImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      position: 'relative',
+                    }}
+                  >
+                    {verLogo && (
+                      <Box
+                        component="img"
+                        src={LogoLogin}
+                        alt="Login"
+                        sx={{ position: 'absolute', bottom: 47, left: 43, width: '294px' }}
+                      />
+                    )}
+                  </Box>
+
               </Grid>
             }
           </Grid>

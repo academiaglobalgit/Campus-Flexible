@@ -5,8 +5,7 @@ import { Box, Container, FormControlLabel, FormGroup, Switch, useMediaQuery, use
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { terminosSchema, type TerminosFormData } from "../../../schemas/terminosCondicionesSchema";
-import { useMutation } from "@tanstack/react-query";
+import { terminosSchema, terminosSchemaDiplomados, type TerminosFormData, type TerminosFormDataDiplomados,} from "../../../schemas/terminosCondicionesSchema";import { useMutation } from "@tanstack/react-query";
 import { useTerminos, useGetTerminosDatos } from "../../../services/TerminosCondicionesService";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
@@ -16,34 +15,50 @@ import Button from "../../atoms/Button/Button";
 import { innerHTMLStyle } from "@styles";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useAuth } from "../../../context/AuthContext";
+import { setTerminoCondiciones } from "../../../hooks/useLocalStorage";
 
 const TerminosCondiciones: React.FC = () => {
     const { setAceptoTerminos, configPlataforma: config } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
+    const [verTerminosCondiciones, setVerTerminosCondiciones] = React.useState<boolean>(true);
     const { showNotification } = useNotification()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isSending, setIsLoading] = React.useState(false);
     const { data: TyCDatos, isLoading } = useGetTerminosDatos();
 
+
+    const schema =
+    config?.id_plan_estudio === 17 ? terminosSchemaDiplomados : terminosSchema;
+
     const {
         control,
         handleSubmit,
         formState: { isValid },
-    } = useForm<TerminosFormData>({
-        resolver: zodResolver(terminosSchema),
+        } = useForm<TerminosFormData | TerminosFormDataDiplomados>({
+        resolver: zodResolver(schema),
         defaultValues: {
             aceptoTerminos: false,
-            aceptoLineamientos: false,
+            aceptoLineamientos: config?.id_plan_estudio === 17 ? undefined : false, // Solo para planes que no son diplomados
             aceptoAvisos: false,
         },
     });
+
+
+    React.useEffect(() => {
+        switch (config?.id_plan_estudio) {
+            case 17: // Diplomados
+                setVerTerminosCondiciones(false);
+                break;
+        }
+    }, [config]);
 
     const onSubmit = async () => {
         try {
             setIsLoading(true);
             await createMutation.mutateAsync({ documentos_legales: [1, 2, 3] });
-            if(setAceptoTerminos) setAceptoTerminos(true);
+            if (setAceptoTerminos) setAceptoTerminos(true);
+            setTerminoCondiciones('1')
             goToPage();
         } catch (error) {
             showNotification("Hubo un error al registrar: " + error, "error");
@@ -53,13 +68,13 @@ const TerminosCondiciones: React.FC = () => {
     }
 
     const goToPage = () => {
-        switch(config?.id_plan_estudio) {
-            case 17: 
+        switch (config?.id_plan_estudio) {
+            case 17:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-            break;
+                break;
             default:
                 navigate(AppRoutingPaths.PLAN_ESTUDIOS);
-            break;
+                break;
         }
     }
 
@@ -79,11 +94,6 @@ const TerminosCondiciones: React.FC = () => {
                 {textos()}
             </Typography>
 
-            <Typography component="p" variant="h4" sxProps={{ color: theme.palette.primary.main, textAlign: isMobile ? 'center' : 'left' }}>
-                ¡Felicidades!
-                {isMobile && <br />}
-                {' has dado un gran paso en tu desarrollo profesional y personal.'}
-            </Typography>
             <FormGroup sx={{ gap: isMobile ? '32px' : '20px' }}>
                 <Controller
                     name="aceptoTerminos"
@@ -91,21 +101,23 @@ const TerminosCondiciones: React.FC = () => {
                     render={({ field }) => (
                         <FormControlLabel
                             control={<Switch {...field} checked={field.value} />}
-                            label="Acepto que he leído los Lineamientos Internos y Normas de Control Escolar."
+                            label="Acepto que he leído los Lineamientos."
                         />
                     )}
                 />
 
-                <Controller
-                    name="aceptoLineamientos"
-                    control={control}
-                    render={({ field }) => (
-                        <FormControlLabel
-                            control={<Switch {...field} checked={field.value} />}
-                            label="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
-                        />
-                    )}
-                />
+                {verTerminosCondiciones && (
+                    <Controller
+                        name="aceptoLineamientos"
+                        control={control}
+                        render={({ field }) => (
+                            <FormControlLabel
+                                control={<Switch {...field} checked={field.value} />}
+                                label="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
+                            />
+                        )}
+                    />
+                )}
 
                 <Controller
                     name="aceptoAvisos"
@@ -113,7 +125,7 @@ const TerminosCondiciones: React.FC = () => {
                     render={({ field }) => (
                         <FormControlLabel
                             control={<Switch {...field} checked={field.value} />}
-                            label="He leído y acepto el Aviso de Privacidad de Academia Global."
+                            label="He leído y acepto el Aviso de Privacidad."
                         />
                     )}
                 />
