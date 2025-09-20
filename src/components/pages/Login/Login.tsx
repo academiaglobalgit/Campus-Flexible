@@ -19,6 +19,7 @@ import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialo
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
 import { loadConfig } from '../../../config/configStorage';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
@@ -32,6 +33,13 @@ const LoginPage: React.FC = () => {
     height: '100%',
     objectFit: 'cover',
   });
+
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    queryClient.clear();
+  }, [queryClient]);
+  
 
   React.useEffect(() => {
       loadConfig().then(cfg => {
@@ -48,7 +56,6 @@ const LoginPage: React.FC = () => {
           }
       });
   }, []);
-  
 
   const { data: contacto, isLoading } = useGetContacto(config?.data?.id_plan_estudio);
   const { data: manual } = useGetManuales('Inducción','', config?.data?.id_plan_estudio);
