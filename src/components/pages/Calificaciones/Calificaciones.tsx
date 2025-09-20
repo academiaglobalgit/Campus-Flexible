@@ -129,8 +129,8 @@ const Calificaciones: React.FC = () => {
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
                                 : Number(curso.calificacion) === 0
-                                    ? 'Reprobado'
-                                    : 'No aprobado')
+                                    ? 'No aprobado'
+                                    : 'Aprobado')
                             : (curso.estatus_curso_alumno === 'Finalizado'
                                 ? curso.calificacion
                                 : 'Pendiente')}
