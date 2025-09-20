@@ -134,7 +134,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 			icon={<ArrowForwardIcon />}
 
 		>
-			Enviar encuesta
+			Enviar
 		</Button>
 	);
 
