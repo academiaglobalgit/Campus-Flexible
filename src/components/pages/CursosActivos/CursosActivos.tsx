@@ -271,6 +271,11 @@ const CursoActivo: React.FC = () => {
                 <EncuestasModal
                     isOpen={openEncuesta}
                     data={{ encuesta: encuestaData[0], idAsignacion }}
+                    onEncuestaEnviada={(enviada) => {
+                        if (enviada) {
+                            setRefreshEncuestas(prev => !prev);
+                        }
+                    }}
                 />
             }
             {
