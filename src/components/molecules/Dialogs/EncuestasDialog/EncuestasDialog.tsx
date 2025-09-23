@@ -17,13 +17,14 @@ type EncuestaDialogProps = {
 		encuesta: EncuestasDatosResponse;
 		idAsignacion: number;
 	};
+	onEncuestaEnviada?: (enviada: boolean) => void;
 };
 
 type Respuesta =
 	| { id_pregunta: number; id_opcion: number }
 	| { id_pregunta: number; respuesta_texto: string };
 
-export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) => {
+export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, onEncuestaEnviada }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const queryClient = useQueryClient();
@@ -109,8 +110,12 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
 				exact: true,
 			});
-
-
+			await queryClient.invalidateQueries({
+				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_ENCUESTAS_ASIGNACIONES.key],
+				exact: true,
+			});
+			
+			onEncuestaEnviada?.(true);
 		},
 		onError: (error) => {
 			console.log(error)

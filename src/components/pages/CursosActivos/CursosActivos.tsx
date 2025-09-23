@@ -78,8 +78,10 @@ const CursoActivo: React.FC = () => {
     }, [configPlataforma?.id_plan_estudio, cursosData]);
 
     useEffect(() => {
+        console.log('pide la encuesta', refreshEncuestas);
         refetch()
             .then(response => {
+                console.log("🚀 ~ CursoActivo ~ response:", response)
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
                 if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
                     setEncuestaData(encuestasActivas);
@@ -271,6 +273,11 @@ const CursoActivo: React.FC = () => {
                 <EncuestasModal
                     isOpen={openEncuesta}
                     data={{ encuesta: encuestaData[0], idAsignacion }}
+                    onEncuestaEnviada={(enviada) => {
+                        if (enviada) {
+                            setRefreshEncuestas(prev => !prev);
+                        }
+                    }}
                 />
             }
             {
