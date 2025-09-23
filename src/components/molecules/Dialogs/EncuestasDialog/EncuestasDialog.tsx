@@ -115,7 +115,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				exact: true,
 			});
 			
-			onEncuestaEnviada?.(true);
+			if(onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
 			console.log(error)
