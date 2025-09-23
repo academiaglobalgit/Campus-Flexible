@@ -60,7 +60,7 @@ export const TitleScreen = {
     VIDEOS_LECTURAS: "Videos y Lecturas de interés",
     SERVICIOS_ESCOLORES: "Servicios Escolares",
     CONTACTO: "Contacto",
-    MANUAL_INDUCCION: "Manual de inducción",
+    MANUAL_INDUCCION: "Inducción",
     LINEAMIENTOS: "Lineamientos",
     FAQS: "Faqs",
     BACK_HOME_EXT: "Regresar a inicio",
