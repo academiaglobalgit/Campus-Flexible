@@ -29,7 +29,7 @@ const VideotecaDetalle: React.FC = () => {
                 onClick={() => window.open(item.url_recurso, '_blank')}>
                 <TituloIcon Titulo={item.titulo} Icon={item.id_tipo_recurso === 1 ? Lectura : AudiotrackIcon} />
                 <Typography component="span" variant="body1" >
-                    {item.titulo}
+                    {item.descripcion}
                 </Typography>
             </Box>
         )
