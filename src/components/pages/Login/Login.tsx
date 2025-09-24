@@ -13,25 +13,42 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
-import HomeDiplomado from "../../../assets/home_diplomado.png";
+import HomeDiplomado from "../../../assets/login_diplomado.png";
+import LogoLogin from "../../../assets/logo_ag_login.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
 import { loadConfig } from '../../../config/configStorage';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
   const Navigation = useNavigate();
 
-  const [backgroundImage, setBackgroundImage] = React.useState("");
+  const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
   const [config, setConfig] = React.useState<any>(null);
+  const [verLogo, setVerLogo] = React.useState<boolean>(false);
+  const [imgSettings, setImgSettings] = React.useState<any>({
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  });
+
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    queryClient.clear();
+  }, [queryClient]);
   
+
   React.useEffect(() => {
       loadConfig().then(cfg => {
           setConfig(cfg);
           switch (cfg?.data?.id_plan_estudio) {
             case 17: // Diplomado
               setBackgroundImage(HomeDiplomado);
+              setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+              setVerLogo(true);
             break;
             default:
               setBackgroundImage(Home);
@@ -39,9 +56,8 @@ const LoginPage: React.FC = () => {
           }
       });
   }, []);
-  
 
-  const { data: contacto } = useGetContacto(config?.data?.id_plan_estudio);
+  const { data: contacto, isLoading } = useGetContacto(config?.data?.id_plan_estudio);
   const { data: manual } = useGetManuales('Inducción','', config?.data?.id_plan_estudio);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -49,12 +65,10 @@ const LoginPage: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const accessLogin = [
-    {
-      id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manual?.url, '_blank')
-    },
-    { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES) },
-    { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true) },
-    { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => Navigation(AppRoutingPaths.AYUDA_EXTERIOR) },
+    { id: 'manual-induccion', icon: ManualInduccion, label: 'Inducción', action: () => window.open(manual?.url, '_blank'), isDisabled: manual?.url === null ? true : false },
+    { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES), isDisabled: false },
+    { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true), isDisabled: isLoading },
+    { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => Navigation(AppRoutingPaths.AYUDA_EXTERIOR), isDisabled: false },
   ];
 
   return (
@@ -67,24 +81,33 @@ const LoginPage: React.FC = () => {
           </Container>
           :
           <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
-            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
+            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} >
+              <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined}}>
                 <MobileLogin accessLogin={accessLogin} />
               </Box>
             </Grid>
             {
               !showImage &&
               <Grid size={{ md: 8 }} >
-                <Box
-                  component="img"
-                  src={backgroundImage}
-                  alt="Login"
-                  sx={{
-                    width: '100%',
-                  //   height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
+                  <Box
+                    sx={{
+                      ...imgSettings,
+                      backgroundImage: `url(${backgroundImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      position: 'relative',
+                    }}
+                  >
+                    {verLogo && (
+                      <Box
+                        component="img"
+                        src={LogoLogin}
+                        alt="Login"
+                        sx={{ position: 'absolute', bottom: 47, left: 43, width: '294px' }}
+                      />
+                    )}
+                  </Box>
+
               </Grid>
             }
           </Grid>

@@ -43,7 +43,7 @@ export const InscribirmeDialog: React.FC<DialogProps> = ({idCurso, isOpen, close
     const createMutation = useMutation({
         mutationFn: useCreateConfirmar,
         onSuccess: () => {
-            showNotification(`Se inscribio satisfactorimente al curso`,"success");
+            showNotification(`Se inscribio satisfactoriamente al curso`,"success");
             setLoading(false);
             setOpen(false);
             close(true);

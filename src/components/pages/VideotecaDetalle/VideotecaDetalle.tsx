@@ -36,9 +36,14 @@ const VideotecaDetalle: React.FC = () => {
     }
 
     const VideoFrame = (item: any) => {
+        let video = item.descripcion;
+        if(isMobile) {
+            video = video.replace('width="600" height="338"', 'width="360" height="169"');
+        }
+
         return (
             <Box sx={{ ...flexColumn, gap: 2 }}>
-                <Box dangerouslySetInnerHTML={{ __html: item.descripcion }}></Box>
+                <Box dangerouslySetInnerHTML={{ __html: video }}></Box>
                 <Typography component="h5" variant="h5" color="primary" sxProps={{textAlign:'center'}} >
                     {item.titulo}
                 </Typography>

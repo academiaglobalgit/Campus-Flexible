@@ -4,7 +4,6 @@ import { Box, useMediaQuery, useTheme } from "@mui/material"
 import { useGetCursosTabs } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useParams } from "react-router-dom";
-import { toRoman } from "../../../utils/Helpers";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { usePostMessageListener } from "../../../hooks/usePostMessageListener";
@@ -44,16 +43,6 @@ export const Evaluaciones: React.FC = () => {
         // si no hay ninguno cursando: solo el primero habilitado
         return index !== 0;
     };
-
-    const setTitleAccordion = (unidad: string, index: number) => {
-        const totalUnidades = Object.keys(contenido).length;
-
-        if ((index + 1) === totalUnidades) {
-            return "Examen Final";
-        }
-
-        return `Unidad ${toRoman(Number(unidad))}`;
-    }
 
     const changeStatus = (data: { id_curso: number; id_recurso: number; estatus: string }) => {
         queryClient.setQueryData<CursosTabsResponse>(
@@ -102,7 +91,7 @@ export const Evaluaciones: React.FC = () => {
         isLoading ?
             <LoadingCircular Text="Cargando Evaluaciones..." />
             :
-            Object.entries(contenido).map(([unidad, contenidos], index) => {
+            Object.entries(contenido).map(([_, contenidos], index) => {
                 const disabled = getDisabled(contenidos, index);
                 // mostrar iframe solo si NO está deshabilitado
                 const mostrarContenido = !disabled;
@@ -110,11 +99,11 @@ export const Evaluaciones: React.FC = () => {
                 return (
                     <Accordion
                         key={index}
-                        title={`Unidad ${toRoman(Number(unidad))}`}
+                        title={contenidos?.[0].titulo_elemento}
                         customHeader={
                             !isMobile ? (
                             <AccordionStatus
-                                tittle={setTitleAccordion(unidad, index)}
+                                tittle={contenidos?.[0].titulo_elemento}
                                 status={contenidos?.[0]?.estatus}
                             />
                             ) : undefined

@@ -10,7 +10,8 @@ export const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isInitializing, isTokenExpired, isLogout, aceptoTerminos } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    
+
+
     const handleUnauthorized = React.useCallback(() => {
         navigate(AppRoutingPaths.SESSION_EXPIRED, { state: { from: location }, replace: true });
     }, [navigate, location]);
@@ -21,13 +22,25 @@ export const ProtectedRoute: React.FC = () => {
             unsubscribe();
         };
     }, [handleUnauthorized]);
-    
+
+    const removeAvatarScript = () => {
+        const scriptName = 'script[data-name="did-agent"]';
+        const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
+        const target = document.querySelector<HTMLDivElement>('.didagent_target');
+        if (target) {
+            target.remove(); 
+        }
+        if (existingScript) {
+            document.head.removeChild(existingScript);
+        }
+    }
 
     if (isInitializing) {
         return <LoadingCircular Text="" />;
     }
 
     if (isLogout) {
+        removeAvatarScript();
         return (
             <Navigate
                 to={"/"}
@@ -36,8 +49,9 @@ export const ProtectedRoute: React.FC = () => {
             />
         );
     }
-    
+
     if (!isAuthenticated && !isTokenExpired) {
+        removeAvatarScript();
         return (
             <Navigate
                 to={"/"}
@@ -46,8 +60,9 @@ export const ProtectedRoute: React.FC = () => {
             />
         );
     }
-    
+
     if (isTokenExpired) {
+        removeAvatarScript();
         return (
             <Navigate
                 to={AppRoutingPaths.SESSION_EXPIRED}
@@ -56,8 +71,8 @@ export const ProtectedRoute: React.FC = () => {
             />
         );
     }
-    
-    if(!aceptoTerminos) {
+
+    if (!aceptoTerminos) {
         return <Navigate to={AppRoutingPaths.TERMINOS_CONDICIONES} state={{ from: location }} replace />;
     }
 

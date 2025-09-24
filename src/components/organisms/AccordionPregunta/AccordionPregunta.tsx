@@ -6,7 +6,7 @@ import type { Pregunta } from "../../../types/preguntas-frecuentes.interface";
 
 type AccordionPreguntaProps = {
     isExternal?: boolean;
-    titleDivider: string;
+    titleDivider?: string;
     preguntas: Pregunta[];
 };
 
@@ -32,14 +32,16 @@ export const AccordionPregunta: React.FC<AccordionPreguntaProps> = ({titleDivide
     
     return (
         <>
-            <Divider textAlign="center">
-                <Typography component="span" variant="subtitle1" color="primary">{titleDivider}</Typography>
-            </Divider>
+            {
+                titleDivider && <Divider textAlign="center">
+                    <Typography component="span" variant="subtitle1" color="primary">{titleDivider}</Typography>
+                </Divider>
+            }
             {
                 data && data.map((item, index) => (
                     <Accordion key={index} title={item.pregunta} sxProps={sxProps}>
                         <Typography key={index} component="span" variant="subtitle1">
-                            {item.respuesta}
+                            <span dangerouslySetInnerHTML={{ __html: item.respuesta }} />
                         </Typography>
                     </Accordion>
                 ))

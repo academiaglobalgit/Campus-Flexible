@@ -15,12 +15,12 @@ import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks
 import { useAuth } from "../../../hooks";
 
 let CursosTabs = [
-    { id:1, tab: 'Contenido', content: <Contenido /> },
-    { id:2, tab: 'Actividades', content: <Actividades /> },
-    { id:3, tab: 'Foros', content: <ForosCursos /> },
-    { id:4, tab: 'Clases', content: <Tutorias /> },
-    { id:5, tab: 'Evaluaciones', content: <Evaluaciones /> },
-    { id:6, tab: 'Lista de pendientes', content: <ListaPendientes /> },
+    { id: 1, tab: 'Contenido', content: <Contenido /> },
+    { id: 2, tab: 'Actividades', content: <Actividades /> },
+    { id: 3, tab: 'Foros', content: <ForosCursos /> },
+    { id: 4, tab: 'Clases', content: <Tutorias /> },
+    { id: 5, tab: 'Evaluaciones', content: <Evaluaciones /> },
+    { id: 6, tab: 'Lista de pendientes', content: <ListaPendientes /> },
 ];
 
 const CursosActivosDetalles: React.FC = () => {
@@ -28,30 +28,29 @@ const CursosActivosDetalles: React.FC = () => {
     const { configPlataforma } = useAuth();
     const curso = JSON.parse(getCursoSelected() || '{}');
     const [value, setValue] = React.useState(0);
+    const [verContenidoDescargable, setContenidoDescargable] = React.useState(true);
+    const [tabs, setTabs] = React.useState(CursosTabs);
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
         setValue(indexTab);
 
-        switch(configPlataforma?.id_plan_estudio) {
+        switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5); // Remover Foros y Evaluaciones
-                CursosTabs = CursosTabs.map((item) => {
-                    if(item.id === 3) { // Foros
-                        return { ...item, tab: 'Momentos' };
-                    }
-                    return item;
-                });
-            break;
+                CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
+                
+                setTabs(CursosTabs);
+                setContenidoDescargable(false);
+                
+                break;
         }
-
-    },[]);
+    }, [configPlataforma]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setTabSelected({tab: 'cursos-detalle', index: newValue});
+        setTabSelected({ tab: 'cursos-detalle', index: newValue });
         setValue(newValue);
     };
-    
+
     function MultiColorBar() {
         return (
             <>
@@ -108,7 +107,9 @@ const CursosActivosDetalles: React.FC = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <TituloIcon Titulo={curso.titulo} Icon={CursosActivosDetalle} />
             <Box sx={{ pl: '30px' }} >
-                <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Clic para descargar contenido</Typography>
+                {
+                    verContenidoDescargable &&  <Typography component="span" variant="body2" color="primary" sxProps={{ color: theme.palette.primary.dark }}>Clic para descargar contenido</Typography>
+                }
             </Box>
 
             <Divider textAlign="center">
@@ -117,13 +118,13 @@ const CursosActivosDetalles: React.FC = () => {
             <Typography component="p" variant="body1" sxProps={{ justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                 El estado de tu progreso dependerá de los elementos que hayas completado y se representará mediante uno de los siguientes colores:
             </Typography>
-            
+
             {MultiColorBar()}
 
             <>
                 <Box>
-                    <Tabs 
-                        value={value} 
+                    <Tabs
+                        value={value}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons
@@ -136,15 +137,15 @@ const CursosActivosDetalles: React.FC = () => {
                         }}
                     >
                         {
-                            CursosTabs.map((item, i) => <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />)
+                            tabs.map((item, i) => <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />)
                         }
                     </Tabs>
                 </Box>
                 {
-                    CursosTabs.map((tab, i) => (
+                    tabs.map((tab, i) => (
                         <TabPanel key={i} value={value} index={i}>
-                            <Box sx={{pt:2}}>
-                                { tab.content }
+                            <Box sx={{ pt: 2 }}>
+                                {tab.content}
                             </Box>
                         </TabPanel>
                     ))

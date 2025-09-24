@@ -26,7 +26,7 @@ import { useAuth } from '../../../hooks';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
-    const theme = useTheme();    
+    const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
@@ -40,6 +40,16 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
+    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
+
+   React.useEffect(() => {
+        switch(configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomado
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
+            break;
+        }
+    }, [configPlataforma]);
+
     const handleGlosario = () => (setIsOpen(true));
 
     React.useEffect(() => {
@@ -47,7 +57,7 @@ const Calificaciones: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
-    const Leyenda = (
+   const Leyenda = (
         <Box sx={{ ...innerHTMLStyle,pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
     );
 
@@ -62,7 +72,7 @@ const Calificaciones: React.FC = () => {
     const handleIrCurso = (item: CalificacionCurso) => {
         setTabSelected({tab: 'cursos-detalle', index: 0});
         queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, item.id_curso, "Contenido"] });
-        
+
 
         const curso = {
             id_curso: item.id_curso,
@@ -72,7 +82,7 @@ const Calificaciones: React.FC = () => {
 
         setCursoSelected(JSON.stringify(curso));
 
-        setTimeout(() => 
+        setTimeout(() =>
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", item.id_curso.toString()))
         ,500);
     };
@@ -101,17 +111,41 @@ const Calificaciones: React.FC = () => {
                     <StatusIcon estado={curso.estatus_curso_alumno} />
                 </Box>
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
-                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'text'}>Calificación : </Typography>
-                    <Typography component={"span"} variant={"body3"} color={curso.estatus_curso_alumno == 'Finalizado' ? 'success' : 'disabled'}>{curso.estatus_curso_alumno == 'Finalizado' ? curso.calificacion : 'Pendiente'}</Typography>
+                    <Typography component={"span"} variant={"body3"} color={
+                        curso.estatus_curso_alumno === 'Finalizado'
+                            ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                            : 'disabled'
+                    }>Calificación : </Typography>
+                    <Typography
+                        component={"span"}
+                        variant={"body3"}
+                        color={
+                            curso.estatus_curso_alumno === 'Finalizado'
+                                ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                                : 'disabled'
+                        }
+                    >
+                        {configPlataforma?.id_plan_estudio === 17
+                            ? (curso.calificacion === null
+                                ? 'Pendiente'
+                                : Number(curso.calificacion) === 0
+                                    ? 'No aprobado'
+                                    : 'Aprobado')
+                            : (curso.estatus_curso_alumno === 'Finalizado'
+                                ? curso.calificacion
+                                : 'Pendiente')}
+                    </Typography>
+
+
                 </Box>
                 {
                     (curso.estatus_curso_alumno === 'Finalizado' || curso.estatus_curso_alumno === 'Cursando') &&
-                        <Box sx={{ display: 'flex', gap: '15px' }}>
-                        {  
+                    <Box sx={{ display: 'flex', gap: '15px' }}>
+                        {
                             botonesCalificacion(curso)
                         }
                     </Box>
-                }                
+                }
             </Box>
         );
     };
@@ -161,7 +195,7 @@ const Calificaciones: React.FC = () => {
         const data = calificacionData?.cursos || [];
 
         if (isLoading) {
-            return <LoadingCircular Text="Cargando Calificaciones..." />;
+            return <LoadingCircular Text={calificacionesConfig.loading} />;
         } else {
             if (data.length > 0) {
                 if (isMobile) {
@@ -199,6 +233,15 @@ const Calificaciones: React.FC = () => {
         </Grid>
     );
 
+    const getTituloIconAccordion = (index: number) => {
+        switch (configPlataforma?.id_plan_estudio) {
+            case 17: // Diplomados
+                return `Certificaciones`;
+            default:
+                return `Periodo ${toRoman(index + 1)} - Tus materias`;
+        }
+    }
+
     const ListadoMateriasVistaDesktop = (data: any[], periodos: number[]) => (
         <Grid container>
             <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
@@ -212,7 +255,7 @@ const Calificaciones: React.FC = () => {
                                 periodos.map((_, i) => (
                                     <TabPanel value={value} index={i} key={i}>
                                         <Box sx={{ p: 4 }}>
-                                            <TituloIcon Titulo={`Periodo ${toRoman(i + 1)} - Tus materias`} fontSize="h3" />
+                                            <TituloIcon Titulo={getTituloIconAccordion(i)} fontSize="h3" />
                                             {
                                                 data && data.filter((item) => item.id === i).map((item, kix) => (
                                                     <Box key={kix} sx={{ marginTop: '16px', display: 'flex', flexDirection: 'column' }}>
@@ -242,25 +285,25 @@ const Calificaciones: React.FC = () => {
                 isMobile
                     ?
                     <>
-                        <TituloIcon Titulo={TitleScreen.CALIFICACIONES} Icon={CalificacionesIcon} />
+                        <TituloIcon Titulo={calificacionesConfig.titulo} Icon={CalificacionesIcon} />
                         {Leyenda}
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '30px', paddingTop: '20px' }}>
-                            {BotonVerGlosario('contained')}
-                            {promedio()}
+                            {calificacionesConfig.mostrarGlosario && BotonVerGlosario('contained')}
+                            {calificacionesConfig.mostrarPromedio && promedio()}
                             {Listado()}
                         </Box>
                     </>
                     :
                     <ContainerDesktop
-                        title={TitleScreen.CALIFICACIONES}
+                        title={calificacionesConfig.titulo}
                         description={CalificacionesDatos?.data?.descripcion_html ?? ''}
                         actions={
-                            promedio()
+                            calificacionesConfig.mostrarPromedio && promedio()
                         }
                         column1Size={9}
                         column2Size={3}
                         specialButton={
-                            BotonVerGlosario('outlined')
+                            calificacionesConfig.mostrarGlosario && BotonVerGlosario('outlined')
                         }
                     >
                         {Listado()}

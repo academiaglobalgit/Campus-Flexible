@@ -3,7 +3,7 @@ import { apiClient } from './ApiConfiguration/httpClient';
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../types/endpoints";
 import type { Actividad, CursosActividadesResponse, CursosActivosResponse, CursosTabs, CursosTabsResponse, CursosTutoriasResponse, ActividadEntregadaResponse, ListaPendientes } from '@constants';
 import React from 'react';
-import type { CursosForosResponse, CursosListaPendientesResponse, ManualesActividad } from '../types/Cursos.interface';
+import type { CursosForosResponse, CursosListaPendientesResponse } from '../types/Cursos.interface';
 import type { EncuestasResponse } from '../types/Encuestas.interface';
 
 export const useGetCursos = () => {
@@ -28,15 +28,14 @@ export const useGetCursosTabs = (id: number, tab: string) => {
     const query = useQuery<CursosTabsResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
-        staleTime: 1000 * 60 * (idRecurso === 2 ? 99 : 5), // 99 minutos de stale time
     });
 
     const mapData = (data: CursosTabs[]) => {
         const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) {
-                acc[contenido.unidad] = [];
+            if (!acc[contenido.titulo_elemento]) {
+                acc[contenido.titulo_elemento] = [];
             }
-            acc[contenido.unidad].push(contenido);
+            acc[contenido.titulo_elemento].push(contenido);
             return acc;
         }, {});
         return agrupadoPorUnidad;
@@ -49,6 +48,15 @@ export const useGetCursosTabs = (id: number, tab: string) => {
             [query.data]
         )
     }
+};
+
+export const useGetContenidoTabs = (id: number, tab: string) => {
+    const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+
+    return useQuery<CursosTabsResponse, Error>({
+        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
+        queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
+    });
 };
 
 export type ActividadesCacheData = {
@@ -73,8 +81,8 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
         // const manuales = query.data.data.manual ?? [];
 
         const agrupadoPorUnidad = actividades.reduce<Record<string, Actividad[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) acc[contenido.unidad] = [];
-            acc[contenido.unidad].push(contenido);
+            if (!acc[contenido.titulo_elemento]) acc[contenido.titulo_elemento] = [];
+            acc[contenido.titulo_elemento].push(contenido);
             return acc;
         }, {});
 
@@ -153,34 +161,13 @@ export const useGetListaPendientes = (id: number) => {
 export const useGetForosManuales = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
 
-    const query = useQuery<CursosForosResponse, Error>({
+    return useQuery<CursosForosResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
         queryFn: () =>
             apiClient.get<CursosForosResponse>(
                 `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
             ),
     });
-
-    const mapData = (data: CursosTabs[], manuales: ManualesActividad[]) => {
-
-        const agrupadoPorUnidad = data.reduce<Record<string, CursosTabs[]>>((acc, contenido) => {
-            if (!acc[contenido.unidad]) {
-                acc[contenido.unidad] = [];
-            }
-            acc[contenido.unidad].push(contenido);
-            return acc;
-        }, {});
-
-        return { agrupadoPorUnidad, manuales };
-    }
-
-    return {
-        ...query,
-        data: React.useMemo(
-            () => mapData(query.data?.data.foros ?? [], query.data?.data.manual ?? []),
-            [query.data]
-        )
-    }
 };
 
 export const useGetEncuestas = (options?: { enabled?: boolean }) => {
@@ -195,7 +182,18 @@ export const useGetEncuestas = (options?: { enabled?: boolean }) => {
 };
 
 
-export const SaveEncuesta = async (payload: any): Promise<EncuestasResponse> => {
-    const encryptedPayload = await apiClient.encryptData({ ...payload });
-    return await apiClient.post<EncuestasResponse>(CURSOS_ACTIVOS_ENDPOINTS.SET_ENCUESTAS_ASIGNACIONES.path, { data: encryptedPayload });
+type SaveEncuestaPayload = {
+    respuestas: any;
+    id_asignacion: number;
+};
+
+export const SaveEncuesta = async (payload: SaveEncuestaPayload): Promise<EncuestasResponse> => {
+    const { id_asignacion, respuestas } = payload;
+
+    const encryptedPayload = await apiClient.encryptData({ respuestas });
+
+    return await apiClient.post<EncuestasResponse>(
+        `${CURSOS_ACTIVOS_ENDPOINTS.SET_ENCUESTAS_ASIGNACIONES.path}/${id_asignacion}/respuestas`,
+        { data: encryptedPayload }
+    );
 };

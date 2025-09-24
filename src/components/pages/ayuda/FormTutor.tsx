@@ -48,8 +48,8 @@ export const FormTutor: React.FC = () => {
 
     const createMutation = useMutation({
         mutationFn: useCreateAyudaTutor,
-        onSuccess: () => {            
-            showNotification(`Solicitud de Ayuda enviada satisfactorimente`,"success");
+        onSuccess: () => {
+            showNotification(`Hemos recibido tu solicitud. Nuestro equipo te responderá en un plazo máximo de 24 hrs.`,"success");
             // Resetear el formulario
             reset();
             setLoading(false);

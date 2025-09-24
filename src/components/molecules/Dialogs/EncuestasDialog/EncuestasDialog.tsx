@@ -9,18 +9,22 @@ import { CheckBoxLabel } from "../../../atoms/Checkbox/Checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
 import { SaveEncuesta } from "../../../../services/CursosActivosService";
-
+import { innerHTMLStyle } from "@styles";
 
 type EncuestaDialogProps = {
 	isOpen?: boolean;
-	data?: EncuestasDatosResponse;
-}
+	data?: {
+		encuesta: EncuestasDatosResponse;
+		idAsignacion: number;
+	};
+	onEncuestaEnviada?: (enviada: boolean) => void;
+};
 
 type Respuesta =
 	| { id_pregunta: number; id_opcion: number }
 	| { id_pregunta: number; respuesta_texto: string };
 
-export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) => {
+export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, onEncuestaEnviada }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const queryClient = useQueryClient();
@@ -30,7 +34,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 	const [isSending, setIsSending] = React.useState(false);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
 	const [selectedByQuestion, setSelectedByQuestion] = useState<Record<number, number | null>>({});
-	const totalPreguntas = data?.preguntas.length;
+	const totalPreguntas = data?.encuesta?.preguntas.length;
 
 	useEffect(() => {
 		setOpen(isOpen ?? false);
@@ -88,26 +92,30 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 		totalPreguntas === totalRespuestas ? setIsDisabled(false) : setIsDisabled(true)
 	}
 
-	const handlSetEncuesta = (respuesta: any) => {
+	const handlSetEncuesta = (respuesta: any, idAsignacion: any) => {
 		setIsSending(true);
 		setIsDisabled(true);
-		createMutation.mutate({ respuestas: respuesta });
+		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
 	}
 
 	const createMutation = useMutation({
 		mutationFn: SaveEncuesta,
 		onSuccess: async () => {
-			
+
 			setIsSending(false);
 			setOpen(false);
-			showNotification(`Encuesta guardada satisfactorimente`, "success");
+			showNotification(`Encuesta guardada satisfactoriamente`, "success");
 
 			await queryClient.invalidateQueries({
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
 				exact: true,
 			});
-
-
+			await queryClient.invalidateQueries({
+				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_ENCUESTAS_ASIGNACIONES.key],
+				exact: true,
+			});
+			
+			if(onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
 			console.log(error)
@@ -124,14 +132,14 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 	const siguiente = (
 		<Button
 			fullWidth
-			onClick={() => handlSetEncuesta(respuestas)}
+			onClick={() => handlSetEncuesta(respuestas,data?.idAsignacion)}
 			iconPosition={'end'}
 			isLoading={isSending}
 			disabled={isDisabled}
 			icon={<ArrowForwardIcon />}
 
 		>
-			Enviar encuesta
+			Enviar
 		</Button>
 	);
 
@@ -154,9 +162,9 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 				}}>
 					{item.orden}
 				</Box>
-				<Typography component="span" variant="body2" color="text">
-					{item.titulo_pregunta}
+				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
 				</Typography>
+				
 			</Box>
 
 			{item.tipo_pregunta === "escala" && (
@@ -217,17 +225,16 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data }) 
 				}}
 				>
 					<Typography component="span" variant="body2" color="primary">
-						{data?.titulo}
+						{data?.encuesta?.titulo}
 					</Typography>
 				</Divider>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px', height: '60vh', overflowY: 'scroll', pr: 2, mb: 2 }}>
-					<Typography component="span" variant="body2" color="text ">
-						{data?.descripcion}
+					<Typography sx={{ ...innerHTMLStyle }} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.encuesta?.descripcion ?? '' }}>
 					</Typography>
 
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 						{
-							data?.preguntas.map((pregunta, preguntaIndex) => {
+							data?.encuesta?.preguntas.map((pregunta, preguntaIndex) => {
 								return (
 									Preguntas(pregunta, preguntaIndex)
 								)

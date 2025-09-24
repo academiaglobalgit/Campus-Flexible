@@ -44,7 +44,7 @@ export const AgendaConsejeria: React.FC = () => {
     const createMutation = useMutation({
         mutationFn: useCreateCita,
         onSuccess: () => {            
-            showNotification(`Cita agendada satisfactorimente`,"success");
+            showNotification(`Cita agendada satisfactoriamente`,"success");
             // Resetear el formulario
             reset();
             setLoading(false);

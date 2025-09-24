@@ -96,6 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsLogout(true);
             setIsAuthenticated(false);
             setIsTokenExpired(false);
+            setAceptoTerminos(true);
             queryClient.clear();
         }
     });
@@ -115,8 +116,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             if (response?.token) {
+                const aceptoTerminosValue = response?.acepto_terminos
                 setToken(response?.token);
-                setAceptoTerminos(response?.acepto_terminos);     
+                setAceptoTerminos(aceptoTerminosValue);
                 setNombrePrograma(response?.programa);           
                 
                 await procesarPerfil(response?.acepto_terminos, response?.programa);
@@ -124,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setIsAuthenticated(true);                
                 setIsLoading(false);
                 
-                return { success: true, data: null, cambiarPassword: false, aceptoTerminos: aceptoTerminos };
+                return { success: true, data: null, cambiarPassword: false, aceptoTerminos: aceptoTerminosValue };
             } else {
                 setIsLoading(false);
                 const errorMessage = response?.message || 'Autenticación fallida';
@@ -154,8 +156,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
             if (response?.token) {
+                const aceptoTerminosValue = response?.acepto_terminos ?? false;
                 setToken(response?.token);
-                setAceptoTerminos(response?.acepto_terminos);     
+                setAceptoTerminos(aceptoTerminosValue);     
                 setNombrePrograma(response?.programa);           
                 
                 await procesarPerfil(response?.acepto_terminos, response?.programa);
@@ -180,12 +183,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async(aceptoTerminos: boolean | undefined, programa: string | undefined) => {
+    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined) => {
         const perfil = await refetch();
 
         if (perfil.data) {
             const datos = perfil.data.data;
             
+            const aceptoTerminosValue = pAceptoTerminos;
+
             const auth = {
                 name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
                 email: datos.correo,
@@ -193,11 +198,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 city: datos.nombre_ciudad,
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
-                aceptoTerminos: aceptoTerminos,
+                aceptoTerminos: aceptoTerminosValue,
                 nombrePrograma: programa,
             };
 
             setUser(auth);
+
+            setAceptoTerminos(aceptoTerminosValue ?? false);
 
             const encry = await encryptData(auth);
             setAuthModel(encry);
@@ -206,6 +213,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const handleAceptoTerminos = async (acepto: boolean) => {
+        setAceptoTerminos(acepto);
+        if (user) {
+            const updatedUser = { ...user, aceptoTerminos: acepto };
+            setUser(updatedUser);
+            const encry = await encryptData(updatedUser);
+            setAuthModel(encry);
+        }
+    }
 
     const handleLogout = async () => {
         setIsLogout(true);
@@ -224,7 +240,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(false);
         setError(null);
         setIsTokenExpired(false);   
-        setIsLogout(false);     
+        setIsLogout(false);
+        setAceptoTerminos(true);
     }
 
     const value = {
@@ -242,7 +259,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clearError,
         setUser,
         newPassword: handleNewPassword,
-        setAceptoTerminos,
+        setAceptoTerminos: handleAceptoTerminos,
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

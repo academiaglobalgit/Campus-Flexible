@@ -46,11 +46,11 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
     };
     
     const manuales: MenuItemManual[] = [
-        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => abrirManualPorId(1), type: 'manuales', url: obtenerUrlPorIdManual(1) },
+        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Inducción', action: () => abrirManualPorId(1), type: 'manuales', url: obtenerUrlPorIdManual(1) },
         { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => abrirManualPorId(0), type: 'manuales', url: obtenerUrlPorIdManual(0) },
         { id: 'formato', icon: Document2, label: 'Manual Formato APA', action: () => abrirManualPorId(11), type: 'manuales', url: obtenerUrlPorIdManual(11) },
         { id: 'manual-actividades', icon: Paperclip, label: 'Manual de Actividades', action: () => abrirManualPorId(12), type: 'manuales', url: obtenerUrlPorIdManual(12) },
-        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos y Normas de Control Escolar', action: () => abrirManualPorId(3), type: 'lineamientos', url: obtenerUrlPorIdManual(3) },
+        { id: 'lineamiento-normas', icon: ManualInduccion, label: 'Lineamientos', action: () => abrirManualPorId(3), type: 'lineamientos', url: obtenerUrlPorIdManual(3) },
         { id: 'aviso-privacidad', icon: ManualInduccion, label: 'Aviso de Privacidad', action: () => abrirManualPorId(16), type: 'lineamientos', url: obtenerUrlPorIdManual(16) },
         { id: 'terminos', icon: ManualInduccion, label: 'Terminos y Condiciones', action: () => abrirManualPorId(17), type: 'lineamientos', url: obtenerUrlPorIdManual(17) },
         { id: 'lineamiento-responsable', icon: ManualInduccion, label: 'Lineamientos Para el uso Responsable de la IA', action: () => abrirManualPorId(14), type: 'lineamientos', url: obtenerUrlPorIdManual(14) },
@@ -119,7 +119,7 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
                         component={!isMobile ? "h3" : "h4"} 
                         variant={!isMobile ? "h3" : "h4"} 
                         color="primary"
-                    >{menutype === 'manuales' ? 'MANUAL DE INDUCCIÓN' : 'LINEAMIENTOS'}</Typography>
+                    >{menutype === 'manuales' ? 'INDUCCIÓN' : 'LINEAMIENTOS'}</Typography>
                 </Box>
                 <Box sx={
                     [

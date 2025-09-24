@@ -1,15 +1,22 @@
+import React, { useEffect } from "react";
 
-import { Avatar } from "../../../atoms/Avatar/Avatar";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
-import { Box, DialogActions, DialogContent, useMediaQuery, useTheme } from "@mui/material";
 import { Typography } from "../../../atoms/Typography/Typography";
 import Button from "../../../atoms/Button/Button";
 import contactanos from '../../../../assets/contactanos.png';
-import React, { useEffect } from "react";
+import contactanos_movil from '../../../../assets/contactanos_movil.png';
+import type { Contacto } from "../../../../types/contacto.interface";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Box from "@mui/material/Box";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import { formatWithIMask } from "../../../../utils/Helpers";
+import { WhatsAppContacto, CellPhone, EmailContacto } from "@iconsCustomizeds";
 
 type ContactoDialogProps = {
     isOpen?: boolean;
-    data: { telefono: string[], email: string[] };
+    data: { telefono: Contacto[], email: Contacto[] };
     close: () => void;
 }
 
@@ -36,8 +43,13 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
         </Button>
     );
 
-    const imageAvatar = (size:number) => (
-        <Avatar src={contactanos} width={size} height={size} />
+    const imageAvatar = (width: string, height: string) => (
+        <Box
+            component="img"
+            src={!isMobile ? contactanos : contactanos_movil}
+            alt="Contactanos"
+            sx={{ width, height }}
+        />
     );
 
     const title = (
@@ -50,14 +62,48 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
         </Typography>
     );
 
-    const textTelefonoEmail = (data: string[]) => (
+    const textTelefonoEmail = (data: Contacto[]) => (
+        <Box
+            sx={{ display: 'flex', gap: '5px', flexDirection: 'column' }} >
+            {
+                data && data.map((item, i) => {
+                    if(item.descripcion === "WhatsApp") {
+                        return (
+                            <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <WhatsAppContacto />
+                                <Typography component="p" variant='body2'>
+                                    {formatWithIMask(item.valor_contacto, "phone")}
+                                </Typography>
+                            </Box>
+                        )
+                    }else{
+                        return (
+                            <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <CellPhone />
+                                <Typography component="p" variant='body2'>
+                                    {formatWithIMask(item.valor_contacto, "phone")}
+                                </Typography>
+                            </Box>
+                        )
+                    }
+                }
+                    
+                )
+            }
+        </Box>
+    );
+
+    const textEmail = (data: Contacto[]) => (
         <Box
             sx={{ display: 'flex', gap: '5px', flexDirection: 'column' }} >
             {
                 data && data.map((item, i) => 
-                    <Typography component="p" variant='body2' key={i}>
-                        {item}
-                    </Typography>
+                    <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <EmailContacto />
+                        <Typography component="p" variant='body2'>
+                            {item.valor_contacto}
+                        </Typography>
+                    </Box>
                 )
             }
         </Box>
@@ -81,7 +127,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
                     Correo Electrónico
                 </Typography>
 
-                {data && textTelefonoEmail(data.email)}
+                {data && textEmail(data.email)}
                 
                 </Box>
             </Box> 
@@ -89,15 +135,15 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
     };   
 
     return(
-        <Dialog isOpen={open} sxProps={{ width: isMobile ? '350px' : '900px'}} >
+        <Dialog isOpen={open} sxProps={{ width: isMobile ? '350px' : '778px'}} >
         {
             isMobile 
             ? 
                 <>
                     <DialogContent 
-                        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', paddingTop: '20px', paddingBottom: '12px' }}
+                        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', paddingTop: '20px', paddingLeft: '20px', paddingRight: '20px', paddingBottom: '12px' }}
                     >
-                        {imageAvatar(150)}
+                        {imageAvatar('100%', '100%')}
                         {title}
                         {informacion()}
                     </DialogContent>
@@ -107,16 +153,18 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({isOpen, data, close}) =>
                 </>
             :
                 <DialogContent 
-                    sx={{ display: 'flex', gap: '50px', padding: '50px', justifyContent: 'center' }}
+                    sx={{ display: 'flex', gap: '30px', paddingLeft: '30px', paddingTop: '30px', paddingBottom: '30px' }}
                 >
-                    {imageAvatar(334)}
-                    <Box
-                        sx={{ display: 'flex', flexDirection: 'column', gap: '20px'}}
-                    >
-                        {title}
-                        {informacion("left")}
-                        <Box sx={{paddingTop: '20px'}}>
-                            {closeButton}
+                    {imageAvatar('316px', '431px')}
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box
+                            sx={{ display: 'flex', flexDirection: 'column', gap: '20px'}}
+                        >
+                            {title}
+                            {informacion("left")}
+                            <Box sx={{paddingTop: '20px'}}>
+                                {closeButton}
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent>

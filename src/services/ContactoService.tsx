@@ -15,8 +15,8 @@ export const useGetContacto = (id_plan_estudios: number) => {
 
     const mapData = (data: Contacto[]) => {
         return {
-            telefono: data.filter((item) => item.id_tipo_contacto === 1).map((item) => formatWithIMask(item.valor_contacto, "phone")),
-            email: data.filter((item) => item.id_tipo_contacto === 2).map((item) => item.valor_contacto)
+            telefono: data.filter((item) => item.id_tipo_contacto === 1),
+            email: data.filter((item) => item.id_tipo_contacto === 2)
         };
     }
 
@@ -42,7 +42,7 @@ export const useContactoInterno = (id_plan_estudios: number) => {
 
         const transformedData = Object.values(
             data.reduce<Record<number, ContactoData>>((acc, currentItem) => {
-                const { id_seccion_contacto, nombre_seccion, descripcion_seccion, id_tipo_contacto, valor_contacto } = currentItem;
+                const { id_seccion_contacto, nombre_seccion, descripcion_seccion, id_tipo_contacto, valor_contacto, descripcion } = currentItem;
 
                 if (!acc[id_seccion_contacto]) {
                     acc[id_seccion_contacto] = {
@@ -54,6 +54,7 @@ export const useContactoInterno = (id_plan_estudios: number) => {
                             horarios: null,
                             telefonos: null,
                             email: null,
+                            tipo: null,
                         },
                     };
                 }
@@ -61,6 +62,7 @@ export const useContactoInterno = (id_plan_estudios: number) => {
                 switch (id_tipo_contacto) {
                     case 1:
                         acc[id_seccion_contacto].data.telefonos = formatWithIMask(valor_contacto, 'phone'); 
+                        acc[id_seccion_contacto].data.tipo = descripcion;
                         break;
                     case 2:
                         acc[id_seccion_contacto].data.email = valor_contacto;

@@ -47,8 +47,9 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({urlVideo, isOpen, 
                     controls={true} 
                     autoPlay={true} 
                     muted={false} 
-                    title="Bienvenido / a" 
-                    description="Una pequeña explicación aparecerá aquí"
+                    //title="Bienvenido / a" 
+                    title="¡Tu futuro digital empieza aquí!" 
+                    description="Te damos la más cordial bienvenida al Diplomado en IA, Liderazgo y Cultura Digital. Hemos preparado este video para darte un saludo especial e invitarte a explorar todo lo que aprenderás con nosotros."
                 />
                 {closeButton}
             </Box>

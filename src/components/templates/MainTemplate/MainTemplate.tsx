@@ -5,6 +5,7 @@ import { TopBar } from "../../molecules/TopBar/TopBar";
 import { BottomBar } from "../../molecules/BottomBar/BottomBar";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { DocumentosProvider } from "../../../context/DocumentosContext";
+import AvatarDid from "../../pages/Avatar/AvatarDid";
 
 const MainTemplate: React.FC = () => {
     const theme = useTheme();
@@ -17,12 +18,14 @@ const MainTemplate: React.FC = () => {
                 ?
                     <Container fixed sx={{ pl: { xs: 0, sm: "50px" } }}>
                         <Sidenav />
+                        <AvatarDid />
                     </Container>
                 :
                     <>
                         <Container maxWidth='xs' sx={{ pt: 7, pb: 7 }} >
                             <TopBar />
                             <Outlet />
+                            <AvatarDid />
                             <ScrollRestoration />
                         </Container>
                         <BottomBar />

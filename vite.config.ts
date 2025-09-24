@@ -22,6 +22,24 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       global: {}
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          // Generar nombres únicos para evitar cache
+          entryFileNames: `assets/[name].${Date.now()}.[hash].js`,
+          chunkFileNames: `assets/[name].${Date.now()}.[hash].js`,
+          assetFileNames: `assets/[name].${Date.now()}.[hash].[ext]`
+        }
+      }
+    },
+    server: {
+      // Para desarrollo - desactivar cache
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     }
   }
 })
