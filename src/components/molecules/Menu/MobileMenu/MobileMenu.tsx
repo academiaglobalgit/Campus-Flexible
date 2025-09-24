@@ -38,13 +38,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
         case 17: // Diplomados
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
             items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
-
-            items = items.map((item) => {
-                if (item.id === 3) { // Cambiar nombre de Calificaciones a Reporte
-                    return { ...item, text: TitleScreen.REPORTE };
-                }
-                return item;
-            });
             break;
     }
 

@@ -147,13 +147,6 @@ const Sidenav: React.FC = () => {
     switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
         menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
-        menuRoutes = menuRoutes.map((item) => {
-          if (item.id === 3) { // Cambiar nombre de Calificaciones a Seguimiento
-            return { ...item, text: TitleScreen.REPORTE };
-          }
-          return item;
-        });
-
         break;
       
     }
