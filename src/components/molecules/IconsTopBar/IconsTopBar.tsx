@@ -102,18 +102,7 @@ export const IconsTopBar: React.FC = () => {
 
         handleCloseMoreInfo();
     };
-
-    // switch (configPlataforma?.id_plan_estudio) {
-    //     case 17: // Diplomados
-    //         menuInformacion = menuInformacion.map((item) => {
-    //             if (item.text === TitleScreen.SERVICIOS_ESCOLORES) { // Cambiar nombre de Calificaciones a Reporte
-    //                 return { ...item, visible: 0 };
-    //             }
-    //             return item;
-    //         });
-    //         break;
-    // }
-
+    
     return(
         <>
             <Box sx={{ display: 'flex' }}>

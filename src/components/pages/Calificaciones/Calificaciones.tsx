@@ -45,7 +45,7 @@ const Calificaciones: React.FC = () => {
    React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.REPORTE, loading: `Cagando ${TitleScreen.REPORTE}...`, mostrarPromedio: false, mostrarGlosario: false})
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
             break;
         }
     }, [configPlataforma]);

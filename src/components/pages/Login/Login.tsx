@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const accessLogin = [
-    { id: 'manual-induccion', icon: ManualInduccion, label: 'Manual de Inducción', action: () => window.open(manual?.url, '_blank'), isDisabled: manual?.url === null ? true : false },
+    { id: 'manual-induccion', icon: ManualInduccion, label: 'Inducción', action: () => window.open(manual?.url, '_blank'), isDisabled: manual?.url === null ? true : false },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES), isDisabled: false },
     { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true), isDisabled: isLoading },
     { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => Navigation(AppRoutingPaths.AYUDA_EXTERIOR), isDisabled: false },

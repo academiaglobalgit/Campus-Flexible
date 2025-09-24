@@ -46,7 +46,7 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
     };
     
     const manuales: MenuItemManual[] = [
-        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Manual de Inducción', action: () => abrirManualPorId(1), type: 'manuales', url: obtenerUrlPorIdManual(1) },
+        { id: 'manual-plataforma', icon: ManualInduccion, label: 'Inducción', action: () => abrirManualPorId(1), type: 'manuales', url: obtenerUrlPorIdManual(1) },
         { id: 'video', icon: Videoteca, label: 'Video de Introducción', action: () => abrirManualPorId(0), type: 'manuales', url: obtenerUrlPorIdManual(0) },
         { id: 'formato', icon: Document2, label: 'Manual Formato APA', action: () => abrirManualPorId(11), type: 'manuales', url: obtenerUrlPorIdManual(11) },
         { id: 'manual-actividades', icon: Paperclip, label: 'Manual de Actividades', action: () => abrirManualPorId(12), type: 'manuales', url: obtenerUrlPorIdManual(12) },
@@ -119,7 +119,7 @@ export const ManualesUsuarioDialog: React.FC<GlosarioDialogProps> = ({ isOpen, c
                         component={!isMobile ? "h3" : "h4"} 
                         variant={!isMobile ? "h3" : "h4"} 
                         color="primary"
-                    >{menutype === 'manuales' ? 'MANUAL DE INDUCCIÓN' : 'LINEAMIENTOS'}</Typography>
+                    >{menutype === 'manuales' ? 'INDUCCIÓN' : 'LINEAMIENTOS'}</Typography>
                 </Box>
                 <Box sx={
                     [

@@ -39,7 +39,6 @@ const CursoActivo: React.FC = () => {
     const [idAsignacion, setIdAsignacion] = React.useState(0);
     const [urlVideo, setUrlVideo] = React.useState("");
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
-    const [tituloCurosACtivos, setTituloCursos] = React.useState('');
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
@@ -52,7 +51,6 @@ const CursoActivo: React.FC = () => {
     React.useEffect(() => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                setTituloCursos('Certificaciones');
                 setTutorVer(false);
 
                 if (getVervideoBienvenida() === '') {
@@ -68,12 +66,8 @@ const CursoActivo: React.FC = () => {
                     );
                     materiasDiplomados.forEach(item => promediarDiplomados(item));
                 }
-
                 break;
 
-            default:
-                setTituloCursos('Materias');
-                break;
         }
     }, [configPlataforma?.id_plan_estudio, cursosData]);
 
@@ -238,7 +232,7 @@ const CursoActivo: React.FC = () => {
     const Materias = (
         <>
             <Divider textAlign="center">
-                <Typography component="span" variant="body2" color="primary">{tituloCurosACtivos}</Typography>
+                <Typography component="span" variant="body2" color="primary">Cursos</Typography>
             </Divider>
             {
                 isLoading
