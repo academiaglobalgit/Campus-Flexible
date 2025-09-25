@@ -335,7 +335,7 @@ export const Actividades: React.FC = () => {
                                                             slotProps={{
                                                                 input: {
                                                                     inputProps: {
-                                                                        maxLength: 200
+                                                                        maxLength: 10000
                                                                     },
                                                                 },
                                                             }}
