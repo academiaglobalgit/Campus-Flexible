@@ -5,6 +5,8 @@ import { useAuth } from '../../hooks';
 import { AppRoutingPaths } from '@constants';
 import { apiClient } from '../../services/ApiConfiguration/httpClient';
 import { LoadingCircular } from '../molecules/LoadingCircular/LoadingCircular';
+import { removeAvatarScript } from '../../utils/Helpers';
+
 
 export const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isInitializing, isTokenExpired, isLogout, aceptoTerminos } = useAuth();
@@ -22,18 +24,6 @@ export const ProtectedRoute: React.FC = () => {
             unsubscribe();
         };
     }, [handleUnauthorized]);
-
-    const removeAvatarScript = () => {
-        const scriptName = 'script[data-name="did-agent"]';
-        const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
-        const target = document.querySelector<HTMLDivElement>('.didagent_target');
-        if (target) {
-            target.remove(); 
-        }
-        if (existingScript) {
-            document.head.removeChild(existingScript);
-        }
-    }
 
     if (isInitializing) {
         return <LoadingCircular Text="" />;

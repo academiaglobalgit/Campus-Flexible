@@ -94,7 +94,7 @@ type PreviewFile = {
 };
 
 export async function convertRemoteToPreviewFile(remote: {nombre_original: string; ruta_archivo: string; tipo_mime: string;}): Promise<PreviewFile> {
-  
+
   const response = await fetch(remote.ruta_archivo);
   const blob = await response.blob();
 
@@ -174,3 +174,15 @@ export const getSubdomainKey = () => {
 
   return `_${subdomain}`;
 };
+
+export const removeAvatarScript = () => {
+        const scriptName = 'script[data-name="did-agent"]';
+        const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
+        const target = document.querySelector<HTMLDivElement>('.didagent_target');
+        if (target) {
+            target.remove(); 
+        }
+        if (existingScript) {
+            document.head.removeChild(existingScript);
+        }
+}
