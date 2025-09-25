@@ -40,12 +40,12 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
-    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
+    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
 
    React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cagando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
             break;
         }
     }, [configPlataforma]);

@@ -14,7 +14,7 @@ import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
 import HomeDiplomado from "../../../assets/login_diplomado.png";
-import LogoLogin from "../../../assets/logo_ag_login.svg";
+import LogoLogin from "../../../assets/logo_ag_login2.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
