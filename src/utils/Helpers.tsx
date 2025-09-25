@@ -94,14 +94,8 @@ type PreviewFile = {
 };
 
 export async function convertRemoteToPreviewFile(remote: {nombre_original: string; ruta_archivo: string; tipo_mime: string;}): Promise<PreviewFile> {
-
-  const rutaNormalizada = remote.ruta_archivo.includes("actividad")
-    ? remote.ruta_archivo.replace(/^https:\/\//i, "http://")
-    : remote.ruta_archivo;
-    
-  console.log("🚀 ~ convertRemoteToPreviewFile ~ rutaNormalizada:", rutaNormalizada);
-
-  const response = await fetch(rutaNormalizada);
+  
+  const response = await fetch(remote.ruta_archivo);
   const blob = await response.blob();
 
   const file = new File([blob], remote.nombre_original, { type: remote.tipo_mime });
