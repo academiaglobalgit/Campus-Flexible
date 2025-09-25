@@ -332,6 +332,7 @@ export const Actividades: React.FC = () => {
                                                             multiline
                                                             rows={5}
                                                             fullWidth
+                                                            disabled={item.hasEntrega ===1 ? true : false}
                                                             slotProps={{
                                                                 input: {
                                                                     inputProps: {
