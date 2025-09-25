@@ -25,8 +25,9 @@ const VideotecaDetalle: React.FC = () => {
 
     const Documento = (item: ListadoVideotecaRecursos) => {
         return (
-            <Box sx={{ ...flexColumn, alignItems: 'flex-start', height: '120px', borderTop: '1px solid #AAB1B6', borderBottom: '1px solid #AAB1B6', cursor: 'pointer' }}
+            <Box sx={{ ...flexColumn,width:'500px', alignItems: 'flex-start', height: '120px', borderTop: '1px solid #AAB1B6', borderBottom: '1px solid #AAB1B6', cursor: 'pointer' }}
                 onClick={() => window.open(item.url_recurso, '_blank')}>
+
                 <TituloIcon Titulo={item.titulo} Icon={item.id_tipo_recurso === 1 ? Lectura : AudiotrackIcon} />
                 <Typography component="span" variant="body1" >
                     {item.descripcion}
