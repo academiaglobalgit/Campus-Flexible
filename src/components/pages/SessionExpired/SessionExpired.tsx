@@ -4,6 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { cleanStorage } from '../../../hooks/useLocalStorage';
 import { useAuth } from '../../../hooks';
+import { removeAvatarScript } from '../../../utils/Helpers';
 
 const SessionExpired: React.FC = () => {
     const { logout } = useAuth();
@@ -13,7 +14,8 @@ const SessionExpired: React.FC = () => {
         cleanStorage();
         navigate("/");
     };
-
+    
+    removeAvatarScript()
     return (
         <div
             style={{
