@@ -82,14 +82,18 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     };
 
     const goToPage = () => {
-        switch(config?.data?.id_plan_estudio) {
-            case 17: 
+        switch (config?.data?.id_plan_estudio) {
+            case 17:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-            break;
+                break;
             default:
                 navigate(AppRoutingPaths.PLAN_ESTUDIOS);
-            break;
+                break;
         }
+    }
+
+    const goToResetPass = () => {
+        navigate(AppRoutingPaths.PASSWORD_RESET);
     }
 
     const onCaptchaChange = () => {
@@ -106,15 +110,19 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     alignItems: 'center',
                 }}
             >
-                <Box
-                    component="img"
-                    src={config?.data.logo_url || Logo}
-                    alt="AG College Logo"
-                    sx={{
-                        mt: 4,
-                        mb: '49px'
-                    }}
-                />
+
+                <Box sx={{ width: '250px', height: '200px', mb: 1 }}>
+                    <Box
+                        component="img"
+                        src={config?.data.logo_url || Logo}
+                        alt="AG College Logo"
+                        sx={{
+                            mt: 2,
+                            width: '100%',
+                            height: '170px'
+                        }}
+                    />
+                </Box>
 
                 <Typography
                     color='primary.main'
@@ -193,6 +201,22 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                             }
                         }}
                     />
+
+                    <Typography
+                        component="p"
+                        variant="body2"
+                        color='primary.main'
+                        sx={{
+                            mt: '6px',
+                            mb: '6px',
+                            textAlign: 'center',
+                            cursor:'pointer'
+                        }}
+                        onClick={goToResetPass}
+                    >
+                        He olvidado mi contraseña
+                    </Typography>
+
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                         <ReCAPTCHA
                             sitekey={CAPTCHA}
@@ -216,12 +240,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 {
                                     accessLogin.map((access) => (
                                         <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
-                                            <IconLabel 
-                                                key={access.id} 
-                                                icon={access.icon} 
-                                                label={access.label} 
+                                            <IconLabel
+                                                key={access.id}
+                                                icon={access.icon}
+                                                label={access.label}
                                                 isDisabled={access.isDisabled}
-                                                action={access.action} 
+                                                action={access.action}
                                             />
                                         </Grid>
                                     ))
@@ -229,7 +253,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                             </Grid>
                         )
                     }
-                    
+
                 </Box>
             </Box>
 
