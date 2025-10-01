@@ -11,11 +11,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 import LogoLogin from "../../../assets/logo_ag_login2.svg";
-import Home from "../../../assets/home.png";
-import HomeDiplomado from "../../../assets/reestablecer_password.png";
+import  DiplomadoCoppel from "../../../assets/reestablecer_password.png";
+import HomeDiplomado from "../../../assets/login_diplomado.png";
 import { loadConfig } from '../../../config/configStorage';
 import { useQueryClient } from '@tanstack/react-query';
-
 
 
 const PasswordReset: React.FC = () => {
@@ -47,8 +46,13 @@ const PasswordReset: React.FC = () => {
                     setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
                     setVerLogo(false);
                     break;
+                case 19: // Diplomado
+                    setBackgroundImage(DiplomadoCoppel);
+                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                    setVerLogo(false);
+                    break;
                 default:
-                    setBackgroundImage(Home);
+                    setBackgroundImage(HomeDiplomado);
                     break;
             }
         });

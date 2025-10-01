@@ -15,16 +15,14 @@ import { resetPasswordschema, usernameSchema, type ResetPasswordschemaFormData, 
 import { forgotPassword, resetPassword } from "../../../services/AuthService";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths } from "@constants";
-
 interface RestablecerUsuarioProps {
     onNext: () => void;
 }
-
 interface IngresarCodigoProps {
     onNext: () => void;
 }
 
-export const MobileResetPass: React.FC = ({ }) => {
+export const MobileResetPass: React.FC = () => {
     const [userName, setUserName] = React.useState('');
     const { showNotification } = useNotification();
     const [config, setConfig] = React.useState<any>(null);
@@ -446,12 +444,18 @@ export const MobileResetPass: React.FC = ({ }) => {
 
             {verRegresar && <ToolbarBackTo />}
 
-            <Box
-                component="img"
-                src={config?.data.logo_url || Logo}
-                alt="Logo"
-                sx={{ mt: 4, mb: '49px', width: '200px' }}
-            />
+            <Box sx={{ width: '250px', height: '200px' }}>
+                <Box
+                    component="img"
+                    src={config?.data.logo_url || Logo}
+                    alt="AG College Logo"
+                    sx={{
+                        mt: 2,
+                        width: '100%',
+                        height: '170px'
+                    }}
+                />
+            </Box>
 
             {content}
 
