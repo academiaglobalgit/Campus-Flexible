@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginCredentials, PerfilResponse } from '@constants';
+import type { AuthForgotPassword, AuthResponse, LoginCredentials, PerfilResponse, ResetPassword } from '@constants';
 import { apiClient } from './ApiConfiguration/httpClient';
 import { LOGIN_ENDPOINTS, PERFIL_ENDPOINTS } from '../types/endpoints';
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ export const useAuthLogin = async (credentials: LoginCredentials): Promise<AuthR
 };
 
 export const useLogout = async (): Promise<void> => {
-  return await apiClient.post<void>(LOGIN_ENDPOINTS.POST_LOGOUT.path);
+    return await apiClient.post<void>(LOGIN_ENDPOINTS.POST_LOGOUT.path);
 };
 
 export const useAuthNewPassword = async (payload: { username: string; newPassword: string; token: string }): Promise<AuthResponse> => {
@@ -24,10 +24,10 @@ export const useAuthNewPassword = async (payload: { username: string; newPasswor
         `${BASE_URL}${LOGIN_ENDPOINTS.POST_NEW_PASSWORD.path}`,
         { data: encryptedPayload },
         {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // se usa el token manualmente
-        },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`, // se usa el token manualmente
+            },
         }
     );
 
@@ -41,4 +41,14 @@ export const useGetPerfilUsuario = (key: string, options?: { enabled?: boolean }
         staleTime: 1000 * 60 * 5, // 5 minutos de stale time
         ...options,
     });
+};
+
+export const forgotPassword = async (username: string): Promise<AuthForgotPassword> => {
+    const encryptedPayload = await apiClient.encryptData({ username: username });
+    return await apiClient.post<AuthForgotPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD.path, { data: encryptedPayload });
+};
+
+export const resetPassword = async (datos: { username: string, code: string, newPassword: string }): Promise<ResetPassword> => {
+    const encryptedPayload = await apiClient.encryptData(datos);
+    return await apiClient.post<ResetPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD.path, { data: encryptedPayload });
 };
