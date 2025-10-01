@@ -1,46 +1,57 @@
 import React from 'react';
-import { Button } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { Box, Button, Grid, useMediaQuery } from '@mui/material';
+import Logo from '../../../assets/logo_ag.svg';
 import { useNavigate } from 'react-router-dom';
 import { cleanStorage } from '../../../hooks/useLocalStorage';
 import { useAuth } from '../../../hooks';
 import { removeAvatarScript } from '../../../utils/Helpers';
+import { Typography } from '../../atoms/Typography/Typography';
+import theme from '../../../themes/theme';
 
 const SessionExpired: React.FC = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const handleRedirectToLogin = () => {
         logout();
         cleanStorage();
         navigate("/");
     };
-    
+
     removeAvatarScript()
     return (
-        <div
-            style={{
-                height: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#f5f5f5',
-                textAlign: 'center',
-                padding: '2rem',
-            }}
-        >
-            <LogoutIcon style={{ fontSize: 80, color: '#f44336' }} />
-            <h1>Sesión Finalizada</h1>
-            <p>Tu sesión ha expirado.</p>
+
+        <Grid size={{ md: 8 }} sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            minHeight: '100vh',
+            padding: isMobile ? '0 20px' : '0 100px'
+        }}>
+            <Box
+                component="img"
+                src={Logo}
+                alt="AG College Logo"
+                sx={{
+                    width: '100%',
+                    height: '170px'
+                }}
+            />
+            <Typography variant="h1" component="h1" sxProps={{ color: theme.palette.text.secondary }}>
+                Sesión Finalizada
+            </Typography>
             <Button
                 variant="contained"
                 color="primary"
                 onClick={handleRedirectToLogin}
-                style={{ marginTop: '1rem' }}
+                style={{ marginTop: '1rem', padding: '22px' }}
             >
                 Iniciar Sesión Nuevamente
             </Button>
-        </div>
+        </Grid>
+
     );
 };
 
