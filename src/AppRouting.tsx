@@ -20,6 +20,10 @@ export const AppRouting = createHashRouter([
         Component: Component.TerminosCondiciones
       },
       {
+        path: AppRoutingPaths.PASSWORD_RESET,
+        Component: Component.PasswordReset
+      },
+      {
         Component: ProtectedRoute,
         children: [
           {
