@@ -16,6 +16,7 @@ import Home from "../../../assets/home.png";
 import HomeDiplomado from "../../../assets/login_diplomado.png";
 import LogoLogin from "../../../assets/logo_ag_login2.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
+import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
 import { loadConfig } from '../../../config/configStorage';
@@ -49,6 +50,11 @@ const LoginPage: React.FC = () => {
               setBackgroundImage(HomeDiplomado);
               setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
               setVerLogo(true);
+            break;
+            case 19: // Diplomado
+              setBackgroundImage(DiplomadoCoppel);
+              setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+              setVerLogo(false);
             break;
             default:
               setBackgroundImage(Home);
