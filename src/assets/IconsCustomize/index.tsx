@@ -55,4 +55,4 @@ export { default as InfoSquare } from './Infosquare.svg?react';
 export { default as WhatsAppContacto } from './whatsapp_contacto.svg?react';
 export { default as CellPhone } from './Cellphone_contacto.svg?react';
 export { default as EmailContacto } from './email_contacto.svg?react';
-export { default as avatarButton } from './Avatar_icon.svg?react';
+export { default as AvatarButton } from './avatar_nuevo.svg?react';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { loadConfig } from '../../../config/configStorage';
 import Button from '../../atoms/Button/Button';
-import { avatarButton } from "@iconsCustomizeds";
+import { AvatarButton } from "@iconsCustomizeds";
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import { useMediaQuery } from '@mui/material';
 import theme from '../../../themes/theme';
@@ -41,7 +41,7 @@ const AvatarDid: React.FC = () => {
 
     React.useEffect(() => {
         if (config) {
-            if (config?.data?.id_plan_estudio === 17) { // Diplomados
+            if (config?.data?.id_plan_estudio === 17 || config?.data?.id_plan_estudio === 19) { // Diplomados
                 // Validar si ya existe el script
                 const scriptName = 'script[data-name="did-agent"]';
                 const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
@@ -106,7 +106,7 @@ const AvatarDid: React.FC = () => {
             variant="contained"
             color="primary"
         >
-            <DsSvgIcon component={avatarButton} color="white" />
+            <DsSvgIcon component={AvatarButton} color="white" />
             {!isMobile && 'Asistente Virtual'}
         </Button>
 
