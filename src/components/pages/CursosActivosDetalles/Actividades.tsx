@@ -60,6 +60,9 @@ export const Actividades: React.FC = () => {
             case 17: // Diplomados
                 setVerBotones(false)
                 break;
+            case 19: // Diplomados Coppel
+                setVerBotones(false)
+                break;
             default:
                 setVerBotones(true)
                 break;

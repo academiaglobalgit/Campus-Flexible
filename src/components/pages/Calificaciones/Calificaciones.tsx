@@ -40,12 +40,15 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
-    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
+    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true  });
 
-   React.useEffect(() => {
+    React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: false })
+            break;
+            case 19: // Diplomado
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: false })
             break;
         }
     }, [configPlataforma]);
@@ -211,7 +214,7 @@ const Calificaciones: React.FC = () => {
         <Grid container>
             <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
                 {
-                    TabsSection(periodos)
+                    calificacionesConfig.mostrarPeriodos ? TabsSection(periodos) : null
                 }
                 {
                     data &&
@@ -237,6 +240,8 @@ const Calificaciones: React.FC = () => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 return `Certificaciones`;
+            case 19: // Diplomados Coppel
+                return ``;
             default:
                 return `Periodo ${toRoman(index + 1)} - Tus materias`;
         }
@@ -249,7 +254,7 @@ const Calificaciones: React.FC = () => {
                     !betweenDevice ?
                         <>
                             {
-                                TabsSection(periodos)
+                                calificacionesConfig.mostrarPeriodos ? TabsSection(periodos) : null
                             }
                             {
                                 periodos.map((_, i) => (

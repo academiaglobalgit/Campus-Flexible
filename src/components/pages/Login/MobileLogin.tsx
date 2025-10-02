@@ -86,6 +86,9 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             case 17:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
                 break;
+            case 19:
+                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+                break;
             default:
                 navigate(AppRoutingPaths.PLAN_ESTUDIOS);
                 break;

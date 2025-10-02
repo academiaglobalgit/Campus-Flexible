@@ -7,4 +7,5 @@ export const ModulosCampusIds = {
     CONSEJERIA_ESTUDIANTIL: 6,
     CALIFICACIONES: 11,
     SERVICIOS_ESCOLARES: 12,
+    LOGROS: 13,
 }

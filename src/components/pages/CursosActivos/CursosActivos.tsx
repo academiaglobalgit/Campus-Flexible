@@ -67,6 +67,23 @@ const CursoActivo: React.FC = () => {
                     materiasDiplomados.forEach(item => promediarDiplomados(item));
                 }
                 break;
+            case 19: // Diplomados Coppel
+                setTutorVer(false);
+
+                if (getVervideoBienvenida() === '') {
+                    setUrlVideo(manual?.url ?? '');
+                    setIsOpenVideo(true);
+                }
+
+                if (cursosData?.data) {
+                    const materiasDiplomados = cursosData.data.filter(
+                        materia =>
+                            materia.estatus.toLowerCase() === 'cursando' &&
+                            Number(materia.progreso) === 100
+                    );
+                    materiasDiplomados.forEach(item => promediarDiplomados(item));
+                }
+                break;
 
         }
     }, [configPlataforma?.id_plan_estudio, cursosData]);

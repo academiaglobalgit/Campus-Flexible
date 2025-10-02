@@ -148,6 +148,9 @@ const Sidenav: React.FC = () => {
       case 17: // Diplomados
         menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
         break;
+      case 19: // Diplomados
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
+        break;
       
     }
 
@@ -285,6 +288,7 @@ const Sidenav: React.FC = () => {
             sx={{
               mt: 4,
               mb: '29px',
+              maxWidth: open ? '200px' : 'auto',
             }}
           />
           {Listado("Menú", open, "main")}

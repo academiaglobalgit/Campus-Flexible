@@ -39,6 +39,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
             items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
             break;
+        case 19: // Diplomados Coppel
+            menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
+            items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
+            break;
     }
 
     const handleNavigation = (item: any) => {
@@ -72,9 +76,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
         } else {
             setMaxWidth(isMobile ? 278 : 370);
             setMenuItemStyle({
-                border: (theme: any) => `1px solid ${theme.palette.primary[300]}`,
+                border: `1px solid ${configPlataforma?.color_primary}`,
                 borderRadius: '4px',
-                color: (theme: any) => `${theme.palette.primary[300]}`
+                color: `${configPlataforma?.color_primary}`
             });
             setMenuRootStyle({
                 sx: { left: '15px' }
@@ -116,7 +120,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 </Typography>
                 {
                     items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false} onClick={() => handleNavigation(item)} sx={[
+                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && (configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19) ? true : false} onClick={() => handleNavigation(item)} sx={[
                             { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                             !isMobile && { width: '100%', maxWidth: '232px' }
                         ]}>
@@ -126,7 +130,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                                 :
                                 <>
                                     <ListItemIcon>
-                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300] }} />
+                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: configPlataforma?.color_primary }} />
                                     </ListItemIcon>
                                     <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
                                 </>}
