@@ -75,7 +75,7 @@ export const TitleScreen = {
     APRENDE_MAS: "Aprende Más",
     TERMINOS_CONDICIONES: "Términos y Condiciones",
     MANUALES_USUARIOS: "Inducción",
-    LOGROS: "Logros",
+    LOGROS: "Mis Logros",
 }
 
 export type TitleScreen = typeof TitleScreen;

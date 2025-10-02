@@ -4,7 +4,7 @@ const coppel = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#FAED27',
+      main: '#F0D224',
       300: '#005A9B',
       light: '#005A9BCC'
     },
