@@ -5,7 +5,7 @@ import { Box, Container, FormControlLabel, FormGroup, Switch, useMediaQuery, use
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { terminosSchema, terminosSchemaDiplomados, type TerminosFormData, type TerminosFormDataDiplomados,} from "../../../schemas/terminosCondicionesSchema";import { useMutation } from "@tanstack/react-query";
+import { terminosSchema, terminosSchemaDiplomados, type TerminosFormData, type TerminosFormDataDiplomados, } from "../../../schemas/terminosCondicionesSchema"; import { useMutation } from "@tanstack/react-query";
 import { useTerminos, useGetTerminosDatos } from "../../../services/TerminosCondicionesService";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
@@ -20,37 +20,24 @@ const TerminosCondiciones: React.FC = () => {
     const { setAceptoTerminos, configPlataforma: config } = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
-    const [verTerminosCondiciones, setVerTerminosCondiciones] = React.useState<boolean>(true);
     const { showNotification } = useNotification()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isSending, setIsLoading] = React.useState(false);
     const { data: TyCDatos, isLoading } = useGetTerminosDatos();
 
-
     const schema =
-    config?.id_plan_estudio === 17 ? terminosSchemaDiplomados : terminosSchema;
+        config?.id_plan_estudio === 17 ? terminosSchemaDiplomados : terminosSchema;
 
     const {
         control,
         handleSubmit,
         formState: { isValid },
-        } = useForm<TerminosFormData | TerminosFormDataDiplomados>({
+    } = useForm<TerminosFormData | TerminosFormDataDiplomados>({
         resolver: zodResolver(schema),
         defaultValues: {
-            aceptoTerminos: false,
-            aceptoLineamientos: config?.id_plan_estudio === 17 ? undefined : false, // Solo para planes que no son diplomados
-            aceptoAvisos: false,
+            aceptoLineamientos: false,
         },
     });
-
-
-    React.useEffect(() => {
-        switch (config?.id_plan_estudio) {
-            case 17: // Diplomados
-                setVerTerminosCondiciones(false);
-                break;
-        }
-    }, [config]);
 
     const onSubmit = async () => {
         try {
@@ -93,40 +80,18 @@ const TerminosCondiciones: React.FC = () => {
             </Typography>
 
             <FormGroup sx={{ gap: isMobile ? '32px' : '20px' }}>
+
                 <Controller
                     name="aceptoTerminos"
                     control={control}
                     render={({ field }) => (
                         <FormControlLabel
                             control={<Switch {...field} checked={field.value} />}
-                            label="Acepto que he leído los Lineamientos."
+                            label="Acepto los Términos y Condiciones del Servicio y confirmo que he revisado la Política de Privacidad y demás normativas aplicables."
                         />
                     )}
                 />
 
-                {verTerminosCondiciones && (
-                    <Controller
-                        name="aceptoLineamientos"
-                        control={control}
-                        render={({ field }) => (
-                            <FormControlLabel
-                                control={<Switch {...field} checked={field.value} />}
-                                label="He leído y acepto los Términos y Condiciones de entrega de documentación física original."
-                            />
-                        )}
-                    />
-                )}
-
-                <Controller
-                    name="aceptoAvisos"
-                    control={control}
-                    render={({ field }) => (
-                        <FormControlLabel
-                            control={<Switch {...field} checked={field.value} />}
-                            label="He leído y acepto el Aviso de Privacidad."
-                        />
-                    )}
-                />
             </FormGroup>
             <Box sx={{ width: isMobile ? '100%' : '178px' }}>
                 <Button

@@ -11,7 +11,7 @@ const baseFields = {
 
 const lineamientosField = {
   aceptoLineamientos: z.boolean().refine(val => val === true, {
-    message: "Debes aceptar los lineamientos",
+    message: "Debes aceptar los Términos y Condiciones",
   }),
 };
 
