@@ -129,6 +129,10 @@ export const AppRouting = createHashRouter([
                 path: AppRoutingPaths.NOTIFICACIONES,
                 Component: Component.Notificaciones
               },
+              {
+                path: AppRoutingPaths.LOGROS,
+                Component: Component.Logros
+              },
             ]
           }
         ]

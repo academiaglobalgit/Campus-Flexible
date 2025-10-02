@@ -38,7 +38,8 @@ export const AppRoutingPaths = {
     NOTIFICACIONES: "/notificaciones",
     SESSION_EXPIRED: "/expired",
     PASSWORD_RESET: "/reset-password",
-
+    LOGROS: "/Logros",
+    
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;
@@ -73,7 +74,8 @@ export const TitleScreen = {
     MI_TRAYECTO: "Mi Trayecto",
     APRENDE_MAS: "Aprende Más",
     TERMINOS_CONDICIONES: "Términos y Condiciones",
-    MANUALES_USUARIOS: "Manuales de Usuario",
+    MANUALES_USUARIOS: "Inducción",
+    LOGROS: "Logros",
 }
 
 export type TitleScreen = typeof TitleScreen;
