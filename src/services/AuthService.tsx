@@ -50,5 +50,5 @@ export const forgotPassword = async (username: string): Promise<AuthForgotPasswo
 
 export const resetPassword = async (datos: { username: string, code: string, newPassword: string }): Promise<ResetPassword> => {
     const encryptedPayload = await apiClient.encryptData(datos);
-    return await apiClient.post<ResetPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD.path, { data: encryptedPayload });
+    return await apiClient.post<ResetPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD_CONFIRM.path, { data: encryptedPayload });
 };
