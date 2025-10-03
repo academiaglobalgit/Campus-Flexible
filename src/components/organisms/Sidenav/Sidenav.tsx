@@ -146,10 +146,10 @@ const Sidenav: React.FC = () => {
   
     switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6 && item.id !== 8 && item.id !== 9 && item.id !== 10 && item.id !== 11&& item.id !== 12 && item.id !== 14); // Remover Plan de estudios, Sala de conversacion, Consejeria
         break;
       case 19: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
+        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6 && item.id !== 8 && item.id !== 9 && item.id !== 10 && item.id !== 11&& item.id !== 12 && item.id !== 14); // Remover Plan de estudios, Sala de conversacion, Consejeria
         break;
       
     }
@@ -293,7 +293,7 @@ const Sidenav: React.FC = () => {
           />
           {Listado("Menú", open, "main")}
           <Divider sx={{ width: open ? '90%' : '50%' }} />
-          {/* {Listado("Más", open, "more")} */}
+          {Listado("Más", open, "more")}
         </Box>
 
         <Box sx={[{ height: '70px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start' }, open && { paddingLeft: '20px' }]}>

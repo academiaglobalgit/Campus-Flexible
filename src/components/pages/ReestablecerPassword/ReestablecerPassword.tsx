@@ -8,10 +8,9 @@ import {
 
 import { MobileResetPass } from './MobileResetPass';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AppRoutingPaths } from '@constants';
+
 import LogoLogin from "../../../assets/logo_ag_login2.svg";
-import  DiplomadoCoppel from "../../../assets/reestablecer_password.png";
+import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
 import HomeDiplomado from "../../../assets/login_diplomado.png";
 import { loadConfig } from '../../../config/configStorage';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,7 +18,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const PasswordReset: React.FC = () => {
     const theme = useTheme();
-    const Navigation = useNavigate();
 
     const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
     const [config, setConfig] = React.useState<any>(null);
@@ -40,22 +38,26 @@ const PasswordReset: React.FC = () => {
     React.useEffect(() => {
         loadConfig().then(cfg => {
             setConfig(cfg);
-            switch (cfg?.data?.id_plan_estudio) {
-                case 17: // Diplomado
-                    setBackgroundImage(HomeDiplomado);
-                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                    setVerLogo(false);
-                    break;
-                case 19: // Diplomado
-                    setBackgroundImage(DiplomadoCoppel);
-                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                    setVerLogo(false);
-                    break;
-                default:
-                    setBackgroundImage(HomeDiplomado);
-                    break;
-            }
         });
+    }, []);
+
+
+    React.useEffect(() => {
+        switch (config?.data?.id_plan_estudio) {
+            case 17: // Diplomado
+                setBackgroundImage(HomeDiplomado);
+                setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                setVerLogo(false);
+                break;
+            case 19: // Diplomado
+                setBackgroundImage(DiplomadoCoppel);
+                setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                setVerLogo(false);
+                break;
+            default:
+                setBackgroundImage(HomeDiplomado);
+                break;
+        }
     }, []);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -67,13 +69,13 @@ const PasswordReset: React.FC = () => {
                 isMobile
                     ?
                     <Container component="main">
-                        <MobileResetPass/>
+                        <MobileResetPass />
                     </Container>
                     :
                     <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
                         <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }} >
                             <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
-                                <MobileResetPass/>
+                                <MobileResetPass />
                             </Box>
                         </Grid>
                         {

@@ -48,7 +48,7 @@ const Calificaciones: React.FC = () => {
                 setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: false })
             break;
             case 19: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: false })
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
             break;
         }
     }, [configPlataforma]);
@@ -128,7 +128,7 @@ const Calificaciones: React.FC = () => {
                                 : 'disabled'
                         }
                     >
-                        {configPlataforma?.id_plan_estudio === 17
+                        {configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
                                 : Number(curso.calificacion) === 0
@@ -161,6 +161,14 @@ const Calificaciones: React.FC = () => {
                         <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
                     </React.Fragment>
                 );
+        
+            case 19: // Diplomados
+                return (
+                    <React.Fragment>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                    </React.Fragment>
+                );
+
             default:
                 return (
                     <React.Fragment>
@@ -169,6 +177,7 @@ const Calificaciones: React.FC = () => {
                     </React.Fragment>
                 );
         }
+        
     };
 
     const promedio = () => (
@@ -241,7 +250,7 @@ const Calificaciones: React.FC = () => {
             case 17: // Diplomados
                 return `Certificaciones`;
             case 19: // Diplomados Coppel
-                return ``;
+                return `Certificaciones`;
             default:
                 return `Periodo ${toRoman(index + 1)} - Tus materias`;
         }

@@ -24,7 +24,7 @@ const AvatarDid: React.FC = () => {
                 (button10 as HTMLButtonElement).click();
             }
 
-            if (spanDiv && spanDiv instanceof HTMLElement ) {
+            if (spanDiv && spanDiv instanceof HTMLElement) {
                 spanDiv.style.bottom = "6vh";
             }
 
@@ -41,7 +41,22 @@ const AvatarDid: React.FC = () => {
 
     React.useEffect(() => {
         if (config) {
-            if (config?.data?.id_plan_estudio === 17 || config?.data?.id_plan_estudio === 19) { // Diplomados
+            // Mapea id_plan_estudio a sus keys
+            const agentConfigs: Record<number, { clientKey: string; agentId: string }> = {
+                17: {
+                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
+                    agentId: 'v2_agt_4Yofx9b_',
+                },
+                19: {
+                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDY0NzU0ODYzMjY3MTQ3OTY1MTg6bHY0Tm80R0RncUJZemt2T3FqQ1ZR',
+                    agentId: 'v2_agt_XOcOADSD',
+                },
+            };
+
+            const planId = config?.data?.id_plan_estudio;
+            const currentAgent = agentConfigs[planId];
+
+            if (currentAgent) {
                 // Validar si ya existe el script
                 const scriptName = 'script[data-name="did-agent"]';
                 const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
@@ -51,11 +66,8 @@ const AvatarDid: React.FC = () => {
                     script.type = 'module';
                     script.src = 'https://agent.d-id.com/v2/index.js';
                     script.setAttribute('data-mode', 'fabio');
-                    script.setAttribute(
-                        'data-client-key',
-                        'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0'
-                    );
-                    script.setAttribute('data-agent-id', 'v2_agt_4Yofx9b_');
+                    script.setAttribute('data-client-key', currentAgent.clientKey);
+                    script.setAttribute('data-agent-id', currentAgent.agentId);
                     script.setAttribute('data-name', 'did-agent');
                     script.setAttribute('data-monitor', 'true');
                     script.setAttribute('data-position', 'right');
@@ -65,17 +77,15 @@ const AvatarDid: React.FC = () => {
                     // esperar a que DID inserte el div y ocultarlo
                     const observer = new MutationObserver(() => {
                         const target = document.querySelector<HTMLDivElement>('.didagent_target');
-
                         if (target) {
-                            target.style.display = "none"; // oculto desde inicio
+                            target.style.display = 'none'; // oculto desde inicio
                             observer.disconnect();
                         }
-
                     });
                     observer.observe(document.body, { childList: true, subtree: true });
                 }
 
-                // Cleanup: solo borrar si el componente desmonta y el script existe
+                // Cleanup en un return (si es dentro de useEffect)
                 return () => {
                     const script = document.querySelector<HTMLScriptElement>(scriptName);
                     if (script) {
@@ -84,6 +94,7 @@ const AvatarDid: React.FC = () => {
                 };
             }
         }
+
 
     }, [config]);
 

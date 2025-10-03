@@ -1,5 +1,5 @@
 import React from "react";
-import { TipoManualesIds, TitleScreen } from "@constants";
+import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Calendario as IconCalendario } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -7,7 +7,6 @@ import { Box, CircularProgress, Divider, Tab, Tabs, useMediaQuery } from "@mui/m
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
-import { useDocumentos } from "../../../context/DocumentosContext";
 import { LinearProgressWithLabel } from '../../molecules/LinearProgress/LinearProgress';
 import medalla from "../../../assets/medalla.jpeg";
 import Button from "../../atoms/Button/Button";
@@ -15,6 +14,7 @@ import theme from '../../../themes/theme';
 import themeCoppel from '../../../themes/coppel';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InsigniaBasica from '../../../assets/IconsCustomize/insignia_basica.svg';
+import Clasificacion from '../../../assets/clasificacion.svg';
 import { loadConfig } from "../../../config/configStorage";
 import { styled } from '@mui/material/styles';
 import TabPanel from "../../molecules/TabPanel/TabPanel";
@@ -30,11 +30,9 @@ import Paper from '@mui/material/Paper'
 const Logros: React.FC = () => {
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { documentos } = useDocumentos();
-    const { data: CalendarioDatos, isLoading } = useGetDatosModulos(ModulosCampusIds.CALENDARIO);
+    const { data: Logros, isLoading } = useGetDatosModulos(ModulosCampusIds.LOGROS);
     const [config, setConfig] = React.useState<any>(null);
     const [value, setValue] = React.useState(0);
-    console.log(documentos.find(doc => doc.id_tipo_manual === TipoManualesIds.CALENDARIO)?.url_archivo);
 
     React.useEffect(() => {
         loadConfig().then(cfg => {
@@ -42,7 +40,7 @@ const Logros: React.FC = () => {
         });
     }, []);
 
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    const StyledTableCell = styled(TableCell)(() => ({
         [`&.${tableCellClasses.head}`]: {
             color: 'black',
             fontWeight: 'bold',
@@ -52,7 +50,7 @@ const Logros: React.FC = () => {
         },
     }));
 
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    const StyledTableRow = styled(TableRow)(() => ({
         '&:nth-of-type(odd)': {
             backgroundColor: 'none',
         },
@@ -66,10 +64,10 @@ const Logros: React.FC = () => {
         return (
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px', width: '188px', height: '92px', backgroundColor: color, borderRadius: '8px', marginBottom: '32px', marginTop: '36px', boxShadow: '0 4px 8px 0 rgba(107, 187, 228, 0.40)' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                    <Typography component="h4" variant="h4" color="white"> {horas} </Typography>
-                    <Typography component="h4" variant="h4" color="white"> Horas  </Typography>
+                    <Typography component="h4" variant="h4" sxProps={{ color: '#fff' }}> {horas} </Typography>
+                    <Typography component="h4" variant="h4" sxProps={{ color: '#fff' }}> Horas  </Typography>
                 </Box>
-                <Typography component="h4" variant="h4" color="white"> {tipo} </Typography>
+                <Typography component="h4" variant="h4" sxProps={{ color: '#fff' }}> {tipo} </Typography>
             </Box>
         );
     }
@@ -160,7 +158,7 @@ const Logros: React.FC = () => {
             </Box>
     );
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
@@ -177,7 +175,7 @@ const Logros: React.FC = () => {
             ?
             <>
                 <TituloIcon Titulo={TitleScreen.LOGROS} Icon={IconCalendario} />
-                <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalendarioDatos?.data?.descripcion_html ?? '' }} />
+                <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? '' }} />
                 {Insignias}
             </>
             :
@@ -186,7 +184,7 @@ const Logros: React.FC = () => {
                     <Box sx={{ display: 'flex' }}>
                         <Box>
                             <Typography component="h2" variant="h2" sxProps={{ color: theme.palette.text.secondary }} >{TitleScreen.LOGROS} </Typography>
-                            <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalendarioDatos?.data?.descripcion_html ?? '' }} />
+                            <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? '' }} />
                             <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.text.secondary }} > Mi progreso en plataforma </Typography>
 
                             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -226,7 +224,7 @@ const Logros: React.FC = () => {
                                 </Box>
 
                                 <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4, m: 2, backgroundColor: 'black', padding: '10px 30px', borderRadius: '10px' }}>
-                                    <Typography component="span" variant="body3" color="white"> 21  </Typography>
+                                    <Typography component="span" variant="body3" sxProps={{ color: '#fff' }}> 21  </Typography>
                                     <Box
                                         component="img"
                                         src={InsigniaBasica}
@@ -267,10 +265,24 @@ const Logros: React.FC = () => {
                     </TabPanel>
                     <TabPanel value={value} index={2} dir={theme.direction}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', backgroundColor: '#F1F4F6', height: '350px', borderRadius: '20px' }}>
-                            <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4, m: 2 }}>
-                                <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.text.secondary }}> Clasificación General  </Typography><ArrowForwardIosIcon />
+                            <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 4, m: 2 }}>
+                                <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4, m: 2 }}>
+                                    <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.text.secondary }}> Clasificación General </Typography><ArrowForwardIosIcon />
+                                </Box>
+
+                                <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4, m: 2, backgroundColor: 'black', padding: '10px 30px', borderRadius: '10px' }}>
+                                    <Typography component="span" variant="body3" sxProps={{ color: '#fff' }}>No. 123</Typography>
+                                    <Box
+                                        component="img"
+                                        src={Clasificacion}
+                                        alt="medalla"
+                                        sx={{ width: '25px', height: '25px' }}
+                                    />
+                                </Box>
+
                             </Box>
-                            <TableContainer component={Paper} sx={{backgroundColor: '#F1F4F6'}}>
+
+                            <TableContainer component={Paper} sx={{ backgroundColor: '#F1F4F6' }}>
                                 <Table sx={{ minWidth: 313 }} aria-label="customized table">
                                     <TableHead>
                                         <TableRow>

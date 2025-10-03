@@ -27,6 +27,8 @@ const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabSelected = 0, t
         switch(configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 return `Certificaciones`;
+            case 19: // Diplomados
+                return `Certificaciones`;
             default:
                 return `Periodo ${toRoman(index + 1)}`;
         }

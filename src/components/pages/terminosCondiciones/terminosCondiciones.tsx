@@ -5,7 +5,8 @@ import { Box, Container, FormControlLabel, FormGroup, Switch, useMediaQuery, use
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { terminosSchema, terminosSchemaDiplomados, type TerminosFormData, type TerminosFormDataDiplomados, } from "../../../schemas/terminosCondicionesSchema"; import { useMutation } from "@tanstack/react-query";
+import { terminosSchema, type TerminosFormData } from "../../../schemas/terminosCondicionesSchema"; 
+import { useMutation } from "@tanstack/react-query";
 import { useTerminos, useGetTerminosDatos } from "../../../services/TerminosCondicionesService";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
@@ -25,15 +26,12 @@ const TerminosCondiciones: React.FC = () => {
     const [isSending, setIsLoading] = React.useState(false);
     const { data: TyCDatos, isLoading } = useGetTerminosDatos();
 
-    const schema =
-        config?.id_plan_estudio === 17 ? terminosSchemaDiplomados : terminosSchema;
-
     const {
         control,
         handleSubmit,
         formState: { isValid },
-    } = useForm<TerminosFormData | TerminosFormDataDiplomados>({
-        resolver: zodResolver(schema),
+    } = useForm<TerminosFormData>({
+        resolver: zodResolver(terminosSchema),
         defaultValues: {
             aceptoLineamientos: false,
         },
@@ -55,6 +53,9 @@ const TerminosCondiciones: React.FC = () => {
     const goToPage = () => {
         switch (config?.id_plan_estudio) {
             case 17:
+                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+                break;
+            case 19:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
                 break;
             default:
@@ -82,12 +83,12 @@ const TerminosCondiciones: React.FC = () => {
             <FormGroup sx={{ gap: isMobile ? '32px' : '20px' }}>
 
                 <Controller
-                    name="aceptoTerminos"
+                    name="aceptoLineamientos"
                     control={control}
                     render={({ field }) => (
                         <FormControlLabel
                             control={<Switch {...field} checked={field.value} />}
-                            label="Acepto los Términos y Condiciones del Servicio y confirmo que he revisado la Política de Privacidad y demás normativas aplicables."
+                            label="He leído y acepto los Términos y Condiciones del Servicio y el Aviso de Privacidad aplicables al Campus Digital."
                         />
                     )}
                 />

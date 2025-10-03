@@ -57,3 +57,4 @@ export { default as CellPhone } from './Cellphone_contacto.svg?react';
 export { default as EmailContacto } from './email_contacto.svg?react';
 export { default as AvatarButton } from './avatar_nuevo.svg?react';
 export { default as InsigniaBasica } from './insignia_basica.svg?react';
+export { default as MisLogros } from './mis_logros.svg?react';

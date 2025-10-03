@@ -133,7 +133,7 @@ export const Actividades: React.FC = () => {
 
         if (files.length === 0 && contenidoText.length === 0) {
             setIsSaving(false);
-            showNotification(`Debes comentar o subir archivos`, "warning");
+            showNotification(`Debes dejar un comentario`, "warning");
             return;
         }
 
@@ -294,7 +294,7 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                {configPlataforma?.id_plan_estudio !== 17 && <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                {configPlataforma?.id_plan_estudio !== 17 || configPlataforma?.id_plan_estudio !== 17 && <Box sx={{ display: 'flex', gap: '10px' }}>
                                                     <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
                                                     <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
                                                 </Box>}
@@ -335,11 +335,11 @@ export const Actividades: React.FC = () => {
                                                             multiline
                                                             rows={5}
                                                             fullWidth
-                                                            disabled={item.hasEntrega ===1 ? true : false}
+                                                            disabled={item.hasEntrega === 1 ? true : false}
                                                             slotProps={{
                                                                 input: {
                                                                     inputProps: {
-                                                                        maxLength: 10000
+                                                                        maxLength: 900000
                                                                     },
                                                                 },
                                                             }}
@@ -352,20 +352,22 @@ export const Actividades: React.FC = () => {
                                                 />
                                             </Box>
 
-                                            <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
-                                                <Typography component="p" variant="body1" color="primary">
-                                                    Sube tu archivo aquí
-                                                </Typography>
-                                                <Typography component="p" variant="body1">
-                                                    (pdf. xml. word, ppt)
-                                                </Typography>
+                                            <Box sx={{display:'none'}}>
+                                                <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
+                                                    <Typography component="p" variant="body1" color="primary">
+                                                        Sube tu archivo aquí
+                                                    </Typography>
+                                                    <Typography component="p" variant="body1">
+                                                        (pdf. xml. word, ppt)
+                                                    </Typography>
+                                                </Box>
+                                                <FileUploader
+                                                    files={archivosPorId[item.id_recurso] || []}
+                                                    onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
+                                                    maxFiles={3} maxFileSizeMb={3}
+                                                    canUpload={item.calificacion === null}
+                                                />
                                             </Box>
-                                            <FileUploader
-                                                files={archivosPorId[item.id_recurso] || []}
-                                                onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
-                                                maxFiles={3} maxFileSizeMb={3}
-                                                canUpload={item.calificacion === null}
-                                            />
                                             {
                                                 item.hasEntrega === 1
                                                     ?
