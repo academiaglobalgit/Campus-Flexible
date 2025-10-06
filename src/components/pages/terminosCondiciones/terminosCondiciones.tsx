@@ -53,8 +53,6 @@ const TerminosCondiciones: React.FC = () => {
     const goToPage = () => {
         switch (config?.id_plan_estudio) {
             case 17:
-                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-                break;
             case 19:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
                 break;

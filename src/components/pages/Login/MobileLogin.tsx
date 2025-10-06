@@ -84,8 +84,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const goToPage = () => {
         switch (config?.data?.id_plan_estudio) {
             case 17:
-                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-                break;
             case 19:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
                 break;

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 import { useAuth } from "../../../../hooks";
+import { isPlanInList } from "../../../../utils/Helpers";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -36,9 +37,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
 
     switch (configPlataforma?.id_plan_estudio) {
         case 17: // Diplomados
-            menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
-            items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
-            break;
         case 19: // Diplomados Coppel
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
             items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
@@ -120,7 +118,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 </Typography>
                 {
                     items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && (configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19) ? true : false} onClick={() => handleNavigation(item)} sx={[
+                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])} onClick={() => handleNavigation(item)} sx={[
                             { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                             !isMobile && { width: '100%', maxWidth: '232px' }
                         ]}>

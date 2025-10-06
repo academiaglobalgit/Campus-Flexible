@@ -143,15 +143,17 @@ const Sidenav: React.FC = () => {
   const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     const navigate = useNavigate();
     let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  
+
     switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6 && item.id !== 8 && item.id !== 9 && item.id !== 10 && item.id !== 11&& item.id !== 12 && item.id !== 14); // Remover Plan de estudios, Sala de conversacion, Consejeria
+      case 19: // Diplomados Coppel
+        menuRoutes = menuRoutes.filter(item =>
+          ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
+        );
         break;
-      case 19: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6 && item.id !== 8 && item.id !== 9 && item.id !== 10 && item.id !== 11&& item.id !== 12 && item.id !== 14); // Remover Plan de estudios, Sala de conversacion, Consejeria
+      default:
+        // otros planes
         break;
-      
     }
 
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
@@ -219,7 +221,7 @@ const Sidenav: React.FC = () => {
                           open ? { mr: 3 } : { mr: 'auto' },
                         ]}
                       >
-                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary}} />
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary }} />
                       </ListItemIcon>
                       <ListItemText
                         primary={item.text}

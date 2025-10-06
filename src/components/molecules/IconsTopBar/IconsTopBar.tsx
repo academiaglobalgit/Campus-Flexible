@@ -10,6 +10,8 @@ import { CardNotification } from "../CardNotification/CardNotification";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { useAuth } from "../../../hooks";
 import { ManualesUsuarioDialog } from "../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
+import { isPlanInList } from "../../../utils/Helpers";
+
 
 export const IconsTopBar: React.FC = () => {
     const theme = useTheme();
@@ -29,7 +31,7 @@ export const IconsTopBar: React.FC = () => {
     );
 
     const menuInformacion = React.useMemo(() => {
-        if (configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19) {
+        if (isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])) {
             return sortedMenuInformacion.map((item) => {
                 if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
                     return { ...item, visible: 0 };
@@ -243,7 +245,7 @@ export const IconsTopBar: React.FC = () => {
                         return (
                             <MenuItem
                                 key={index}
-                                disabled={item.text === 'Inducción' && (configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19) ? true : false}
+                                disabled={item.text === 'Inducción' && (isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])) ? true : false}
                                 onClick={() => handleNavigation(item)}
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },

@@ -11,7 +11,7 @@ import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexRows, innerHTMLStyle } from '@styles';
 import { useNavigate } from 'react-router-dom';
-import { toRoman } from '../../../utils/Helpers';
+import { isPlanInList, toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
@@ -49,6 +49,7 @@ const Calificaciones: React.FC = () => {
             break;
             case 19: // Diplomado
                 setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
+                console.log("🚀 ~ Calificaciones ~ isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]):", isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]))
             break;
         }
     }, [configPlataforma]);
@@ -128,7 +129,7 @@ const Calificaciones: React.FC = () => {
                                 : 'disabled'
                         }
                     >
-                        {configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19
+                        {isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
                                 : Number(curso.calificacion) === 0
@@ -155,20 +156,13 @@ const Calificaciones: React.FC = () => {
 
     const botonesCalificacion = (curso: CalificacionCurso) => {
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
+            case 17:
+            case 19: // Diplomados UMI, Coppel
                 return (
                     <React.Fragment>
                         <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
                     </React.Fragment>
                 );
-        
-            case 19: // Diplomados
-                return (
-                    <React.Fragment>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
-                    </React.Fragment>
-                );
-
             default:
                 return (
                     <React.Fragment>
@@ -247,8 +241,7 @@ const Calificaciones: React.FC = () => {
 
     const getTituloIconAccordion = (index: number) => {
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
-                return `Certificaciones`;
+            case 17: // Diplomados UMI
             case 19: // Diplomados Coppel
                 return `Certificaciones`;
             default:

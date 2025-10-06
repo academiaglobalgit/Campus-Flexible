@@ -6,7 +6,7 @@ import { accordionStyle, flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { useParams } from "react-router-dom";
 import { updateActividad, useGetActividades } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { convertRemoteToPreviewFile } from "../../../utils/Helpers";
+import { convertRemoteToPreviewFile, isPlanInList } from "../../../utils/Helpers";
 import { Typography } from "../../atoms/Typography/Typography";
 import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -57,10 +57,8 @@ export const Actividades: React.FC = () => {
     React.useEffect(() => {
 
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
-                setVerBotones(false)
-                break;
-            case 19: // Diplomados Coppel
+            case 17:
+            case 19: // Diplomados UMI, Coppel
                 setVerBotones(false)
                 break;
             default:
@@ -223,6 +221,60 @@ export const Actividades: React.FC = () => {
         }
     }
 
+    const Files = (item: any) => {
+        return (
+            <>
+                <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
+                    <Typography component="p" variant="body1" color="primary">
+                        Sube tu archivo aquí
+                    </Typography>
+                    <Typography component="p" variant="body1">
+                        (pdf. xml. word, ppt)
+                    </Typography>
+                </Box>
+                <FileUploader
+                    files={archivosPorId[item.id_recurso] || []}
+                    onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
+                    maxFiles={3} maxFileSizeMb={3}
+                    canUpload={item.calificacion === null}
+                />
+                {
+                    item.hasEntrega === 1
+                        ?
+                        item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
+                            <>
+                                <Button
+                                    fullWidth
+                                    onClick={() => handleEditActivity(item.id_recurso)}
+                                    isLoading={isSaving}
+                                >
+                                    Modificar
+                                </Button>
+                            </>
+                            <>
+                                <Button
+                                    fullWidth
+                                    onClick={() => handleCancel(item.id_recurso)}
+                                    variant="outlined"
+                                >
+                                    Cancelar
+                                </Button>
+                            </>
+                        </Box>
+                        :
+                        item.calificacion === null && <Button
+                            fullWidth
+                            onClick={() => handleSaveActivity(item.id_recurso)}
+                            sxProps={{ mt: 2 }}
+                            isLoading={isSaving}
+                        >
+                            Finalizar Actividad
+                        </Button>
+                }
+            </>
+        );
+    }
+
     const ButtonSection = (isDesktop: boolean = true) => (
         <Box
             sx={
@@ -294,7 +346,8 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                {configPlataforma?.id_plan_estudio !== 17 || configPlataforma?.id_plan_estudio !== 17 && <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                {!isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]) && 
+                                                <Box sx={{ display: 'flex', gap: '10px' }}>
                                                     <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
                                                     <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
                                                 </Box>}
@@ -352,55 +405,7 @@ export const Actividades: React.FC = () => {
                                                 />
                                             </Box>
 
-                                            <Box sx={{display:'none'}}>
-                                                <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
-                                                    <Typography component="p" variant="body1" color="primary">
-                                                        Sube tu archivo aquí
-                                                    </Typography>
-                                                    <Typography component="p" variant="body1">
-                                                        (pdf. xml. word, ppt)
-                                                    </Typography>
-                                                </Box>
-                                                <FileUploader
-                                                    files={archivosPorId[item.id_recurso] || []}
-                                                    onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
-                                                    maxFiles={3} maxFileSizeMb={3}
-                                                    canUpload={item.calificacion === null}
-                                                />
-                                            </Box>
-                                            {
-                                                item.hasEntrega === 1
-                                                    ?
-                                                    item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleEditActivity(item.id_recurso)}
-                                                                isLoading={isSaving}
-                                                            >
-                                                                Modificar
-                                                            </Button>
-                                                        </>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleCancel(item.id_recurso)}
-                                                                variant="outlined"
-                                                            >
-                                                                Cancelar
-                                                            </Button>
-                                                        </>
-                                                    </Box>
-                                                    :
-                                                    item.calificacion === null && <Button
-                                                        fullWidth
-                                                        onClick={() => handleSaveActivity(item.id_recurso)}
-                                                        sxProps={{ mt: 2 }}
-                                                        isLoading={isSaving}
-                                                    >
-                                                        Finalizar Actividad
-                                                    </Button>
-                                            }
+                                            { !isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]) && <Files item={item} /> }
 
                                         </Box>
                                     </Box>

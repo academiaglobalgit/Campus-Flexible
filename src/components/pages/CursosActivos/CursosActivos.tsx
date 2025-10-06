@@ -24,6 +24,7 @@ import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDial
 import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useGetManuales } from "../../../services/ManualesService";
+import { isPlanInList } from "../../../utils/Helpers";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
@@ -134,7 +135,7 @@ const CursoActivo: React.FC = () => {
     }
 
     const promediarDiplomados = (item: ICursoActivo) => {
-        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && (configPlataforma?.id_plan_estudio === 17 || configPlataforma?.id_plan_estudio === 19)) {
+        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && (isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]))) {
             createMutation.mutate(item.id_curso);
         }
     }

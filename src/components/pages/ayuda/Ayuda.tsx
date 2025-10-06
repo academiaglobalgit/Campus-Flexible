@@ -52,10 +52,8 @@ const Ayuda: React.FC = () => {
 
         React.useEffect(() => {
             switch (configPlataforma?.id_plan_estudio) {
-                case 17: // Diplomados
-                    setArrayTab(defaultTabs.filter(item => item !== "Contacto con docente"));
-                    break;
-                case 19: // Diplomados
+                case 17:
+                case 19: // Diplomados UMI, Coppel
                     setArrayTab(defaultTabs.filter(item => item !== "Contacto con docente"));
                     break;
                 default:
