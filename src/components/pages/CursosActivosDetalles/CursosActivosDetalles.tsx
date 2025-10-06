@@ -43,6 +43,13 @@ const CursosActivosDetalles: React.FC = () => {
                 setContenidoDescargable(false);
                 
                 break;
+            case 19: // Diplomados
+                CursosTabs = CursosTabs.filter(item => item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
+                
+                setTabs(CursosTabs);
+                setContenidoDescargable(false);
+                
+                break;
         }
     }, [configPlataforma]);
 

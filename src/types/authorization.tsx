@@ -24,3 +24,11 @@ export interface AuthResponse {
   programa: string;
   acepto_terminos: boolean;
 }
+export interface AuthForgotPassword {
+  success: boolean;
+  message: string;
+}
+export interface ResetPassword {
+  success: boolean;
+  message: string;
+}

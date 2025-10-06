@@ -2,6 +2,8 @@ export const LOGIN_ENDPOINTS = {
     POST_AUTH: { path: '/auth' },
     POST_LOGIN: { path: '/auth/login' },
     POST_LOGOUT: { path: '/auth/logout' },
+    POST_FORGOT_PASSWORD: { path: '/auth/forgot-password' },
+    POST_FORGOT_PASSWORD_CONFIRM: { path: '/auth/forgot-password/confirm' },
     POST_NEW_PASSWORD: { path: '/auth/complete-new-password' },
     GET_PLAN_ESTUDIO: { path: '/plan-estudios/perfil-programa', key: 'plan-estudio-url' },
 }

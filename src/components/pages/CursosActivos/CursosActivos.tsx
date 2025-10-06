@@ -24,6 +24,7 @@ import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDial
 import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useGetManuales } from "../../../services/ManualesService";
+import { isPlanInList } from "../../../utils/Helpers";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
@@ -31,19 +32,21 @@ const CursoActivo: React.FC = () => {
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
-    const { data: manual } = useGetManuales('Video de Bienvenida','alumnos', configPlataforma?.id_plan_estudio);
+    const { data: manual } = useGetManuales('Video de Bienvenida', 'alumnos', configPlataforma?.id_plan_estudio);
     const [openEncuesta, setOpenEncuesta] = React.useState(false);
     const [isDisabled, setIsDisabled] = React.useState(false);
     const [isSending, setIsSending] = React.useState(false);
     const [verTutor, setTutorVer] = React.useState(true);
     const [idAsignacion, setIdAsignacion] = React.useState(0);
     const [urlVideo, setUrlVideo] = React.useState("");
+    const [tipoVideos, setTipoVideo] = React.useState(1);
     const [isOpenVideo, setIsOpenVideo] = React.useState(false);
+    const [refreshPromediar, setRefreshPromediar] = React.useState(true);
     const [mensajeDialog, setMEnsajeDialog] = React.useState('');
     const [isOpenInscribirmeDialog, setIsOpenInscribirmeDialog] = React.useState(false);
     const [cursoId, setCursoId] = React.useState(0);
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
-    const [refreshEncuestas, setRefreshEncuestas] = React.useState(false);
+    const [refreshEncuestas, setRefreshEncuestas] = React.useState(true);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
@@ -55,21 +58,39 @@ const CursoActivo: React.FC = () => {
 
                 if (getVervideoBienvenida() === '') {
                     setUrlVideo(manual?.url ?? '');
+                    setTipoVideo(4)
                     setIsOpenVideo(true);
                 }
 
-                if (cursosData?.data) {
-                    const materiasDiplomados = cursosData.data.filter(
-                        materia =>
-                            materia.estatus.toLowerCase() === 'cursando' &&
-                            Number(materia.progreso) === 100
-                    );
-                    materiasDiplomados.forEach(item => promediarDiplomados(item));
+                break;
+            case 19: // Diplomados Coppel
+                setTutorVer(false);
+
+                if (getVervideoBienvenida() === '') {
+                    setUrlVideo(manual?.url ?? '');
+                    setTipoVideo(4)
+                    setIsOpenVideo(true);
                 }
+
                 break;
 
         }
     }, [configPlataforma?.id_plan_estudio, cursosData]);
+
+    useEffect(() => {
+        if (cursosData?.data) {
+            const materiasDiplomados = cursosData.data.filter(
+                materia =>
+                    materia.estatus.toLowerCase() === 'cursando' &&
+                    Number(materia.progreso) === 100
+            );
+
+            if (materiasDiplomados.length > 0) {
+                materiasDiplomados.forEach(item => promediarDiplomados(item));
+            }
+        }
+
+    }, [cursosData, refreshPromediar]);
 
     useEffect(() => {
         refetch()
@@ -83,9 +104,9 @@ const CursoActivo: React.FC = () => {
             })
             .catch(error => {
                 console.error("Error fetching encuestas:", error);
-            });
+            })
 
-    }, [cursosData, refreshEncuestas]);
+    }, [refreshEncuestas]);
 
     const goToDetalle = (curso: number) => {
         navigate(
@@ -113,10 +134,10 @@ const CursoActivo: React.FC = () => {
         }
     }
 
-    const promediarDiplomados = (item: ICursoActivo) =>{
-        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && configPlataforma?.id_plan_estudio === 17) {
+    const promediarDiplomados = (item: ICursoActivo) => {
+        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && (isPlanInList(configPlataforma?.id_plan_estudio))) {
             createMutation.mutate(item.id_curso);
-        }   
+        }
     }
 
     const handleConfirmar = async (isConfirmar: boolean) => {
@@ -140,12 +161,14 @@ const CursoActivo: React.FC = () => {
 
             setIsSending(false);
             setIsDisabled(false);
-            setRefreshEncuestas(prev => !prev);
 
             if (response.success && response.data.estado.toLowerCase() === "finalizado" && response.data.calificacion_final >= 0 && configPlataforma?.id_plan_estudio === 1) {
                 setIsOpenInscribirmeDialog(true);
                 setMEnsajeDialog("Has logrado ciertas competencias")
             }
+
+            setRefreshEncuestas(prev => !prev);
+
         },
         onError: (error) => {
             setIsSending(false);
@@ -267,7 +290,8 @@ const CursoActivo: React.FC = () => {
                     data={{ encuesta: encuestaData[0], idAsignacion }}
                     onEncuestaEnviada={(enviada) => {
                         if (enviada) {
-                            setRefreshEncuestas(prev => !prev);
+                            setOpenEncuesta(false);
+                            setRefreshPromediar(prev => !prev);
                         }
                     }}
                 />
@@ -276,7 +300,7 @@ const CursoActivo: React.FC = () => {
                 <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             }
             {
-                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} />
+                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
             }
 
         </>

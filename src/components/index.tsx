@@ -32,3 +32,5 @@ export { default as VideotecaDetalle } from './pages/VideotecaDetalle/VideotecaD
 export { default as ConsejeriaInfo } from './pages/Consejeria/InfoConsejeria';
 export { default as Notificaciones } from './pages/Notificaciones/Notificaciones';
 export { default as SessionExpired } from './pages/SessionExpired/SessionExpired';
+export { default as PasswordReset } from './pages/ReestablecerPassword/ReestablecerPassword';
+export { default as Logros } from './pages/Logros/Logros';

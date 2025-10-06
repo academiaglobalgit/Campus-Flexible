@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import DsSvgIcon from "../../../atoms/Icon/Icon";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 import { useAuth } from "../../../../hooks";
+import { isPlanInList } from "../../../../utils/Helpers";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -36,6 +37,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
 
     switch (configPlataforma?.id_plan_estudio) {
         case 17: // Diplomados
+        case 19: // Diplomados Coppel
             menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
             items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
             break;
@@ -72,9 +74,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
         } else {
             setMaxWidth(isMobile ? 278 : 370);
             setMenuItemStyle({
-                border: (theme: any) => `1px solid ${theme.palette.primary[300]}`,
+                border: `1px solid ${configPlataforma?.color_primary}`,
                 borderRadius: '4px',
-                color: (theme: any) => `${theme.palette.primary[300]}`
+                color: `${configPlataforma?.color_primary}`
             });
             setMenuRootStyle({
                 sx: { left: '15px' }
@@ -116,7 +118,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 </Typography>
                 {
                     items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} disabled={item.text === 'Manuales de Usuario' && configPlataforma?.id_plan_estudio === 17 ? true : false} onClick={() => handleNavigation(item)} sx={[
+                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && isPlanInList(configPlataforma?.id_plan_estudio)} onClick={() => handleNavigation(item)} sx={[
                             { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                             !isMobile && { width: '100%', maxWidth: '232px' }
                         ]}>
@@ -126,7 +128,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                                 :
                                 <>
                                     <ListItemIcon>
-                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: (theme: any) => theme.palette.primary[300] }} />
+                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: configPlataforma?.color_primary }} />
                                     </ListItemIcon>
                                     <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
                                 </>}

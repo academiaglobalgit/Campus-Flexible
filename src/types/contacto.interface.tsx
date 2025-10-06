@@ -30,6 +30,11 @@ export interface ContactoInterno {
     valor: number;
 }
 
+export type TelefonoData = {
+    numero: string;
+    tipo: string;
+};
+
 export type ContactoData = {
     label: string;
     imgSrc: string;
@@ -37,7 +42,7 @@ export type ContactoData = {
     data: {
         description: string | null;
         horarios: string | null;
-        telefonos: string | null;
+        telefonos: TelefonoData[];
         email: string | null;
         tipo: string | null;
     };

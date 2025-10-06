@@ -22,7 +22,7 @@ const ContactoInterno: React.FC = () => {
     const [value, setValue] = React.useState(1);
 
     const [config, setConfig] = React.useState<any>(null);
-          
+
     React.useEffect(() => {
         loadConfig().then(cfg => {
             setConfig(cfg);
@@ -54,8 +54,6 @@ const ContactoInterno: React.FC = () => {
             />
         );
     };
-
-    console.log(interno);
 
     const Contents = () => (
 
@@ -150,27 +148,19 @@ const ContactoInterno: React.FC = () => {
                         </Typography>
                         <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
                     </Box>
-                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: "5px" }}>
+                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
                         <Typography component="span" variant="body2" color="primary">
                             Teléfonos:
                         </Typography>
 
-                        {section.data.tipo === "WhatsApp" ? (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <WhatsAppContacto />
+                        {section.data.telefonos.map((tel: { numero: string; tipo: string }, index: number) => (
+                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                {tel.tipo === 'WhatsApp' ? <WhatsAppContacto /> : <CellPhone />}
                                 <Typography component="p" variant="body2">
-                                    {formatWithIMask(section.data.telefonos, "phone")}
+                                    {formatWithIMask(tel.numero, 'phone')}
                                 </Typography>
                             </Box>
-                        ) : (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <CellPhone />
-                                <Typography component="p" variant="body2">
-                                    {formatWithIMask(section.data.telefonos, "phone")}
-                                </Typography>
-                            </Box>
-                        )}
-
+                        ))}
                     </Box>
                     <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
                         <Typography component="span" variant="body2" color="primary">

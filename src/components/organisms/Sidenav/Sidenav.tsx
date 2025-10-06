@@ -143,12 +143,17 @@ const Sidenav: React.FC = () => {
   const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
     const navigate = useNavigate();
     let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  
+
     switch (config?.data?.id_plan_estudio) {
       case 17: // Diplomados
-        menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6); // Remover Plan de estudios, Sala de conversacion, Consejeria
+      case 19: // Diplomados Coppel
+        menuRoutes = menuRoutes.filter(item =>
+          ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
+        );
         break;
-      
+      default:
+        // otros planes
+        break;
     }
 
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
@@ -216,7 +221,7 @@ const Sidenav: React.FC = () => {
                           open ? { mr: 3 } : { mr: 'auto' },
                         ]}
                       >
-                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary}} />
+                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary }} />
                       </ListItemIcon>
                       <ListItemText
                         primary={item.text}
@@ -285,11 +290,12 @@ const Sidenav: React.FC = () => {
             sx={{
               mt: 4,
               mb: '29px',
+              maxWidth: open ? '200px' : 'auto',
             }}
           />
           {Listado("Menú", open, "main")}
           <Divider sx={{ width: open ? '90%' : '50%' }} />
-          {/* {Listado("Más", open, "more")} */}
+          {Listado("Más", open, "more")}
         </Box>
 
         <Box sx={[{ height: '70px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start' }, open && { paddingLeft: '20px' }]}>

@@ -21,6 +21,7 @@ const Ayuda: React.FC = () => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const { configPlataforma } = useAuth();
     const { data: Tickets, isLoading } = useGetAyudaTickets();
+    const [verTutorias, setVerTutorias] = React.useState<boolean>(false);
 
     const handleScroll = () => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -51,11 +52,13 @@ const Ayuda: React.FC = () => {
 
         React.useEffect(() => {
             switch (configPlataforma?.id_plan_estudio) {
-                case 17: // Diplomados
+                case 17:
+                case 19: // Diplomados UMI, Coppel
                     setArrayTab(defaultTabs.filter(item => item !== "Contacto con docente"));
                     break;
                 default:
                     setArrayTab(defaultTabs);
+                    setVerTutorias(true)
                     break;
             }
         }, [configPlataforma?.id_plan_estudio]);
@@ -173,10 +176,12 @@ const Ayuda: React.FC = () => {
                 </Typography>
                 {SeguimientoButton}
                 <TabsSection />
-                <Box sx={{ width: '100%', paddingTop: '64px', display: 'flex', flexDirection: 'column', alignItems: 'center' }} ref={sectionRef}>
-                    <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4" />
-                    <TabsStatusSection />
-                </Box>
+                {verTutorias &&
+                    <Box sx={{ width: '100%', paddingTop: '64px', display: 'flex', flexDirection: 'column', alignItems: 'center' }} ref={sectionRef}>
+                        <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4" />
+                        <TabsStatusSection />
+                    </Box>
+                }
             </Box>
             :
             <ContainerDesktop title="">
@@ -189,10 +194,11 @@ const Ayuda: React.FC = () => {
                         <TabsSection />
                     </Grid>
                     <Grid size={{ md: 6 }}>
-                        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 50px 30px', borderRadius: '20px', backgroundColor: '#F8F8F9' }}>
-                            <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4" />
-                            <TabsStatusSection />
-                        </Box>
+                        {verTutorias &&
+                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 50px 30px', borderRadius: '20px', backgroundColor: '#F8F8F9' }}>
+                                <TituloIcon Titulo="Estatus de tu solicitud" fontSize="h4" />
+                                <TabsStatusSection />
+                            </Box>}
                     </Grid>
                 </Grid>
             </ContainerDesktop>

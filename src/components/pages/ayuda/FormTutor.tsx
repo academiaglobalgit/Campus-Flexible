@@ -49,7 +49,7 @@ export const FormTutor: React.FC = () => {
     const createMutation = useMutation({
         mutationFn: useCreateAyudaTutor,
         onSuccess: () => {
-            showNotification(`Hemos recibido tu solicitud. Nuestro equipo te responderá en un plazo máximo de 24 hrs.`,"success");
+            showNotification(`Hemos recibido tu solicitud. Nuestro equipo te responderá via correo electrónico en un plazo de 24 hrs.`,"success");
             // Resetear el formulario
             reset();
             setLoading(false);

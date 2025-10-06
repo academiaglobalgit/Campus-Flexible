@@ -1,0 +1,98 @@
+import {
+    Box,
+    Container,
+    Grid,
+    useMediaQuery,
+    useTheme
+} from '@mui/material';
+
+import { MobileResetPass } from './MobileResetPass';
+import React from 'react';
+
+import LogoLogin from "../../../assets/logo_ag_login2.svg";
+import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
+import HomeDiplomado from "../../../assets/login_diplomado.png";
+import { loadConfig } from '../../../config/configStorage';
+
+const PasswordReset: React.FC = () => {
+    const theme = useTheme();
+
+    const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
+    const [verLogo, setVerLogo] = React.useState<boolean>(false);
+
+    const [imgSettings, setImgSettings] = React.useState<any>({
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+    });
+
+
+    React.useEffect(() => {
+        loadConfig().then(cfg => {
+            switch (cfg?.data?.id_plan_estudio) {
+                case 17: // Diplomado
+                    setBackgroundImage(HomeDiplomado);
+                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                    setVerLogo(false);
+                    break;
+                case 19: // Diplomado
+                    setBackgroundImage(DiplomadoCoppel);
+                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                    setVerLogo(false);
+                    break;
+                default:
+                    setBackgroundImage(HomeDiplomado);
+                    break;
+            }
+        });
+    }, []);
+
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
+    return (
+        <>
+            {
+                isMobile
+                    ?
+                    <Container component="main">
+                        <MobileResetPass />
+                    </Container>
+                    :
+                    <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
+                        <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }} >
+                            <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
+                                <MobileResetPass />
+                            </Box>
+                        </Grid>
+                        {
+                            !showImage &&
+                            <Grid size={{ md: 8 }} >
+                                <Box
+                                    sx={{
+                                        ...imgSettings,
+                                        backgroundImage: `url(${backgroundImage})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        position: 'relative',
+                                    }}
+                                >
+                                    {verLogo && (
+                                        <Box
+                                            component="img"
+                                            src={LogoLogin}
+                                            alt="Login"
+                                            sx={{ position: 'absolute', bottom: 47, left: 43, width: '294px' }}
+                                        />
+                                    )}
+                                </Box>
+
+                            </Grid>
+                        }
+                    </Grid>
+            }
+        </>
+    );
+};
+
+export default PasswordReset;

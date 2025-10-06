@@ -11,7 +11,7 @@ import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexRows, innerHTMLStyle } from '@styles';
 import { useNavigate } from 'react-router-dom';
-import { toRoman } from '../../../utils/Helpers';
+import { isPlanInList, toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
@@ -40,12 +40,13 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
-    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true });
+    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true  });
 
-   React.useEffect(() => {
+    React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false})
+            case 17: // Diplomados UMI
+            case 19: // Diplomados Coppel
+                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
             break;
         }
     }, [configPlataforma]);
@@ -125,7 +126,7 @@ const Calificaciones: React.FC = () => {
                                 : 'disabled'
                         }
                     >
-                        {configPlataforma?.id_plan_estudio === 17
+                        {isPlanInList(configPlataforma?.id_plan_estudio)
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
                                 : Number(curso.calificacion) === 0
@@ -152,7 +153,8 @@ const Calificaciones: React.FC = () => {
 
     const botonesCalificacion = (curso: CalificacionCurso) => {
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
+            case 17:
+            case 19: // Diplomados UMI, Coppel
                 return (
                     <React.Fragment>
                         <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
@@ -166,6 +168,7 @@ const Calificaciones: React.FC = () => {
                     </React.Fragment>
                 );
         }
+        
     };
 
     const promedio = () => (
@@ -211,7 +214,7 @@ const Calificaciones: React.FC = () => {
         <Grid container>
             <Grid size={{ md: 12 }} sx={{ width: '100%' }}>
                 {
-                    TabsSection(periodos)
+                    calificacionesConfig.mostrarPeriodos ? TabsSection(periodos) : null
                 }
                 {
                     data &&
@@ -235,7 +238,8 @@ const Calificaciones: React.FC = () => {
 
     const getTituloIconAccordion = (index: number) => {
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
+            case 17: // Diplomados UMI
+            case 19: // Diplomados Coppel
                 return `Certificaciones`;
             default:
                 return `Periodo ${toRoman(index + 1)} - Tus materias`;
@@ -249,7 +253,7 @@ const Calificaciones: React.FC = () => {
                     !betweenDevice ?
                         <>
                             {
-                                TabsSection(periodos)
+                                calificacionesConfig.mostrarPeriodos ? TabsSection(periodos) : null
                             }
                             {
                                 periodos.map((_, i) => (
