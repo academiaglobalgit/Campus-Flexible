@@ -281,6 +281,16 @@ export const MobileResetPass: React.FC = () => {
                     de spam y promociones.
                 </Typography>
 
+                Tu nueva contraseña debe cumplir con los siguientes puntos de seguridad:
+                <ul>
+                    <li>1.Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
+                    <li>2.Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
+                    <li>1 número (por ejemplo, 0-9)</li>
+                    <li>1 carácter especial (por ejemplo, !, @, #, $, %, ^, &, *)</li>
+                    <li>1 letra mayúscula (por ejemplo, A-Z)</li>
+                    <li> 1 letra minúscula (por ejemplo, a-z)</li>
+                </ul>
+
                 <Box
                     component="form"
                     sx={{
@@ -444,18 +454,17 @@ export const MobileResetPass: React.FC = () => {
 
             {verRegresar && <ToolbarBackTo />}
 
-            <Box sx={{ width: '250px', height: '200px' }}>
-                <Box
-                    component="img"
-                    src={config?.data.logo_url || Logo}
-                    alt="AG College Logo"
-                    sx={{
-                        mt: 2,
-                        width: '100%',
-                        height: '170px'
-                    }}
-                />
-            </Box>
+
+            <Box
+                component="img"
+                src={config?.data.logo_url || Logo}
+                alt="AG College Logo"
+                sx={{
+                    mt: 2,
+                    width: '100%',
+                    height: '170px'
+                }}
+            />
 
             {content}
 
