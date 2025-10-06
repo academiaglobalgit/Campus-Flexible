@@ -186,9 +186,8 @@ export const removeAvatarScript = () => {
             document.head.removeChild(existingScript);
         }
 }
-export const isPlanInList = (
-  idPlanEstudio: number | undefined,
-  planes: number[]
-): boolean => {
-  return planes.includes(idPlanEstudio ?? -1);
+
+export const isPlanInList = (idPlanEstudio?: number): boolean => {
+  const planesDiplomados = [17, 19];
+  return planesDiplomados.includes(idPlanEstudio ?? -1);
 };
