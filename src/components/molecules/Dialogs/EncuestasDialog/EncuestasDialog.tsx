@@ -1,11 +1,10 @@
-import { Box, Divider, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, TextField, Typography, useMediaQuery, useTheme, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import type { EncuestasDatosResponse, Preguntas } from "../../../../types/Encuestas.interface";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNotification } from "../../../../providers/NotificationProvider";
-import { CheckBoxLabel } from "../../../atoms/Checkbox/Checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
 import { SaveEncuesta } from "../../../../services/CursosActivosService";
@@ -33,113 +32,24 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const [isDisabled, setIsDisabled] = React.useState(true);
 	const [isSending, setIsSending] = React.useState(false);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
-	const [selectedByQuestion, setSelectedByQuestion] = useState<number[]>([]);
 	const totalPreguntas = data?.encuesta?.preguntas.length;
-
-	let totalRespuestas: any = []
 
 	useEffect(() => {
 		setOpen(isOpen ?? false);
 	}, [isOpen]);
 
-	function upsertRespuesta(
-		prev: Respuesta[],
-		nueva: Respuesta
-	): Respuesta[] {
-		const i = prev.findIndex(r => r.id_pregunta === nueva.id_pregunta);
 
-		// solo exista uno de los campos (id_opcion O respuesta_texto)
-		const limpia =
-			'id_opcion' in nueva
-				? { id_pregunta: nueva.id_pregunta, id_opcion: nueva.id_opcion } as Respuesta
-				: { id_pregunta: nueva.id_pregunta, respuesta_texto: nueva.respuesta_texto } as Respuesta;
 
-		if (i === -1) return [...prev, limpia];
-		const next = [...prev];
-		next[i] = limpia;
-		return next;
-	}
-
-	// useEffect(() => {
-	// 	validarEncuesta(respuestas);
-	// }, [respuestas]);
-
-	const handleSelect = (id_pregunta: number, id_opcion: number) => {
-		console.log("🚀 ~ handleSelect ~ id_opcion:", id_opcion)
-		console.log("🚀 ~ handleSelect ~ id_pregunta:", id_pregunta)
-
-		const preguntasSeleccionadas = totalRespuestas.filter((item: any) => (item.id_pregunta !== id_pregunta ))
-		console.log("🚀 ~ handleSelect ~ preguntasSeleccionadas:", preguntasSeleccionadas)
-
-		totalRespuestas = [...preguntasSeleccionadas,{ id_pregunta, id_opcion }]
-
-		const opciones = selectedByQuestion.filter((item: any) => (item !== id_opcion ))
-
-		setSelectedByQuestion([
-			...opciones,
-			id_opcion
-		])
-		
-		//totalRespuestas.push({ id_pregunta, id_opcion })
-		console.log("🚀 ~ handleSelect ~ totalRespuestas:", totalRespuestas)
-		
-		// if (totalRespuestas.length > 0) {
-		// } else {
-		// 	const preguntasSeleccionadas = totalRespuestas.filter((item: any) => (item.id_pregunta !== id_pregunta ))
-		// }
-
-		/* 
-
-		const econtro = totalRespuestas.find((item: any) => (item.id_pregunta === id_pregunta && item.id_opcion === id_opcion))
-
-		if (!econtro) {
-			totalRespuestas.push({ id_pregunta, id_opcion })
-		} */
-		//console.log("🚀 ~ handleSelect ~ totalRespuestas:", totalRespuestas)
-		/*setSelectedByQuestion(prev => ({
-			...prev,
-			[id_pregunta]: prev[id_pregunta] === id_opcion ? null : id_opcion,
-		}));
-
-		setRespuestas(prev => {
-			const yaSeleccionado = selectedByQuestion[id_pregunta] === id_opcion;
-			if (yaSeleccionado) {
-				return prev.filter(r => r.id_pregunta !== id_pregunta);
-			}
-			return upsertRespuesta(prev, { id_pregunta, id_opcion });
-		});
-
-		const yaSeleccionado = selectedByQuestion[id_pregunta] === id_opcion;
-		if (!yaSeleccionado) {
-			totalRespuestas.push(id_pregunta)
-		}
-		validarEncuesta(totalRespuestas) */
-		//totalPreguntas (prev, { id_pregunta, id_opcion });
-	};
-
-	const setValorPregunta = (id_pregunta: number) => {
-		totalRespuestas.push(id_pregunta)
-	}
-
-	const handleTextChange = (id_pregunta: number, value: string) => {
-		setSelectedByQuestion(prev => ({ ...prev, [id_pregunta]: null }));
-		/* setRespuestas(prev => {
-			if (!value.trim()) {
-				return prev.filter(r => r.id_pregunta !== id_pregunta);
-			}
-		}
-		return upsertRespuesta(prev, { id_pregunta, respuesta_texto: value }); */
-		if (!value.trim()) {
-			totalRespuestas.push(id_pregunta)
-		}
-	};
-
-	function validarEncuesta(respuesta: any) {
+	function validarEncuesta(respuesta: Respuesta[]) {
 		const totalRespuestas = respuesta.length
-		totalPreguntas === totalRespuestas ? setIsDisabled(false) : setIsDisabled(true)
+		if (totalPreguntas === totalRespuestas) {
+			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
+		}
 	}
 
-	const handlSetEncuesta = (respuesta: any, idAsignacion: any) => {
+	const handlSetEncuesta = (respuesta: Respuesta[], idAsignacion: number) => {
 		setIsSending(true);
 		setIsDisabled(true);
 		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
@@ -176,20 +86,62 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 		}
 	});
 
-
 	const siguiente = (
 		<Button
 			fullWidth
-			onClick={() => handlSetEncuesta(respuestas, data?.idAsignacion)}
+			onClick={() => {
+				if (typeof data?.idAsignacion === 'number') {
+					handlSetEncuesta(respuestas, data.idAsignacion);
+				}
+			}}
 			iconPosition={'end'}
 			isLoading={isSending}
 			disabled={isDisabled}
 			icon={<ArrowForwardIcon />}
-
 		>
 			Enviar
 		</Button>
 	);
+
+	const handleTextChange = (id_pregunta: number, value: string) => {
+
+		setRespuestas(prev => {
+			if (!value.trim()) {
+				const nuevas = prev.filter(item => item.id_pregunta !== id_pregunta);
+				validarEncuesta(nuevas);
+				return nuevas;
+			}
+
+			const existe = prev.some(item => item.id_pregunta === id_pregunta);
+			const nuevas = existe
+				? prev.map(item =>
+					item.id_pregunta === id_pregunta
+						? { ...item, id_pregunta, respuesta_texto: value }
+						: item
+				)
+				: [...prev, { id_pregunta, respuesta_texto: value }];
+
+			validarEncuesta(nuevas);
+			return nuevas;
+		});
+	};
+
+	const handleRadioChange = (id_pregunta: number) =>
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const id_opcion = Number(event.target.value);
+
+			setRespuestas(prev => {
+				const existe = prev.some(r => r.id_pregunta === id_pregunta);
+				const nuevas = existe
+					? prev.map(r =>
+						r.id_pregunta === id_pregunta ? { id_pregunta, id_opcion } : r
+					)
+					: [...prev, { id_pregunta, id_opcion }];
+
+				validarEncuesta(nuevas);
+				return nuevas;
+			});
+		};
 
 	const Preguntas = (item: Preguntas, index: number) => (
 		<React.Fragment key={item.id_pregunta}>
@@ -212,49 +164,65 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				</Box>
 				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
 				</Typography>
-
 			</Box>
 
 			{item.tipo_pregunta === "escala" && (
-				<Box key={"preguntas-" + item.id_pregunta} sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-					{item.opciones.map((opcion) => {
-						const checked = selectedByQuestion.some((item:any) =>item === opcion.id_opcion)
-						return (
-							<CheckBoxLabel
-								key={opcion.id_opcion}
-								text={opcion.etiqueta}
-								checked={checked}
-								onChange={() => handleSelect(item.id_pregunta, opcion.id_opcion)}
-								sxProps={{
-									marginLeft: "10px",
-									display: "flex",
-									alignItems: "center",
-									padding: "10px",
-									gap: "8px",
-									alignSelf: "stretch",
-									borderRadius: "8px",
-									border: "1px solid var(--Gray-50, #dcdfe0ff)"
-								}}
-							/>
-						);
-					})}
+				<Box
+					key={`preguntas-${item.id_pregunta}`}
+					sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+				>
+					<RadioGroup
+						name={`pregunta-${item.id_pregunta}`}
+						value={
+							(() => {
+								const respuesta = respuestas.find(r => r.id_pregunta === item.id_pregunta);
+								return respuesta && 'id_opcion' in respuesta ? respuesta.id_opcion : "";
+							})()
+						}
+						onChange={handleRadioChange(item.id_pregunta)}
+					>
+						{item.opciones.map((opcion) => {
+							return (
+								<FormControlLabel
+									key={opcion.id_opcion}
+									value={opcion.id_opcion}
+									control={<Radio />}
+									label={opcion.etiqueta}
+									sx={{
+										marginLeft: "10px",
+										display: "flex",
+										alignItems: "center",
+										padding: "10px",
+										gap: "8px",
+										alignSelf: "stretch",
+										borderRadius: "8px",
+										border: "1px solid var(--Gray-50, #dcdfe0ff)",
+									}}
+								/>
+							);
+						})}
+					</RadioGroup>
 				</Box>
 			)}
 
-			{item.tipo_pregunta === "abierta" && (
-				<TextField
-					fullWidth
-					size="small"
-					placeholder="Escribe tu respuesta"
-					onChange={(e) => handleTextChange(item.id_pregunta, e.target.value)}
-					// opcional: valor actual si ya existe en respuestas
-					value={
-						(respuestas.find(r => r.id_pregunta === item.id_pregunta) as any)?.respuesta_texto ?? ""
-					}
-					sx={{ mt: 1 }}
-				/>
-			)}
-		</React.Fragment>
+			{
+				item.tipo_pregunta === "abierta" && (
+					<TextField
+						fullWidth
+						size="small"
+						placeholder="Escribe tu respuesta"
+						onChange={(e) => handleTextChange(item.id_pregunta, e.target.value)}
+						value={
+							(() => {
+								const itemRespuesta = respuestas.find(r => r.id_pregunta === item.id_pregunta);
+								return itemRespuesta && 'respuesta_texto' in itemRespuesta ? itemRespuesta.respuesta_texto : "";
+							})()
+						}
+						sx={{ mt: 1 }}
+					/>
+				)
+			}
+		</React.Fragment >
 	);
 
 
