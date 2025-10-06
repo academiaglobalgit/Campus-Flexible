@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Badge, Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Badge, Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import { Ayuda, InfoSquare, Notificaciones as NotificacionesIcon, PreguntasFrecuentes } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
 import { AppRoutingPaths, MenuInformacion, TitleScreen, type Notificaciones } from "@constants";
@@ -105,23 +105,31 @@ export const IconsTopBar: React.FC = () => {
     return (
         <>
             <Box sx={{ display: 'flex' }}>
-                <IconButton onClick={handleFaqs}>
-                    <PreguntasFrecuentes />
-                </IconButton>
-                <IconButton onClick={handleHelp}>
-                    <Ayuda />
-                </IconButton>
-                <IconButton>
-                    <Badge
-                        onClick={handleClick} sx={{ cursor: 'pointer' }}
-                        badgeContent={filteredNotifications?.filter((item) => item.leida === 0).length} color="error"
-                    >
-                        <NotificacionesIcon />
-                    </Badge>
-                </IconButton>
-                <IconButton onClick={handleMoreInfo}>
-                    <InfoSquare />
-                </IconButton>
+                <Tooltip title="Preguntas Frecuentes">
+                    <IconButton onClick={handleFaqs}>
+                        <PreguntasFrecuentes />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Ayuda">
+                    <IconButton onClick={handleHelp}>
+                        <Ayuda />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Notificaciones">
+                    <IconButton>
+                        <Badge
+                            onClick={handleClick} sx={{ cursor: 'pointer' }}
+                            badgeContent={filteredNotifications?.filter((item) => item.leida === 0).length} color="error"
+                        >
+                            <NotificacionesIcon />
+                        </Badge>
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Información">
+                    <IconButton onClick={handleMoreInfo}>
+                        <InfoSquare />
+                    </IconButton>
+                </Tooltip>
             </Box>
             <Menu
                 anchorEl={anchorEl}
