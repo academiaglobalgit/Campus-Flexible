@@ -44,12 +44,9 @@ const Calificaciones: React.FC = () => {
 
     React.useEffect(() => {
         switch(configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomado
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: false })
-            break;
-            case 19: // Diplomado
+            case 17: // Diplomados UMI
+            case 19: // Diplomados Coppel
                 setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
-                console.log("🚀 ~ Calificaciones ~ isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]):", isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]))
             break;
         }
     }, [configPlataforma]);
