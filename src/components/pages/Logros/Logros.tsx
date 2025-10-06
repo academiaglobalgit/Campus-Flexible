@@ -8,7 +8,7 @@ import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
 import { LinearProgressWithLabel } from '../../molecules/LinearProgress/LinearProgress';
-import medalla from "../../../assets/medalla.jpeg";
+import medalla from "../../../assets/medalla_principal.png";
 import Button from "../../atoms/Button/Button";
 import theme from '../../../themes/theme';
 import themeCoppel from '../../../themes/coppel';
@@ -209,13 +209,30 @@ const Logros: React.FC = () => {
                             allowScrollButtonsMobile
                             aria-label="scrollable force tabs example"
                         >
-                            <Tab label="Mis Insignias" />
                             <Tab label="Mis Certificaciones" />
+                            <Tab label="Mis Insignias" />
                             <Tab label="Mi Clasificación" />
                         </Tabs>
                     </Box>
 
                     <TabPanel value={value} index={0} dir={theme.direction}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', width: '100%', m: 1, gap: '30px' }}>
+                            <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.text.secondary }}> Mis Certificaciones  </Typography><ArrowForwardIosIcon />
+                            </Box>
+
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+                            {Certificaciones('cv', 'download')}
+
+                        </Box>
+                    </TabPanel>
+
+                    <TabPanel value={value} index={1} dir={theme.direction}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', backgroundColor: '#F1F4F6', height: '350px', borderRadius: '20px' }}>
 
                             <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 4, m: 2 }}>
@@ -247,22 +264,6 @@ const Logros: React.FC = () => {
                         </Box>
                     </TabPanel>
 
-                    <TabPanel value={value} index={1} dir={theme.direction}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', width: '100%', m: 1, gap: '30px' }}>
-                            <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.text.secondary }}> Mis Certificaciones  </Typography><ArrowForwardIosIcon />
-                            </Box>
-
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-                            {Certificaciones('cv', 'download')}
-
-                        </Box>
-                    </TabPanel>
                     <TabPanel value={value} index={2} dir={theme.direction}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', backgroundColor: '#F1F4F6', height: '350px', borderRadius: '20px' }}>
                             <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 4, m: 2 }}>
