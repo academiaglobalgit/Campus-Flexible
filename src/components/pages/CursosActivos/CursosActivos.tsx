@@ -135,7 +135,7 @@ const CursoActivo: React.FC = () => {
     }
 
     const promediarDiplomados = (item: ICursoActivo) => {
-        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && (isPlanInList(configPlataforma?.id_plan_estudio, [17, 19]))) {
+        if (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100 && (isPlanInList(configPlataforma?.id_plan_estudio))) {
             createMutation.mutate(item.id_curso);
         }
     }

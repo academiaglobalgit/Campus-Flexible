@@ -126,7 +126,7 @@ const Calificaciones: React.FC = () => {
                                 : 'disabled'
                         }
                     >
-                        {isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])
+                        {isPlanInList(configPlataforma?.id_plan_estudio)
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
                                 : Number(curso.calificacion) === 0

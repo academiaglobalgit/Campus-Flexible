@@ -118,7 +118,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 </Typography>
                 {
                     items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && isPlanInList(configPlataforma?.id_plan_estudio, [17, 19])} onClick={() => handleNavigation(item)} sx={[
+                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && isPlanInList(configPlataforma?.id_plan_estudio)} onClick={() => handleNavigation(item)} sx={[
                             { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
                             !isMobile && { width: '100%', maxWidth: '232px' }
                         ]}>
