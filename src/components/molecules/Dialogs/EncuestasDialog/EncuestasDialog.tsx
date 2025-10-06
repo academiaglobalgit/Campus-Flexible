@@ -33,8 +33,10 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const [isDisabled, setIsDisabled] = React.useState(true);
 	const [isSending, setIsSending] = React.useState(false);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
-	const [selectedByQuestion, setSelectedByQuestion] = useState<Record<number, number | null>>({});
+	const [selectedByQuestion, setSelectedByQuestion] = useState<number[]>([]);
 	const totalPreguntas = data?.encuesta?.preguntas.length;
+
+	let totalRespuestas: any = []
 
 	useEffect(() => {
 		setOpen(isOpen ?? false);
@@ -58,12 +60,43 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 		return next;
 	}
 
-	useEffect(() => {
-		validarEncuesta(respuestas);
-	}, [respuestas]);
+	// useEffect(() => {
+	// 	validarEncuesta(respuestas);
+	// }, [respuestas]);
 
 	const handleSelect = (id_pregunta: number, id_opcion: number) => {
-		setSelectedByQuestion(prev => ({
+		console.log("🚀 ~ handleSelect ~ id_opcion:", id_opcion)
+		console.log("🚀 ~ handleSelect ~ id_pregunta:", id_pregunta)
+
+		const preguntasSeleccionadas = totalRespuestas.filter((item: any) => (item.id_pregunta !== id_pregunta ))
+		console.log("🚀 ~ handleSelect ~ preguntasSeleccionadas:", preguntasSeleccionadas)
+
+		totalRespuestas = [...preguntasSeleccionadas,{ id_pregunta, id_opcion }]
+
+		const opciones = selectedByQuestion.filter((item: any) => (item !== id_opcion ))
+
+		setSelectedByQuestion([
+			...opciones,
+			id_opcion
+		])
+		
+		//totalRespuestas.push({ id_pregunta, id_opcion })
+		console.log("🚀 ~ handleSelect ~ totalRespuestas:", totalRespuestas)
+		
+		// if (totalRespuestas.length > 0) {
+		// } else {
+		// 	const preguntasSeleccionadas = totalRespuestas.filter((item: any) => (item.id_pregunta !== id_pregunta ))
+		// }
+
+		/* 
+
+		const econtro = totalRespuestas.find((item: any) => (item.id_pregunta === id_pregunta && item.id_opcion === id_opcion))
+
+		if (!econtro) {
+			totalRespuestas.push({ id_pregunta, id_opcion })
+		} */
+		//console.log("🚀 ~ handleSelect ~ totalRespuestas:", totalRespuestas)
+		/*setSelectedByQuestion(prev => ({
 			...prev,
 			[id_pregunta]: prev[id_pregunta] === id_opcion ? null : id_opcion,
 		}));
@@ -75,16 +108,30 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			}
 			return upsertRespuesta(prev, { id_pregunta, id_opcion });
 		});
+
+		const yaSeleccionado = selectedByQuestion[id_pregunta] === id_opcion;
+		if (!yaSeleccionado) {
+			totalRespuestas.push(id_pregunta)
+		}
+		validarEncuesta(totalRespuestas) */
+		//totalPreguntas (prev, { id_pregunta, id_opcion });
 	};
+
+	const setValorPregunta = (id_pregunta: number) => {
+		totalRespuestas.push(id_pregunta)
+	}
 
 	const handleTextChange = (id_pregunta: number, value: string) => {
 		setSelectedByQuestion(prev => ({ ...prev, [id_pregunta]: null }));
-		setRespuestas(prev => {
+		/* setRespuestas(prev => {
 			if (!value.trim()) {
 				return prev.filter(r => r.id_pregunta !== id_pregunta);
 			}
-			return upsertRespuesta(prev, { id_pregunta, respuesta_texto: value });
-		});
+		}
+		return upsertRespuesta(prev, { id_pregunta, respuesta_texto: value }); */
+		if (!value.trim()) {
+			totalRespuestas.push(id_pregunta)
+		}
 	};
 
 	function validarEncuesta(respuesta: any) {
@@ -102,10 +149,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 		mutationFn: SaveEncuesta,
 		onSuccess: async () => {
 
-			setIsSending(false);
-			setOpen(false);
-			showNotification(`Encuesta guardada satisfactoriamente`, "success");
-
 			await queryClient.invalidateQueries({
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
 				exact: true,
@@ -114,8 +157,13 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_ENCUESTAS_ASIGNACIONES.key],
 				exact: true,
 			});
-			
-			if(onEncuestaEnviada) onEncuestaEnviada(true);
+
+			setIsSending(false);
+			setOpen(false);
+			setIsDisabled(true);
+			showNotification(`Encuesta guardada satisfactoriamente`, "success");
+
+			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
 			console.log(error)
@@ -132,7 +180,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const siguiente = (
 		<Button
 			fullWidth
-			onClick={() => handlSetEncuesta(respuestas,data?.idAsignacion)}
+			onClick={() => handlSetEncuesta(respuestas, data?.idAsignacion)}
 			iconPosition={'end'}
 			isLoading={isSending}
 			disabled={isDisabled}
@@ -144,7 +192,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	);
 
 	const Preguntas = (item: Preguntas, index: number) => (
-		<>
+		<React.Fragment key={item.id_pregunta}>
 			<Box key={"pregunta" + index} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px', alignSelf: 'stretch' }}>
 				<Box sx={{
 					display: "flex",
@@ -164,18 +212,18 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				</Box>
 				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
 				</Typography>
-				
+
 			</Box>
 
 			{item.tipo_pregunta === "escala" && (
 				<Box key={"preguntas-" + item.id_pregunta} sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
 					{item.opciones.map((opcion) => {
-						const checked = selectedByQuestion[item.id_pregunta] === opcion.id_opcion;
+						const checked = selectedByQuestion.some((item:any) =>item === opcion.id_opcion)
 						return (
 							<CheckBoxLabel
 								key={opcion.id_opcion}
 								text={opcion.etiqueta}
-								checked={!!checked}
+								checked={checked}
 								onChange={() => handleSelect(item.id_pregunta, opcion.id_opcion)}
 								sxProps={{
 									marginLeft: "10px",
@@ -206,7 +254,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 					sx={{ mt: 1 }}
 				/>
 			)}
-		</>
+		</React.Fragment>
 	);
 
 
