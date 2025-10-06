@@ -42,7 +42,14 @@ export const useContactoInterno = (id_plan_estudios: number) => {
 
         const transformedData = Object.values(
             data.reduce<Record<number, ContactoData>>((acc, currentItem) => {
-                const { id_seccion_contacto, nombre_seccion, descripcion_seccion, id_tipo_contacto, valor_contacto, descripcion } = currentItem;
+                const {
+                    id_seccion_contacto,
+                    nombre_seccion,
+                    descripcion_seccion,
+                    id_tipo_contacto,
+                    valor_contacto,
+                    descripcion
+                } = currentItem;
 
                 if (!acc[id_seccion_contacto]) {
                     acc[id_seccion_contacto] = {
@@ -52,32 +59,35 @@ export const useContactoInterno = (id_plan_estudios: number) => {
                         data: {
                             description: descripcion_seccion,
                             horarios: null,
-                            telefonos: null,
+                            telefonos: [], 
                             email: null,
-                            tipo: null,
-                        },
+                            tipo: null
+                        }
                     };
                 }
 
                 switch (id_tipo_contacto) {
-                    case 1:
-                        acc[id_seccion_contacto].data.telefonos = formatWithIMask(valor_contacto, 'phone'); 
-                        acc[id_seccion_contacto].data.tipo = descripcion;
+                    case 1: // teléfonos
+                        acc[id_seccion_contacto].data.telefonos!.push({
+                            numero: formatWithIMask(valor_contacto, 'phone'),
+                            tipo: descripcion
+                        });
                         break;
-                    case 2:
+                    case 2: // email
                         acc[id_seccion_contacto].data.email = valor_contacto;
                         break;
-                    case 3:
+                    case 3: // horarios
                         acc[id_seccion_contacto].data.horarios = valor_contacto;
                         break;
                     default:
-                        // Handle other types if necessary
+                        
                         break;
                 }
 
                 return acc;
             }, {})
         );
+
 
         return transformedData;
     };
