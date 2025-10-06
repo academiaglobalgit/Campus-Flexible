@@ -13,14 +13,11 @@ import LogoLogin from "../../../assets/logo_ag_login2.svg";
 import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
 import HomeDiplomado from "../../../assets/login_diplomado.png";
 import { loadConfig } from '../../../config/configStorage';
-import { useQueryClient } from '@tanstack/react-query';
-
 
 const PasswordReset: React.FC = () => {
     const theme = useTheme();
 
     const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
-    const [config, setConfig] = React.useState<any>(null);
     const [verLogo, setVerLogo] = React.useState<boolean>(false);
 
     const [imgSettings, setImgSettings] = React.useState<any>({
@@ -29,35 +26,25 @@ const PasswordReset: React.FC = () => {
         objectFit: 'cover',
     });
 
-    const queryClient = useQueryClient();
-
-    React.useEffect(() => {
-        queryClient.clear();
-    }, [queryClient]);
 
     React.useEffect(() => {
         loadConfig().then(cfg => {
-            setConfig(cfg);
+            switch (cfg?.data?.id_plan_estudio) {
+                case 17: // Diplomado
+                    setBackgroundImage(HomeDiplomado);
+                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                    setVerLogo(false);
+                    break;
+                case 19: // Diplomado
+                    setBackgroundImage(DiplomadoCoppel);
+                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
+                    setVerLogo(false);
+                    break;
+                default:
+                    setBackgroundImage(HomeDiplomado);
+                    break;
+            }
         });
-    }, []);
-
-
-    React.useEffect(() => {
-        switch (config?.data?.id_plan_estudio) {
-            case 17: // Diplomado
-                setBackgroundImage(HomeDiplomado);
-                setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                setVerLogo(false);
-                break;
-            case 19: // Diplomado
-                setBackgroundImage(DiplomadoCoppel);
-                setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                setVerLogo(false);
-                break;
-            default:
-                setBackgroundImage(HomeDiplomado);
-                break;
-        }
     }, []);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
