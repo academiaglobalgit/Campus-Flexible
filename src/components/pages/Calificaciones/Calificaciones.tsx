@@ -129,7 +129,7 @@ const Calificaciones: React.FC = () => {
                         {isPlanInList(configPlataforma?.id_plan_estudio)
                             ? (curso.calificacion === null
                                 ? 'Pendiente'
-                                : Number(curso.calificacion) === 0
+                                : Number(curso.calificacion) < 6
                                     ? 'No aprobado'
                                     : 'Aprobado')
                             : (curso.estatus_curso_alumno === 'Finalizado'
