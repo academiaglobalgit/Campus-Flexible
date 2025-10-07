@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Tab, Tabs, tabsClasses, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, Link, Tab, Tabs, tabsClasses, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import CampusDigital from "../../../assets/campus_digital.jpg";
 import ServiciosEscolares from "../../../assets/servicios_escolares_contacto.jpg";
@@ -153,14 +153,32 @@ const ContactoInterno: React.FC = () => {
                             Teléfonos:
                         </Typography>
 
-                        {section.data.telefonos.map((tel: { numero: string; tipo: string }, index: number) => (
-                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                {tel.tipo === 'WhatsApp' ? <WhatsAppContacto /> : <CellPhone />}
-                                <Typography component="p" variant="body2">
-                                    {formatWithIMask(tel.numero, 'phone')}
-                                </Typography>
-                            </Box>
-                        ))}
+                        {section.data.telefonos.map((tel: { numero: string; tipo: string }, index: number) => {
+                            if (tel.tipo === "WhatsApp") {
+                                return (
+                                    <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                        <WhatsAppContacto />
+                                        <Link
+                                            href={'http://wa.link/8hh696'}
+                                            target="_blank"
+                                            sx={{ textDecoration: "none" }}
+                                        >
+                                            {formatWithIMask(tel.numero, "phone")}
+                                        </Link>
+                                    </Box>
+                                );
+                            } else {
+                                return (
+                                    <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                        <CellPhone />
+                                        <Typography component="p" variant="body2">
+                                            {formatWithIMask(tel.numero, "phone")}
+                                        </Typography>
+                                    </Box>
+                                );
+                            }
+                        })}
+                        
                     </Box>
                     <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
                         <Typography component="span" variant="body2" color="primary">

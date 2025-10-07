@@ -13,6 +13,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { formatWithIMask } from "../../../../utils/Helpers";
 import { WhatsAppContacto, CellPhone, EmailContacto } from "@iconsCustomizeds";
+import { Link } from "@mui/material";
 
 type ContactoDialogProps = {
     isOpen?: boolean;
@@ -71,9 +72,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({ isOpen, data, close }) 
                         return (
                             <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <WhatsAppContacto />
-                                <Typography component="p" variant='body2'>
-                                    {formatWithIMask(item.valor_contacto, "phone")}
-                                </Typography>
+                                <Link href={'http://wa.link/8hh696'} target="_blank" sx={{textDecoration:'none'}}> {formatWithIMask(item.valor_contacto, "phone")}</Link>
                             </Box>
                         )
                     } else {
