@@ -14,6 +14,7 @@ export interface EncuestasDatosResponse {
     titulo: string;
     descripcion: string;
     tipo: string;
+    total_preguntas: number;
     estado_encuesta: string;
     progreso: number;
     preguntas: Preguntas[]

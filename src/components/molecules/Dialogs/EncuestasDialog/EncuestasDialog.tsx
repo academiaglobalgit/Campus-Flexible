@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import type { EncuestasDatosResponse } from "../../../../types/Encuestas.interface";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNotification } from "../../../../providers/NotificationProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
@@ -11,7 +10,7 @@ import { SaveEncuesta } from "../../../../services/CursosActivosService";
 import miniLogo from '../../../../assets/AG College.png';
 
 import { innerHTMLStyle } from "@styles";
-import EncuestaSecciones from "./Preguntas";
+import EncuestaSecciones from "./Secciones";
 
 type EncuestaDialogProps = {
 	isOpen?: boolean;
@@ -27,36 +26,24 @@ type Respuesta =
 	| { id_pregunta: number; respuesta_texto: string };
 
 export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, onEncuestaEnviada }) => {
+
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const queryClient = useQueryClient();
 	const { showNotification } = useNotification();
 	const [open, setOpen] = React.useState(false);
-	const [isDisabled, setIsDisabled] = React.useState(true);
-	const [isSending, setIsSending] = React.useState(false);
+	const [isDisabled, setIsDisabled] = useState(true);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
 	const [step, setStep] = React.useState<"inicio" | "preguntas" | "actualizada">("inicio");
-	const totalPreguntas = 2;
+
+	const totalPreguntas = data?.encuesta?.total_preguntas;
 
 	useEffect(() => {
 		setOpen(isOpen ?? false);
 	}, [isOpen]);
 
-	function validarEncuesta(respuesta: Respuesta[]) {
-		const totalRespuestas = respuesta.length
-		if (totalPreguntas === totalRespuestas) {
-			setIsDisabled(false);
-		} else {
-			setIsDisabled(true);
-		}
-	}
-
 	const handlSetEncuesta = (respuesta: Respuesta[], idAsignacion: number) => {
-		console.log("🚀 ~ handlSetEncuesta ~ idAsignacion:", idAsignacion)
-		console.log("🚀 ~ handlSetEncuesta ~ respuesta:", respuesta)
-		setIsSending(true);
-		setIsDisabled(true);
-		//createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
+		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
 	}
 
 	const createMutation = useMutation({
@@ -73,16 +60,14 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			});
 
 			setRespuestas([]);
-			setIsSending(false);
 			setOpen(false);
-			setIsDisabled(true);
+			setIsDisabled(false);
 			showNotification(`Encuesta guardada satisfactoriamente`, "success");
 
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
 			console.log(error)
-			setIsSending(false);
 			setOpen(false);
 			showNotification(`Error al registrar: ${error.message}`, "error");
 		},
@@ -91,12 +76,12 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 		}
 	});
 
+
 	const handleTextChange = (id_pregunta: number, value: string) => {
 
 		setRespuestas(prev => {
 			if (!value.trim()) {
 				const nuevas = prev.filter(item => item.id_pregunta !== id_pregunta);
-				validarEncuesta(nuevas);
 				return nuevas;
 			}
 
@@ -109,7 +94,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				)
 				: [...prev, { id_pregunta, respuesta_texto: value }];
 
-			validarEncuesta(nuevas);
 			return nuevas;
 		});
 	};
@@ -119,14 +103,12 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			const id_opcion = Number(event.target.value);
 
 			setRespuestas(prev => {
-				const existe = prev.some(r => r.id_pregunta === id_pregunta);
+				const existe = prev.some(item => item.id_pregunta === id_pregunta);
 				const nuevas = existe
 					? prev.map(r =>
 						r.id_pregunta === id_pregunta ? { id_pregunta, id_opcion } : r
 					)
 					: [...prev, { id_pregunta, id_opcion }];
-
-				validarEncuesta(nuevas);
 				return nuevas;
 			});
 		};
@@ -153,8 +135,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 					objectFit: 'contain',
 				}}
 			/>
-
-			<Typography component="h2" variant="h2" color="primary">Encuestas:</Typography>
 			<Typography component="h4" variant="h4" color="primary">
 				{data?.encuesta?.titulo}
 			</Typography>
@@ -183,7 +163,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				respuestas={respuestas}
 				handleRadioChange={handleRadioChange}
 				handleTextChange={handleTextChange}
-				onFinish={() => handlSetEncuesta(respuestas, data.idAsignacion)}
+				isDisabled={isDisabled}
+				setIsDisabled={setIsDisabled}
+				onFinish={() => {
+					if (data) handlSetEncuesta(respuestas, data.idAsignacion);
+				}}
 			/>
 			break;
 		case "actualizada":
