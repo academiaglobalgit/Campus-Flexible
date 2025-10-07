@@ -1,14 +1,17 @@
-import { Box, Divider, TextField, Typography, useMediaQuery, useTheme, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { Box, Divider, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
-import type { EncuestasDatosResponse, Preguntas } from "../../../../types/Encuestas.interface";
+import type { EncuestasDatosResponse } from "../../../../types/Encuestas.interface";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNotification } from "../../../../providers/NotificationProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
 import { SaveEncuesta } from "../../../../services/CursosActivosService";
+import miniLogo from '../../../../assets/AG College.png';
+
 import { innerHTMLStyle } from "@styles";
+import EncuestaSecciones from "./Preguntas";
 
 type EncuestaDialogProps = {
 	isOpen?: boolean;
@@ -32,13 +35,12 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const [isDisabled, setIsDisabled] = React.useState(true);
 	const [isSending, setIsSending] = React.useState(false);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
-	const totalPreguntas = data?.encuesta?.preguntas.length;
+	const [step, setStep] = React.useState<"inicio" | "preguntas" | "actualizada">("inicio");
+	const totalPreguntas = 2;
 
 	useEffect(() => {
 		setOpen(isOpen ?? false);
 	}, [isOpen]);
-
-
 
 	function validarEncuesta(respuesta: Respuesta[]) {
 		const totalRespuestas = respuesta.length
@@ -50,9 +52,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	}
 
 	const handlSetEncuesta = (respuesta: Respuesta[], idAsignacion: number) => {
+		console.log("🚀 ~ handlSetEncuesta ~ idAsignacion:", idAsignacion)
+		console.log("🚀 ~ handlSetEncuesta ~ respuesta:", respuesta)
 		setIsSending(true);
 		setIsDisabled(true);
-		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
+		//createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
 	}
 
 	const createMutation = useMutation({
@@ -68,6 +72,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				exact: true,
 			});
 
+			setRespuestas([]);
 			setIsSending(false);
 			setOpen(false);
 			setIsDisabled(true);
@@ -85,23 +90,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			console.log('La mutación ha finalizado');
 		}
 	});
-
-	const siguiente = (
-		<Button
-			fullWidth
-			onClick={() => {
-				if (typeof data?.idAsignacion === 'number') {
-					handlSetEncuesta(respuestas, data.idAsignacion);
-				}
-			}}
-			iconPosition={'end'}
-			isLoading={isSending}
-			disabled={isDisabled}
-			icon={<ArrowForwardIcon />}
-		>
-			Enviar
-		</Button>
-	);
 
 	const handleTextChange = (id_pregunta: number, value: string) => {
 
@@ -143,88 +131,67 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			});
 		};
 
-	const Preguntas = (item: Preguntas, index: number) => (
-		<React.Fragment key={item.id_pregunta}>
-			<Box key={"pregunta" + index} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px', alignSelf: 'stretch' }}>
-				<Box sx={{
-					display: "flex",
-					width: "24px",
-					height: "24px",
-					padding: "4px 8px",
-					justifyContent: "center",
-					alignItems: "center",
-					gap: "10px",
-					aspectRatio: "1 / 1",
-					borderRadius: "30px",
-					border: `1px solid var(--Blue-Blue-100, ${theme.palette.primary.main})`,
-					background: theme.palette.primary.main,
-					color: '#fff'
-				}}>
-					{item.orden}
-				</Box>
-				<Typography component="span" variant="body2" color="text" dangerouslySetInnerHTML={{ __html: item.titulo_pregunta ?? '' }}>
-				</Typography>
-			</Box>
+	const PantallaInicial: React.FC<{ data: any; onNext: () => void }> = ({ data, onNext }) => (
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
+			<Divider sx={{
+				'& .MuiDivider-wrapper': {
+					borderRadius: '50px',
+					padding: '5px 10px 5px 10px',
+				},
+			}}
+			>
+			</Divider>
 
-			{item.tipo_pregunta === "escala" && (
-				<Box
-					key={`preguntas-${item.id_pregunta}`}
-					sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-				>
-					<RadioGroup
-						name={`pregunta-${item.id_pregunta}`}
-						value={
-							(() => {
-								const respuesta = respuestas.find(r => r.id_pregunta === item.id_pregunta);
-								return respuesta && 'id_opcion' in respuesta ? respuesta.id_opcion : "";
-							})()
-						}
-						onChange={handleRadioChange(item.id_pregunta)}
-					>
-						{item.opciones.map((opcion) => {
-							return (
-								<FormControlLabel
-									key={opcion.id_opcion}
-									value={opcion.id_opcion}
-									control={<Radio />}
-									label={opcion.etiqueta}
-									sx={{
-										marginLeft: "10px",
-										display: "flex",
-										alignItems: "center",
-										padding: "10px",
-										gap: "8px",
-										alignSelf: "stretch",
-										borderRadius: "8px",
-										border: "1px solid var(--Gray-50, #dcdfe0ff)",
-									}}
-								/>
-							);
-						})}
-					</RadioGroup>
-				</Box>
-			)}
+			<Box
+				component="img"
+				src={miniLogo}
+				alt="AG College Logo"
+				sx={{
+					width: '300px',
+					maxWidth: '150px',
+					marginBottom: '16px',
+					objectFit: 'contain',
+				}}
+			/>
 
-			{
-				item.tipo_pregunta === "abierta" && (
-					<TextField
-						fullWidth
-						size="small"
-						placeholder="Escribe tu respuesta"
-						onChange={(e) => handleTextChange(item.id_pregunta, e.target.value)}
-						value={
-							(() => {
-								const itemRespuesta = respuestas.find(r => r.id_pregunta === item.id_pregunta);
-								return itemRespuesta && 'respuesta_texto' in itemRespuesta ? itemRespuesta.respuesta_texto : "";
-							})()
-						}
-						sx={{ mt: 1 }}
-					/>
-				)
-			}
-		</React.Fragment >
+			<Typography component="h2" variant="h2" color="primary">Encuestas:</Typography>
+			<Typography component="h4" variant="h4" color="primary">
+				{data?.encuesta?.titulo}
+			</Typography>
+			<Typography sx={{ ...innerHTMLStyle }} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.encuesta?.descripcion ?? '' }}>
+			</Typography>
+			<Typography component="span" variant="body2" color="primary">Esta encuesta incluye {totalPreguntas} preguntas
+			</Typography>
+			<Button
+				onClick={onNext}
+			>
+				Comenzar Encuesta
+			</Button>
+
+		</Box>
 	);
 
+	let content: React.ReactNode;
+
+	switch (step) {
+		case "inicio":
+			content = <PantallaInicial data={data} onNext={() => setStep("preguntas")} />;
+			break;
+		case "preguntas":
+			content = <EncuestaSecciones
+				data={data}
+				respuestas={respuestas}
+				handleRadioChange={handleRadioChange}
+				handleTextChange={handleTextChange}
+				onFinish={() => handlSetEncuesta(respuestas, data.idAsignacion)}
+			/>
+			break;
+		case "actualizada":
+			content = '';
+			break;
+		default:
+			content = '';
+	}
 
 	return (
 		<Dialog isOpen={open} sxProps={{ backgroundColor: '#fff', margin: '5px', ...(isMobile ? { width: '100%' } : {}) }} >
@@ -233,35 +200,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				isMobile ? { padding: '15px' } : { padding: '30px' },
 				!isMobile && { width: '700px' }
 			]}>
-				<Divider sx={{
-					'& .MuiDivider-wrapper': {
-						borderRadius: '50px',
-						padding: '5px 10px 5px 10px',
-					},
-				}}
-				>
-					<Typography component="span" variant="body2" color="primary">
-						{data?.encuesta?.titulo}
-					</Typography>
-				</Divider>
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '16px', height: '60vh', overflowY: 'scroll', pr: 2, mb: 2 }}>
-					<Typography sx={{ ...innerHTMLStyle }} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.encuesta?.descripcion ?? '' }}>
-					</Typography>
-
-					<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-						{
-							data?.encuesta?.preguntas.map((pregunta, preguntaIndex) => {
-								return (
-									Preguntas(pregunta, preguntaIndex)
-								)
-							})
-						}
-					</Box>
-				</Box>
-				<Box sx={{ display: 'flex', justifyContent: 'space-around', gap: 4 }}>
-					{siguiente}
-				</Box>
-				<Box sx={{ paddingTop: '10px' }}></Box>
+				{content}
 			</Box>
 		</Dialog >
 	);
