@@ -12,7 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
-import { AppBar, Badge, IconButton, styled, Typography, type CSSObject, type Theme } from '@mui/material';
+import { AppBar, Badge, IconButton, styled, Typography, useTheme, type CSSObject, type Theme } from '@mui/material';
 import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
 import { Avatar } from '../../atoms/Avatar/Avatar';
@@ -140,25 +140,31 @@ const Sidenav: React.FC = () => {
     )
   };
 
-  const Listado = (title: string, open: boolean, menuType: "main" | "more") => {
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const Listado = (
+    title: string,
+    open: boolean,
+    menuType: "main" | "more",
+    selectedIndex: number,
+    setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
+  ) => {
     const navigate = useNavigate();
-    let menuRoutes = [...MenuItems].filter((item) => item.menu === menuType).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-    switch (config?.data?.id_plan_estudio) {
-      case 17: // Diplomados
-      case 19: // Diplomados Coppel
-        menuRoutes = menuRoutes.filter(item =>
-          ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-        );
-        break;
-      default:
-        // otros planes
-        break;
-    }
-
+    const theme = useTheme();
     const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
 
-    const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(0);
+    let menuRoutes = [...MenuItems]
+      .filter((item) => item.menu === menuType)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    switch (config?.data?.id_plan_estudio) {
+      case 17:
+      case 19:
+        menuRoutes = menuRoutes.filter(
+          (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
+        );
+        break;
+    }
 
     const handleToggleSubmenu = (label: string) => {
       setOpenSubmenu((prev) => (prev === label ? null : label));
@@ -173,44 +179,59 @@ const Sidenav: React.FC = () => {
       if (item.text === TitleScreen.CURSOS_ACTIVOS) {
         return cursosData?.data.length || 0;
       }
-    }
+    };
 
     return (
       <>
-        <Box sx={[
-          { display: 'flex', width: '100%' },
-          !open && { justifyContent: 'center' },
-          open
-          && { ml: 6 }
-        ]}>
+        <Box
+          sx={[
+            { display: 'flex', width: '100%' },
+            !open && { justifyContent: 'center' },
+            open && { ml: 6 },
+          ]}
+        >
           <Typography
-            variant='body1'
-            color='primary'
+            variant="body1"
+            color="primary"
             sx={[
-              menuType === "more" && { color: (theme) => theme.palette.grey[600] },
-              { fontWeight: 700 }, open && { fontSize: '18px' }]
-            }
+              menuType === 'more' && { color: theme.palette.grey[600] },
+              { fontWeight: 700 },
+              open && { fontSize: '18px' },
+            ]}
           >
             {title}
           </Typography>
         </Box>
 
         <List sx={{ width: '100%' }}>
-          {
-            menuRoutes.filter((item) => item.visible === 1).map((item, index) => {
+          {menuRoutes
+            .filter((item) => item.visible === 1)
+            .map((item, index) => {
               const hasChildren = item.children.length > 0;
               const isOpen = openSubmenu === item.text;
+              const absoluteIndex = (menuType === 'more' ? 1000 : 0) + index;
 
               return (
                 <React.Fragment key={item.text}>
                   <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
-                      selected={selectedIndex === index}
-                      onClick={() => hasChildren ? handleToggleSubmenu(item.text) : handleNavigation(item.path, index)}
+                      selected={selectedIndex === absoluteIndex}
+                      onClick={() =>
+                        hasChildren
+                          ? handleToggleSubmenu(item.text)
+                          : handleNavigation(item.path, absoluteIndex)
+                      }
                       sx={[
                         {
                           minHeight: 48,
                           px: 3.5,
+                          '&.Mui-selected': {
+                            bgcolor: theme.palette.action.selected,
+                            color: theme.palette.primary.main,
+                          },
+                          '&.Mui-selected:hover': {
+                            bgcolor: theme.palette.action.hover,
+                          },
                         },
                         open ? { justifyContent: 'initial' } : { justifyContent: 'center' },
                       ]}
@@ -221,21 +242,43 @@ const Sidenav: React.FC = () => {
                           open ? { mr: 3 } : { mr: 'auto' },
                         ]}
                       >
-                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: config?.data.color_primary }} />
+                        <DsSvgIcon
+                          color="primary"
+                          component={item.icon}
+                          sxProps={{
+                            color: config?.data?.color_primary || theme.palette.primary.main,
+                          }}
+                        />
                       </ListItemIcon>
+
                       <ListItemText
                         primary={item.text}
                         sx={{ opacity: open ? 1 : 0 }}
                       />
-                      {
-                        (item.hasCount && open) &&
-                        getCounter(item) !== 0 && <Box
-                          component="span"
-                          sx={{ color: '#FFFFFF', bgcolor: 'primary.main', width: 24, height: 20, fontSize: '12', fontWeight: '400', lineHeight: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' }}
-                        >
-                          {getCounter(item)}
-                        </Box>
-                      }
+
+                      {item.hasCount &&
+                        open &&
+                        getCounter(item) !== 0 && (
+                          <Box
+                            component="span"
+                            sx={{
+                              color: '#FFFFFF',
+                              bgcolor: 'primary.main',
+                              width: 24,
+                              height: 20,
+                              fontSize: 12,
+                              fontWeight: 400,
+                              lineHeight: '24px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '6px',
+                            }}
+                          >
+                            {getCounter(item)}
+                          </Box>
+                        )}
+
                       {hasChildren && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
                     </ListItemButton>
                   </ListItem>
@@ -243,27 +286,33 @@ const Sidenav: React.FC = () => {
                   {hasChildren && (
                     <Collapse in={isOpen && open} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        {item.children.map((child) => (
-                          <ListItemButton
-                            key={child.text}
-                            sx={{
-                              pl: open ? 9 : 4,
-                              justifyContent: open ? 'initial' : 'center',
-                            }}
-                          >
-                            <ListItemText
-                              primary={child.text}
-                              sx={{ opacity: open ? 1 : 0 }}
-                            />
-                          </ListItemButton>
-                        ))}
+                        {item.children.map((child, i) => {
+                          const childIndex = absoluteIndex * 100 + i;
+                          return (
+                            <ListItemButton
+                              key={child.text}
+                              selected={selectedIndex === childIndex}
+                              onClick={() =>
+                                handleNavigation(child.path, childIndex)
+                              }
+                              sx={{
+                                pl: open ? 9 : 4,
+                                justifyContent: open ? 'initial' : 'center',
+                              }}
+                            >
+                              <ListItemText
+                                primary={child.text}
+                                sx={{ opacity: open ? 1 : 0 }}
+                              />
+                            </ListItemButton>
+                          );
+                        })}
                       </List>
                     </Collapse>
                   )}
                 </React.Fragment>
               );
-            })
-          }
+            })}
         </List>
       </>
     );
@@ -293,9 +342,9 @@ const Sidenav: React.FC = () => {
               maxWidth: open ? '200px' : 'auto',
             }}
           />
-          {Listado("Menú", open, "main")}
+          {Listado("Menú", open, "main", selectedIndex, setSelectedIndex)}
           <Divider sx={{ width: open ? '90%' : '50%' }} />
-          {Listado("Más", open, "more")}
+          {Listado("Más", open, "more", selectedIndex, setSelectedIndex)}
         </Box>
 
         <Box sx={[{ height: '70px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start' }, open && { paddingLeft: '20px' }]}>
