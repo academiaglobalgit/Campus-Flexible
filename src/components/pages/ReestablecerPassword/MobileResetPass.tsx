@@ -200,9 +200,6 @@ export const MobileResetPass: React.FC = () => {
             const password = data.new_password;
             const usuario = data.username;
             const codigo = data.codigo;
-            console.log("🚀 ~ onSubmit ~ password:", password)
-            console.log("🚀 ~ onSubmit ~ usuario:", usuario)
-            console.log("🚀 ~ onSubmit ~ codigo:", codigo)
 
             if (codigo.length < 6) {
                 showNotification("El código debe tener al menos 6 digitos", "warning");
