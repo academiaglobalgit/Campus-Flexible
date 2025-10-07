@@ -10,20 +10,29 @@ type ChangePasswordDialogProps = {
     userName: string;
 }
 
-export const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({isOpen, userName}) => {
+export const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOpen, userName }) => {
     const [open, setOpen] = React.useState(false);
 
     React.useEffect(() => {
         setOpen(isOpen ?? false);
-    },[isOpen]);
+    }, [isOpen]);
 
-    return(
+    return (
         <Dialog isOpen={open} sxProps={{ width: '350px', minHeight: '250px', borderRadius: '8px' }}>
             <DialogContent>
-                <Box sx={{...flexColumn, gap: '15px'}}>
-                    <Typography variant="body3" component="span" color="primary" sxProps={{textAlign: 'center'}}>
+                <Box sx={{ ...flexColumn, gap: '15px' }}>
+                    <Typography variant="body3" component="span" color="primary" sxProps={{ textAlign: 'center' }}>
                         Como es tu primer acceso a la plataforma, necesitas establecer una nueva contraseña.
                     </Typography>
+                    Tu nueva contraseña debe cumplir con los siguientes puntos de seguridad:
+                    <ul>
+                        <li>1.Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
+                        <li>2.Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
+                        <li>1 número (por ejemplo, 0-9)</li>
+                        <li>1 carácter especial (por ejemplo, !, @, #, $, %, ^, &, *)</li>
+                        <li>1 letra mayúscula (por ejemplo, A-Z)</li>
+                        <li> 1 letra minúscula (por ejemplo, a-z)</li>
+                    </ul>
                     <NewPassword userName={userName} />
                 </Box>
             </DialogContent>
