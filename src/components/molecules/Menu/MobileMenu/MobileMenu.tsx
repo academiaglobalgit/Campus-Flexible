@@ -30,7 +30,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
     const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
-    let menuRoutes = [...MenuItems.filter((item) => item.menu === "main")].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    let menuRoutes = [...MenuItems.filter((item) => item.menu === "main" || item.menu === 'more')].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     let items = (menuType === 'menuRoutes' ? menuRoutes : menuInformacion) as any[];
@@ -38,8 +38,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     switch (configPlataforma?.id_plan_estudio) {
         case 17: // Diplomados
         case 19: // Diplomados Coppel
-            menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
-            items = items.filter(item => item.id !== 1 && item.id !== 7 && item.id !== 6);
+            //menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
+            menuRoutes = menuRoutes.filter(
+                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
+            );
+            items = items.filter(
+                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
+            );
             break;
     }
 
