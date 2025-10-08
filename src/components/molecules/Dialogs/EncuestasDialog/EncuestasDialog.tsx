@@ -34,7 +34,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const [open, setOpen] = React.useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
-	const [step, setStep] = React.useState<"inicio" | "preguntas" | "actualizada">("inicio");
+	const [step, setStep] = React.useState<"inicio" | "preguntas">("inicio");
 
 	const totalPreguntas = data?.encuesta?.total_preguntas;
 
@@ -169,9 +169,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 					if (data) handlSetEncuesta(respuestas, data.idAsignacion);
 				}}
 			/>
-			break;
-		case "actualizada":
-			content = '';
 			break;
 		default:
 			content = '';
