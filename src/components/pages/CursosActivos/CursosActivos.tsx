@@ -96,10 +96,12 @@ const CursoActivo: React.FC = () => {
         refetch()
             .then(response => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
-                if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
-                    setEncuestaData(encuestasActivas);
-                    setIdAsignacion(encuestasActivas[0].id_asignacion);
-                    setOpenEncuesta(true);
+                if(encuestasActivas){
+                    if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
+                        setEncuestaData(encuestasActivas);
+                        setIdAsignacion(encuestasActivas[0].id_asignacion);
+                        setOpenEncuesta(true);
+                    }
                 }
             })
             .catch(error => {
