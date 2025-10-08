@@ -27,6 +27,7 @@ export const BottomBar: React.FC = () => {
 
     const showHideIcons = () => {
       switch (configPlataforma?.id_plan_estudio) {
+        case 19: 
         case 17: 
           return (
           <BottomNavigationAction 
