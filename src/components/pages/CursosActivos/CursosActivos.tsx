@@ -75,7 +75,7 @@ const CursoActivo: React.FC = () => {
                 break;
 
         }
-    }, [configPlataforma?.id_plan_estudio, cursosData]);
+    }, [configPlataforma?.id_plan_estudio, cursosData, manual]);
 
     useEffect(() => {
         if (cursosData?.data) {
