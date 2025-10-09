@@ -72,7 +72,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({ isOpen, data, close }) 
                         return (
                             <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <WhatsAppContacto />
-                                <Link href={'http://wa.link/8hh696'} target="_blank" sx={{textDecoration:'none'}}> {formatWithIMask(item.valor_contacto, "phone")}</Link>
+                                <Link href={'http://wa.link/8hh696'} target="_blank" sx={{ textDecoration: 'none' }}> {formatWithIMask(item.valor_contacto, "phone")}</Link>
                             </Box>
                         )
                     } else {
@@ -125,9 +125,13 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({ isOpen, data, close }) 
                     <Typography component="h4" variant='h4'>
                         Correo Electrónico
                     </Typography>
-
-                    {data && textEmail(data.email)}
-
+                    <Link
+                        href={`mailto:${data && textEmail(data.email)}`}
+                        underline="hover"
+                        sx={{ color: 'primary.main', fontWeight: 500 }}
+                    >
+                        {data && textEmail(data.email)}
+                    </Link>
                 </Box>
             </Box>
         )

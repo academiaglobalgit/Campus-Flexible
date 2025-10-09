@@ -178,7 +178,7 @@ const ContactoInterno: React.FC = () => {
                                 );
                             }
                         })}
-                        
+
                     </Box>
                     <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
                         <Typography component="span" variant="body2" color="primary">
@@ -186,7 +186,13 @@ const ContactoInterno: React.FC = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <EmailContacto />
-                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
+                            <Link
+                                href={`mailto:${section &&  section.data.email}`}
+                                underline="hover"
+                                sx={{ color: 'primary.main', fontWeight: 500 }}
+                            >
+                                {section &&  section.data.email}
+                            </Link>
                         </Box>
                     </Box>
                 </Box>
