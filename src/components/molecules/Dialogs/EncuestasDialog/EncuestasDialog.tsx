@@ -7,7 +7,8 @@ import { useNotification } from "../../../../providers/NotificationProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../../types/endpoints";
 import { SaveEncuesta } from "../../../../services/CursosActivosService";
-import miniLogo from '../../../../assets/AG College.png';
+import miniLogo from '../../../../assets/logo_ag.svg';
+
 
 import { innerHTMLStyle } from "@styles";
 import EncuestaSecciones from "./Secciones";
@@ -115,22 +116,13 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 
 	const PantallaInicial: React.FC<{ data: any; onNext: () => void }> = ({ data, onNext }) => (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<Divider sx={{
-				'& .MuiDivider-wrapper': {
-					borderRadius: '50px',
-					padding: '5px 10px 5px 10px',
-				},
-			}}
-			>
-			</Divider>
-
 			<Box
 				component="img"
 				src={miniLogo}
 				alt="AG College Logo"
 				sx={{
 					width: '300px',
-					maxWidth: '150px',
+					maxWidth: '300px',
 					marginBottom: '16px',
 					objectFit: 'contain',
 				}}
@@ -145,7 +137,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			<Button
 				onClick={onNext}
 			>
-				Comenzar Encuesta
+				Comenzar
 			</Button>
 
 		</Box>
