@@ -3,11 +3,10 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { MisLogros as iconLogros } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Divider, LinearProgress, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
-import { LinearProgressWithLabel } from '../../molecules/LinearProgress/LinearProgress';
 import medalla from "../../../assets/medalla_principal.png";
 import Button from "../../atoms/Button/Button";
 import theme from '../../../themes/theme';
@@ -77,7 +76,7 @@ const Logros: React.FC = () => {
 
     const Medalla: React.FC<{ nivel: string, progreso: string }> = ({ nivel, progreso }) => {
         return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px', width: '100%' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px', width: '386px' }}>
                 <Box
                     component="img"
                     src={medalla}
@@ -85,14 +84,22 @@ const Logros: React.FC = () => {
                 />
                 <Typography component="h2" variant="h2" color="primary"> {nivel} </Typography>
                 <Typography component="span" variant="body1" color="text" sxProps={{ textAlign: 'center' }}>
-                    Nivel: ¡Sigue asi, estas a pocos pasos de llegar al siguiente nivel!
+                    ¡Sigue asi, estas a pocos pasos de llegar al siguiente nivel!
                 </Typography>
                 <Box sx={{ width: '100%' }}>
-                    <LinearProgressWithLabel
+
+                    <LinearProgress
+                        variant="determinate"
                         value={Number(progreso)}
-                        barColor={'#D9A514'}
-                        trackColor="#AAB1B6"
-                    />
+                        sx={{
+                            height: 10,
+                            borderRadius: 5,
+                            backgroundColor: '#AAB1B6',
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: '#D9A514',
+                                borderRadius: 5,
+                            },
+                        }} />
                 </Box>
             </Box>
         );
@@ -128,10 +135,10 @@ const Logros: React.FC = () => {
                 </Box>
 
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '350px' }}>
-                    <Button disabled={cv === null || cv === '' ? true : false } onClick={() => handleAddCv(cv)} sxProps={{ width: '165px' }} variant="outlined">
+                    <Button disabled={cv === null || cv === '' ? true : false} onClick={() => handleAddCv(cv)} sxProps={{ width: '165px' }} variant="outlined">
                         Agregar a mi CV
                     </Button>
-                    <Button disabled={download === null || download === '' ? true : false } onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
+                    <Button disabled={download === null || download === '' ? true : false} onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
                         Descargar
                     </Button>
                 </Box>
