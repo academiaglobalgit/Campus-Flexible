@@ -286,7 +286,7 @@ const Logros: React.FC = () => {
             </Box>
             :
             <Box>
-                <TituloIcon Titulo={TitleScreen.LOGROS} Icon={iconLogros} />
+                <TituloIcon Titulo={TitleScreen.LOGROS} fontSize="h2" />
                 <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? DescripcionesPantallas.LOGROS }} />
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <Box sx={
