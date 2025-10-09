@@ -9,14 +9,14 @@ import { LinearProgressWithLabel } from "../../molecules/LinearProgress/LinearPr
 import { CursosActivos } from "@iconsCustomizeds";
 import { useNavigate } from "react-router-dom";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { useGetCursos, useGetEncuestas } from "../../../services/CursosActivosService";
+import { useGetCursos, useGetEncuestas, updateVideoVisto } from "../../../services/CursosActivosService";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { usePromediarCurso } from "../../../services/CalificacionesService";
 import { useMutation } from "@tanstack/react-query";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { accordionStyle, innerHTMLStyle } from "@styles";
-import { getVervideoBienvenida, setCursoSelected, setVervideoBienvenida } from "../../../hooks/useLocalStorage";
+import { setCursoSelected } from "../../../hooks/useLocalStorage";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import { EncuestasModal } from "../../molecules/Dialogs/EncuestasDialog/EncuestasDialog";
 import type { EncuestasDatosResponse } from "../../../types//Encuestas.interface";
@@ -28,7 +28,8 @@ import { isPlanInList } from "../../../utils/Helpers";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma } = useAuth();
+    const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
+    console.log("🚀 ~ CursoActivo ~ videoVisto:", videoVisto)
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -54,28 +55,17 @@ const CursoActivo: React.FC = () => {
     React.useEffect(() => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                setTutorVer(false);
-
-                if (getVervideoBienvenida() === '') {
-                    setUrlVideo(manual?.url ?? '');
-                    setTipoVideo(4)
-                    setIsOpenVideo(true);
-                }
-
-                break;
             case 19: // Diplomados Coppel
                 setTutorVer(false);
-
-                if (getVervideoBienvenida() === '') {
+                if (videoVisto === 0) {
                     setUrlVideo(manual?.url ?? '');
                     setTipoVideo(4)
                     setIsOpenVideo(true);
                 }
-
                 break;
 
         }
-    }, [configPlataforma?.id_plan_estudio, cursosData]);
+    }, [configPlataforma?.id_plan_estudio, cursosData, manual]);
 
     useEffect(() => {
         if (cursosData?.data) {
@@ -96,10 +86,12 @@ const CursoActivo: React.FC = () => {
         refetch()
             .then(response => {
                 const encuestasActivas = response.data?.data?.filter(encuesta => encuesta.estatus.toLowerCase() === "asignada") ?? [];
-                if (encuestasActivas.length > 0 && getVervideoBienvenida() === '1') {
-                    setEncuestaData(encuestasActivas);
-                    setIdAsignacion(encuestasActivas[0].id_asignacion);
-                    setOpenEncuesta(true);
+                if (encuestasActivas && videoVisto) {
+                    if (encuestasActivas.length > 0 && videoVisto != 0) {
+                        setEncuestaData(encuestasActivas);
+                        setIdAsignacion(encuestasActivas[0].id_asignacion);
+                        setOpenEncuesta(true);
+                    }
                 }
             })
             .catch(error => {
@@ -150,7 +142,14 @@ const CursoActivo: React.FC = () => {
     }
 
     const handleCerrarVideo = async () => {
-        setVervideoBienvenida('1');
+
+        updateVideoVisto().then(() => {
+            if (SetVideoVisto) SetVideoVisto(1);
+        })
+            .catch(error => {
+                console.error("Error fetching encuestas:", error);
+            })
+
         setIsOpenVideo(false);
         setRefreshEncuestas(prev => !prev);
     };

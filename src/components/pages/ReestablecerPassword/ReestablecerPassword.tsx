@@ -38,7 +38,7 @@ const PasswordReset: React.FC = () => {
                 case 19: // Diplomado
                     setBackgroundImage(DiplomadoCoppel);
                     setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                    setVerLogo(false);
+                    setVerLogo(true);
                     break;
                 default:
                     setBackgroundImage(HomeDiplomado);

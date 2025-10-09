@@ -33,7 +33,8 @@ export const CURSOS_ACTIVOS_ENDPOINTS = {
     GET_LISTA_PROGRESO: { path: '/cursos-activos/lista-progreso', key: 'lista-progreso' },
     GET_ENCUESTAS_ASIGNACIONES: { path: '/encuestas/asignaciones/todas', key: 'encuestas-asignacion' },
     SET_ENCUESTAS_ASIGNACIONES: { path: 'encuestas/asignaciones', key: 'encuestas-asignacion-guardar' },
-    POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' }
+    POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' },
+    POST_VIDEO_VISTO: { path: '/video-bienvenidaview' }
 }
 
 export const CALENDARIO_ENDPOINTS = {
