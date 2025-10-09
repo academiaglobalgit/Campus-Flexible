@@ -66,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setUser(userData);
                     setAceptoTerminos(userData?.aceptoTerminos);
                     setNombrePrograma(userData.nombrePrograma);
+                    SetVideoVisto(userData.video_visto)
                 }
             } catch (error) {
                 console.error("Error checking auth:", error);
