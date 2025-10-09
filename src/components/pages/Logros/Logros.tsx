@@ -13,6 +13,7 @@ import Button from "../../atoms/Button/Button";
 import theme from '../../../themes/theme';
 import themeCoppel from '../../../themes/coppel';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import InsigniaBasica from '../../../assets/IconsCustomize/insignia_basica.svg';
 import Clasificacion from '../../../assets/clasificacion.svg';
 import { loadConfig } from "../../../config/configStorage";
@@ -32,6 +33,7 @@ const Logros: React.FC = () => {
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { data: Logros, isLoading } = useGetDatosModulos(ModulosCampusIds.LOGROS);
+    const { data: calificacionData, isLoading: isLoadingCertis } = useGetCalificaciones();
     const [config, setConfig] = React.useState<any>(null);
     const [value, setValue] = React.useState(0);
 
@@ -116,20 +118,20 @@ const Logros: React.FC = () => {
         );
     }
 
-    const Certificaciones = (cv: string, download: string) => (
+    const Certificaciones = (title: string, cv: string, download: string) => (
         <>
             <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', mt: 1, gap: 2 }}>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography component="span" variant="body3" color="text"> Agosto 27 / 2025 </Typography>
-                    <Typography component="h5" variant="h5" color="primary"> Certificación en (Nombre Aquí) </Typography>
+                    <Typography component="span" variant="body3" color="text"> (fecha aquí) </Typography>
+                    <Typography component="h5" variant="h5" color="primary"> Certificación en {title} </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '350px' }}>
-                    <Button onClick={() => handleAddCv(cv)} sxProps={{ width: '165px' }} variant="outlined">
+                    <Button disabled={cv === null || cv === '' ? true : false } onClick={() => handleAddCv(cv)} sxProps={{ width: '165px' }} variant="outlined">
                         Agregar a mi CV
                     </Button>
-                    <Button onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
+                    <Button disabled={download === null || download === '' ? true : false } onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
                         Descargar
                     </Button>
                 </Box>
@@ -169,19 +171,53 @@ const Logros: React.FC = () => {
             </Box>
 
             <TabPanel value={value} index={0} dir={theme.direction}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', width: '100%', m: 1, gap: '30px' }}>
-
-                    <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <Typography component="h5" variant="h5" sxProps={{ color: theme.palette.text.secondary }}> Mis Certificaciones  </Typography><ArrowForwardIosIcon />
+                {isLoadingCertis ? (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '20px',
+                            width: '100%',
+                            height: '50vh',
+                            overflow: 'hidden',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <CircularProgress />
+                        <Typography component="h4" variant="h4" color="primary">
+                            Cargando Certificaciones...
+                        </Typography>
                     </Box>
+                ) : (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'start',
+                            width: '100%',
+                            m: 1,
+                            gap: '30px',
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', mt: 1, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                            <Typography component="h5" variant="h5" sxProps={{ color: `${theme.palette.text.secondary}` }}>
+                                Mis Certificaciones ({calificacionData?.cursos?.length})
+                            </Typography>
+                            <ArrowForwardIosIcon />
+                        </Box>
 
-                    <Box sx={{ display: 'flex', mt: 1, flexDirection: 'column', gap: 4 }}>
-                        {Certificaciones('cv', 'download')}
-                        {Certificaciones('cv', 'download')}
+                        <Box sx={{ display: 'flex', mt: 1, flexDirection: 'column', gap: 4 }}>
+                            {calificacionData?.cursos?.flatMap(periodo =>
+                                periodo.cursos.map(curso =>
+                                    Certificaciones(curso.nombre_curso, '', curso.url_accredible ?? '')
+                                )
+                            )}
+                        </Box>
                     </Box>
-                </Box>
-
+                )}
             </TabPanel>
+
 
             <TabPanel value={value} index={1} dir={theme.direction}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', backgroundColor: '#F1F4F6', borderRadius: '20px' }}>
@@ -286,7 +322,7 @@ const Logros: React.FC = () => {
             </Box>
             :
             <Box>
-                <TituloIcon Titulo={TitleScreen.LOGROS} fontSize="h2" />
+                <TituloIcon Titulo={TitleScreen.LOGROS} Icon={isMobile && iconLogros} fontSize="h2" />
                 <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? DescripcionesPantallas.LOGROS }} />
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <Box sx={
