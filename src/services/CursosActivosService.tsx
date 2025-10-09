@@ -197,3 +197,9 @@ export const SaveEncuesta = async (payload: SaveEncuestaPayload): Promise<Encues
         { data: encryptedPayload }
     );
 };
+
+export const updateVideoVisto = async (): Promise<EncuestasResponse> => {
+    return await apiClient.post<EncuestasResponse>(
+        `${CURSOS_ACTIVOS_ENDPOINTS.POST_VIDEO_VISTO.path}`,
+    );
+};

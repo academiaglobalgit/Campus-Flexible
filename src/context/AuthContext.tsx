@@ -17,12 +17,14 @@ interface AuthContextType {
   isLogout: boolean;
   aceptoTerminos: boolean;
   configPlataforma: ConfigPlataforma | null;
+  videoVisto: number;
   clearError: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
   newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   setAceptoTerminos?: (acepto: boolean) => void;
+  SetVideoVisto?:(acepto: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
     const [aceptoTerminos, setAceptoTerminos] = useState(true);
+    const [videoVisto, SetVideoVisto] = useState(0);
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -119,7 +122,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const aceptoTerminosValue = response?.acepto_terminos
                 setToken(response?.token);
                 setAceptoTerminos(aceptoTerminosValue);
-                setNombrePrograma(response?.programa);           
+                setNombrePrograma(response?.programa);         
+                SetVideoVisto(response?.video_visto)  
                 
                 await procesarPerfil(response?.acepto_terminos, response?.programa);
 
@@ -159,7 +163,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const aceptoTerminosValue = response?.acepto_terminos ?? false;
                 setToken(response?.token);
                 setAceptoTerminos(aceptoTerminosValue);     
-                setNombrePrograma(response?.programa);           
+                setNombrePrograma(response?.programa); 
+                SetVideoVisto(response.video_visto)          
                 
                 await procesarPerfil(response?.acepto_terminos, response?.programa);
                 
@@ -223,6 +228,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
+    const handleVideoVisto = async (visto: number) => {
+        SetVideoVisto(visto);
+        if (user) {
+            const updatedUser = { ...user, videoVisto: visto };
+            setUser(updatedUser);
+            const encry = await encryptData(updatedUser);
+            setAuthModel(encry);
+        }
+    }
+
     const handleLogout = async () => {
         setIsLogout(true);
         setIsAuthenticated(false);
@@ -254,12 +269,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLogout,
         aceptoTerminos,
         configPlataforma,
+        videoVisto,
         login: handleLogin,
         logout: handleLogout,
         clearError,
         setUser,
         newPassword: handleNewPassword,
         setAceptoTerminos: handleAceptoTerminos,
+        SetVideoVisto : handleVideoVisto
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -23,6 +23,7 @@ export interface AuthResponse {
   session:  string;
   programa: string;
   acepto_terminos: boolean;
+  video_visto : number;
 }
 export interface AuthForgotPassword {
   success: boolean;
