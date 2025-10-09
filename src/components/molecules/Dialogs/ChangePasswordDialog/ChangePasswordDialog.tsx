@@ -18,7 +18,7 @@ export const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOp
     }, [isOpen]);
 
     return (
-        <Dialog isOpen={open} sxProps={{ width: '350px', minHeight: '250px', borderRadius: '8px' }}>
+        <Dialog isOpen={open} sxProps={{ width: '450px', minHeight: '250px', borderRadius: '8px' }}>
             <DialogContent>
                 <Box sx={{ ...flexColumn, gap: '15px' }}>
                     <Typography variant="body3" component="span" color="primary" sxProps={{ textAlign: 'center' }}>
@@ -26,8 +26,8 @@ export const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOp
                     </Typography>
                     Tu nueva contraseña debe cumplir con los siguientes puntos de seguridad:
                     <ul>
-                        <li>1.Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
-                        <li>2.Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
+                        <li>Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
+                        <li>Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
                         <li>1 número (por ejemplo, 0-9)</li>
                         <li>1 carácter especial (por ejemplo, !, @, #, $, %, ^, &, *)</li>
                         <li>1 letra mayúscula (por ejemplo, A-Z)</li>

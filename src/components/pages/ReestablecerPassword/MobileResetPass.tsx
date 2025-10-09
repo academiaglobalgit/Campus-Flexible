@@ -280,8 +280,8 @@ export const MobileResetPass: React.FC = () => {
 
                 Tu nueva contraseña debe cumplir con los siguientes puntos de seguridad:
                 <ul>
-                    <li>1.Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
-                    <li>2.Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
+                    <li>Longitud Mínima: Tu contraseña debe tener al menos 8 caracteres.</li>
+                    <li>Complejidad Requerida: Tu contraseña debe incluir al menos:</li>
                     <li>1 número (por ejemplo, 0-9)</li>
                     <li>1 carácter especial (por ejemplo, !, @, #, $, %, ^, &, *)</li>
                     <li>1 letra mayúscula (por ejemplo, A-Z)</li>
