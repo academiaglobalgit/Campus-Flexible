@@ -346,11 +346,11 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                {!isPlanInList(configPlataforma?.id_plan_estudio) && 
-                                                <Box sx={{ display: 'flex', gap: '10px' }}>
-                                                    <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
-                                                    <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
-                                                </Box>}
+                                                {!isPlanInList(configPlataforma?.id_plan_estudio) &&
+                                                    <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                        <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
+                                                        <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
+                                                    </Box>}
                                                 <Box sx={{ width: '250px' }}>
                                                     {
                                                         item.retroalimentacion && <Button
@@ -405,7 +405,20 @@ export const Actividades: React.FC = () => {
                                                 />
                                             </Box>
 
-                                            { !isPlanInList(configPlataforma?.id_plan_estudio) && <Files item={item} /> }
+                                            {
+                                                !isPlanInList(configPlataforma?.id_plan_estudio)
+                                                    ? <Files item={item} />
+                                                    : (item.calificacion === null && (
+                                                        <Button
+                                                            fullWidth
+                                                            onClick={() => handleSaveActivity(item.id_recurso)}
+                                                            sxProps={{ mt: 2 }}
+                                                            isLoading={isSaving}
+                                                        >
+                                                            Finalizar Actividad
+                                                        </Button>
+                                                    ))
+                                            }
 
                                         </Box>
                                     </Box>
