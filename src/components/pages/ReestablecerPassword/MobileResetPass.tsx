@@ -322,7 +322,7 @@ export const MobileResetPass: React.FC = () => {
                             <TextField
                                 {...field}
                                 id="new-password"
-                                label="Ejemplo: UnaClaveSegura456!"
+                                label="Ejemplo: e?7Yo9O!3EI"
                                 fullWidth
                                 error={!!errors.new_password}
                                 helperText={errors.new_password?.message}
