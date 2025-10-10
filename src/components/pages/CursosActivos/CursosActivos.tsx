@@ -29,7 +29,6 @@ import { isPlanInList } from "../../../utils/Helpers";
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
-    console.log("🚀 ~ CursoActivo ~ videoVisto:", videoVisto)
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -57,7 +56,7 @@ const CursoActivo: React.FC = () => {
             case 17: // Diplomados
             case 19: // Diplomados Coppel
                 setTutorVer(false);
-                if (videoVisto === 0) {
+                if (videoVisto === 0 ) {
                     setUrlVideo(manual?.url ?? '');
                     setTipoVideo(4)
                     setIsOpenVideo(true);
@@ -144,14 +143,16 @@ const CursoActivo: React.FC = () => {
     const handleCerrarVideo = async () => {
 
         updateVideoVisto().then(() => {
-            if (SetVideoVisto) SetVideoVisto(1);
+            if (SetVideoVisto){
+
+                setIsOpenVideo(false);
+                setRefreshEncuestas(prev => !prev);
+                SetVideoVisto(1);
+            } 
         })
             .catch(error => {
                 console.error("Error fetching encuestas:", error);
             })
-
-        setIsOpenVideo(false);
-        setRefreshEncuestas(prev => !prev);
     };
 
     const createMutation = useMutation({
