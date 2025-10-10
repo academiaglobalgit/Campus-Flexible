@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setUser(userData);
                     setAceptoTerminos(userData?.aceptoTerminos);
                     setNombrePrograma(userData.nombrePrograma);
-                    SetVideoVisto(userData.video_visto)
+                    SetVideoVisto(userData.videoVisto)
                 }
             } catch (error) {
                 console.error("Error checking auth:", error);
@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setNombrePrograma(response?.programa);         
                 SetVideoVisto(response?.video_visto)  
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa);
+                await procesarPerfil(response?.acepto_terminos, response?.programa, response?.video_visto);
 
                 setIsAuthenticated(true);                
                 setIsLoading(false);
@@ -167,7 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setNombrePrograma(response?.programa); 
                 SetVideoVisto(response.video_visto)          
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa);
+                await procesarPerfil(response?.acepto_terminos, response?.programa, response.video_visto);
                 
                 setIsAuthenticated(true);
                 setIsLoading(false);
@@ -189,13 +189,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined) => {
+    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined , videoBienvenida: number | undefined) => {
         const perfil = await refetch();
 
         if (perfil.data) {
             const datos = perfil.data.data;
             
             const aceptoTerminosValue = pAceptoTerminos;
+            const video = videoBienvenida;
 
             const auth = {
                 name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
@@ -205,12 +206,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
                 aceptoTerminos: aceptoTerminosValue,
+                videoVisto: video,
                 nombrePrograma: programa,
             };
 
             setUser(auth);
 
             setAceptoTerminos(aceptoTerminosValue ?? false);
+            SetVideoVisto(video ?? 0)
 
             const encry = await encryptData(auth);
             setAuthModel(encry);
