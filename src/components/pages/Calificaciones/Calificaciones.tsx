@@ -114,7 +114,7 @@ const Calificaciones: React.FC = () => {
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
                     <Typography component={"span"} variant={"body3"} color={
                         curso.estatus_curso_alumno === 'Finalizado'
-                            ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                            ? (Number(curso.calificacion)< 6 ? 'error' : 'success')
                             : 'disabled'
                     }>Calificación : </Typography>
                     <Typography
@@ -122,7 +122,7 @@ const Calificaciones: React.FC = () => {
                         variant={"body3"}
                         color={
                             curso.estatus_curso_alumno === 'Finalizado'
-                                ? (Number(curso.calificacion) === 0 ? 'error' : 'success')
+                                ? (Number(curso.calificacion) < 6 ? 'error' : 'success')
                                 : 'disabled'
                         }
                     >
