@@ -63,8 +63,8 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			setRespuestas([]);
 			setOpen(false);
 			setIsDisabled(false);
-			showNotification(`Encuesta guardada satisfactoriamente`, "success");
-
+			showNotification(`Formulario guardado satisfactoriamente`, "success");
+			setStep("inicio")
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
@@ -132,7 +132,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			</Typography>
 			<Typography sx={{ ...innerHTMLStyle }} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.encuesta?.descripcion ?? '' }}>
 			</Typography>
-			<Typography component="span" variant="body2" color="primary">Esta encuesta incluye {totalPreguntas} preguntas
+			<Typography component="span" variant="body2" color="primary">Este formulario incluye {totalPreguntas} preguntas
 			</Typography>
 			<Button
 				onClick={onNext}
