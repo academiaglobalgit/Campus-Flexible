@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Button, useTheme, LinearProgress, Tooltip } from "@mui/material";
+import { Box, Typography, useTheme, LinearProgress, Tooltip } from "@mui/material";
+import Button from "../../../atoms/Button/Button";
 import Pregunta from "./Preguntas";
 
 interface EncuestaSeccionesProps {
@@ -8,6 +9,7 @@ interface EncuestaSeccionesProps {
     handleRadioChange: (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleTextChange: (id: number, value: string) => void;
     isDisabled: boolean;
+    isLoading: boolean;
     setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
     onFinish?: () => void;
 }
@@ -19,6 +21,7 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
     handleTextChange,
     respuestas = [],
     isDisabled,
+    isLoading,
     setIsDisabled,
 }) => {
     const encuesta = data?.encuesta;
@@ -130,6 +133,7 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
                             <Button
                                 variant="contained"
                                 disabled={isDisabled}
+                                isLoading={isLoading}
                                 onClick={handleNext}
                             >
                                 {currentSection === totalSecciones - 1 ? "Finalizar" : "Siguiente"}

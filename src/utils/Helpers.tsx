@@ -191,3 +191,18 @@ export const isPlanInList = (idPlanEstudio?: number): boolean => {
   const planesDiplomados = [17, 19];
   return planesDiplomados.includes(idPlanEstudio ?? -1);
 };
+
+export const formatFechaBonita = (isoString: string): string => {
+  const fecha = new Date(isoString);
+
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
+  const mes = meses[fecha.getMonth()];
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const anio = fecha.getFullYear();
+
+  return `${mes} ${dia} / ${anio}`;
+};

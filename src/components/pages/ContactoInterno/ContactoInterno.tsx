@@ -159,7 +159,7 @@ const ContactoInterno: React.FC = () => {
                                     <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                         <WhatsAppContacto />
                                         <Link
-                                            href={'http://wa.link/8hh696'}
+                                            href={'http://wa.link/n0dwpv'}
                                             target="_blank"
                                             sx={{ textDecoration: "none" }}
                                         >

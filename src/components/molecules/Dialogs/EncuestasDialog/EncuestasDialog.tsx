@@ -33,6 +33,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const queryClient = useQueryClient();
 	const { showNotification } = useNotification();
 	const [open, setOpen] = React.useState(false);
+	const [loading, setLoading] = React.useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
 	const [step, setStep] = React.useState<"inicio" | "preguntas">("inicio");
@@ -44,6 +45,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	}, [isOpen]);
 
 	const handlSetEncuesta = (respuesta: Respuesta[], idAsignacion: number) => {
+		setLoading(true)
 		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
 	}
 
@@ -60,11 +62,12 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				exact: true,
 			});
 
+			showNotification(`Formulario guardado satisfactoriamente`, "success");
 			setRespuestas([]);
+			setStep("inicio")
 			setOpen(false);
 			setIsDisabled(false);
-			showNotification(`Encuesta guardada satisfactoriamente`, "success");
-
+			setLoading(false)
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
@@ -132,7 +135,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			</Typography>
 			<Typography sx={{ ...innerHTMLStyle }} component="span" variant="body1" dangerouslySetInnerHTML={{ __html: data?.encuesta?.descripcion ?? '' }}>
 			</Typography>
-			<Typography component="span" variant="body2" color="primary">Esta encuesta incluye {totalPreguntas} preguntas
+			<Typography component="span" variant="body2" color="primary">Este formulario incluye {totalPreguntas} preguntas
 			</Typography>
 			<Button
 				onClick={onNext}
@@ -157,10 +160,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				handleTextChange={handleTextChange}
 				isDisabled={isDisabled}
 				setIsDisabled={setIsDisabled}
+				isLoading={loading}			
 				onFinish={() => {
 					if (data) handlSetEncuesta(respuestas, data.idAsignacion);
-				}}
-			/>
+				} } 
+				/>
 			break;
 		default:
 			content = '';

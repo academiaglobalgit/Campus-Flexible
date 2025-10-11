@@ -3,19 +3,21 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { MisLogros as iconLogros } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, CircularProgress, Divider, LinearProgress, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
-import medalla from "../../../assets/medalla_principal.png";
+import medallaOro from "../../../assets/medalla_principal.png";
+import medallaPlata from "../../../assets/medalla_plata.png";
+import medallaBronce from "../../../assets/medalla_bronce.png";
 import Button from "../../atoms/Button/Button";
 import theme from '../../../themes/theme';
-import themeCoppel from '../../../themes/coppel';
+//import themeCoppel from '../../../themes/coppel';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import InsigniaBasica from '../../../assets/IconsCustomize/insignia_basica.svg';
 import Clasificacion from '../../../assets/clasificacion.svg';
-import { loadConfig } from "../../../config/configStorage";
+//import { loadConfig } from "../../../config/configStorage";
 import { styled } from '@mui/material/styles';
 import TabPanel from "../../molecules/TabPanel/TabPanel";
 import Table from '@mui/material/Table';
@@ -25,22 +27,27 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper'
+import { formatFechaBonita } from "../../../utils/Helpers";
 import { DescripcionesPantallas } from '@constants';
 
+interface MedallaProps {
+    nivel: string;
+    progreso: string | number;
+}
 
 const Logros: React.FC = () => {
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { data: Logros, isLoading } = useGetDatosModulos(ModulosCampusIds.LOGROS);
     const { data: calificacionData, isLoading: isLoadingCertis } = useGetCalificaciones();
-    const [config, setConfig] = React.useState<any>(null);
+    //const [config, setConfig] = React.useState<any>(null);
     const [value, setValue] = React.useState(0);
 
-    React.useEffect(() => {
+    /* React.useEffect(() => {
         loadConfig().then(cfg => {
             setConfig(cfg);
         });
-    }, []);
+    }, []); */
 
     const StyledTableCell = styled(TableCell)(() => ({
         [`&.${tableCellClasses.head}`]: {
@@ -62,7 +69,7 @@ const Logros: React.FC = () => {
         },
     }));
 
-    const LogrosCards: React.FC<{ horas: string, tipo: string, color: string }> = ({ horas, tipo, color }) => {
+    /* const LogrosCards: React.FC<{ horas: string, tipo: string, color: string }> = ({ horas, tipo, color }) => {
         return (
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px', width: isMobile ? '345px' : '188px', height: '92px', backgroundColor: color, borderRadius: '8px', marginBottom: '32px', marginTop: '36px', boxShadow: '0 4px 8px 0 rgba(107, 187, 228, 0.40)' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
@@ -72,45 +79,70 @@ const Logros: React.FC = () => {
                 <Typography component="h4" variant="h4" sxProps={{ color: '#fff' }}> {tipo} </Typography>
             </Box>
         );
-    }
+    } */
 
-    const Medalla: React.FC<{ nivel: string, progreso: string }> = ({ nivel, progreso }) => {
+
+    const Medalla: React.FC<MedallaProps> = ({ nivel, progreso }) => {
+        const puntos = Number(progreso);
+
+        let medallaSrc = medallaBronce;
+        let mensaje = "";
+
+        if (puntos > 3000) {
+            medallaSrc = medallaOro;
+            mensaje = "¡Increíble! Has alcanzado el nivel Avanzado";
+        } else if (puntos > 1500) {
+            medallaSrc = medallaPlata;
+            mensaje = "¡Excelente! Estás en el nivel Intermedio";
+        }
+
         return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px', width: '386px' }}>
-                <Box
-                    component="img"
-                    src={medalla}
-                    alt="medalla"
-                />
-                <Typography component="h2" variant="h2" color="primary"> {nivel} </Typography>
-                <Typography component="span" variant="body1" color="text" sxProps={{ textAlign: 'center' }}>
-                    ¡Sigue asi, estas a pocos pasos de llegar al siguiente nivel!
-                </Typography>
-                <Box sx={{ width: '100%' }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "10px",
+                    width: "386px",
+                    textAlign: "center",
+                }}
+            >
+                <Box component="img" src={medallaSrc} alt="medalla" sx={{ width: 150 }} />
 
+                <Typography component="h2" variant="h5" color="primary">
+                    Nivel: {nivel}
+                </Typography>
+
+                <Typography component="span" variant="body1" color="text">
+                    {mensaje}
+                </Typography>
+
+                {/* <Box sx={{ width: "100%", mt: 2 }}>
                     <LinearProgress
                         variant="determinate"
-                        value={Number(progreso)}
+                        value={Math.min(puntos / 4600 * 100, 100)}
                         sx={{
                             height: 10,
                             borderRadius: 5,
-                            backgroundColor: '#AAB1B6',
-                            '& .MuiLinearProgress-bar': {
-                                backgroundColor: '#D9A514',
+                            backgroundColor: "#AAB1B6",
+                            "& .MuiLinearProgress-bar": {
+                                backgroundColor: "#D9A514",
                                 borderRadius: 5,
                             },
-                        }} />
-                </Box>
+                        }}
+                    />
+                </Box> */}
             </Box>
         );
-    }
+    };
 
     const Insignia = (racha: string, fecha: string) => {
         return (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', maxWidth: '276px', padding: '10px', }}>
                 <Box
                     component="img"
-                    src={medalla}
+                    src={medallaBronce}
                     alt="medalla"
                     sx={{ width: '59px' }}
                 />
@@ -125,21 +157,25 @@ const Logros: React.FC = () => {
         );
     }
 
-    const Certificaciones = (title: string, cv: string, download: string) => (
+    const Certificaciones = (title: string, fecha: string, download: string) => (
         <>
             <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', mt: 1, gap: 2 }}>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography component="span" variant="body3" color="text"> (fecha aquí) </Typography>
+
+                    {
+                        fecha === null ? <Typography component="span" variant={isMobile ? 'body2' : 'h4'} color={'disabled'} >
+                            Sin iniciar
+                        </Typography> :
+                            <Typography component="span" variant="body3" color="text"> {formatFechaBonita(fecha)} </Typography>
+                    }
                     <Typography component="h5" variant="h5" color="primary"> Certificación en {title} </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '350px' }}>
-                    <Button disabled={cv === null || cv === '' ? true : false} onClick={() => handleAddCv(cv)} sxProps={{ width: '165px' }} variant="outlined">
-                        Agregar a mi CV
-                    </Button>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '350px' }}>
+
                     <Button disabled={download === null || download === '' ? true : false} onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
-                        Descargar
+                        Ver detalles
                     </Button>
                 </Box>
             </Box>
@@ -148,12 +184,18 @@ const Logros: React.FC = () => {
         </>
     );
 
-    const handleAddCv = (cv: string) => {
-        console.log(cv)
-    }
     const handleDescargar = (download: string) => {
-        console.log(download)
-    }
+        if (!download) return;
+
+        const link = document.createElement("a");
+        link.href = download;
+        link.setAttribute("download", "");
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
 
     const tabs = (recursos: any) => {
         return <>
@@ -172,8 +214,8 @@ const Logros: React.FC = () => {
                     }}
                 >
                     <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Certificaciones" />
-                    <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Insignias" />
-                    <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mi Clasificación" />
+                    {/* <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Insignias" />
+                    <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mi Clasificación" /> */}
                 </Tabs>
             </Box>
 
@@ -217,7 +259,7 @@ const Logros: React.FC = () => {
                         <Box sx={{ display: 'flex', mt: 1, flexDirection: 'column', gap: 4 }}>
                             {calificacionData?.cursos?.flatMap(periodo =>
                                 periodo.cursos.map(curso =>
-                                    Certificaciones(curso.nombre_curso, '', curso.url_accredible ?? '')
+                                    Certificaciones(curso.nombre_curso, curso.fecha_registro, curso.url_accredible ?? '')
                                 )
                             )}
                         </Box>
@@ -339,9 +381,9 @@ const Logros: React.FC = () => {
                             isMobile && { flexDirection: 'column', justifyContent: 'center', width: '345px' }
                         ]
                     }>
-                        <LogrosCards horas="125" tipo="En plataforma" color={config?.data.color_primary} />
+                        {/*  <LogrosCards horas="125" tipo="En plataforma" color={config?.data.color_primary} />
                         <LogrosCards horas="5" tipo="Certificaciones" color={themeCoppel.palette.primary.main} />
-                        <LogrosCards horas="5" tipo="Concluidos" color={themeCoppel.palette.primary.main} />
+                        <LogrosCards horas="5" tipo="Concluidos" color={themeCoppel.palette.primary.main} /> */}
                     </Box>
                 </Box>
             </Box>
@@ -364,7 +406,7 @@ const Logros: React.FC = () => {
                     <Box sx={{ display: 'flex' }}>
                         {Insignias}
                         <Box>
-                            <Medalla nivel="Nivel: Avanzado" progreso="80" />
+                            <Medalla nivel="Principiante" progreso="0" />
                         </Box>
                     </Box>
                     {tabs(recursos)}
