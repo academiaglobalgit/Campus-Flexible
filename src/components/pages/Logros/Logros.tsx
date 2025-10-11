@@ -3,7 +3,7 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { MisLogros as iconLogros } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, CircularProgress, Divider, LinearProgress, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";

@@ -62,11 +62,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				exact: true,
 			});
 
+			showNotification(`Formulario guardado satisfactoriamente`, "success");
 			setRespuestas([]);
+			setStep("inicio")
 			setOpen(false);
 			setIsDisabled(false);
-			showNotification(`Formulario guardado satisfactoriamente`, "success");
-			setStep("inicio")
 			setLoading(false)
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
