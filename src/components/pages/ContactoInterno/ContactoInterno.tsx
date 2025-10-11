@@ -153,17 +153,18 @@ const ContactoInterno: React.FC = () => {
                             Teléfonos:
                         </Typography>
 
-                        {section.data.telefonos.map((tel: { numero: string; tipo: string }, index: number) => {
-                            if (tel.tipo === "WhatsApp") {
+                        {section.data.telefonos.map((item: any, index: number) => {
+                            if (item.tipo === "WhatsApp") {
                                 return (
                                     <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                         <WhatsAppContacto />
                                         <Link
-                                            href={'http://wa.link/n0dwpv'}
+                                            variant="body2"
+                                            href={item.url_contacto}
                                             target="_blank"
                                             sx={{ textDecoration: "none" }}
                                         >
-                                            {formatWithIMask(tel.numero, "phone")}
+                                            {formatWithIMask(item.numero, "phone")}
                                         </Link>
                                     </Box>
                                 );
@@ -172,7 +173,7 @@ const ContactoInterno: React.FC = () => {
                                     <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                         <CellPhone />
                                         <Typography component="p" variant="body2">
-                                            {formatWithIMask(tel.numero, "phone")}
+                                            {formatWithIMask(item.numero, "phone")}
                                         </Typography>
                                     </Box>
                                 );

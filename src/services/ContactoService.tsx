@@ -48,7 +48,7 @@ export const useContactoInterno = (id_plan_estudios: number) => {
                     descripcion_seccion,
                     id_tipo_contacto,
                     valor_contacto,
-                    descripcion
+                    descripcion,
                 } = currentItem;
 
                 if (!acc[id_seccion_contacto]) {
@@ -70,7 +70,8 @@ export const useContactoInterno = (id_plan_estudios: number) => {
                     case 1: // teléfonos
                         acc[id_seccion_contacto].data.telefonos!.push({
                             numero: formatWithIMask(valor_contacto, 'phone'),
-                            tipo: descripcion
+                            tipo: descripcion,
+                            url_contacto: currentItem.url_contacto
                         });
                         break;
                     case 2: // email

@@ -13,6 +13,7 @@ export interface Contacto {
     fecha_actualizacion: string;
     id_usuario_modifico: number;
     eliminado: number;
+    url_contacto?: string;
 }
 
 export interface ContactoInternoResponse {
@@ -28,11 +29,13 @@ export interface ContactoInterno {
     nombre_seccion: string;
     descripcion_seccion: string;
     valor: number;
+    url_contacto?: string;
 }
 
 export type TelefonoData = {
     numero: string;
     tipo: string;
+    url_contacto?: string;
 };
 
 export type ContactoData = {
