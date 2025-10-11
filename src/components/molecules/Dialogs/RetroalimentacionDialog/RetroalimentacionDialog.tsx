@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { Typography } from "../../../atoms/Typography/Typography";
+import { innerHTMLStyle } from "@styles";
 
 type RetroDialogProps = {
     isOpen?: boolean;
@@ -45,12 +46,12 @@ export const RetroalimentacionDialog: React.FC<RetroDialogProps> = ({isOpen, ret
                         borderRadius: '50px',
                         padding: '5px 10px 5px 10px',
                         },
-                    }}
+                    }} 
                 >
                     <Typography component="span" variant="body2" color="primary">Retroalimentación</Typography>
                 </Divider>
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: '25px', paddingBottom: '24px'}}>
-                    <Typography component="span" variant="body2">{retroalimentacion}</Typography>
+                    <Box sx={{ ...innerHTMLStyle }} dangerouslySetInnerHTML={{ __html: retroalimentacion ?? '<p></p>' }} />
                 </Box>
                 {closeButton}
                 <Box sx={{paddingTop:'10px'}}></Box>
