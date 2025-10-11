@@ -33,6 +33,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	const queryClient = useQueryClient();
 	const { showNotification } = useNotification();
 	const [open, setOpen] = React.useState(false);
+	const [loading, setLoading] = React.useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [respuestas, setRespuestas] = useState<Respuesta[]>([]);
 	const [step, setStep] = React.useState<"inicio" | "preguntas">("inicio");
@@ -44,6 +45,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 	}, [isOpen]);
 
 	const handlSetEncuesta = (respuesta: Respuesta[], idAsignacion: number) => {
+		setLoading(true)
 		createMutation.mutate({ respuestas: respuesta, id_asignacion: idAsignacion });
 	}
 
@@ -65,6 +67,7 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			setIsDisabled(false);
 			showNotification(`Formulario guardado satisfactoriamente`, "success");
 			setStep("inicio")
+			setLoading(false)
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
@@ -157,10 +160,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				handleTextChange={handleTextChange}
 				isDisabled={isDisabled}
 				setIsDisabled={setIsDisabled}
+				isLoading={loading}			
 				onFinish={() => {
 					if (data) handlSetEncuesta(respuestas, data.idAsignacion);
-				}}
-			/>
+				} } 
+				/>
 			break;
 		default:
 			content = '';
