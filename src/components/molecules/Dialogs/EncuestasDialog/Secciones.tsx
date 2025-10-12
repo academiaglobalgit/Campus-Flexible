@@ -61,7 +61,7 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
 
 
     return (
-        <Box id="scroll-encuesta" sx={{ display: "flex", flexDirection: "column", gap: 3, height: '100vh' }}>
+        <Box id="scroll-encuesta" sx={{ display: "flex", flexDirection: "column", gap: 3, height: "80vh" }}>
             {/* Título general */}
             <Typography component="h4" variant="h5" color="primary" sx={{ textAlign: "center" }}>
                 {encuesta?.titulo}
@@ -119,7 +119,20 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
                 </Box>
 
                 {/* Navegación */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mt: 3,
+                        pt: 2,
+                        borderTop: "1px solid #e0e0e0",
+                        backgroundColor: "background.paper",
+                        position: "sticky",
+                        bottom: 0,
+                        zIndex: 10,
+                        py: 2,
+                    }}
+                >
                     <Button variant="outlined" disabled={currentSection === 0} onClick={handlePrev}>
                         Anterior
                     </Button>
@@ -140,11 +153,8 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
                             </Button>
                         </span>
                     </Tooltip>
-
                 </Box>
             </Box>
-
-
         </Box>
     );
 };
