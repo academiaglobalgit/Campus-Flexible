@@ -153,7 +153,6 @@ export const ChatForoSalaConversacion: React.FC<ChatForoSalaConversacionProps> =
             if (onSaveComentarioExterno) onSaveComentarioExterno();
         },
         onError: (error) => {
-            console.log(error)
             setIsOpenLoading(false);
             showNotification(`Error al registrar: ${error.message}`, "error");
         },

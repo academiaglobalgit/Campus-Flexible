@@ -71,7 +71,6 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 			if (onEncuestaEnviada) onEncuestaEnviada(true);
 		},
 		onError: (error) => {
-			console.log(error)
 			setOpen(false);
 			showNotification(`Error al registrar: ${error.message}`, "error");
 		},

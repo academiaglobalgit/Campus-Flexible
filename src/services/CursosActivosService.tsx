@@ -100,7 +100,6 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
 
 export const updateActividad = async (data: { id_recurso: number, contenido: string, archivos: File[], archivos_eliminar: any[], id_entrega: number | null }): Promise<ActividadEntregadaResponse> => {
     const payload = { id_recurso: data.id_recurso, contenido: data.contenido, archivos_eliminar: data.archivos_eliminar, id_entrega: data.id_entrega };
-    console.log(payload);
     const encryptedPayload = await apiClient.encryptData(payload);
 
     const formData = new FormData();

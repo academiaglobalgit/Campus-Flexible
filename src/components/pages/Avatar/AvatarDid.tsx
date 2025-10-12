@@ -48,7 +48,7 @@ const AvatarDid: React.FC = () => {
                     agentId: 'v2_agt_4Yofx9b_',
                 },
                 19: {
-                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDY0NzU0ODYzMjY3MTQ3OTY1MTg6bHY0Tm80R0RncUJZemt2T3FqQ1ZR',
+                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDkzMjkwOTg4MzA0Mzk1ODA4OTA6VnptQUZQOXVsSEZOWUJoc3lrWkxy',
                     agentId: 'v2_agt_XOcOADSD',
                 },
             };
@@ -70,6 +70,7 @@ const AvatarDid: React.FC = () => {
                     script.setAttribute('data-agent-id', currentAgent.agentId);
                     script.setAttribute('data-name', 'did-agent');
                     script.setAttribute('data-monitor', 'true');
+                    script.setAttribute('data-orientation', 'horizontal');
                     script.setAttribute('data-position', 'right');
 
                     document.head.appendChild(script);

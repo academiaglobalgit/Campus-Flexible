@@ -63,8 +63,8 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
 
     const MarkedRead = () => ({ color: theme.palette.grey[100] })
 
-    const goTo = (item: Notificaciones) => {
-        console.log(item);
+    const goTo = (_item: Notificaciones) => {
+        //console.log(item);
         //FALTA NAVEGAR
     }
 
