@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, useTheme, LinearProgress, Tooltip } from "@mui/material";
+import { Box, Typography, useTheme, LinearProgress, Tooltip, Divider } from "@mui/material";
 import Button from "../../../atoms/Button/Button";
 import Pregunta from "./Preguntas";
 
@@ -61,9 +61,9 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
 
 
     return (
-        <Box id="scroll-encuesta" sx={{ display: "flex", flexDirection: "column", gap: 3, height: "80vh" }}>
+        <Box id="scroll-encuesta" sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {/* Título general */}
-            <Typography component="h4" variant="h5" color="primary" sx={{ textAlign: "center" }}>
+            <Typography align="center" component="span" variant="h5" color="primary">
                 {encuesta?.titulo}
             </Typography>
             {/* Progreso */}
@@ -84,27 +84,27 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
                 />
             </Box>
 
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1 }}>
                 {/* Sección actual */}
                 <Box>
                     <Typography
-                        component="h5"
+                        component="span"
                         variant="h6"
                         color="primary"
                         dangerouslySetInnerHTML={{ __html: seccionActual?.titulo_seccion }}
-                        sx={{ mb: 2 }}
                     />
 
                     <Box
                         id="seccion-preguntas"
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 3,
-                            height: "60vh",
-                            overflowY: "auto",
-                            pr: 2,
-                        }}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                                height: "calc(60vh - 62px)",
+                                overflowY: "auto",
+                                pr: 2,
+                                mt: 2
+                            }}
                     >
                         {seccionActual?.preguntas?.map((pregunta: any, i: number) => (
                             <Pregunta
@@ -119,40 +119,31 @@ const EncuestaSecciones: React.FC<EncuestaSeccionesProps> = ({
                 </Box>
 
                 {/* Navegación */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mt: 3,
-                        pt: 2,
-                        borderTop: "1px solid #e0e0e0",
-                        backgroundColor: "background.paper",
-                        position: "sticky",
-                        bottom: 0,
-                        zIndex: 10,
-                        py: 2,
-                    }}
-                >
-                    <Button variant="outlined" disabled={currentSection === 0} onClick={handlePrev}>
-                        Anterior
-                    </Button>
+                <Box>
+                    <Divider sx={{mt: '6px', mb: '8px' }} />
+                    <Box sx={{ width: '100%', display: "flex",
+                        justifyContent: "space-between" }}>
+                        <Button variant="outlined" disabled={currentSection === 0} onClick={handlePrev}>
+                            Anterior
+                        </Button>
 
-                    <Tooltip
-                        title={isDisabled ? "Faltan preguntas por contestar." : ""}
-                        disableHoverListener={!isDisabled}
-                        disableFocusListener={!isDisabled}
-                    >
-                        <span>
-                            <Button
-                                variant="contained"
-                                disabled={isDisabled}
-                                isLoading={isLoading}
-                                onClick={handleNext}
-                            >
-                                {currentSection === totalSecciones - 1 ? "Finalizar" : "Siguiente"}
-                            </Button>
-                        </span>
-                    </Tooltip>
+                        <Tooltip
+                            title={isDisabled ? "Faltan preguntas por contestar." : ""}
+                            disableHoverListener={!isDisabled}
+                            disableFocusListener={!isDisabled}
+                        >
+                            <span>
+                                <Button
+                                    variant="contained"
+                                    disabled={isDisabled}
+                                    isLoading={isLoading}
+                                    onClick={handleNext}
+                                >
+                                    {currentSection === totalSecciones - 1 ? "Finalizar" : "Siguiente"}
+                                </Button>
+                            </span>
+                        </Tooltip>
+                    </Box>
                 </Box>
             </Box>
         </Box>
