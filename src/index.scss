@@ -14,3 +14,9 @@
   overflow: hidden; 
   text-overflow: ellipsis;
 }
+
+@media screen and (max-width: 1366px) {
+  .is1366 {
+    width: 80% !important;
+  }
+}
