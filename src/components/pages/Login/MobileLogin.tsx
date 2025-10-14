@@ -111,19 +111,14 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     alignItems: 'center',
                 }}
             >
-
-                <Box sx={{ width: '250px', height: '200px', mb: 1 }}>
-                    <Box
-                        component="img"
-                        src={config?.data.logo_url || Logo}
-                        alt="AG College Logo"
-                        sx={{
-                            mt: 2,
-                            width: '100%',
-                            height: '170px'
-                        }}
-                    />
-                </Box>
+                <Box
+                    component="img"
+                    src={config?.data.logo_url || Logo}
+                    alt="AG College Logo"
+                    sx={{
+                        mb: 2,
+                    }}
+                />
 
                 <Typography
                     color='primary.main'
@@ -146,7 +141,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     {config?.data.nombre_plan || ''}
                 </Typography>
                 <Typography
-
                     component="p"
                     variant="body2"
                     sx={{
@@ -170,6 +164,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 handleSubmit(onSubmit)();
                             }
                         }}
+                        sx={{mb: 0}}
                     />
                     <TextField
                         label="Contraseña"
@@ -201,6 +196,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 handleSubmit(onSubmit)();
                             }
                         }}
+                        sx={{mb: 0}}
                     />
 
                     <Typography
@@ -208,8 +204,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         variant="body2"
                         color='primary.main'
                         sx={{
-                            mt: '6px',
-                            mb: '6px',
                             textAlign: 'center',
                             cursor:'pointer'
                         }}
@@ -218,7 +212,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         He olvidado mi contraseña
                     </Typography>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
                         <ReCAPTCHA
                             sitekey={CAPTCHA}
                             onChange={onCaptchaChange}
@@ -228,7 +222,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         fullWidth
                         onClick={handleSubmit(onSubmit)}
                         sxProps={{
-                            mb: '30px',
+                            mb: '12px',
                             py: 1.5,
                         }}
                         isLoading={isLoading}

@@ -1,4 +1,4 @@
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, DialogActions, DialogContent, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
@@ -15,7 +15,6 @@ type DialogProps = {
 
 export const VideoBienvenidaDialog: React.FC<DialogProps> = ({ urlVideo, isOpen, close, tipo }) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
@@ -59,25 +58,22 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({ urlVideo, isOpen,
 
     return (
         <Dialog isOpen={open} sxProps={{ margin: '5px', height:'auto'}} >
-            <Box
-                sx={[
-                    { display: 'flex', flexDirection: 'column', gap: '20px' },
-                    isMobile ? { padding: '15px' } : { padding: '30px' }
-                ]}
-            >
-
-                {tipo === 4 || tipo === 1 ? <>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
-                        <Box>
-                            <Box dangerouslySetInnerHTML={{ __html: urlVideo }}></Box>
+            <DialogContent>
+                {
+                (tipo === 4 || tipo === 1) 
+                ? 
+                    <>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
+                            <Box>
+                                <Box dangerouslySetInnerHTML={{ __html: urlVideo }}></Box>
+                            </Box>
+                            <Box>
+                                {
+                                    textVideo(tiposVideos[tipo].titulo, tiposVideos[tipo].desc)
+                                }
+                            </Box>
                         </Box>
-                        <Box>
-                            {
-                                textVideo(tiposVideos[tipo].titulo, tiposVideos[tipo].desc)
-                            }
-                        </Box>
-                    </Box>
-                </>
+                    </>
                     :
                     <>
                         <VideoCard
@@ -90,8 +86,10 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({ urlVideo, isOpen,
                         />
                     </>
                 }
+            </DialogContent>
+            <DialogActions sx={{ display: 'flex', justifyContent: 'center', paddingLeft: '15px', paddingRight: '15px', paddingBottom: '20px' }}>
                 {closeButton}
-            </Box>
+            </DialogActions>
         </Dialog>
     );
 }

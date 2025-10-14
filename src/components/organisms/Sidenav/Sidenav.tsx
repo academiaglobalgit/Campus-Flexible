@@ -12,7 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
-import { AppBar, Badge, IconButton, styled, Typography, useTheme, type CSSObject, type Theme } from '@mui/material';
+import { AppBar, Badge, IconButton, styled, Typography, useMediaQuery, useTheme, type CSSObject, type Theme } from '@mui/material';
 import { AppRoutingPaths, MenuRoutes as MenuItems, TitleScreen } from '@constants';
 
 import { Avatar } from '../../atoms/Avatar/Avatar';
@@ -82,6 +82,7 @@ const Sidenav: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const showBackMenuRoutes = ShowBackMenuRoutes;
+  const is1366 = useMediaQuery('(width: 1366px)');
 
   const { data: cursosData } = useGetCursos();
 
@@ -374,7 +375,11 @@ const Sidenav: React.FC = () => {
           }
         </Box>
       </Drawer>
-      <Box sx={{ paddingTop: '90px' }}>
+      <Box sx={[
+        { paddingTop: '90px' },
+        is1366 && { display: 'flex', justifyContent: 'center' }
+      ]
+    }>
         <AppBarSection />
         <Outlet />
         <ScrollRestoration />

@@ -284,25 +284,19 @@ const CursoActivo: React.FC = () => {
                     {Materias}
                 </ContainerDesktop>
             }
-            {
-                <EncuestasModal
-                    isOpen={openEncuesta}
-                    data={{ encuesta: encuestaData[0], idAsignacion }}
-                    onEncuestaEnviada={(enviada) => {
-                        if (enviada) {
-                            setOpenEncuesta(false);
-                            setRefreshPromediar(prev => !prev);
-                        }
-                    }}
-                />
-            }
-            {
-                <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
-            }
-            {
-                <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
-            }
-
+            
+            <EncuestasModal
+                isOpen={openEncuesta}
+                data={{ encuesta: encuestaData[0], idAsignacion }}
+                onEncuestaEnviada={(enviada) => {
+                    if (enviada) {
+                        setOpenEncuesta(false);
+                        setRefreshPromediar(prev => !prev);
+                    }
+                }}
+            />
+            <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
+            <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
         </>
     );
 };
