@@ -11,6 +11,8 @@ import DsSvgIcon from "../../atoms/Icon/Icon";
 import { useAuth } from "../../../hooks";
 import { ManualesUsuarioDialog } from "../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 import { isPlanInList } from "../../../utils/Helpers";
+import { VideoBienvenidaDialog } from "../Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
+import { useDocumentos } from "../../../context/DocumentosContext";
 
 
 export const IconsTopBar: React.FC = () => {
@@ -21,6 +23,10 @@ export const IconsTopBar: React.FC = () => {
     const [anchorElMasInfo, setAnchorElMasInfo] = React.useState<null | HTMLElement>(null);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [menuItemStyle, setMenuItemStyle] = React.useState({});
+    const [isOpenVideo, setIsOpenVideo] = React.useState(false);
+    const [tipoVideos, setTipoVideo] = React.useState(1);
+    const [urlVideo, setUrlVideo] = React.useState("");
+    const { documentos } = useDocumentos();
 
     const open = Boolean(anchorEl);
     const openMasInfo = Boolean(anchorElMasInfo);
@@ -71,6 +77,10 @@ export const IconsTopBar: React.FC = () => {
         });
     }, []);
 
+    const handleCerrarVideo = async () => {
+        setIsOpenVideo(false);
+    };
+
 
     const handleAllNotifications = () => {
         navigate(AppRoutingPaths.NOTIFICACIONES);
@@ -94,9 +104,14 @@ export const IconsTopBar: React.FC = () => {
     }
 
     const handleNavigation = (item: any) => {
-        if (item.text === TitleScreen.MANUALES_USUARIOS || item.text === TitleScreen.LINEAMIENTOS) {
+        if (item.text === TitleScreen.LINEAMIENTOS) {
             setMenuTypeDialog(item.text === TitleScreen.LINEAMIENTOS ? 'lineamientos' : 'manuales');
             setIsOpenManualesDialog(true);
+        } else if (item.text === TitleScreen.MANUALES_USUARIOS) {
+            const urlVideoInduccion = documentos.filter(item => item.nombre_tipo === "Manual de Inducción")
+            setIsOpenVideo(true)
+            setUrlVideo(urlVideoInduccion[0].url_archivo ?? '')
+            setTipoVideo(1)
         } else {
             navigate(item.path);
         }
@@ -245,7 +260,7 @@ export const IconsTopBar: React.FC = () => {
                         return (
                             <MenuItem
                                 key={index}
-                                disabled={item.text === 'Inducción' && (isPlanInList(configPlataforma?.id_plan_estudio)) ? true : false}
+                                //disabled={item.text === 'Inducción' && (isPlanInList(configPlataforma?.id_plan_estudio)) ? true : false}
                                 onClick={() => handleNavigation(item)}
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
@@ -260,7 +275,7 @@ export const IconsTopBar: React.FC = () => {
                     })
                 }
             </Menu>
-
+            <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
             <ManualesUsuarioDialog isOpen={isOpenManualesDialog} close={() => setIsOpenManualesDialog(false)} menutype={menuTypeDialog} />
         </>
 
