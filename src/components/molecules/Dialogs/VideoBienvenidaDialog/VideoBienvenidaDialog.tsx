@@ -5,6 +5,7 @@ import { Dialog } from "../../../atoms/Dialog/Dialog";
 import { VideoCard } from "../../VideoCard/VideoCard";
 import { Typography } from "../../../atoms/Typography/Typography";
 
+
 type DialogProps = {
     urlVideo: string;
     isOpen?: boolean;
@@ -35,30 +36,45 @@ export const VideoBienvenidaDialog: React.FC<DialogProps> = ({ urlVideo, isOpen,
         </Button>
     );
 
+    const tiposVideos = {
+        1: {
+            titulo: '¡Video de Inducción!',
+            desc: 'Descubre en este video cómo funciona tu campus digital, la herramienta clave para tu éxito académico. <br> Te guiaremos por cada sección: curso calendario y más.<br>  ¡Explora e interactúa! Aprovecha al máximo todas las funcionalidades que tienes a tu disposición.'
+        },
+        4: {
+            titulo: '¡Tu futuro digital empieza aquí!',
+            desc: 'Te damos la más cordial bienvenida al Diplomado en IA, Liderazgo y Cultura Digital. <br> Hemos preparado este video para darte un saludo especial e invitarte a explorar todo lo que aprenderás con nosotros.'
+        },
+    }
+
+    const textVideo = (tittle: string, desc: string) => {
+        return (<>
+            <Typography component="h3" variant="h3" color="primary" sxProps={{ textAlign: 'center', mt: 2 }} >
+                {tittle}
+            </Typography>
+            <Box dangerouslySetInnerHTML={{ __html: desc }} sx={theme.typography.body2}></Box>
+        </>)
+    }
+
+
     return (
-        <Dialog isOpen={open} sxProps={{ margin: '5px' }} >
+        <Dialog isOpen={open} sxProps={{ margin: '5px', height:'auto'}} >
             <Box
                 sx={[
                     { display: 'flex', flexDirection: 'column', gap: '20px' },
-                    isMobile ? { padding: '15px' } : { padding: '30px' },
-                    !isMobile && { width: '700px', padding: '24px', height: '600px' }
+                    isMobile ? { padding: '15px' } : { padding: '30px' }
                 ]}
             >
 
-                {tipo === 4 ? <>
+                {tipo === 4 || tipo === 1 ? <>
                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
-
                         <Box>
-                            <Box dangerouslySetInnerHTML={{ __html: urlVideo }}>
-                            </Box>
+                            <Box dangerouslySetInnerHTML={{ __html: urlVideo }}></Box>
                         </Box>
                         <Box>
-                            <Typography component="h3" variant="h3" color="primary" sxProps={{ textAlign: 'center', mt: 2 }} >
-                                ¡Tu futuro digital empieza aquí!
-                            </Typography>
-                            <Typography component="span" variant="body2" color="text" sxProps={{ textAlign: 'center' }} >
-                                Te damos la más cordial bienvenida al Diplomado en IA, Liderazgo y Cultura Digital. Hemos preparado este video para darte un saludo especial e invitarte a explorar todo lo que aprenderás con nosotros.
-                            </Typography>
+                            {
+                                textVideo(tiposVideos[tipo].titulo, tiposVideos[tipo].desc)
+                            }
                         </Box>
                     </Box>
                 </>
