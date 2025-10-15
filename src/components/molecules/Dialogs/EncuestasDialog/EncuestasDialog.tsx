@@ -1,4 +1,4 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, DialogContent, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Button from "../../../atoms/Button/Button";
 import { Dialog } from "../../../atoms/Dialog/Dialog";
@@ -159,11 +159,11 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 				handleTextChange={handleTextChange}
 				isDisabled={isDisabled}
 				setIsDisabled={setIsDisabled}
-				isLoading={loading}			
+				isLoading={loading}
 				onFinish={() => {
 					if (data) handlSetEncuesta(respuestas, data.idAsignacion);
-				} } 
-				/>
+				}}
+			/>
 			break;
 		default:
 			content = '';
@@ -171,13 +171,15 @@ export const EncuestasModal: React.FC<EncuestaDialogProps> = ({ isOpen, data, on
 
 	return (
 		<Dialog isOpen={open} sxProps={{ backgroundColor: '#fff', margin: '5px', ...(isMobile ? { width: '100%' } : {}) }} >
-			<Box sx={[
-				{ display: 'flex', flexDirection: 'column' },
-				isMobile ? { padding: '15px' } : { padding: '30px' },
-				!isMobile && { width: '700px' }
-			]}>
-				{content}
-			</Box>
+			<DialogContent>
+				<Box sx={[
+					{ display: 'flex', flexDirection: 'column' },
+					isMobile ? { padding: '15px' } : { padding: '30px' },
+					!isMobile && { width: '700px' }
+				]}>
+					{content}
+				</Box>
+			</DialogContent>
 		</Dialog >
 	);
 }
