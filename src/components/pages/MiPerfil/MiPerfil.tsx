@@ -112,10 +112,20 @@ const MiPerfil: React.FC = () => {
 
         setValue("email", email ?? '');
         setValue("matricula", perfil?.matricula ?? '');
-        setValue("fechaNacimiento", format(new Date(perfil?.fecha_nacimiento ?? ''), "dd/MM/yyyy"));
         setValue("telefono", telefono);
         setValue("whatsApp", whatsApp);
         setValue("telefonoContacto", telefonoContacto);
+
+        if (perfil?.fecha_nacimiento) {
+          const fecha = new Date(perfil.fecha_nacimiento);
+          if (!isNaN(fecha.getTime())) {
+            setValue("fechaNacimiento", format(fecha, "dd/MM/yyyy"));
+          } else {
+            setValue("fechaNacimiento", "");
+          }
+        } else {
+          setValue("fechaNacimiento", "");
+        }
 
         setInitialData({ email: email ?? '', telefono, whatsApp, telefonoContacto });
 
