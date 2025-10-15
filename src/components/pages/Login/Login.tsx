@@ -25,6 +25,7 @@ import { VideoBienvenidaDialog } from '../../molecules/Dialogs/VideoBienvenidaDi
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
+  const is1366 = useMediaQuery('(width: 1366px)');
   const Navigation = useNavigate();
 
   const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
@@ -102,14 +103,16 @@ const LoginPage: React.FC = () => {
           </Container>
           :
           <Grid container size={{ md: 12 }} sx={{ height: '100vh' }}>
-            <Grid size={{ md: 4 }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} >
+            <Grid 
+                size={{ md: !is1366 ? 4 : 3 }} 
+                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} >
               <Box sx={{ paddingLeft: '24px', paddingRight: '24px', maxWidth: !showImage ? '469px' : undefined }}>
                 <MobileLogin accessLogin={accessLogin} />
               </Box>
             </Grid>
             {
               !showImage &&
-              <Grid size={{ md: 8 }} >
+              <Grid size={{ md: !is1366 ? 8 : 9 }} >
                 <Box
                   sx={{
                     ...imgSettings,
