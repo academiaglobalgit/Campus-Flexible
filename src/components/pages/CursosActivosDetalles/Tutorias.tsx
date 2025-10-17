@@ -59,10 +59,8 @@ export const Tutorias: React.FC = () => {
 
             <Button
                 onClick={() => grabacion && window.open(grabacion, "_blank")}
-                variant="outlined"
                 fullWidth
                 disabled={!grabacion}
-                sxProps={{ color: theme.palette.grey[200] }}
             >
                 Grabación
             </Button>
