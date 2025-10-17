@@ -6,6 +6,8 @@ import React from 'react';
 import type { CursosForosResponse, CursosListaPendientesResponse } from '../types/Cursos.interface';
 import type { EncuestasResponse } from '../types/Encuestas.interface';
 
+const BASE_URL_ACTIVIDADES = 'https://mofjs2cyn5xz6snfoccjdemodu0buajp.lambda-url.us-east-2.on.aws/api/v1/alumnos';
+
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
@@ -98,22 +100,30 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
     };
 };
 
-export const updateActividad = async (data: { id_recurso: number, contenido: string, archivos: File[], archivos_eliminar: any[], id_entrega: number | null }): Promise<ActividadEntregadaResponse> => {
-    const payload = { id_recurso: data.id_recurso, contenido: data.contenido, archivos_eliminar: data.archivos_eliminar, id_entrega: data.id_entrega };
+
+export const updateActividad = async (data: { id_recurso: number; contenido: string; archivos: File[]; archivos_eliminar: any[]; id_entrega: number | null;}): Promise<ActividadEntregadaResponse> => {
+
+    const payload = {
+        id_recurso: data.id_recurso,
+        contenido: data.contenido,
+        archivos_eliminar: data.archivos_eliminar,
+        id_entrega: data.id_entrega,
+    };
+
     const encryptedPayload = await apiClient.encryptData(payload);
 
     const formData = new FormData();
-    formData.append("data", encryptedPayload);
+    formData.append('data', encryptedPayload);
+    data.archivos.forEach((archivo) => formData.append('archivos', archivo));
 
-    data.archivos.forEach((archivo) => {
-        formData.append("archivos", archivo);
-    });
+    const client = apiClient.withBaseUrl(BASE_URL_ACTIVIDADES);
 
-    return await apiClient.post<ActividadEntregadaResponse>(
+    return await client.post<ActividadEntregadaResponse>(
         CURSOS_ACTIVOS_ENDPOINTS.POST_ACTIVIDADES.path,
         formData
     );
 };
+
 
 export const useGetTutorias = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
