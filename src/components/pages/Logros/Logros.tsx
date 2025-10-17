@@ -7,7 +7,7 @@ import { Box, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery }
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
-import medallaOro from "../../../assets/medalla_principal.png";
+import medallaOro from "../../../assets/medalla_oro.png";
 import medallaPlata from "../../../assets/medalla_plata.png";
 import medallaBronce from "../../../assets/medalla_bronce.png";
 import Button from "../../atoms/Button/Button";
