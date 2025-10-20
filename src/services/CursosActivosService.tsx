@@ -6,8 +6,6 @@ import React from 'react';
 import type { CursosForosResponse, CursosListaPendientesResponse } from '../types/Cursos.interface';
 import type { EncuestasResponse } from '../types/Encuestas.interface';
 
-const BASE_URL_ACTIVIDADES = 'https://mofjs2cyn5xz6snfoccjdemodu0buajp.lambda-url.us-east-2.on.aws/api/v1/alumnos';
-
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
         queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key],
@@ -110,6 +108,7 @@ export const updateActividad = async (data: { id_recurso: number; contenido: str
         id_entrega: data.id_entrega,
     };
 
+    const BASE_URL_ACTIVIDADES = import.meta.env.VITE_APP_ACTIVITIES_API_BASE_URL;
     const encryptedPayload = await apiClient.encryptData(payload);
 
     const formData = new FormData();
