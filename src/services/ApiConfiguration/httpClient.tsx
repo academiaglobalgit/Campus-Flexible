@@ -44,7 +44,7 @@ class httpClient {
         if (error.response?.status === 401) {
           console.warn("Token expirado. Notificando suscriptores...");
           this.unauthorizedSubscribers.forEach((cb) => cb());
-        }else{
+        } else {
           if (error.response) {
             console.error('Error response:', error.response.status, error.response.data);
           } else if (error.request) {
@@ -53,7 +53,7 @@ class httpClient {
             console.error('Error message:', error.message);
           }
         }
-        
+
         return Promise.reject(error);
       }
     );
@@ -164,6 +164,23 @@ class httpClient {
 
   public encryptData(data?: unknown) {
     return crypto.encryptData(data);
+  }
+
+  public withBaseUrl(baseURL: string): httpClient {
+    // Crear una copia del cliente actual
+    const newClient = Object.create(this) as httpClient;
+
+    // Crear una nueva instancia de Axios basada en la actual,
+    // pero con un baseURL distinto
+    (newClient as any).instance = this.instance.create({
+      ...this.instance.defaults,
+      baseURL,
+    });
+
+    // Volver a inicializar los interceptores en el nuevo cliente
+    newClient.initializeInterceptors();
+
+    return newClient;
   }
 }
 
