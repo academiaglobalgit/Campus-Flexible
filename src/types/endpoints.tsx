@@ -2,6 +2,8 @@ export const LOGIN_ENDPOINTS = {
     POST_AUTH: { path: '/auth' },
     POST_LOGIN: { path: '/auth/login' },
     POST_LOGOUT: { path: '/auth/logout' },
+    POST_FORGOT_PASSWORD: { path: '/auth/forgot-password' },
+    POST_FORGOT_PASSWORD_CONFIRM: { path: '/auth/forgot-password/confirm' },
     POST_NEW_PASSWORD: { path: '/auth/complete-new-password' },
     GET_PLAN_ESTUDIO: { path: '/plan-estudios/perfil-programa', key: 'plan-estudio-url' },
 }
@@ -31,7 +33,8 @@ export const CURSOS_ACTIVOS_ENDPOINTS = {
     GET_LISTA_PROGRESO: { path: '/cursos-activos/lista-progreso', key: 'lista-progreso' },
     GET_ENCUESTAS_ASIGNACIONES: { path: '/encuestas/asignaciones/todas', key: 'encuestas-asignacion' },
     SET_ENCUESTAS_ASIGNACIONES: { path: 'encuestas/asignaciones', key: 'encuestas-asignacion-guardar' },
-    POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' }
+    POST_ACTIVIDADES: { path: '/cursos-activos/actividades/guardar' },
+    POST_VIDEO_VISTO: { path: '/video-bienvenidaview' }
 }
 
 export const CALENDARIO_ENDPOINTS = {

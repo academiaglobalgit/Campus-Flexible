@@ -82,14 +82,19 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     };
 
     const goToPage = () => {
-        switch(config?.data?.id_plan_estudio) {
-            case 17: 
+        switch (config?.data?.id_plan_estudio) {
+            case 17:
+            case 19:
                 navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-            break;
+                break;
             default:
                 navigate(AppRoutingPaths.PLAN_ESTUDIOS);
-            break;
+                break;
         }
+    }
+
+    const goToResetPass = () => {
+        navigate(AppRoutingPaths.PASSWORD_RESET);
     }
 
     const onCaptchaChange = () => {
@@ -100,7 +105,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
         <>
             <Box
                 sx={{
-                    marginTop: 2,
+                    marginTop: 0.5,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -111,8 +116,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     src={config?.data.logo_url || Logo}
                     alt="AG College Logo"
                     sx={{
-                        mt: 4,
-                        mb: '49px'
+                        mb: 2,
                     }}
                 />
 
@@ -137,7 +141,6 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                     {config?.data.nombre_plan || ''}
                 </Typography>
                 <Typography
-
                     component="p"
                     variant="body2"
                     sx={{
@@ -161,6 +164,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 handleSubmit(onSubmit)();
                             }
                         }}
+                        sx={{mb: 0}}
                     />
                     <TextField
                         label="Contraseña"
@@ -192,8 +196,23 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 handleSubmit(onSubmit)();
                             }
                         }}
+                        sx={{mb: 0}}
                     />
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+
+                    <Typography
+                        component="p"
+                        variant="body2"
+                        color='primary.main'
+                        sx={{
+                            textAlign: 'center',
+                            cursor:'pointer'
+                        }}
+                        onClick={goToResetPass}
+                    >
+                        He olvidado mi contraseña
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
                         <ReCAPTCHA
                             sitekey={CAPTCHA}
                             onChange={onCaptchaChange}
@@ -203,7 +222,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                         fullWidth
                         onClick={handleSubmit(onSubmit)}
                         sxProps={{
-                            mb: '30px',
+                            mb: '12px',
                             py: 1.5,
                         }}
                         isLoading={isLoading}
@@ -216,12 +235,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                                 {
                                     accessLogin.map((access) => (
                                         <Grid size={{ xs: 6, sm: 6 }} key={access.id}>
-                                            <IconLabel 
-                                                key={access.id} 
-                                                icon={access.icon} 
-                                                label={access.label} 
+                                            <IconLabel
+                                                key={access.id}
+                                                icon={access.icon}
+                                                label={access.label}
                                                 isDisabled={access.isDisabled}
-                                                action={access.action} 
+                                                action={access.action}
                                             />
                                         </Grid>
                                     ))
@@ -229,7 +248,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
                             </Grid>
                         )
                     }
-                    
+
                 </Box>
             </Box>
 

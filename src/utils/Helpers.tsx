@@ -94,6 +94,7 @@ type PreviewFile = {
 };
 
 export async function convertRemoteToPreviewFile(remote: {nombre_original: string; ruta_archivo: string; tipo_mime: string;}): Promise<PreviewFile> {
+
   const response = await fetch(remote.ruta_archivo);
   const blob = await response.blob();
 
@@ -172,4 +173,36 @@ export const getSubdomainKey = () => {
   const subdomain = parts.length > 2 ? parts[0] : "root";
 
   return `_${subdomain}`;
+};
+
+export const removeAvatarScript = () => {
+        const scriptName = 'script[data-name="did-agent"]';
+        const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
+        const target = document.querySelector<HTMLDivElement>('.didagent_target');
+        if (target) {
+            target.remove(); 
+        }
+        if (existingScript) {
+            document.head.removeChild(existingScript);
+        }
+}
+
+export const isPlanInList = (idPlanEstudio?: number): boolean => {
+  const planesDiplomados = [17, 19];
+  return planesDiplomados.includes(idPlanEstudio ?? -1);
+};
+
+export const formatFechaBonita = (isoString: string): string => {
+  const fecha = new Date(isoString);
+
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
+  const mes = meses[fecha.getMonth()];
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const anio = fecha.getFullYear();
+
+  return `${mes} ${dia} / ${anio}`;
 };

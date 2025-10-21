@@ -214,10 +214,10 @@ const VideotecaDetalle: React.FC = () => {
             ?
             <LoadingCircular Text="Cargando Videoteca..." />
             :
-            <>
+            <Box className='is1366'>
                 <PeriodosTabsVideos periodos={Listado.periodos} tabChange={(newValue) => handleValue(newValue)} />
                 {ListadoVideoteca()}
-            </>
+            </Box>
     )
 };
 

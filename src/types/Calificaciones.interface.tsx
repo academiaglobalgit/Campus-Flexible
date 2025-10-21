@@ -18,7 +18,9 @@ export interface CalificacionCurso {
     periodo:              number;
     id_inscripcion_curso: number;
     calificacion:         string;
+    url_accredible:       string;
     estatus_curso_alumno: string;
+    fecha_registro      : string;
 }
 
 export interface Glosario {

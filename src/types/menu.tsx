@@ -31,7 +31,8 @@ export const MenuRoutes: Menu[] = [
     { id: 10, text: TitleScreen.BOLSA_TRABAJO, icon: Icons.BolsaTrabajo, path: AppRoutingPaths.BOLSA_TRABAJO, order: 9, visible: 1, children:[], menu: 'more' },
     { id: 11, text: TitleScreen.PIZARRON, icon: Icons.PizarronExito, path: AppRoutingPaths.PIZARRON, order: 10, visible: 1, children:[], menu: 'more' },
     { id: 12, text: TitleScreen.MI_TRAYECTO, icon: Icons.MiTrayecto, path: AppRoutingPaths.MI_TRAYECTO, order: 11, visible: 1, children:[], menu: 'more' },
-    { id: 13, text: TitleScreen.APRENDE_MAS, icon: Icons.VerMas, path: AppRoutingPaths.APRENDE_MAS, order: 12, visible: 1, children:[], menu: 'more' },
+    { id: 13, text: TitleScreen.LOGROS, icon: Icons.MisLogros, path: AppRoutingPaths.LOGROS, order: 12, visible: 1, children:[], menu: 'more' },
+    { id: 14, text: TitleScreen.APRENDE_MAS, icon: Icons.VerMas, path: AppRoutingPaths.APRENDE_MAS, order: 13, visible: 1, children:[], menu: 'more' },
 ] as const;
 
 export type MenuRoutes = typeof MenuRoutes;

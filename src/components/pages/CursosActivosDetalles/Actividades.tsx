@@ -6,7 +6,7 @@ import { accordionStyle, flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { useParams } from "react-router-dom";
 import { updateActividad, useGetActividades } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { convertRemoteToPreviewFile } from "../../../utils/Helpers";
+import { convertRemoteToPreviewFile, isPlanInList } from "../../../utils/Helpers";
 import { Typography } from "../../atoms/Typography/Typography";
 import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { useNotification } from "../../../providers/NotificationProvider";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
 import { RetroalimentacionDialog } from "../../molecules/Dialogs/RetroalimentacionDialog/RetroalimentacionDialog";
+import { GenericDialog } from "../../molecules/Dialogs/GenericDialog/GenericDialog";
 import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
@@ -37,6 +38,8 @@ export const Actividades: React.FC = () => {
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isSaving, setIsSaving] = useState(false);
     const [verBotones, setVerBotones] = useState(false);
+    const [totalPalabras, setTotalPalabras] = useState<Record<string, number | boolean>>({});
+    const [isOpenAvisoActividad, setIsOpenAvisoActividad] = useState(false);
     const { id } = useParams<{ id: string }>();
     const { dataMapped, isLoading } = useGetActividades(Number(id!), "Actividades");
 
@@ -45,6 +48,7 @@ export const Actividades: React.FC = () => {
     const [archivosPorId, setArchivosPorId] = useState<Record<number, PreviewFile[]>>({});
     const [contenido, setContenido] = useState<Record<number, string>>({});
     const [openRetroDialog, setOpenRetroDialog] = useState(false);
+    const [idRecursoPending, setIdRecursoPending] = useState(0);
     const [retroalimentacion, setRetroalimentacion] = useState<string>("");
 
     const manuales = [
@@ -57,7 +61,8 @@ export const Actividades: React.FC = () => {
     React.useEffect(() => {
 
         switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
+            case 17:
+            case 19: // Diplomados UMI, Coppel
                 setVerBotones(false)
                 break;
             default:
@@ -74,12 +79,36 @@ export const Actividades: React.FC = () => {
         }));
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
-        setContenido((prev) => ({
-            ...prev,
-            [id]: event.target.value
-        }));
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, id: number, field: any) => {
+        const valor = event.target.value;
+        const palabras = valor.trim().split(/\s+/).filter(Boolean);
+        const total = palabras.length;
+
+        const LIMITE = 5000;
+        const ADVERTENCIA = 4800;
+
+        const valorAnterior = contenido[id] ?? "";
+
+        if (total > LIMITE) {
+            showNotification("Has alcanzado el límite máximo de 5000 palabras.", "warning");
+            field.onChange(valorAnterior);
+            return;
+        }
+        if (total >= ADVERTENCIA && total < LIMITE && !totalPalabras[id + "_alertado"]) {
+            showNotification("Estás a punto de llegar al límite de 5000 palabras.", "warning");
+            setTotalPalabras((prev) => ({
+                ...prev,
+                [id + "_alertado"]: true,
+            }));
+        }
+
+        field.onChange(valor);
+        setContenido((prev) => ({ ...prev, [id]: valor }));
+        setTotalPalabras((prev) => ({ ...prev, [String(id)]: total }));
     };
+
+
+
 
     const handleEditActivity = async (id_recurso: number) => {
         const archivos = archivosPorId[id_recurso].map((item) => item.file.name);
@@ -121,8 +150,12 @@ export const Actividades: React.FC = () => {
         createMutationActivity.mutate({ id_recurso, contenido: contenidoText, archivos: files, archivos_eliminar, id_entrega });
     };
 
-    const handleSaveActivity = (id_recurso: number) => {
+    const handleShowDialog = (id_recurso: number) => {
+        setIsOpenAvisoActividad(true);
+        setIdRecursoPending(id_recurso);
+    }
 
+    const handleSaveActivity = (id_recurso: number) => {
         setIsSaving(true);
         const contenidoText = contenido[id_recurso] || '';
         const archivos = archivosPorId[id_recurso] || [];
@@ -130,7 +163,7 @@ export const Actividades: React.FC = () => {
 
         if (files.length === 0 && contenidoText.length === 0) {
             setIsSaving(false);
-            showNotification(`Debes comentar o subir archivos`, "warning");
+            showNotification(`Debes dejar un comentario`, "warning");
             return;
         }
 
@@ -145,6 +178,7 @@ export const Actividades: React.FC = () => {
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)], exact: true });
             await queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
             setIsSaving(false);
+            setIsOpenAvisoActividad(false);
 
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_MATERIAS.key] });
         },
@@ -152,6 +186,8 @@ export const Actividades: React.FC = () => {
             console.error(error);
             showNotification(`Error al registrar: ${error.message}`, "error");
             setIsSaving(false);
+            setIsOpenAvisoActividad(false);
+
         },
         onSettled: () => {
             console.log('La mutación ha finalizado');
@@ -218,6 +254,88 @@ export const Actividades: React.FC = () => {
                 })
             });
         }
+    }
+
+    const handleCloseGenericDialog = (isConfirmar: boolean) => {
+        if (isConfirmar) {
+            handleSaveActivity(idRecursoPending);
+        } else {
+            setIsOpenAvisoActividad(false);
+        }
+    };
+
+    const handleOnPaste = (
+        e: React.ClipboardEvent<HTMLElement>,
+        id: number,
+        contenido: Record<number, string>,
+        showNotificationFn: (...args: any[]) => void
+    ) => {
+        const pastedText = e.clipboardData.getData("text");
+        const palabrasPegadas = pastedText.trim().split(/\s+/).filter(Boolean).length;
+        const palabrasActuales =
+            (contenido[id]?.trim().split(/\s+/).filter(Boolean).length) || 0;
+        const LIMITE = 5000;
+
+        if (palabrasActuales + palabrasPegadas > LIMITE) {
+            e.preventDefault();
+            showNotificationFn("El texto pegado supera el límite de 5000 palabras.", "warning");
+        }
+    };
+
+
+
+    const Files = (item: any) => {
+        return (
+            <>
+                <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
+                    <Typography component="p" variant="body1" color="primary">
+                        Sube tu archivo aquí
+                    </Typography>
+                    <Typography component="p" variant="body1">
+                        (pdf. xml. word, ppt)
+                    </Typography>
+                </Box>
+                <FileUploader
+                    files={archivosPorId[item.id_recurso] || []}
+                    onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
+                    maxFiles={3} maxFileSizeMb={3}
+                    canUpload={item.calificacion === null}
+                />
+                {
+                    item.hasEntrega === 1
+                        ?
+                        item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
+                            <>
+                                <Button
+                                    fullWidth
+                                    onClick={() => handleEditActivity(item.id_recurso)}
+                                    isLoading={isSaving}
+                                >
+                                    Modificar
+                                </Button>
+                            </>
+                            <>
+                                <Button
+                                    fullWidth
+                                    onClick={() => handleCancel(item.id_recurso)}
+                                    variant="outlined"
+                                >
+                                    Cancelar
+                                </Button>
+                            </>
+                        </Box>
+                        :
+                        item.calificacion === null && <Button
+                            fullWidth
+                            onClick={() => handleShowDialog(item.id_recurso)}
+                            sxProps={{ mt: 2 }}
+                            isLoading={isSaving}
+                        >
+                            Finalizar Actividad
+                        </Button>
+                }
+            </>
+        );
     }
 
     const ButtonSection = (isDesktop: boolean = true) => (
@@ -291,10 +409,11 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                {configPlataforma?.id_plan_estudio !== 17 && <Box sx={{ display: 'flex', gap: '10px' }}>
-                                                    <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
-                                                    <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
-                                                </Box>}
+                                                {!isPlanInList(configPlataforma?.id_plan_estudio) &&
+                                                    <Box sx={{ display: 'flex', gap: '10px' }}>
+                                                        <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
+                                                        <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
+                                                    </Box>}
                                                 <Box sx={{ width: '250px' }}>
                                                     {
                                                         item.retroalimentacion && <Button
@@ -317,9 +436,13 @@ export const Actividades: React.FC = () => {
                                             <Typography component="h4" variant="h4" sxProps={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}>
                                                 Entrega de actividad
                                             </Typography>
+
                                             <Box sx={{ pt: 2 }}>
                                                 <Typography component="p" variant="body1" color="primary">
                                                     Comentario:
+                                                </Typography>
+                                                <Typography component="p" variant="body1" sxProps={{ color: theme.palette.text.secondary, fontFamily: theme.typography.fontFamily }}>
+                                                    Total de palabras: {totalPalabras[String(item.id_recurso)] ?? 0}/5000
                                                 </Typography>
                                                 <Controller
                                                     name={`comentario.${item.id_recurso}`}
@@ -332,68 +455,39 @@ export const Actividades: React.FC = () => {
                                                             multiline
                                                             rows={5}
                                                             fullWidth
+                                                            disabled={item.hasEntrega === 1 ? true : false}
                                                             slotProps={{
                                                                 input: {
                                                                     inputProps: {
-                                                                        maxLength: 200
+                                                                        maxLength: 9999999
                                                                     },
                                                                 },
                                                             }}
-                                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                field.onChange(event); // necesario para que React Hook Form actualice el valor
-                                                                handleChange(event, item.id_recurso); // ← si tú quieres manejar algo extra
+                                                            onChange={(event) => handleChange(event, item.id_recurso, field)}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "Enter" && !e.shiftKey) {
+                                                                    e.preventDefault();
+                                                                }
                                                             }}
+                                                            onPaste={(e) => handleOnPaste(e, item.id_recurso, contenido, showNotification)}
                                                         />
                                                     )}
                                                 />
                                             </Box>
 
-                                            <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
-                                                <Typography component="p" variant="body1" color="primary">
-                                                    Sube tu archivo aquí
-                                                </Typography>
-                                                <Typography component="p" variant="body1">
-                                                    (pdf. xml. word, ppt)
-                                                </Typography>
-                                            </Box>
-                                            <FileUploader
-                                                files={archivosPorId[item.id_recurso] || []}
-                                                onFilesChange={(files) => handleFilesChange(item.id_recurso, files)}
-                                                maxFiles={3} maxFileSizeMb={3}
-                                                canUpload={item.calificacion === null}
-                                            />
                                             {
-                                                item.hasEntrega === 1
-                                                    ?
-                                                    item.calificacion === null && <Box sx={{ ...flexRows, gap: '20px', mt: 2 }}>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleEditActivity(item.id_recurso)}
-                                                                isLoading={isSaving}
-                                                            >
-                                                                Modificar
-                                                            </Button>
-                                                        </>
-                                                        <>
-                                                            <Button
-                                                                fullWidth
-                                                                onClick={() => handleCancel(item.id_recurso)}
-                                                                variant="outlined"
-                                                            >
-                                                                Cancelar
-                                                            </Button>
-                                                        </>
-                                                    </Box>
-                                                    :
-                                                    item.calificacion === null && <Button
-                                                        fullWidth
-                                                        onClick={() => handleSaveActivity(item.id_recurso)}
-                                                        sxProps={{ mt: 2 }}
-                                                        isLoading={isSaving}
-                                                    >
-                                                        Finalizar Actividad
-                                                    </Button>
+                                                !isPlanInList(configPlataforma?.id_plan_estudio)
+                                                    ? <Files item={item} />
+                                                    : (item.calificacion === null && (
+                                                        <Button
+                                                            fullWidth
+                                                            onClick={() => handleShowDialog(item.id_recurso)}
+                                                            sxProps={{ mt: 2 }}
+                                                            isLoading={isSaving}
+                                                        >
+                                                            Finalizar Actividad
+                                                        </Button>
+                                                    ))
                                             }
 
                                         </Box>
@@ -405,6 +499,7 @@ export const Actividades: React.FC = () => {
                     )
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
+            <GenericDialog mensaje={"¡Atención! Una vez enviada, la actividad no puede modificarse. ¿Deseas enviarla?"} tipo="warning" isOpen={isOpenAvisoActividad} close={(isConfirmar: boolean) => handleCloseGenericDialog(isConfirmar)} />
         </>
     );
 };

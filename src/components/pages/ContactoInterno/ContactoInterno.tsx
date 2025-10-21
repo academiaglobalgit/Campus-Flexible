@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Tab, Tabs, tabsClasses, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, Link, Tab, Tabs, tabsClasses, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import CampusDigital from "../../../assets/campus_digital.jpg";
 import ServiciosEscolares from "../../../assets/servicios_escolares_contacto.jpg";
@@ -22,7 +22,7 @@ const ContactoInterno: React.FC = () => {
     const [value, setValue] = React.useState(1);
 
     const [config, setConfig] = React.useState<any>(null);
-          
+
     React.useEffect(() => {
         loadConfig().then(cfg => {
             setConfig(cfg);
@@ -54,8 +54,6 @@ const ContactoInterno: React.FC = () => {
             />
         );
     };
-
-    console.log(interno);
 
     const Contents = () => (
 
@@ -150,26 +148,37 @@ const ContactoInterno: React.FC = () => {
                         </Typography>
                         <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.horarios }} />
                     </Box>
-                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: "5px" }}>
+                    <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
                         <Typography component="span" variant="body2" color="primary">
                             Teléfonos:
                         </Typography>
 
-                        {section.data.tipo === "WhatsApp" ? (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <WhatsAppContacto />
-                                <Typography component="p" variant="body2">
-                                    {formatWithIMask(section.data.telefonos, "phone")}
-                                </Typography>
-                            </Box>
-                        ) : (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <CellPhone />
-                                <Typography component="p" variant="body2">
-                                    {formatWithIMask(section.data.telefonos, "phone")}
-                                </Typography>
-                            </Box>
-                        )}
+                        {section.data.telefonos.map((item: any, index: number) => {
+                            if (item.tipo === "WhatsApp") {
+                                return (
+                                    <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                        <WhatsAppContacto />
+                                        <Link
+                                            variant="body2"
+                                            href={item.url_contacto}
+                                            target="_blank"
+                                            sx={{ textDecoration: "none" }}
+                                        >
+                                            {formatWithIMask(item.numero, "phone")}
+                                        </Link>
+                                    </Box>
+                                );
+                            } else {
+                                return (
+                                    <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                        <CellPhone />
+                                        <Typography component="p" variant="body2">
+                                            {formatWithIMask(item.numero, "phone")}
+                                        </Typography>
+                                    </Box>
+                                );
+                            }
+                        })}
 
                     </Box>
                     <Box sx={{ ...flexColumn, alignItems: 'flex-start', mb: 1, gap: '5px' }}>
@@ -178,7 +187,13 @@ const ContactoInterno: React.FC = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <EmailContacto />
-                            <Typography component="span" variant="body1" dangerouslySetInnerHTML={{ __html: section.data.email }} />
+                            <Link
+                                href={`mailto:${section &&  section.data.email}`}
+                                underline="hover"
+                                sx={{ color: 'primary.main', fontWeight: 500 }}
+                            >
+                                {section &&  section.data.email}
+                            </Link>
                         </Box>
                     </Box>
                 </Box>

@@ -61,8 +61,6 @@ export const NewPassword: React.FC<NewPasswordProps> = ({userName}) => {
 
     setLoading(true);
     const result = await newPassword(userName, data.new_password);
-    console.log("🚀 ~ onSubmit ~ data.new_password:", data.new_password)
-    console.log("🚀 ~ onSubmit ~ userName:", userName)
 
     if (result.success) {
         navigate(AppRoutingPaths.TERMINOS_CONDICIONES);
@@ -82,7 +80,7 @@ export const NewPassword: React.FC<NewPasswordProps> = ({userName}) => {
                     <TextField
                         {...field}
                         id="new-password"
-                        label="Ejemplo: UnaClaveSegura456!"
+                        label="Ejemplo: e?7Yo9O!3EI"
                         fullWidth
                         error={!!errors.new_password}
                         helperText={errors.new_password?.message}

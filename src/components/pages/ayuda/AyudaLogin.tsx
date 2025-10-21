@@ -24,7 +24,7 @@ const AyudaLogin: React.FC = () => {
             <Footer />
           </>
         :
-        <Grid container sx={{ height: '100vh', width: '100%' }} spacing={2}>
+        <Grid container sx={{ height: '100vh', width: '100%' }} spacing={2} className='is1366'>
           <Grid
             size={{ xs:false, md:5 }}
             sx={{

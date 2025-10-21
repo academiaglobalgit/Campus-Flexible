@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Tab, Tabs, tabsClasses, useTheme } from "@mui/material";
+import { Box, Divider, Tab, Tabs, tabsClasses, useMediaQuery, useTheme } from "@mui/material";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
 import { CursosActivosDetalle } from "@iconsCustomizeds";
@@ -30,6 +30,7 @@ const CursosActivosDetalles: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [verContenidoDescargable, setContenidoDescargable] = React.useState(true);
     const [tabs, setTabs] = React.useState(CursosTabs);
+    const is1366 = useMediaQuery('(width: 1366px)');
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
@@ -38,6 +39,13 @@ const CursosActivosDetalles: React.FC = () => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
+                
+                setTabs(CursosTabs);
+                setContenidoDescargable(false);
+                
+                break;
+            case 19: // Diplomados
+                CursosTabs = CursosTabs.filter(item => item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
                 
                 setTabs(CursosTabs);
                 setContenidoDescargable(false);
@@ -104,7 +112,13 @@ const CursosActivosDetalles: React.FC = () => {
     // }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Box 
+            sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                width: { md: (is1366 ? '80%' : '100%') }, 
+            }}
+        >
             <TituloIcon Titulo={curso.titulo} Icon={CursosActivosDetalle} />
             <Box sx={{ pl: '30px' }} >
                 {

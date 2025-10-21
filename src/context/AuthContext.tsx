@@ -17,12 +17,14 @@ interface AuthContextType {
   isLogout: boolean;
   aceptoTerminos: boolean;
   configPlataforma: ConfigPlataforma | null;
+  videoVisto: number;
   clearError: () => void;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
   newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   setAceptoTerminos?: (acepto: boolean) => void;
+  SetVideoVisto?:(acepto: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isInitializing, setIsInitializing] = useState(true);
     const [isTokenExpired, setIsTokenExpired] = useState(false);
     const [aceptoTerminos, setAceptoTerminos] = useState(true);
+    const [videoVisto, SetVideoVisto] = useState(0);
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -63,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setUser(userData);
                     setAceptoTerminos(userData?.aceptoTerminos);
                     setNombrePrograma(userData.nombrePrograma);
+                    SetVideoVisto(userData.videoVisto)
                 }
             } catch (error) {
                 console.error("Error checking auth:", error);
@@ -119,9 +123,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const aceptoTerminosValue = response?.acepto_terminos
                 setToken(response?.token);
                 setAceptoTerminos(aceptoTerminosValue);
-                setNombrePrograma(response?.programa);           
+                setNombrePrograma(response?.programa);         
+                SetVideoVisto(response?.video_visto)  
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa);
+                await procesarPerfil(response?.acepto_terminos, response?.programa, response?.video_visto);
 
                 setIsAuthenticated(true);                
                 setIsLoading(false);
@@ -159,9 +164,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const aceptoTerminosValue = response?.acepto_terminos ?? false;
                 setToken(response?.token);
                 setAceptoTerminos(aceptoTerminosValue);     
-                setNombrePrograma(response?.programa);           
+                setNombrePrograma(response?.programa); 
+                SetVideoVisto(response.video_visto)          
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa);
+                await procesarPerfil(response?.acepto_terminos, response?.programa, response.video_visto);
                 
                 setIsAuthenticated(true);
                 setIsLoading(false);
@@ -183,13 +189,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined) => {
+    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined , videoBienvenida: number | undefined) => {
         const perfil = await refetch();
 
         if (perfil.data) {
             const datos = perfil.data.data;
             
             const aceptoTerminosValue = pAceptoTerminos;
+            const video = videoBienvenida;
 
             const auth = {
                 name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
@@ -199,12 +206,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
                 perfil: datos,
                 aceptoTerminos: aceptoTerminosValue,
+                videoVisto: video,
                 nombrePrograma: programa,
             };
 
             setUser(auth);
 
             setAceptoTerminos(aceptoTerminosValue ?? false);
+            SetVideoVisto(video ?? 0)
 
             const encry = await encryptData(auth);
             setAuthModel(encry);
@@ -217,6 +226,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setAceptoTerminos(acepto);
         if (user) {
             const updatedUser = { ...user, aceptoTerminos: acepto };
+            setUser(updatedUser);
+            const encry = await encryptData(updatedUser);
+            setAuthModel(encry);
+        }
+    }
+
+    const handleVideoVisto = async (visto: number) => {
+        SetVideoVisto(visto);
+        if (user) {
+            const updatedUser = { ...user, videoVisto: visto };
             setUser(updatedUser);
             const encry = await encryptData(updatedUser);
             setAuthModel(encry);
@@ -254,12 +273,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLogout,
         aceptoTerminos,
         configPlataforma,
+        videoVisto,
         login: handleLogin,
         logout: handleLogout,
         clearError,
         setUser,
         newPassword: handleNewPassword,
         setAceptoTerminos: handleAceptoTerminos,
+        SetVideoVisto : handleVideoVisto
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

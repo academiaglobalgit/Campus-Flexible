@@ -31,16 +31,42 @@ export const Tutorias: React.FC = () => {
             </Typography>
     )
 
-    const AgregarButton = (url: string) => (
-        <Button onClick={() => window.open(url)} fullWidth >Agregar a mi calendario</Button>
-    )
+    const AgregarButton = (url: string | null, status: string) => {
+        const isDisabled =
+            !url || status?.trim().toLowerCase() === "finalizado";
 
-    const AccederButtons = (acceder: string, grabacion: string) => (
+        return (
+            <Button
+                onClick={() => url && window.open(url, "_blank", "noopener,noreferrer")}
+                fullWidth
+                disabled={isDisabled}
+            >
+                Agregar a mi calendario
+            </Button>
+        );
+    };
+
+
+    const AccederButtons = (acceder: string | null, grabacion: string | null, status: string) => (
         <>
-            <Button onClick={() => window.open(acceder)} fullWidth>Acceder Aquí</Button>
-            <Button onClick={() => window.open(grabacion)} variant="outlined" fullWidth sxProps={{ color: theme.palette.grey[200] }} >Grabación</Button>
+            <Button
+                onClick={() => acceder && window.open(acceder, "_blank")}
+                fullWidth
+                disabled={!acceder || status?.trim().toLowerCase() === "finalizado"}
+            >
+                Acceder Aquí
+            </Button>
+
+            <Button
+                onClick={() => grabacion && window.open(grabacion, "_blank")}
+                fullWidth
+                disabled={!grabacion}
+            >
+                Grabación
+            </Button>
         </>
-    )
+    );
+
 
     const recursosCompartidos = (recursos: any[]) => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -80,14 +106,14 @@ export const Tutorias: React.FC = () => {
                                         <Box sx={{ display: isMobile ? 'block' : 'none', width: '100%' }}>
                                             <StatusIcon estado={tutoria.estatus} />
                                         </Box>
-                                        {AgregarButton(tutoria.calendario_url)}
+                                        {AgregarButton(tutoria.calendario_url, tutoria.estatus)}
                                         {text("Descripción")}
                                         <Typography component="p" variant="body2">
                                             {tutoria.descripcion}
                                         </Typography>
                                         {text("Recursos Compartidos")}
                                         {recursosCompartidos(tutoria.recursos)}
-                                        {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url)}
+                                        {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url, tutoria.estatus)}
                                     </Box>
                                     :
                                     <Grid container spacing={2}>
@@ -109,9 +135,9 @@ export const Tutorias: React.FC = () => {
 
                                         <Grid size={{ md: 4 }}>
                                             <Box sx={{ ...flexColumn, gap: '40px' }}>
-                                                {AgregarButton(tutoria.calendario_url)}
+                                                {AgregarButton(tutoria.calendario_url, tutoria.estatus)}
                                                 <Box sx={{ ...flexColumn, width: '100%', gap: '10px' }}>
-                                                    {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url)}
+                                                    {AccederButtons(tutoria.reunion_url, tutoria.grabacion_url, tutoria.estatus)}
                                                 </Box>
                                             </Box>
                                         </Grid>
