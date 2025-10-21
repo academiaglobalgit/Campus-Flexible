@@ -79,7 +79,7 @@ export const Actividades: React.FC = () => {
         }));
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, id: number, field: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, id: number, field: any) => {
         const valor = event.target.value;
         const palabras = valor.trim().split(/\s+/).filter(Boolean);
         const total = palabras.length;
@@ -91,10 +91,9 @@ export const Actividades: React.FC = () => {
 
         if (total > LIMITE) {
             showNotification("Has alcanzado el límite máximo de 5000 palabras.", "warning");
-            field.onChange(valorAnterior); // ← restaura visualmente el valor anterior
+            field.onChange(valorAnterior);
             return;
         }
-
         if (total >= ADVERTENCIA && total < LIMITE && !totalPalabras[id + "_alertado"]) {
             showNotification("Estás a punto de llegar al límite de 5000 palabras.", "warning");
             setTotalPalabras((prev) => ({
@@ -456,9 +455,8 @@ export const Actividades: React.FC = () => {
                                                                 const palabrasActuales = (contenido[item.id_recurso]?.trim().split(/\s+/).filter(Boolean).length) || 0;
                                                                 const LIMITE = 5000;
 
-                                                                // Si al pegar se supera el límite total
                                                                 if (palabrasActuales + palabrasPegadas > LIMITE) {
-                                                                    e.preventDefault(); // 🚫 cancela el pegado
+                                                                    e.preventDefault();
                                                                     showNotification("El texto pegado supera el límite de 5000 palabras.", "warning");
                                                                 }
                                                             }}
@@ -492,7 +490,7 @@ export const Actividades: React.FC = () => {
                     )
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
-            <GenericDialog mensaje={"¡Atención! Una vez enviada, la actividad no puede modificarse. ¿Deseas enviar o seguir editando?"} tipo="warning" isOpen={isOpenAvisoActividad} close={(isConfirmar: boolean) => handleCloseGenericDialog(isConfirmar)} />
+            <GenericDialog mensaje={"¡Atención! Una vez enviada, la actividad no puede modificarse. ¿Deseas enviarla?"} tipo="warning" isOpen={isOpenAvisoActividad} close={(isConfirmar: boolean) => handleCloseGenericDialog(isConfirmar)} />
         </>
     );
 };
