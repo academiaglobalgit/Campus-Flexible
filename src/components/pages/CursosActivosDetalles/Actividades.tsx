@@ -48,7 +48,7 @@ export const Actividades: React.FC = () => {
     const [archivosPorId, setArchivosPorId] = useState<Record<number, PreviewFile[]>>({});
     const [contenido, setContenido] = useState<Record<number, string>>({});
     const [openRetroDialog, setOpenRetroDialog] = useState(false);
-    const [idRecursoPending, setRecursoIdPending] = useState(0);
+    const [idRecursoPending, setIdRecursoPending] = useState(0);
     const [retroalimentacion, setRetroalimentacion] = useState<string>("");
 
     const manuales = [
@@ -152,7 +152,7 @@ export const Actividades: React.FC = () => {
 
     const handleShowDialog = (id_recurso: number) => {
         setIsOpenAvisoActividad(true);
-        setRecursoIdPending(id_recurso);
+        setIdRecursoPending(id_recurso);
     }
 
     const handleSaveActivity = (id_recurso: number) => {
@@ -263,6 +263,26 @@ export const Actividades: React.FC = () => {
             setIsOpenAvisoActividad(false);
         }
     };
+
+    const handleOnPaste = (
+        e: React.ClipboardEvent<HTMLElement>,
+        id: number,
+        contenido: Record<number, string>,
+        showNotificationFn: (...args: any[]) => void
+    ) => {
+        const pastedText = e.clipboardData.getData("text");
+        const palabrasPegadas = pastedText.trim().split(/\s+/).filter(Boolean).length;
+        const palabrasActuales =
+            (contenido[id]?.trim().split(/\s+/).filter(Boolean).length) || 0;
+        const LIMITE = 5000;
+
+        if (palabrasActuales + palabrasPegadas > LIMITE) {
+            e.preventDefault();
+            showNotificationFn("El texto pegado supera el límite de 5000 palabras.", "warning");
+        }
+    };
+
+
 
     const Files = (item: any) => {
         return (
@@ -449,18 +469,7 @@ export const Actividades: React.FC = () => {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
-                                                            onPaste={(e) => {
-                                                                const pastedText = e.clipboardData.getData("text");
-                                                                const palabrasPegadas = pastedText.trim().split(/\s+/).filter(Boolean).length;
-                                                                const palabrasActuales = (contenido[item.id_recurso]?.trim().split(/\s+/).filter(Boolean).length) || 0;
-                                                                const LIMITE = 5000;
-
-                                                                if (palabrasActuales + palabrasPegadas > LIMITE) {
-                                                                    e.preventDefault();
-                                                                    showNotification("El texto pegado supera el límite de 5000 palabras.", "warning");
-                                                                }
-                                                            }}
-
+                                                            onPaste={(e) => handleOnPaste(e, item.id_recurso, contenido, showNotification)}
                                                         />
                                                     )}
                                                 />
