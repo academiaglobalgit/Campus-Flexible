@@ -23,6 +23,7 @@ import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
 import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
 
 import { useAuth } from '../../../hooks';
+import { ReporteDialog } from '../../molecules/Dialogs/ReporteDialog/ReporteDialog';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ const Calificaciones: React.FC = () => {
     const { configPlataforma } = useAuth();
 
     const [isOpen, setIsOpen] = React.useState(false);
+    const [openReporteDialog, setOpenReporteDialog] = React.useState(false);
 
     const { data: calificacionData, isLoading } = useGetCalificaciones();
     const { data: CalificacionesDatos } = useGetDatosModulos(ModulosCampusIds.CALIFICACIONES);
@@ -40,14 +42,14 @@ const Calificaciones: React.FC = () => {
     const [value, setValue] = React.useState(0);
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
-    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true  });
+    const [calificacionesConfig, setCalificacionesConfig] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true });
 
     React.useEffect(() => {
-        switch(configPlataforma?.id_plan_estudio) {
+        switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados UMI
             case 19: // Diplomados Coppel
                 setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
-            break;
+                break;
         }
     }, [configPlataforma]);
 
@@ -58,8 +60,8 @@ const Calificaciones: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
-   const Leyenda = (
-        <Box sx={{ ...innerHTMLStyle,pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
+    const Leyenda = (
+        <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
     );
 
     const BotonVerGlosario = (variant: 'outlined' | 'contained' = 'contained') => (
@@ -71,7 +73,7 @@ const Calificaciones: React.FC = () => {
     );
 
     const handleIrCurso = (item: CalificacionCurso) => {
-        setTabSelected({tab: 'cursos-detalle', index: 0});
+        setTabSelected({ tab: 'cursos-detalle', index: 0 });
         queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, item.id_curso, "Contenido"] });
 
 
@@ -85,7 +87,7 @@ const Calificaciones: React.FC = () => {
 
         setTimeout(() =>
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", item.id_curso.toString()))
-        ,500);
+            , 500);
     };
 
     const handleTabChange = (val: number) => {
@@ -114,7 +116,7 @@ const Calificaciones: React.FC = () => {
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
                     <Typography component={"span"} variant={"body3"} color={
                         curso.estatus_curso_alumno === 'Finalizado'
-                            ? (Number(curso.calificacion)< 6 ? 'error' : 'success')
+                            ? (Number(curso.calificacion) < 6 ? 'error' : 'success')
                             : 'disabled'
                     }>Calificación : </Typography>
                     <Typography
@@ -151,6 +153,11 @@ const Calificaciones: React.FC = () => {
         );
     };
 
+    const handleReporteCurso = (curso: CalificacionCurso) => {
+        console.log("🚀 ~ handleReporteCurso ~ curso:", curso)
+        setOpenReporteDialog(true);
+    }
+
     const botonesCalificacion = (curso: CalificacionCurso) => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17:
@@ -158,6 +165,8 @@ const Calificaciones: React.FC = () => {
                 return (
                     <React.Fragment>
                         <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Reporte Inicial del Curso</Button>
+                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Reporte Final del Curso</Button>
                     </React.Fragment>
                 );
             default:
@@ -168,7 +177,7 @@ const Calificaciones: React.FC = () => {
                     </React.Fragment>
                 );
         }
-        
+
     };
 
     const promedio = () => (
@@ -283,6 +292,15 @@ const Calificaciones: React.FC = () => {
         </Grid>
     );
 
+    const handleConfirmar = (isConfirmar: boolean): void => {
+        if (isConfirmar) {
+            // Lógica para manejar la confirmación
+        } else {
+            // Lógica para manejar la cancelación
+        }
+        setOpenReporteDialog(false);
+    };
+
     return (
         <>
             {
@@ -313,6 +331,7 @@ const Calificaciones: React.FC = () => {
                         {Listado()}
                     </ContainerDesktop>
             }
+            <ReporteDialog mensaje={'prueba'} tipo="info" isOpen={openReporteDialog} data={calificacionData} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} glosario={calificacionData?.glosario} />
         </>
     );
