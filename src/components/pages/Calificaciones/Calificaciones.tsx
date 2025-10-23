@@ -165,8 +165,8 @@ const Calificaciones: React.FC = () => {
                 return (
                     <React.Fragment>
                         <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
-                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Reporte Inicial del Curso</Button>
-                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Reporte Final del Curso</Button>
+                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Prueba Inicial de Competencias</Button>
+                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Prueba Final de Competencias</Button>
                     </React.Fragment>
                 );
             default:

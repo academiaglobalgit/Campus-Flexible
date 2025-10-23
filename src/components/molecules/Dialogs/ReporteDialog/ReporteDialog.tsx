@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
-import { Dialog, DialogContent, Box, Typography, Button } from "@mui/material";
+import { Dialog, DialogContent, Box, Typography, DialogTitle, DialogActions, Grid, Card, CardContent, Table, TableBody, TableRow, TableCell, TableHead, TextField, Chip } from "@mui/material";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import theme from "../../../../themes/theme";
+import DownloadIcon from '@mui/icons-material/Download';
+import Button from "../../../atoms/Button/Button";
 
 type DialogType = "success" | "warning" | "danger" | "info";
 
@@ -34,7 +36,7 @@ export const ReporteDialog: React.FC<DialogProps> = ({
         close(false);
     };
 
-    const handleConfirm = () => {
+    const handleDescargarReporte = () => {
         setOpen(false);
         close(true);
     };
@@ -65,13 +67,16 @@ export const ReporteDialog: React.FC<DialogProps> = ({
             sx={{
                 "& .MuiDialog-paper": {
                     margin: "5px",
-                    width: "350px",
+                    width: "100%",
                     borderRadius: "16px",
                     padding: "20px",
                 },
             }}
         >
-            <DialogContent>
+            <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                Prueba Inicial de Competencias Digitales y Adaptativas – Certificación I
+            </DialogTitle>
+            <DialogContent dividers>
                 <Box
                     sx={{
                         display: "flex",
@@ -80,33 +85,36 @@ export const ReporteDialog: React.FC<DialogProps> = ({
                         gap: "20px",
                         flexDirection: "column",
                         textAlign: "center",
+                        Width: "100%",
                     }}
                 >
-                    {config.icon}
-                    <Typography component="h5" variant="h6" sx={{ color: config.color }}>
-                        {mensaje}
+
+                    <Typography component="span" variant="body1" sx={{ color: config.color, textAlign: 'justify' }}>
+                        Este reporte ofrece una visión completa de tus competencias digitales, adaptativas y de liderazgo. Integra tres dimensiones: Autopercepción (cómo te ves), Desempeño conductual (cómo actúas) y Confianza personal (cómo te sientes frente al cambio). Los resultados no son una calificación, sino una guía para tu desarrollo profesional y personal dentro de la Certificación I.
                     </Typography>
 
-                    <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
-                        <Button
-                            onClick={handleClose}
-                            variant="outlined"
-                            color="primary"
-                            fullWidth
-                        >
-                            Cancelar
-                        </Button>
-                        <Button
-                            onClick={handleConfirm}
-                            variant="contained"
-                            sx={{ backgroundColor: config.color }}
-                            fullWidth
-                        >
-                            Aceptar
-                        </Button>
-                    </Box>
                 </Box>
             </DialogContent>
+            <DialogActions>
+                <Button
+                    onClick={handleClose}
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                >
+                    Cancelar
+                </Button>
+                <Button
+                    onClick={handleDescargarReporte}
+                    variant="contained"
+                    sxProps={{ backgroundColor: config.color }}
+                    fullWidth
+                    icon={<DownloadIcon />}
+                    iconPosition="end"
+                >
+                    Descargar
+                </Button>
+            </DialogActions>
         </Dialog>
     );
 };
