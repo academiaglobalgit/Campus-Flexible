@@ -13,6 +13,7 @@ import { Tutorias } from "./Tutorias";
 import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 import { useAuth } from "../../../hooks";
+import { useLocation } from "react-router-dom";
 
 let CursosTabs = [
     { id: 1, tab: 'Contenido', content: <Contenido /> },
@@ -31,11 +32,18 @@ const CursosActivosDetalles: React.FC = () => {
     const [verContenidoDescargable, setContenidoDescargable] = React.useState(true);
     const [tabs, setTabs] = React.useState(CursosTabs);
     const is1366 = useMediaQuery('(width: 1366px)');
+    const location = useLocation();
+    const tabIndexNotification = location.state?.tab;
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
-        setValue(indexTab);
 
+        if(tabIndexNotification !== null || tabIndexNotification !== undefined){
+            setValue(tabIndexNotification);
+        }else{
+            setValue(indexTab);
+        }
+            
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
                 CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
