@@ -71,10 +71,10 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
 
         if (_item.enlace_accion) {
             const enlaceAccion = item.enlace_accion.split("$")[0];
-            console.log("🚀 ~ goTo ~ enlaceAccion:", enlaceAccion)
+            const params = item.enlace_accion.split("$")[1];
 
-            if (_item.enlace_accion.includes("$tab==")) {
-                const tabIndex = parseInt(_item.enlace_accion.split("==")[1], 10);
+            if (params.includes("tab=")) {
+                const tabIndex = parseInt(params.split("tab=")[1], 10);
                 navigate(`${enlaceAccion}`, { state: { tab: tabIndex } });
             } else {
                 navigate(_item.enlace_accion);
