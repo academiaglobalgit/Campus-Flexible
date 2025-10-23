@@ -108,7 +108,7 @@ const Logros: React.FC = () => {
                     textAlign: "center",
                 }}
             >
-                <Box component="img" src={medallaSrc} alt="medalla" sx={{ width: 150 }} />
+                <Box component="img" src={medallaSrc} alt="medalla"/>
 
                 <Typography component="h2" variant="h5" color="primary">
                     Nivel: {nivel}
@@ -360,6 +360,30 @@ const Logros: React.FC = () => {
     ];
 
     const Insignias = (
+        <Box>
+            <TituloIcon Titulo={TitleScreen.LOGROS} Icon={isMobile && iconLogros} fontSize="h2" />
+            <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? DescripcionesPantallas.LOGROS }} />
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                <Box sx={
+                    [
+                        { display: 'flex' },
+                        !isMobile && { gap: '30px', flexDirection: 'row' },
+                        isMobile && { flexDirection: 'column', justifyContent: 'center', width: '345px' }
+                    ]
+                }>
+                    {/*  <LogrosCards horas="125" tipo="En plataforma" color={config?.data.color_primary} />
+                        <LogrosCards horas="5" tipo="Certificaciones" color={themeCoppel.palette.primary.main} />
+                        <LogrosCards horas="5" tipo="Concluidos" color={themeCoppel.palette.primary.main} /> */}
+                </Box>
+            </Box>
+        </Box>
+    );
+
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    return (
 
         isLoading
             ?
@@ -368,50 +392,25 @@ const Logros: React.FC = () => {
                 <Typography component="h4" variant="h4" color="primary">
                     Cargando logros...
                 </Typography>
-            </Box>
-            :
-            <Box>
-                <TituloIcon Titulo={TitleScreen.LOGROS} Icon={isMobile && iconLogros} fontSize="h2" />
-                <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? DescripcionesPantallas.LOGROS }} />
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                    <Box sx={
-                        [
-                            { display: 'flex' },
-                            !isMobile && { gap: '30px', flexDirection: 'row' },
-                            isMobile && { flexDirection: 'column', justifyContent: 'center', width: '345px' }
-                        ]
-                    }>
-                        {/*  <LogrosCards horas="125" tipo="En plataforma" color={config?.data.color_primary} />
-                        <LogrosCards horas="5" tipo="Certificaciones" color={themeCoppel.palette.primary.main} />
-                        <LogrosCards horas="5" tipo="Concluidos" color={themeCoppel.palette.primary.main} /> */}
-                    </Box>
-                </Box>
-            </Box>
-    );
-
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
-
-    return (
-        isMobile
-            ?
-            <>
-                {Insignias}
-                {tabs(recursos)}
-            </>
-            :
-            <>
-                <Box sx={{ display: 'flex', flexDirection: 'column', height: 'auto' }} className='is1366'>
-                    <Box sx={{ display: 'flex' }}>
-                        {Insignias}
-                        <Box>
-                            <Medalla nivel="Principiante" progreso="0" />
-                        </Box>
-                    </Box>
+            </Box> :
+            isMobile
+                ?
+                <>
+                    {Insignias}
                     {tabs(recursos)}
-                </Box>
-            </>
+                </>
+                :
+                <>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', height: 'auto' }} className='is1366'>
+                        <Box sx={{ display: 'flex' }}>
+                            {Insignias}
+                            <Box>
+                                <Medalla nivel="Principiante" progreso="0" />
+                            </Box>
+                        </Box>
+                        {tabs(recursos)}
+                    </Box>
+                </>
     );
 };
 
