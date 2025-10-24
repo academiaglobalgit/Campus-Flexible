@@ -16,12 +16,12 @@ import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
 
 let CursosTabs = [
-    { id: 1, tab: 'Contenido', content: <Contenido /> },
-    { id: 2, tab: 'Actividades', content: <Actividades /> },
-    { id: 3, tab: 'Foros', content: <ForosCursos /> },
-    { id: 4, tab: 'Clases', content: <Tutorias /> },
-    { id: 5, tab: 'Evaluaciones', content: <Evaluaciones /> },
-    { id: 6, tab: 'Lista de pendientes', content: <ListaPendientes /> },
+    { id: 1, tab: 'Contenido', content: <Contenido />, hidden: false },
+    { id: 2, tab: 'Actividades', content: <Actividades />, hidden: false },
+    { id: 3, tab: 'Foros', content: <ForosCursos />, hidden: false },
+    { id: 4, tab: 'Clases', content: <Tutorias />, hidden: false },
+    { id: 5, tab: 'Evaluaciones', content: <Evaluaciones />, hidden: false },
+    { id: 6, tab: 'Lista de pendientes', content: <ListaPendientes />, hidden: false },
 ];
 
 const CursosActivosDetalles: React.FC = () => {
@@ -43,21 +43,23 @@ const CursosActivosDetalles: React.FC = () => {
         }else{
             setValue(indexTab);
         }
-            
+
         switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados
-                CursosTabs = CursosTabs.filter(item => item.id !== 4 && item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
-                
-                setTabs(CursosTabs);
+                const updatedTabs17 = CursosTabs.map(item => ({
+                    ...item,
+                    hidden: item.id === 4 || item.id === 5 || item.id === 3
+                }));
+                setTabs(updatedTabs17);
                 setContenidoDescargable(false);
-                
                 break;
             case 19: // Diplomados
-                CursosTabs = CursosTabs.filter(item => item.id !== 5 && item.id !== 3); // Remover Clases, Foros y Evaluaciones
-                
-                setTabs(CursosTabs);
+                const updatedTabs19 = CursosTabs.map(item => ({
+                    ...item,
+                    hidden: item.id === 5 || item.id === 3
+                }));
+                setTabs(updatedTabs19);
                 setContenidoDescargable(false);
-                
                 break;
         }
     }, [configPlataforma]);
@@ -159,17 +161,21 @@ const CursosActivosDetalles: React.FC = () => {
                         }}
                     >
                         {
-                            tabs.map((item, i) => <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />)
+                            tabs.map((item, i) =>
+                                !item.hidden && <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />
+                            )
                         }
                     </Tabs>
                 </Box>
                 {
                     tabs.map((tab, i) => (
-                        <TabPanel key={i} value={value} index={i}>
-                            <Box sx={{ pt: 2 }}>
-                                {tab.content}
-                            </Box>
-                        </TabPanel>
+                        !tab.hidden && (
+                            <TabPanel key={i} value={value} index={i}>
+                                <Box sx={{ pt: 2 }}>
+                                    {tab.content}
+                                </Box>
+                            </TabPanel>
+                        )
                     ))
                 }
             </>
