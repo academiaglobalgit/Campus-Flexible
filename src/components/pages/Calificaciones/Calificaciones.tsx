@@ -21,7 +21,7 @@ import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular
 import { useQueryClient } from '@tanstack/react-query';
 import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
 import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
-
+import { useGetEncuestas } from "../../../services/CursosActivosService";
 import { useAuth } from '../../../hooks';
 import { ReporteDialog } from '../../molecules/Dialogs/ReporteDialog/ReporteDialog';
 
@@ -32,14 +32,14 @@ const Calificaciones: React.FC = () => {
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
     const { configPlataforma } = useAuth();
-
+    const { data: encuestas, isLoading: loadingEncuesta } = useGetEncuestas();
     const [isOpen, setIsOpen] = React.useState(false);
     const [openReporteDialog, setOpenReporteDialog] = React.useState(false);
-
     const { data: calificacionData, isLoading } = useGetCalificaciones();
     const { data: CalificacionesDatos } = useGetDatosModulos(ModulosCampusIds.CALIFICACIONES);
-
     const [value, setValue] = React.useState(0);
+    const [htmlResult, setHtmlResult] = React.useState('');
+    const [titulo, setTitulo] = React.useState('');
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
     const [calificacionesConfig, setCalificacionesConfig] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true });
@@ -153,32 +153,68 @@ const Calificaciones: React.FC = () => {
         );
     };
 
-    const handleReporteCurso = (curso: CalificacionCurso) => {
-        console.log("🚀 ~ handleReporteCurso ~ curso:", curso)
+    const handleReporteCurso = (html_result: any, titulo: string) => {
         setOpenReporteDialog(true);
+        setHtmlResult(html_result);
+        setTitulo(titulo);
     }
 
     const botonesCalificacion = (curso: CalificacionCurso) => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17:
-            case 19: // Diplomados UMI, Coppel
+            case 19: { // Diplomados UMI, Coppel
+
+                if (loadingEncuesta) {
+                    return (
+                        <Button disabled fullWidth onClick={() => { }}>
+                            Cargando encuestas...
+                        </Button>
+                    );
+                }
+
+                const encuestasCompletadas =
+                    encuestas?.data
+                        ?.filter(
+                            (e) =>
+                                e.estatus?.toLowerCase() === "completada" &&
+                                e.id_curso === curso.id_curso &&
+                                e.html_result !== null
+                        )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
+
                 return (
                     <React.Fragment>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
-                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Prueba Inicial de Competencias</Button>
-                        <Button onClick={() => handleReporteCurso(curso)} fullWidth>Prueba Final de Competencias</Button>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
+                            Ir al Curso
+                        </Button>
+
+                        {encuestasCompletadas.length > 0 && encuestasCompletadas.map((encuesta) => (
+                            <Button
+                                key={encuesta.id_encuesta}
+                                onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
+                                fullWidth
+                            >
+                                {encuesta.titulo}
+                            </Button>
+                        ))}
                     </React.Fragment>
                 );
+            }
+
             default:
                 return (
                     <React.Fragment>
-                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>
+                            Detalles Calificación
+                        </Button>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
+                            Ir al Curso
+                        </Button>
                     </React.Fragment>
                 );
         }
-
     };
+
+
 
     const promedio = () => (
         <Box sx={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }, isMobile && { flexDirection: 'column' }]}>
@@ -331,7 +367,7 @@ const Calificaciones: React.FC = () => {
                         {Listado()}
                     </ContainerDesktop>
             }
-            <ReporteDialog mensaje={'prueba'} tipo="info" isOpen={openReporteDialog} data={calificacionData} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
+            <ReporteDialog tittle={titulo} isOpen={openReporteDialog} data={htmlResult} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} glosario={calificacionData?.glosario} />
         </>
     );
