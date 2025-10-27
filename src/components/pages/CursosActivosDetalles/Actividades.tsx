@@ -21,6 +21,7 @@ import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
 import React from "react";
 import { useAuth } from "../../../hooks";
+import { LoadingBackdrop } from "../../molecules/Backdrop/Backdrop";
 
 type PreviewFile = {
     file: File;
@@ -500,6 +501,7 @@ export const Actividades: React.FC = () => {
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
             <GenericDialog mensaje={"¡Atención! Una vez enviada, la actividad no puede modificarse. ¿Deseas enviarla?"} tipo="warning" isOpen={isOpenAvisoActividad} close={(isConfirmar: boolean) => handleCloseGenericDialog(isConfirmar)} />
+            <LoadingBackdrop open={isSaving} />
         </>
     );
 };
