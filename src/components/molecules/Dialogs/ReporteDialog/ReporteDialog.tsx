@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Dialog, DialogContent, Box, DialogTitle, DialogActions } from "@mui/material";
 import Button from "../../../atoms/Button/Button";
 import { Typography } from "../../../atoms/Typography/Typography";
@@ -10,26 +10,12 @@ type DialogProps = {
     close: (isConfirmar: boolean) => void;
 };
 
-export const ReporteDialog: React.FC<DialogProps> = ({ isOpen, close, data, tittle }) => {
-    const [open, setOpen] = React.useState(false);
-
-    useEffect(() => {
-        setOpen(isOpen ?? false);
-    }, [isOpen]);
-
-    const handleClose = () => {
-        setOpen(false);
-        close(false);
-    };
-
-    /*const handleDescargarReporte = () => {
-        setOpen(false);
-        close(true);
-    };*/
+export const ReporteDialog: React.FC<DialogProps> = ({ isOpen = false, close, data, tittle }) => {
+    const handleClose = () => close(false);
 
     return (
         <Dialog
-            open={open}
+            open={isOpen}
             onClose={handleClose}
             sx={{
                 "& .MuiDialog-paper": {
@@ -40,11 +26,12 @@ export const ReporteDialog: React.FC<DialogProps> = ({ isOpen, close, data, titt
                 },
             }}
         >
-            <DialogTitle sx={{ m: 0, p: 2, textAlign: 'center'}} id="customized-dialog-title">
-
-                <Typography component="h3" variant="h3" color="primary">{tittle}</Typography>
-
+            <DialogTitle sx={{ m: 0, p: 2, textAlign: "center" }}>
+                <Typography component="h3" variant="h3" color="primary">
+                    {tittle}
+                </Typography>
             </DialogTitle>
+
             <DialogContent dividers>
                 <Box
                     sx={{
@@ -54,31 +41,15 @@ export const ReporteDialog: React.FC<DialogProps> = ({ isOpen, close, data, titt
                         gap: "20px",
                         flexDirection: "column",
                         textAlign: "center",
-                        Width: "100%",
+                        width: "100%",
                     }}
                 >
-
-
-                    <Box dangerouslySetInnerHTML={{
-                        __html: data
-                    }} />
-
+                    <Box dangerouslySetInnerHTML={{ __html: data }} />
                 </Box>
             </DialogContent>
+
             <DialogActions>
-                {/* <Button
-                    onClick={handleClose}
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                >
-                    Cancelar
-                </Button> */}
-                <Button
-                    onClick={handleClose}
-                    variant="contained"
-                    fullWidth
-                >
+                <Button onClick={handleClose} variant="contained" fullWidth>
                     Aceptar
                 </Button>
             </DialogActions>
