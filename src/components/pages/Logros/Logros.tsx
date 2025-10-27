@@ -371,9 +371,6 @@ const Logros: React.FC = () => {
                         isMobile && { flexDirection: 'column', justifyContent: 'center', width: '345px' }
                     ]
                 }>
-                    {/*  <LogrosCards horas="125" tipo="En plataforma" color={config?.data.color_primary} />
-                        <LogrosCards horas="5" tipo="Certificaciones" color={themeCoppel.palette.primary.main} />
-                        <LogrosCards horas="5" tipo="Concluidos" color={themeCoppel.palette.primary.main} /> */}
                 </Box>
             </Box>
         </Box>
