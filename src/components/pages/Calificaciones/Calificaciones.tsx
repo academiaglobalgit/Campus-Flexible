@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Grid, useMediaQuery, useTheme } from '@mui/material';
+
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { AppRoutingPaths, TitleScreen } from '@constants';
 import { Calificaciones as CalificacionesIcon } from "@iconsCustomizeds";
@@ -167,7 +168,7 @@ const Calificaciones: React.FC = () => {
                 if (loadingEncuesta) {
                     return (
                         <Button disabled fullWidth onClick={() => { }}>
-                            Cargando encuestas...
+                            Cargando reportes...
                         </Button>
                     );
                 }
@@ -181,22 +182,52 @@ const Calificaciones: React.FC = () => {
                                 e.html_result !== null
                         )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
 
+                const encuestasLimitadas = encuestasCompletadas.slice(0, 3);
                 return (
-                    <React.Fragment>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
-                            Ir al Curso
-                        </Button>
-
-                        {encuestasCompletadas.length > 0 && encuestasCompletadas.map((encuesta) => (
+                    <>
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gap: 1.2,
+                                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
+                                width: "100%",
+                                alignItems: "stretch",
+                            }}
+                        >
                             <Button
-                                key={encuesta.id_encuesta}
-                                onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
+                                onClick={() => handleIrCurso(curso)}
                                 fullWidth
+                                variant="contained"
                             >
-                                {encuesta.titulo}
+                                Ir al Curso
                             </Button>
-                        ))}
-                    </React.Fragment>
+
+                            {encuestasLimitadas.map((encuesta) => (
+
+                                <Button
+                                    onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
+                                    fullWidth
+                                    sxProps={{
+                                        ...(isMobile
+                                            ? {
+                                                textOverflow: "ellipsis",
+                                                p: 1.5,
+                                                lineHeight: 1.3,
+                                            }
+                                            : {
+                                                whiteSpace: "normal",
+                                                wordBreak: "break-word",
+                                                textAlign: "center",
+                                                p: 1.5,
+                                                lineHeight: 1.3,
+                                            }),
+                                    }}
+                                >
+                                    {encuesta.titulo}
+                                </Button>
+                            ))}
+                        </Box>
+                    </>
                 );
             }
 
@@ -328,14 +359,7 @@ const Calificaciones: React.FC = () => {
         </Grid>
     );
 
-    const handleConfirmar = (isConfirmar: boolean): void => {
-        if (isConfirmar) {
-            // Lógica para manejar la confirmación
-        } else {
-            // Lógica para manejar la cancelación
-        }
-        setOpenReporteDialog(false);
-    };
+    const handleConfirmar = () => setOpenReporteDialog(false);
 
     return (
         <>
@@ -367,7 +391,7 @@ const Calificaciones: React.FC = () => {
                         {Listado()}
                     </ContainerDesktop>
             }
-            <ReporteDialog tittle={titulo} isOpen={openReporteDialog} data={htmlResult} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
+            <ReporteDialog tittle={titulo} isOpen={openReporteDialog} data={htmlResult} close={handleConfirmar} />
             <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} glosario={calificacionData?.glosario} />
         </>
     );
