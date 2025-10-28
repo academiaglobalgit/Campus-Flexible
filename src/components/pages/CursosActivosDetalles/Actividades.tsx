@@ -21,7 +21,6 @@ import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
 import React from "react";
 import { useAuth } from "../../../hooks";
-import { LoadingBackdrop } from "../../molecules/Backdrop/Backdrop";
 
 type PreviewFile = {
     file: File;
@@ -374,6 +373,26 @@ export const Actividades: React.FC = () => {
 
     return (
         <>
+            {isSaving && (
+                <LoadingCircular
+                    Text="Guardando actividad..."
+                    sxProps={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: 2000,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh',
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                        backdropFilter: 'blur(6px)',
+                        WebkitBackdropFilter: 'blur(6px)',
+                    }}
+                />
+            )}
             {
                 isMobile
                     ?
@@ -501,7 +520,6 @@ export const Actividades: React.FC = () => {
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
             <GenericDialog mensaje={"¡Atención! Una vez enviada, la actividad no puede modificarse. ¿Deseas enviarla?"} tipo="warning" isOpen={isOpenAvisoActividad} close={(isConfirmar: boolean) => handleCloseGenericDialog(isConfirmar)} />
-            <LoadingBackdrop open={isSaving} />
         </>
     );
 };
