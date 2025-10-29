@@ -373,6 +373,9 @@ export const Actividades: React.FC = () => {
 
     return (
         <>
+            {isSaving && (
+                <LoadingCircular Text="Guardando actividad..." isSaving />
+            )}
             {
                 isMobile
                     ?
