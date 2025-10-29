@@ -14,35 +14,39 @@ import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
+import { ta } from "zod/v4/locales";
 
 let CursosTabs = [
-    { id: 1, tab: 'Contenido', content: <Contenido />, hidden: false },
-    { id: 2, tab: 'Actividades', content: <Actividades />, hidden: false },
-    { id: 3, tab: 'Foros', content: <ForosCursos />, hidden: false },
-    { id: 4, tab: 'Clases', content: <Tutorias />, hidden: false },
-    { id: 5, tab: 'Evaluaciones', content: <Evaluaciones />, hidden: false },
-    { id: 6, tab: 'Lista de pendientes', content: <ListaPendientes />, hidden: false },
+    { id: 1, tab: 'Actividades', content: <Actividades />, hidden: false, order: 2 },
+    { id: 6, tab: 'Clases', content: <Tutorias />, hidden: false, order: 4 },
+    { id: 3, tab: 'Contenido', content: <Contenido />, hidden: false, order: 1 },
+    { id: 2, tab: 'Evaluaciones', content: <Evaluaciones />, hidden: false, order: 5 },
+    { id: 5, tab: 'Foros', content: <ForosCursos />, hidden: false, order: 3 },
+    { id: 7, tab: 'Lista de pendientes', content: <ListaPendientes />, hidden: false, order: 7 },
 ];
 
 const TAB_CONFIG: Record<number, { hiddenTabs: number[], allowDownload: boolean }> = {
-    17: { hiddenTabs: [3, 4, 5], allowDownload: false }, 
-    19: { hiddenTabs: [3, 5], allowDownload: false },
+    // foros, clases y evaluaciones
+    // id de hidden tabs
+    17: { hiddenTabs: [5, 6, 2], allowDownload: false }, 
+    // foros y evaluaciones
+    // id de hidden tabs
+    19: { hiddenTabs: [5, 2], allowDownload: false },
 };
 
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma } = useAuth();
     const curso = JSON.parse(getCursoSelected() || '{}');
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(1);
     const [verContenidoDescargable, setContenidoDescargable] = React.useState(true);
     const [tabs, setTabs] = React.useState(CursosTabs);
     const is1366 = useMediaQuery('(width: 1366px)');
     const location = useLocation();
-    const tabIndexNotification = location.state?.tab;
+    const incomingTabId = location.state?.tab;
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
-        setValue(tabIndexNotification ?? indexTab);
 
         if (!configPlataforma) return;
         
@@ -57,12 +61,21 @@ const CursosActivosDetalles: React.FC = () => {
             );
             setContenidoDescargable(config.allowDownload);
         }
+
+        const visibleTabs = CursosTabs.filter(tab => !config?.hiddenTabs.includes(tab.id));
+        const targetTabId = incomingTabId ?? indexTab;
+        const targetTab = visibleTabs.find(tab => tab.id === targetTabId);
+
+        // si no se encuentra el tab visible selecciona Contenido, que tiene id 3
+        // este recurso esta siempre visible en todos los programas
+        setValue(targetTab?.id ?? 3);
         
-        
-    }, [configPlataforma]);
+    }, [configPlataforma, incomingTabId ]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setTabSelected({ tab: 'cursos-detalle', index: newValue });
+        const tab = tabs.find(tab => tab.id === newValue);
+        console.log("🚀 ~ handleChange ~ tab:", tab)
+        setTabSelected({ tab: 'cursos-detalle', index: tab?.id ?? 3 });
         setValue(newValue);
     };
 
@@ -158,22 +171,26 @@ const CursosActivosDetalles: React.FC = () => {
                         }}
                     >
                         {
-                            tabs.map((item, i) =>
-                                !item.hidden && <Tab label={item.tab} value={i} key={i} sx={{ minWidth: '150px', padding: '0px' }} />
-                            )
+                            tabs
+                                .filter(item => !item.hidden)
+                                .sort((a, b) => a.order - b.order)
+                                .map((item) =>
+                                    <Tab label={item.tab} value={item.id} key={item.id} sx={{ minWidth: '150px', padding: '0px' }} />
+                                )
                         }
                     </Tabs>
                 </Box>
                 {
-                    tabs.map((tab, i) => (
-                        !tab.hidden && (
-                            <TabPanel key={i} value={value} index={i}>
+                    tabs
+                        .filter(tab => !tab.hidden)
+                        .sort((a, b) => a.order - b.order)
+                        .map((tab) => (
+                            <TabPanel key={tab.id} value={value} index={tab.id}>
                                 <Box sx={{ pt: 2 }}>
                                     {tab.content}
                                 </Box>
                             </TabPanel>
-                        )
-                    ))
+                        ))
                 }
             </>
         </Box>
