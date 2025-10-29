@@ -10,6 +10,7 @@ import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlin
 import { Typography } from "../../atoms/Typography/Typography";
 import { tiempoTranscurrido } from "../../../utils/Helpers";
 import { NOTIFICATIONS_ENDPOINTS } from "../../../types/endpoints";
+import { useNavigate } from "react-router-dom";
 
 type NotificacionProps = {
     item: Notificaciones;
@@ -23,6 +24,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const startLoading = (id: number) => {
         setLoadingItems(prev => new Set(prev).add(id));
@@ -66,6 +68,21 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
     const goTo = (_item: Notificaciones) => {
         //console.log(item);
         //FALTA NAVEGAR
+
+        if (_item.enlace_accion) {
+            const enlaceAccion = item.enlace_accion.split("$")[0];
+            const params = item.enlace_accion.split("$")[1];
+
+            if (params?.includes("tab=")) {
+                const tabIndex = parseInt(params.split("tab=")[1], 10);
+                navigate(`${enlaceAccion}`, { state: { tab: tabIndex } });
+            } else {
+                console.log("Navegar a:", _item.enlace_accion);
+                navigate(_item.enlace_accion);
+            }
+        }
+
+        
     }
 
     return (

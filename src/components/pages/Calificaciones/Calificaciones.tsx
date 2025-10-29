@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Grid, useMediaQuery, useTheme } from '@mui/material';
+
 import { TituloIcon } from '../../molecules/TituloIcon/TituloIcon';
 import { AppRoutingPaths, TitleScreen } from '@constants';
 import { Calificaciones as CalificacionesIcon } from "@iconsCustomizeds";
@@ -21,8 +22,9 @@ import { LoadingCircular } from '../../molecules/LoadingCircular/LoadingCircular
 import { useQueryClient } from '@tanstack/react-query';
 import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
 import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
-
+import { useGetEncuestas } from "../../../services/CursosActivosService";
 import { useAuth } from '../../../hooks';
+import { ReporteDialog } from '../../molecules/Dialogs/ReporteDialog/ReporteDialog';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -31,23 +33,24 @@ const Calificaciones: React.FC = () => {
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
     const { configPlataforma } = useAuth();
-
+    const { data: encuestas, isLoading: loadingEncuesta } = useGetEncuestas();
     const [isOpen, setIsOpen] = React.useState(false);
-
+    const [openReporteDialog, setOpenReporteDialog] = React.useState(false);
     const { data: calificacionData, isLoading } = useGetCalificaciones();
     const { data: CalificacionesDatos } = useGetDatosModulos(ModulosCampusIds.CALIFICACIONES);
-
     const [value, setValue] = React.useState(0);
+    const [htmlResult, setHtmlResult] = React.useState('');
+    const [titulo, setTitulo] = React.useState('');
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
-    const [ calificacionesConfig, setCalificacionesConfig ] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true  });
+    const [calificacionesConfig, setCalificacionesConfig] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true });
 
     React.useEffect(() => {
-        switch(configPlataforma?.id_plan_estudio) {
+        switch (configPlataforma?.id_plan_estudio) {
             case 17: // Diplomados UMI
             case 19: // Diplomados Coppel
                 setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
-            break;
+                break;
         }
     }, [configPlataforma]);
 
@@ -58,8 +61,8 @@ const Calificaciones: React.FC = () => {
         setPreviewTabSelected(indexTab);
     }, []);
 
-   const Leyenda = (
-        <Box sx={{ ...innerHTMLStyle,pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
+    const Leyenda = (
+        <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: CalificacionesDatos?.data?.descripcion_html ?? '' }} />
     );
 
     const BotonVerGlosario = (variant: 'outlined' | 'contained' = 'contained') => (
@@ -71,7 +74,7 @@ const Calificaciones: React.FC = () => {
     );
 
     const handleIrCurso = (item: CalificacionCurso) => {
-        setTabSelected({tab: 'cursos-detalle', index: 0});
+        setTabSelected({ tab: 'cursos-detalle', index: 0 });
         queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, item.id_curso, "Contenido"] });
 
 
@@ -85,7 +88,7 @@ const Calificaciones: React.FC = () => {
 
         setTimeout(() =>
             navigate(AppRoutingPaths.CURSOS_ACTIVOS_DETALLES.replace(":id", item.id_curso.toString()))
-        ,500);
+            , 500);
     };
 
     const handleTabChange = (val: number) => {
@@ -114,7 +117,7 @@ const Calificaciones: React.FC = () => {
                 <Box sx={{ ...flexRows, justifyContent: 'start', gap: '5px' }}>
                     <Typography component={"span"} variant={"body3"} color={
                         curso.estatus_curso_alumno === 'Finalizado'
-                            ? (Number(curso.calificacion)< 6 ? 'error' : 'success')
+                            ? (Number(curso.calificacion) < 6 ? 'error' : 'success')
                             : 'disabled'
                     }>Calificación : </Typography>
                     <Typography
@@ -151,25 +154,98 @@ const Calificaciones: React.FC = () => {
         );
     };
 
+    const handleReporteCurso = (html_result: any, titulo: string) => {
+        setOpenReporteDialog(true);
+        setHtmlResult(html_result);
+        setTitulo(titulo);
+    }
+
     const botonesCalificacion = (curso: CalificacionCurso) => {
         switch (configPlataforma?.id_plan_estudio) {
             case 17:
-            case 19: // Diplomados UMI, Coppel
+            case 19: { // Diplomados UMI, Coppel
+
+                if (loadingEncuesta) {
+                    return (
+                        <Button disabled fullWidth onClick={() => { }}>
+                            Cargando reportes...
+                        </Button>
+                    );
+                }
+
+                const encuestasCompletadas =
+                    encuestas?.data
+                        ?.filter(
+                            (e) =>
+                                e.estatus?.toLowerCase() === "completada" &&
+                                e.id_curso === curso.id_curso &&
+                                e.html_result !== null
+                        )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
+
+                const encuestasLimitadas = encuestasCompletadas.slice(0, 3);
                 return (
-                    <React.Fragment>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
-                    </React.Fragment>
+                    <>
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gap: 1.2,
+                                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
+                                width: "100%",
+                                alignItems: "stretch",
+                            }}
+                        >
+                            <Button
+                                onClick={() => handleIrCurso(curso)}
+                                fullWidth
+                                variant="contained"
+                            >
+                                Ir al Curso
+                            </Button>
+
+                            {encuestasLimitadas.map((encuesta) => (
+
+                                <Button
+                                    onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
+                                    fullWidth
+                                    sxProps={{
+                                        ...(isMobile
+                                            ? {
+                                                textOverflow: "ellipsis",
+                                                p: 1.5,
+                                                lineHeight: 1.3,
+                                            }
+                                            : {
+                                                whiteSpace: "normal",
+                                                wordBreak: "break-word",
+                                                textAlign: "center",
+                                                p: 1.5,
+                                                lineHeight: 1.3,
+                                            }),
+                                    }}
+                                >
+                                    {encuesta.titulo}
+                                </Button>
+                            ))}
+                        </Box>
+                    </>
                 );
+            }
+
             default:
                 return (
                     <React.Fragment>
-                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>Detalles Calificación</Button>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>Ir al Curso</Button>
+                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>
+                            Detalles Calificación
+                        </Button>
+                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
+                            Ir al Curso
+                        </Button>
                     </React.Fragment>
                 );
         }
-        
     };
+
+
 
     const promedio = () => (
         <Box sx={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }, isMobile && { flexDirection: 'column' }]}>
@@ -283,6 +359,8 @@ const Calificaciones: React.FC = () => {
         </Grid>
     );
 
+    const handleConfirmar = () => setOpenReporteDialog(false);
+
     return (
         <>
             {
@@ -313,6 +391,7 @@ const Calificaciones: React.FC = () => {
                         {Listado()}
                     </ContainerDesktop>
             }
+            <ReporteDialog tittle={titulo} isOpen={openReporteDialog} data={htmlResult} close={handleConfirmar} />
             <GlosarioTerminosDialog isOpen={isOpen} close={() => setIsOpen(false)} glosario={calificacionData?.glosario} />
         </>
     );

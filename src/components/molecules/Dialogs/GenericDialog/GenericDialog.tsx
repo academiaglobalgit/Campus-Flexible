@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Dialog, DialogContent, Box, Typography, Button } from "@mui/material";
+import { DialogContent, Box, Typography, Button } from "@mui/material";
+import { Dialog } from "../../../atoms/Dialog/Dialog";
+
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -58,15 +60,12 @@ export const GenericDialog: React.FC<DialogProps> = ({
 
     return (
         <Dialog
-            open={open}
-            onClose={handleClose}
-            sx={{
-                "& .MuiDialog-paper": {
-                    margin: "5px",
-                    width: "350px",
-                    borderRadius: "16px",
-                    padding: "20px",
-                },
+            isOpen={open}
+            sxProps={{
+                margin: "5px",
+                width: "350px",
+                borderRadius: "16px",
+                padding: "20px",
             }}
         >
             <DialogContent>

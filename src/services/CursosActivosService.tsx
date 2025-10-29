@@ -5,6 +5,8 @@ import type { Actividad, CursosActividadesResponse, CursosActivosResponse, Curso
 import React from 'react';
 import type { CursosForosResponse, CursosListaPendientesResponse } from '../types/Cursos.interface';
 import type { EncuestasResponse } from '../types/Encuestas.interface';
+import { useNavigate } from 'react-router-dom';
+import { AppRoutingPaths } from "@constants";
 
 export const useGetCursos = () => {
     return useQuery<CursosActivosResponse, Error>({
@@ -52,11 +54,27 @@ export const useGetCursosTabs = (id: number, tab: string) => {
 
 export const useGetContenidoTabs = (id: number, tab: string) => {
     const idRecurso = TabsCursos.find((item) => item.tipo === tab)?.id_tipo_recurso;
+    const navigate = useNavigate();
 
-    return useQuery<CursosTabsResponse, Error>({
-        queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, tab, id],
-        queryFn: () => apiClient.get<CursosTabsResponse>(`${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`),
+    const query = useQuery<CursosTabsResponse, Error>({
+        queryKey: [
+            CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key,
+            tab,
+            id,
+        ],
+        queryFn: () =>
+            apiClient.get<CursosTabsResponse>(
+                `${CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.path}?id_curso=${id}&id_tipo_recurso=${idRecurso}`
+            ),
     });
+
+    React.useEffect(() => {
+        if (query.isError || query.data?.success === false) {
+            navigate(AppRoutingPaths.CURSOS_ACTIVOS);
+        }
+    }, [query.isError, query.data, navigate]);
+
+    return query;
 };
 
 export type ActividadesCacheData = {
@@ -99,7 +117,7 @@ export const useGetActividades = (id: number, tab: string): UseQueryResult<Curso
 };
 
 
-export const updateActividad = async (data: { id_recurso: number; contenido: string; archivos: File[]; archivos_eliminar: any[]; id_entrega: number | null;}): Promise<ActividadEntregadaResponse> => {
+export const updateActividad = async (data: { id_recurso: number; contenido: string; archivos: File[]; archivos_eliminar: any[]; id_entrega: number | null; }): Promise<ActividadEntregadaResponse> => {
 
     const payload = {
         id_recurso: data.id_recurso,
