@@ -24,6 +24,11 @@ let CursosTabs = [
     { id: 6, tab: 'Lista de pendientes', content: <ListaPendientes />, hidden: false },
 ];
 
+const TAB_CONFIG: Record<number, { hiddenTabs: number[], allowDownload: boolean }> = {
+    17: { hiddenTabs: [3, 4, 5], allowDownload: false }, 
+    19: { hiddenTabs: [3, 5], allowDownload: false },
+};
+
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma } = useAuth();
@@ -37,31 +42,23 @@ const CursosActivosDetalles: React.FC = () => {
 
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
+        setValue(tabIndexNotification ?? indexTab);
 
-        if(tabIndexNotification !== null || tabIndexNotification !== undefined){
-            setValue(tabIndexNotification);
-        }else{
-            setValue(indexTab);
-        }
+        if (!configPlataforma) return;
+        
+        const config = TAB_CONFIG[configPlataforma.id_plan_estudio];
 
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
-                const updatedTabs17 = CursosTabs.map(item => ({
+        if (config) {
+            setTabs(
+                CursosTabs.map(item => ({
                     ...item,
-                    hidden: item.id === 4 || item.id === 5 || item.id === 3
-                }));
-                setTabs(updatedTabs17);
-                setContenidoDescargable(false);
-                break;
-            case 19: // Diplomados
-                const updatedTabs19 = CursosTabs.map(item => ({
-                    ...item,
-                    hidden: item.id === 5 || item.id === 3
-                }));
-                setTabs(updatedTabs19);
-                setContenidoDescargable(false);
-                break;
+                    hidden: config.hiddenTabs.includes(item.id),
+                }))
+            );
+            setContenidoDescargable(config.allowDownload);
         }
+        
+        
     }, [configPlataforma]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
