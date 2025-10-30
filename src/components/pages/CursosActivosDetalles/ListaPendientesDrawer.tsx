@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import { Box, Collapse, Divider, Drawer, List, ListItemButton, ListItemIcon, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Collapse, Divider, List, ListItemButton, ListItemIcon, useMediaQuery, useTheme } from "@mui/material";
 import { ListaTareas } from "../../../assets/icons";
 import { Typography } from "../../atoms/Typography/Typography";
+import { DsDrawer } from "../../atoms/Drawer/Drawer";
 import { flexColumn, flexRows } from "@styles";
 import { useGetListaPendientes } from "../../../services/CursosActivosService";
 
@@ -22,6 +23,16 @@ interface Props {
     goToTab: (tabIndex: number) => void;
 }
 
+const TipoRecursoIds: Record<string, number> = {
+    Actividades: 1,
+    Evaluaciones: 2,
+    Contenido: 3,
+    'Evaluación Final': 4,
+    Foros: 5,
+    Clase: 6,
+    'Lista de pendientes': 7,
+};
+
 export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -36,19 +47,35 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
     const Sections = (items: IListaPendientes[]) => {
         return (
             <Box sx={{ ...flexColumn, alignItems: 'normal', gap: '10px' }}>
-                {
-                    items.map((item, i) => (
-                        <Box onClick={() => handleGoTo(1, item.entregado)} key={i} sx={{ ...flexRows, justifyContent: 'space-between', cursor: item.entregado === 1 ? 'default' : 'pointer' }}>
-                            <Typography component="span" variant="body1" color="white">{item.titulo}</Typography>
-                            {
-                                item.entregado === 1 ? <CheckBoxIcon color="primary" /> : <CheckBoxOutlineBlankIcon color="white" />
-                            }
+                {items.map((item, i) => {
+                    const idTipo = TipoRecursoIds[item.tipo_recurso] ?? 0;
+
+                    return (
+                        <Box
+                            key={i}
+                            onClick={() => handleGoTo(idTipo, item.entregado)}
+                            sx={{
+                                ...flexRows,
+                                justifyContent: 'space-between',
+                                cursor: item.entregado === 1 ? 'default' : 'pointer',
+                            }}
+                        >
+                            <Typography component="span" variant="body1" sxProps={{ color: '#fff' }}>
+                                {item.titulo}
+                            </Typography>
+
+                            {item.entregado === 1 ? (
+                                <CheckBoxIcon color="primary" />
+                            ) : (
+                                <CheckBoxOutlineBlankIcon sx={{ color: '#fff' }} />
+                            )}
                         </Box>
-                    ))
-                }
+                    );
+                })}
             </Box>
-        )
-    }
+        );
+    };
+
 
     const handleGoTo = (tab: number, entregado: number) => {
         if (entregado === 0) {
@@ -65,7 +92,6 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
 
     const DrawerButton = () => {
         return (
-
             <Button
                 onClick={toggleDrawer(true)}
                 variant="contained"
@@ -88,14 +114,22 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
             </Button>);
     }
 
-    const CollapsibleListItem = ({ title, items }: { title: 'Actividades' | 'Contenido', items: IListaPendientes[] }) => {
+    const CollapsibleListItem = ({ title, items }: { title: any, items: IListaPendientes[] }) => {
         const [open, setOpen] = React.useState(false);
+
         const icons = {
             'Actividades': AutoStoriesIcon,
             'Contenido': WorkspacePremiumIcon,
             'Foros': ThumbsUpDownIcon,
             'Evaluaciones': StarBorderIcon,
+            'Clases': StarBorderIcon,
+            'Tutorias': StarBorderIcon,
         } as const;
+
+        const IconComponent =
+            (title in icons
+                ? icons[title as keyof typeof icons]
+                : ListaTareas);
 
         return (
             <>
@@ -109,9 +143,9 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                     }}>
 
                     <ListItemIcon sx={{ color: 'white', justifyContent: 'center', minWidth: '36px' }}>
-                        <DsSvgIcon component={icons[title] ?? ListaTareas} color="white" />
+                        <DsSvgIcon component={IconComponent} color="white" />
                     </ListItemIcon>
-                    <Typography component="p" variant="body2" color="white">
+                    <Typography component="p" variant="body2" sxProps={{ color: '#fff' }}>
                         {title}
                     </Typography>
 
@@ -128,18 +162,14 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
         );
     };
 
-    const DrawerSection = () => {
-        return (
-            <Drawer open={openDrawer} onClose={toggleDrawer(false)} anchor="right">
-                <Box
-                    sx={{
-                        width: isMobile ? 300 : 440,
-                        height: "100vh",
-                        backgroundColor: "#1A6FA7",
-                        display: "flex",
-                        flexDirection: "column",
-                    }}
-                >
+
+    return (
+        isLoading
+            ?
+            <LoadingCircular Text="Cargando Lista de pendientes..." />
+            :
+            <>
+                <DsDrawer isOpen={openDrawer} onClose={() => setOpenDrawer(false)}>
 
                     <Box sx={{ display: 'flex', gap: '30px', alignItems: 'flex-start', p: 4 }}>
                         <Box sx={{ display: "flex", flexDirection: 'column-reverse', alignItems: "flex-start", gap: 1 }}>
@@ -147,10 +177,10 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                         </Box>
 
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Typography variant="h5" component="h5" color="white">
+                            <Typography variant="h5" component="h5" sxProps={{ color: '#fff' }}>
                                 Lista de pendientes
                             </Typography>
-                            <Typography variant="body2" color="white" sx={{ mt: 1, textAlign: 'justify' }}>
+                            <Typography variant="body2" component="span" sxProps={{ color: '#fff', mt: 1, textAlign: 'justify' }}>
                                 Aquí puedes llevar el control de tus tareas pendientes de forma rápida y organizada.
                             </Typography>
                         </Box>
@@ -164,18 +194,8 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                                 ))}
                         </List>
                     </Box>
-                </Box>
-            </Drawer>
-        )
-    }
 
-    return (
-        isLoading
-            ?
-            <LoadingCircular Text="Cargando Lista de pendientes..." />
-            :
-            <>
-                <DrawerSection />
+                </DsDrawer>
                 <DrawerButton />
             </>
     )
