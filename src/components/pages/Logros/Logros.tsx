@@ -3,7 +3,7 @@ import { TitleScreen } from "@constants";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { MisLogros as iconLogros } from "@iconsCustomizeds";
 import { Typography } from "../../atoms/Typography/Typography";
-import { Box, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
+import { Box, Card, CircularProgress, Divider, Tab, Tabs, tabsClasses, useMediaQuery } from "@mui/material";
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
 import { ModulosCampusIds } from "../../../types/modulosCampusIds";
 import { innerHTMLStyle } from "@styles";
@@ -214,8 +214,8 @@ const Logros: React.FC = () => {
                     }}
                 >
                     <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Certificaciones" />
-                    {/* <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Insignias" />
-                    <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mi Clasificación" /> */}
+                    <Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mis Insignias" />
+                    {/*<Tab sx={{ minWidth: '150px', padding: '0px' }} label="Mi Clasificación" /> */}
                 </Tabs>
             </Box>
 
@@ -359,10 +359,94 @@ const Logros: React.FC = () => {
         { recurso: 'Quiz de repaso', valor: 'https://misitio.com/quiz', calificacion: 6.5 },
     ];
 
+    const Stats: statsCard[] = [
+        { title: '125 horas', description: 'En plataforma', color: 'primary.300' },
+        { title: '3 de 10', description: 'Certificaciones', color: 'warning.main' },
+        { title: '5 cursos', description: 'Concluidos', color: 'warning.main' },
+    ]
+
+    type statsCard = {
+        title: string,
+        description: string,
+        color?: string,
+    }
+
+    const StatsCard = ({
+        title,
+        description,
+        color
+    }: statsCard): React.ReactNode => (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: '16px',
+                maxWidth: '280px',
+                marginTop: '20px',
+                marginBottom: '20px',
+                width: '100%',
+            }}
+        >
+            <Card
+                sx={{
+                    backgroundColor: `${color}`,
+                    borderRadius: '12px',
+                    padding: '20px',
+                    textAlign: 'center',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)'
+                }}
+            >
+                <Typography
+                    variant="h3"
+                    component="div"
+                    sxProps={{
+                        color: '#fff', 
+                        fontWeight: 'bold', 
+                        marginBottom: '4px',
+                    }}
+                    // sx={{ color: '#fff', fontWeight: 'bold', marginBottom: '4px' }}
+                >
+                    {title}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    component="div"
+                    sxProps={{
+                        color: '#fff',
+                        opacity: 0.9
+                    }}
+                    // sx={{ color: '#fff', opacity: 0.9 }}
+                >
+                    {description}
+                </Typography>
+            </Card>
+
+        </Box>
+    );
+
     const Insignias = (
         <Box>
             <TituloIcon Titulo={TitleScreen.LOGROS} Icon={isMobile && iconLogros} fontSize="h2" />
             <Box sx={{ ...innerHTMLStyle, pl: 0, pr: 0 }} dangerouslySetInnerHTML={{ __html: Logros?.data?.descripcion_html ?? DescripcionesPantallas.LOGROS }} />
+            <Box
+                sx={{
+                        width: '100',
+                        pl: 0,
+                        pr: 0
+                    }}
+            >
+                {
+                    Stats.map((item, index) => (
+                        <StatsCard
+                            key={index}
+                            title={item.title}
+                            description={item.description}
+                            color={item.color}
+                        />
+                    ))
+                }
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                 <Box sx={
                     [
@@ -384,7 +468,16 @@ const Logros: React.FC = () => {
 
         isLoading
             ?
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', height: '50vh', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '20px', 
+                        width: '100%', 
+                        height: '50vh', 
+                        overflow: 'hidden', 
+                        justifyContent: 'center', 
+                        alignItems: 'center' 
+                    }}>
                 <CircularProgress />
                 <Typography component="h4" variant="h4" color="primary">
                     Cargando logros...
