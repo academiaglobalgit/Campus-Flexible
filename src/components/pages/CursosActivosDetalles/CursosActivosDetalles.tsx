@@ -14,6 +14,7 @@ import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
+import { ListaPendientesDrawer } from "./ListaPendientesDrawer";
 
 let CursosTabs = [
     { id: 1, tab: 'Contenido', content: <Contenido />, hidden: false },
@@ -98,6 +99,11 @@ const CursosActivosDetalles: React.FC = () => {
         );
     }
 
+    const goToTab = (tabIndex: number) => {
+        setValue(tabIndex);
+        setTabSelected({ tab: 'cursos-detalle', index: tabIndex });
+    };
+
     // function Felicidades() {
     //     return (
     //         <>
@@ -176,6 +182,7 @@ const CursosActivosDetalles: React.FC = () => {
                     ))
                 }
             </>
+            <ListaPendientesDrawer goToTab={goToTab} />
         </Box>
     )
 };
