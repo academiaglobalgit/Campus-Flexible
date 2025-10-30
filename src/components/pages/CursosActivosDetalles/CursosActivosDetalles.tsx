@@ -14,7 +14,6 @@ import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
-import { ta } from "zod/v4/locales";
 
 let CursosTabs = [
     { id: 1, tab: 'Actividades', content: <Actividades />, hidden: false, order: 2 },
@@ -74,7 +73,6 @@ const CursosActivosDetalles: React.FC = () => {
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         const tab = tabs.find(tab => tab.id === newValue);
-        console.log("🚀 ~ handleChange ~ tab:", tab)
         setTabSelected({ tab: 'cursos-detalle', index: tab?.id ?? 3 });
         setValue(newValue);
     };
