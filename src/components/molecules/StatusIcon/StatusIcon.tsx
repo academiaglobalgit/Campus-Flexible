@@ -4,8 +4,7 @@ import { Typography } from '../../atoms/Typography/Typography';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import { Box, useMediaQuery } from '@mui/material';
 import { Loading } from '../../../assets/icons';
-import DoneIcon from '@mui/icons-material/Done';
-import LockOutlineIcon from '@mui/icons-material/LockOutline';
+import { SinIniciarIcon, FinalizarIcon } from '@iconsCustomizeds';
 import ClearIcon from '@mui/icons-material/Clear';
 
 export interface StatusIconProps {
@@ -21,13 +20,13 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
 
     if (estado === "Finalizado") {
         color = "success";
-        icon = DoneIcon;
+        icon = FinalizarIcon;
     } else if (estado === "Entregado" || estado === 'Cursando') {
         color = "warning";
         icon = Loading;
     } else if (estado === "Sin Iniciar") {
         color = "disabled";
-        icon = LockOutlineIcon;
+        icon = SinIniciarIcon;
     } else if (estado === "Reprobado") {
         color = "secondary";
         icon = ClearIcon;
@@ -43,7 +42,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ estado }) => {
                 <Typography component="span" variant={isMobile ? 'body2' : 'h4'} color={color} >
                     {estado}
                 </Typography>
-                <DsSvgIcon component={icon} color={color} sxProps={{ fill: 'currentcolor !important' }} />
+                <DsSvgIcon component={icon} color={color} sxProps={{ [estado === "Sin Iniciar" ? 'color' : '']:  '#7B8186' }}/>
             </Box>
         </>
     )
