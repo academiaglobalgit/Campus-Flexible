@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { Box, Collapse, Divider, List, ListItemButton, ListItemIcon, useMediaQuery, useTheme } from "@mui/material";
 import { ListaTareas } from "../../../assets/icons";
 import { Typography } from "../../atoms/Typography/Typography";
-import { DrawerListaTareas } from "../../atoms/Drawer/Drawer";
+import { DrawerListaTareas } from "../../atoms/Drawer/DrawerListaTareas";
 import { flexColumn, flexRows } from "@styles";
 import { useGetListaPendientes } from "../../../services/CursosActivosService";
 
