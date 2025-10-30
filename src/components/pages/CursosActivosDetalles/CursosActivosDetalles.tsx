@@ -10,10 +10,10 @@ import { Actividades } from "./Actividades";
 import { ForosCursos } from "./ForosCursos";
 import { Evaluaciones } from "./Evaluaciones";
 import { Tutorias } from "./Tutorias";
-import { ListaPendientes } from "./ListaPendientes";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
 import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
+import { ListaPendientesDrawer } from "./ListaPendientesDrawer";
 
 let CursosTabs = [
     { id: 1, tab: 'Actividades', content: <Actividades />, hidden: false, order: 2 },
@@ -21,7 +21,6 @@ let CursosTabs = [
     { id: 3, tab: 'Contenido', content: <Contenido />, hidden: false, order: 1 },
     { id: 2, tab: 'Evaluaciones', content: <Evaluaciones />, hidden: false, order: 5 },
     { id: 5, tab: 'Foros', content: <ForosCursos />, hidden: false, order: 3 },
-    { id: 7, tab: 'Lista de pendientes', content: <ListaPendientes />, hidden: false, order: 7 },
 ];
 
 const TAB_CONFIG: Record<number, { hiddenTabs: number[], allowDownload: boolean }> = {
@@ -109,6 +108,11 @@ const CursosActivosDetalles: React.FC = () => {
         );
     }
 
+    const goToTab = (tabIndex: number) => {
+        setValue(tabIndex);
+        setTabSelected({ tab: 'cursos-detalle', index: tabIndex });
+    };
+
     // function Felicidades() {
     //     return (
     //         <>
@@ -191,6 +195,7 @@ const CursosActivosDetalles: React.FC = () => {
                         ))
                 }
             </>
+            <ListaPendientesDrawer goToTab={goToTab} />
         </Box>
     )
 };
