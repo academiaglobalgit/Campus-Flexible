@@ -11,7 +11,7 @@ type DsDrawerProps = {
     sxProps?: SxProps<Theme>;
 };
 
-export const DsDrawer: React.FC<DsDrawerProps> = ({ children, isOpen = false, onClose, anchor = 'right', sxProps }) => {
+export const DrawerListaTareas: React.FC<DsDrawerProps> = ({ children, isOpen = false, onClose, anchor = 'right', sxProps }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 

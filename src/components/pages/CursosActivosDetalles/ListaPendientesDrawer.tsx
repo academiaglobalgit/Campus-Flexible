@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { Box, Collapse, Divider, List, ListItemButton, ListItemIcon, useMediaQuery, useTheme } from "@mui/material";
 import { ListaTareas } from "../../../assets/icons";
 import { Typography } from "../../atoms/Typography/Typography";
-import { DsDrawer } from "../../atoms/Drawer/Drawer";
+import { DrawerListaTareas } from "../../atoms/Drawer/Drawer";
 import { flexColumn, flexRows } from "@styles";
 import { useGetListaPendientes } from "../../../services/CursosActivosService";
 
@@ -169,7 +169,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
             <LoadingCircular Text="Cargando Lista de pendientes..." />
             :
             <>
-                <DsDrawer isOpen={openDrawer} onClose={() => setOpenDrawer(false)}>
+                <DrawerListaTareas isOpen={openDrawer} onClose={() => setOpenDrawer(false)}>
 
                     <Box sx={{ display: 'flex', gap: '30px', alignItems: 'flex-start', p: 4 }}>
                         <Box sx={{ display: "flex", flexDirection: 'column-reverse', alignItems: "flex-start", gap: 1 }}>
@@ -195,7 +195,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                         </List>
                     </Box>
 
-                </DsDrawer>
+                </DrawerListaTareas>
                 <DrawerButton />
             </>
     )
