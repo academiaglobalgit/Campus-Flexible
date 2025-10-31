@@ -10,5 +10,5 @@ export const DescripcionesPantallas = {
     PIZARRON: 'Aquí va el texto de pizarron',
     MI_TRAYECTO: 'Aquí va el texto de MI TRAYECTO',
     APRENDE_MAS: 'Aquí va el texto de APRENDE_MAS',
-    LOGROS: 'Cada emblema refleja tu progreso y dedicación, convirtiéndose en una muestra visual de tus metas alcanzadas. Existen tres niveles de logros: principiante, intermedio y avanzado, que marcan tu evolución.'
+    LOGROS: 'Cada emblema refleja tu progreso y dedicación, convirtiéndose en una muestra visual de tus metas alcanzadas. Existen tres niveles de logros: principiante, Intermedio y avanzado  que marcan tu evolución.'
 }
