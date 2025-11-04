@@ -10,45 +10,27 @@ import { MobileResetPass } from './MobileResetPass';
 import React from 'react';
 
 import LogoLogin from "../../../assets/logo_ag_login2.svg";
-import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
 import HomeDiplomado from "../../../assets/login_diplomado.png";
-import { loadConfig } from '../../../config/configStorage';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 const PasswordReset: React.FC = () => {
     const theme = useTheme();
+    const { config: configPlanEstudio } = usePlanEstudio();
 
-    const [backgroundImage, setBackgroundImage] = React.useState<string | undefined>(undefined);
+    const [backgroundImage, setBackgroundImage] = React.useState<any>(HomeDiplomado);
     const [verLogo, setVerLogo] = React.useState<boolean>(false);
 
-    const [imgSettings, setImgSettings] = React.useState<any>({
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-    });
-
-
-    React.useEffect(() => {
-        loadConfig().then(cfg => {
-            switch (cfg?.data?.id_plan_estudio) {
-                case 17: // Diplomado
-                    setBackgroundImage(HomeDiplomado);
-                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                    setVerLogo(false);
-                    break;
-                case 19: // Diplomado
-                    setBackgroundImage(DiplomadoCoppel);
-                    setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-                    setVerLogo(true);
-                    break;
-                default:
-                    setBackgroundImage(HomeDiplomado);
-                    break;
-            }
-        });
-    }, []);
-
+    const imgSettings = { width: '100%', height: '100%', objectFit: 'cover' };
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
+    React.useEffect(() => {
+        const config = configPlanEstudio?.getReestablecerPassword({background: HomeDiplomado, verLogo: false});
+        if(config){
+            setBackgroundImage(config?.background);
+            setVerLogo(config?.verLogo);
+        }
+    }, [configPlanEstudio]);
 
     return (
         <>

@@ -25,6 +25,7 @@ import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 import { useAuth } from '../../../hooks';
 import { loadConfig } from '../../../config/configStorage';
 import { useGetCursos } from '../../../services/CursosActivosService';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 
 const drawerWidth = 240;
@@ -81,6 +82,8 @@ const Sidenav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { config: configPlanEstudio } = usePlanEstudio();
+  
   const showBackMenuRoutes = ShowBackMenuRoutes;
   const is1366 = useMediaQuery('(width: 1366px)');
 
@@ -158,14 +161,7 @@ const Sidenav: React.FC = () => {
       .filter((item) => item.menu === menuType)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-    switch (config?.data?.id_plan_estudio) {
-      case 17:
-      case 19:
-        menuRoutes = menuRoutes.filter(
-          (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-        );
-        break;
-    }
+    menuRoutes = configPlanEstudio?.getFilteredMenuRoutes(menuRoutes) || menuRoutes;
 
     const handleToggleSubmenu = (label: string) => {
       setOpenSubmenu((prev) => (prev === label ? null : label));

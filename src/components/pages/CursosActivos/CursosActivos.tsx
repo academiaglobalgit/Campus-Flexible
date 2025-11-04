@@ -25,10 +25,13 @@ import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useGetManuales } from "../../../services/ManualesService";
 import { isPlanInList } from "../../../utils/Helpers";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
+    
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -52,19 +55,16 @@ const CursoActivo: React.FC = () => {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados
-            case 19: // Diplomados Coppel
-                setTutorVer(false);
-                if (videoVisto === 0 ) {
-                    setUrlVideo(manual?.url ?? '');
-                    setTipoVideo(4)
-                    setIsOpenVideo(true);
-                }
-                break;
-
+        const values = configPlanEstudio?.getConfiguracionCursosActivos({ tutorVer: true, tipoVideo: 1, isOpenVideo: false });
+        if(values?.isPlan) {
+            setTutorVer(values.tutorVer);
+            if (videoVisto === 0 ) {
+                setUrlVideo(manual?.url ?? '');
+                setTipoVideo(values.tipoVideo);
+                setIsOpenVideo(values.isOpenVideo);
+            }
         }
-    }, [configPlataforma?.id_plan_estudio, cursosData, manual]);
+    }, [configPlanEstudio, manual]);
 
     useEffect(() => {
         if (cursosData?.data) {

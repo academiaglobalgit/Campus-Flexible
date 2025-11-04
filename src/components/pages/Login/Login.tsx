@@ -13,18 +13,19 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
 import Home from "../../../assets/home.png";
-import HomeDiplomado from "../../../assets/login_diplomado.png";
 import LogoLogin from "../../../assets/logo_ag_login2.svg";
 import ContactoDialog from '../../molecules/Dialogs/ContactoDialog/ContactoDialog';
-import DiplomadoCoppel from "../../../assets/reestablecer_password.png";
 import { useGetContacto } from '../../../services/ContactoService';
 import { useGetManuales } from '../../../services/ManualesService';
 import { loadConfig } from '../../../config/configStorage';
 import { useQueryClient } from '@tanstack/react-query';
 import { VideoBienvenidaDialog } from '../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
+  const { config: configPlanEstudio } = usePlanEstudio();
+  
   const is1366 = useMediaQuery('(width: 1366px)');
   const Navigation = useNavigate();
 
@@ -34,39 +35,23 @@ const LoginPage: React.FC = () => {
   const [isOpenVideo, setIsOpenVideo] = React.useState(false);
   const [tipoVideos, setTipoVideo] = React.useState(1);
   const [urlVideo, setUrlVideo] = React.useState("");
-  const [imgSettings, setImgSettings] = React.useState<any>({
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  });
+
+  const imgSettings = { width: '100%', height: '100%', objectFit: 'cover', };
 
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
     queryClient.clear();
-  }, [queryClient]);
 
-
-  React.useEffect(() => {
     loadConfig().then(cfg => {
       setConfig(cfg);
-      switch (cfg?.data?.id_plan_estudio) {
-        case 17: // Diplomado
-          setBackgroundImage(HomeDiplomado);
-          setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-          setVerLogo(true);
-          break;
-        case 19: // Diplomado
-          setBackgroundImage(DiplomadoCoppel);
-          setImgSettings({ width: '100%', height: '100%', objectFit: 'cover' });
-          setVerLogo(true);
-          break;
-        default:
-          setBackgroundImage(Home);
-          break;
+      const configPlan = configPlanEstudio?.getConfiguracionLogin({background: Home, verLogo: false});
+      if(configPlan){
+          setBackgroundImage(configPlan?.background);
+          setVerLogo(configPlan?.verLogo);
       }
     });
-  }, []);
+  }, [queryClient, configPlanEstudio]);
 
   const { data: contacto, isLoading } = useGetContacto(config?.data?.id_plan_estudio);
   const { data: manual } = useGetManuales('Inducción', '', config?.data?.id_plan_estudio);

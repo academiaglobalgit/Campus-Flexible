@@ -6,10 +6,12 @@ import { MobileMenu } from "../Menu/MobileMenu/MobileMenu";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths, type MenuType } from "@constants";
 import { useAuth } from "../../../hooks";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 export const BottomBar: React.FC = () => {
     const navigate = useNavigate();
     const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [menuType, setMenuType] = useState<MenuType>("menuRoutes");
@@ -26,21 +28,13 @@ export const BottomBar: React.FC = () => {
     const handleHome = () => navigate(AppRoutingPaths.PLAN_ESTUDIOS);
 
     const showHideIcons = () => {
-      switch (configPlataforma?.id_plan_estudio) {
-        case 19: 
-        case 17: 
-          return (
-          <BottomNavigationAction 
-              sx={{ visibility: 'hidden' }} 
-              disabled 
-          />);
-        default: 
-          return (
-          <BottomNavigationAction 
-            icon={<HomeOutlinedIcon />} 
-            onClick={handleHome}
-          />);
-      }
+      return configPlanEstudio?.renderConditionalComponent(
+        'BottomBar',
+        <BottomNavigationAction 
+          icon={<HomeOutlinedIcon />} 
+          onClick={handleHome}
+        />
+      );
     }
 
   return (

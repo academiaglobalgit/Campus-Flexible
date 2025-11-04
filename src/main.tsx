@@ -6,6 +6,7 @@ import { QueryProvider } from './providers/QueryProvider';
 import './index.scss';
 
 import { AuthProvider } from './context/AuthContext';
+import { PlanEstudioProvider } from './context/PlanEstudioContext';
 import { NotificationProvider } from './providers/NotificationProvider';
 import { getThemeByPlataforma } from './themes';
 
@@ -74,9 +75,11 @@ function AppLoader() {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <AuthProvider>
-              <NotificationProvider>
-                <RouterProvider router={router} />
-              </NotificationProvider>
+              <PlanEstudioProvider>
+                <NotificationProvider>
+                  <RouterProvider router={router} />
+                </NotificationProvider>
+              </PlanEstudioProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryProvider>

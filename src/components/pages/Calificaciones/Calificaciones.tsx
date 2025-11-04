@@ -25,6 +25,7 @@ import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks
 import { useGetEncuestas } from "../../../services/CursosActivosService";
 import { useAuth } from '../../../hooks';
 import { ReporteDialog } from '../../molecules/Dialogs/ReporteDialog/ReporteDialog';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -44,6 +45,8 @@ const Calificaciones: React.FC = () => {
     const [tabPreviewSelected, setPreviewTabSelected] = React.useState(0);
 
     const [calificacionesConfig, setCalificacionesConfig] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true });
+
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     React.useEffect(() => {
         switch (configPlataforma?.id_plan_estudio) {
@@ -161,88 +164,97 @@ const Calificaciones: React.FC = () => {
     }
 
     const botonesCalificacion = (curso: CalificacionCurso) => {
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17:
-            case 19: { // Diplomados UMI, Coppel
+        return configPlanEstudio?.renderBotonesCalificacion({
+            curso,
+            loadingEncuesta,
+            encuestas,
+            handleIrCurso,
+            handleReporteCurso,
+            handleDetalle,
+            isMobile,
+        })
+        // switch (configPlataforma?.id_plan_estudio) {
+        //     case 17:
+        //     case 19: { // Diplomados UMI, Coppel
 
-                if (loadingEncuesta) {
-                    return (
-                        <Button disabled fullWidth onClick={() => { }}>
-                            Cargando reportes...
-                        </Button>
-                    );
-                }
+        //         if (loadingEncuesta) {
+        //             return (
+        //                 <Button disabled fullWidth onClick={() => { }}>
+        //                     Cargando reportes...
+        //                 </Button>
+        //             );
+        //         }
 
-                const encuestasCompletadas =
-                    encuestas?.data
-                        ?.filter(
-                            (e) =>
-                                e.estatus?.toLowerCase() === "completada" &&
-                                e.id_curso === curso.id_curso &&
-                                e.html_result !== null
-                        )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
+        //         const encuestasCompletadas =
+        //             encuestas?.data
+        //                 ?.filter(
+        //                     (e) =>
+        //                         e.estatus?.toLowerCase() === "completada" &&
+        //                         e.id_curso === curso.id_curso &&
+        //                         e.html_result !== null
+        //                 )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
 
-                const encuestasLimitadas = encuestasCompletadas.slice(0, 3);
-                return (
-                    <>
-                        <Box
-                            sx={{
-                                display: "grid",
-                                gap: 1.2,
-                                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
-                                width: "100%",
-                                alignItems: "stretch",
-                            }}
-                        >
-                            <Button
-                                onClick={() => handleIrCurso(curso)}
-                                fullWidth
-                                variant="contained"
-                            >
-                                Ir al Curso
-                            </Button>
+        //         const encuestasLimitadas = encuestasCompletadas.slice(0, 3);
+        //         return (
+        //             <>
+        //                 <Box
+        //                     sx={{
+        //                         display: "grid",
+        //                         gap: 1.2,
+        //                         gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
+        //                         width: "100%",
+        //                         alignItems: "stretch",
+        //                     }}
+        //                 >
+        //                     <Button
+        //                         onClick={() => handleIrCurso(curso)}
+        //                         fullWidth
+        //                         variant="contained"
+        //                     >
+        //                         Ir al Curso
+        //                     </Button>
 
-                            {encuestasLimitadas.map((encuesta) => (
+        //                     {encuestasLimitadas.map((encuesta) => (
 
-                                <Button
-                                    onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
-                                    fullWidth
-                                    sxProps={{
-                                        ...(isMobile
-                                            ? {
-                                                textOverflow: "ellipsis",
-                                                p: 1.5,
-                                                lineHeight: 1.3,
-                                            }
-                                            : {
-                                                whiteSpace: "normal",
-                                                wordBreak: "break-word",
-                                                textAlign: "center",
-                                                p: 1.5,
-                                                lineHeight: 1.3,
-                                            }),
-                                    }}
-                                >
-                                    {encuesta.titulo}
-                                </Button>
-                            ))}
-                        </Box>
-                    </>
-                );
-            }
+        //                         <Button
+        //                             onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
+        //                             fullWidth
+        //                             sxProps={{
+        //                                 ...(isMobile
+        //                                     ? {
+        //                                         textOverflow: "ellipsis",
+        //                                         p: 1.5,
+        //                                         lineHeight: 1.3,
+        //                                     }
+        //                                     : {
+        //                                         whiteSpace: "normal",
+        //                                         wordBreak: "break-word",
+        //                                         textAlign: "center",
+        //                                         p: 1.5,
+        //                                         lineHeight: 1.3,
+        //                                     }),
+        //                             }}
+        //                         >
+        //                             {encuesta.titulo}
+        //                         </Button>
+        //                     ))}
+        //                 </Box>
+        //             </>
+        //         );
+        //     }
 
-            default:
-                return (
-                    <React.Fragment>
-                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>
-                            Detalles Calificación
-                        </Button>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
-                            Ir al Curso
-                        </Button>
-                    </React.Fragment>
-                );
-        }
+        //     default:
+        //         return (
+        //             <React.Fragment>
+        //                 <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>
+        //                     Detalles Calificación
+        //                 </Button>
+        //                 <Button onClick={() => handleIrCurso(curso)} fullWidth>
+        //                     Ir al Curso
+        //                 </Button>
+        //             </React.Fragment>
+        //         );
+        // }
     };
 
 

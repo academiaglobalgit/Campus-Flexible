@@ -9,6 +9,7 @@ import DsSvgIcon from "../../../atoms/Icon/Icon";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 import { useAuth } from "../../../../hooks";
 import { isPlanInList } from "../../../../utils/Helpers";
+import { usePlanEstudio } from "../../../../context/PlanEstudioContext";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -20,6 +21,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const navigate = useNavigate();
     const theme = useTheme();
     const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     const menuOpen = Boolean(anchorEl);
     const [maxWidth, setMaxWidth] = useState(370);
@@ -30,23 +32,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
     const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
-    let menuRoutes = [...MenuItems.filter((item) => item.menu === "main" || item.menu === 'more')].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const menuRoutes = [...MenuItems.filter((item) => item.menu === "main" || item.menu === 'more')].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     let items = (menuType === 'menuRoutes' ? menuRoutes : menuInformacion) as any[];
 
-    switch (configPlataforma?.id_plan_estudio) {
-        case 17: // Diplomados
-        case 19: // Diplomados Coppel
-            //menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
-            menuRoutes = menuRoutes.filter(
-                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-            );
-            items = items.filter(
-                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-            );
-            break;
-    }
+    items = configPlanEstudio?.getFilteredMenuRoutes(items) || items;
 
     const handleNavigation = (item: any) => {
         if (item.text === TitleScreen.MANUALES_USUARIOS || item.text === TitleScreen.LINEAMIENTOS) {
