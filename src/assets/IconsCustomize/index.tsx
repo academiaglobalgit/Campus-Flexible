@@ -60,3 +60,4 @@ export { default as InsigniaBasica } from './insignia_basica.svg?react';
 export { default as MisLogros } from './mis_logros.svg?react';
 export { default as SinIniciarIcon } from './sinIniciarIcon.svg?react';
 export { default as FinalizarIcon } from './finalizadoIcon.svg?react';
+export { default as UserOctagon } from './user-octagon.svg?react';
