@@ -97,6 +97,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                 variant="contained"
                 icon={<DsSvgIcon component={ListaTareas} color={isMobile ? "primary" : "white"} />}
                 iconPosition="start"
+                disabled={isLoading}
                 sxProps={{
                     position: "fixed",
                     top: 100,
@@ -164,10 +165,6 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
 
 
     return (
-        isLoading
-            ?
-            <LoadingCircular Text="Cargando Lista de pendientes..." />
-            :
             <>
                 <DrawerListaTareas isOpen={openDrawer} onClose={() => setOpenDrawer(false)}>
 
