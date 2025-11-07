@@ -73,12 +73,10 @@ const CentroInformacionGlobal: React.FC = () => {
                         mb: '15px',
                         display: 'grid',
                         gridTemplateColumns: {
-                            xs: '1fr',           // 1 columna en móviles
-                                md: 'repeat(2, 1fr)' // 2 columnas en desktop
-                            },
-                            gap: { xs: 2, md: 3 }, // Gap 2 en móvil, 3 en desktop
-                            rowGap: 2,             // Espaciado vertical
-                            columnGap: 3,          // Espaciado horizontal
+                            xs: '1fr', md: 'repeat(2, 1fr)'},
+                            gap: { xs: 2, md: 3 },
+                            rowGap: 2,
+                            columnGap: 3,
                         }}
                 >
                     {
