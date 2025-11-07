@@ -9,7 +9,6 @@ import { useGetListaPendientes } from "../../../services/CursosActivosService";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import type { ListaPendientes as IListaPendientes } from "@constants";
-import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import React from "react";
 import Button from "../../atoms/Button/Button";
