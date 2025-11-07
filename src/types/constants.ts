@@ -39,7 +39,7 @@ export const AppRoutingPaths = {
     SESSION_EXPIRED: "/expired",
     PASSWORD_RESET: "/reset-password",
     LOGROS: "/Logros",
-    
+    CENTRO_INFORMACION_GLOBAL: "/cig",
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;
@@ -76,6 +76,7 @@ export const TitleScreen = {
     TERMINOS_CONDICIONES: "Términos y Condiciones",
     MANUALES_USUARIOS: "Inducción",
     LOGROS: "Mis Logros",
+    CENTRO_INFORMACION_GLOBAL: "CIG"
 }
 
 export type TitleScreen = typeof TitleScreen;

@@ -34,3 +34,4 @@ export { default as Notificaciones } from './pages/Notificaciones/Notificaciones
 export { default as SessionExpired } from './pages/SessionExpired/SessionExpired';
 export { default as PasswordReset } from './pages/ReestablecerPassword/ReestablecerPassword';
 export { default as Logros } from './pages/Logros/Logros';
+export { default as CentroInformacionGlobal } from './pages/CentroInformacionGlobal/CentroInformacionGlobal';

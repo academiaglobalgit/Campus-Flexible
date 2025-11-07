@@ -58,8 +58,8 @@ export const AppRouting = createHashRouter([
                 Component: Component.PlanEstudioInformacion
               },
               {
-                path: AppRoutingPaths.BIBLIOTECA,
-                Component: Component.BibliotecaVideoteca
+                path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
+                Component: Component.CentroInformacionGlobal
               },
               {
                 path: AppRoutingPaths.MI_PERFIL,

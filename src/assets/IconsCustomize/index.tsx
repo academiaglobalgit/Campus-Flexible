@@ -60,3 +60,7 @@ export { default as InsigniaBasica } from './insignia_basica.svg?react';
 export { default as MisLogros } from './mis_logros.svg?react';
 export { default as SinIniciarIcon } from './sinIniciarIcon.svg?react';
 export { default as FinalizarIcon } from './finalizadoIcon.svg?react';
+export { default as BibliotecaCig } from './Biblioteca_cig.svg?react';
+export { default as Libros } from './Libros.svg?react';
+export { default as EventosFormativos } from './Eventosformativos.svg?react';
+export { default as RecursosDatos } from './Recursosdatos.svg?react';
