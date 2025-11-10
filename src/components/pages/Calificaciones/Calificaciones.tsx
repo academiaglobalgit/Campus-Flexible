@@ -223,7 +223,7 @@ const Calificaciones: React.FC = () => {
                                             }),
                                     }}
                                 >
-                                    {truncateText(encuesta.titulo, 95)}
+                                    {truncateText(encuesta.titulo)}
                                 </Button>
                             ))}
                         </Box>
