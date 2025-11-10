@@ -177,6 +177,7 @@ export const Actividades: React.FC = () => {
 
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)], exact: true });
             await queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
+            await queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.key] });
             setIsSaving(false);
             setIsOpenAvisoActividad(false);
 
