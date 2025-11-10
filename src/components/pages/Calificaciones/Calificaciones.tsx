@@ -12,7 +12,7 @@ import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexRows, innerHTMLStyle } from '@styles';
 import { useNavigate } from 'react-router-dom';
-import { isPlanInList, toRoman } from '../../../utils/Helpers';
+import { isPlanInList, toRoman, truncateText } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
@@ -223,7 +223,7 @@ const Calificaciones: React.FC = () => {
                                             }),
                                     }}
                                 >
-                                    {encuesta.titulo}
+                                    {truncateText(encuesta.titulo, 95)}
                                 </Button>
                             ))}
                         </Box>
