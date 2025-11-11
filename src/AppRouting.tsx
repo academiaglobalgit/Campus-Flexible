@@ -68,7 +68,15 @@ export const AppRouting = createHashRouter([
                   {
                     path: AppRoutingPaths.CIG_RECURSOS_INVESTIGACION,
                     Component: Component.RecursosInvestigacion
-                  }
+                  },
+                  {
+                    path: AppRoutingPaths.CENTRO_INFORMACION_MULTIMEDIA,
+                    Component: Component.CentroInformacionMultimedia
+                  },
+                  {
+                    path: AppRoutingPaths.CENTRO_INFORMACION_MULTIMEDIA_WATCH,
+                    Component: Component.CentroInformacionMultimediaWatch
+                  },
                 ]
               },
               {
@@ -142,6 +150,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.LOGROS,
                 Component: Component.Logros
+              },
+              {
+                path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
+                Component: Component.CentroInformacionGlobal
               },
             ]
           }

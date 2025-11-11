@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Typography } from "../../atoms/Typography/Typography";
-import { useTheme } from "@mui/material";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { BibliotecaCig, EventosFormativos, Libros, RecursosDatos } from "@iconsCustomizeds";
 import { flexColumn } from "@styles";
 import Button from "../../atoms/Button/Button";
 import ArrowRightAltOutlinedIcon from '@mui/icons-material/ArrowRightAltOutlined';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { AppRoutingPaths } from "@constants";
 
 
 const cards_array = [
@@ -31,9 +31,11 @@ const cards_array = [
 
 
 const CentroInformacionGlobal: React.FC = () => {
-    const theme = useTheme();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
+    const handleNavigate = () => {
+        navigate(AppRoutingPaths.CIG_RECURSOS_INVESTIGACION);
+    }
 
     const cards = (card, index: number) => {
         return (
@@ -96,7 +98,7 @@ const CentroInformacionGlobal: React.FC = () => {
                     ¡Accede a la Biblioteca de CONALITEG y abre las puertas a un mundo de conocimiento especialmente diseñado para estudiantes de Preparatoria!
                 </Typography>
                 <Button
-                    onClick={() => navigate('/cig/recursos-investigacion')}
+                    onClick={handleNavigate}
                     icon={<ArrowRightAltOutlinedIcon />}
                     iconPosition="end"
                     sxProps={{width: '413px'}}

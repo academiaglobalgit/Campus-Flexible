@@ -37,3 +37,6 @@ export { default as Logros } from './pages/Logros/Logros';
 export { default as CentroInformacionGlobal } from './pages/CentroInformacionGlobal/CentroInformacionGlobal';
 export { default as RecursosInvestigacion} from './pages/CentroInformacionGlobal/RecursosInvestigacion';
 export { default as LayoutCIG} from './pages/CentroInformacionGlobal/LayoutCIG';
+
+export { default as CentroInformacionMultimedia } from './pages/CentroInformacionGlobal/Multimedia';
+export { default as CentroInformacionMultimediaWatch } from './pages/CentroInformacionGlobal/MultimediaWatch';

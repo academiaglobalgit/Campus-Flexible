@@ -85,7 +85,7 @@ const RightActionsBar = () => {
   );
 };
 
-const LayoutCIG = () => {
+const LayoutCIG: React.FC = () => {
     const location = useLocation();
 
     const isRootCig = location.pathname === "/cig";

@@ -41,6 +41,8 @@ export const AppRoutingPaths = {
     LOGROS: "/Logros",
     CENTRO_INFORMACION_GLOBAL: "/cig",
     CIG_RECURSOS_INVESTIGACION: "/cig/recursos-investigacion",
+    CENTRO_INFORMACION_MULTIMEDIA: "/cig/multimedia",
+    CENTRO_INFORMACION_MULTIMEDIA_WATCH: "/cig/multimedia/watch/:id",
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;
