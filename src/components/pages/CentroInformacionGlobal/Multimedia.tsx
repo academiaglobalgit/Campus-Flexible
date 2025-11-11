@@ -84,7 +84,7 @@ const Multimedia: React.FC = () => {
 
     const handleVideoSelect = (video: any) => {
         console.log("Video selected:", video);
-        navigate(AppRoutingPaths.CENTRO_INFORMACION_MULTIMEDIA_WATCH.replace(':id', video.id.toString()));
+        navigate(AppRoutingPaths.CIG_MULTIMEDIA_WATCH.replace(':id', video.id.toString()));
     }
 
     return (

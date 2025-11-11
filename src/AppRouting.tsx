@@ -70,11 +70,11 @@ export const AppRouting = createHashRouter([
                     Component: Component.RecursosInvestigacion
                   },
                   {
-                    path: AppRoutingPaths.CENTRO_INFORMACION_MULTIMEDIA,
+                    path: AppRoutingPaths.CIG_MULTIMEDIA,
                     Component: Component.CentroInformacionMultimedia
                   },
                   {
-                    path: AppRoutingPaths.CENTRO_INFORMACION_MULTIMEDIA_WATCH,
+                    path: AppRoutingPaths.CIG_MULTIMEDIA_WATCH,
                     Component: Component.CentroInformacionMultimediaWatch
                   },
                 ]
