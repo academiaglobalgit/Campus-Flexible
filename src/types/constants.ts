@@ -40,6 +40,7 @@ export const AppRoutingPaths = {
     PASSWORD_RESET: "/reset-password",
     LOGROS: "/Logros",
     CENTRO_INFORMACION_GLOBAL: "/cig",
+    CIG_RECURSOS_INVESTIGACION: "/cig/recursos-investigacion",
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;

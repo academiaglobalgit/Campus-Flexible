@@ -35,3 +35,5 @@ export { default as SessionExpired } from './pages/SessionExpired/SessionExpired
 export { default as PasswordReset } from './pages/ReestablecerPassword/ReestablecerPassword';
 export { default as Logros } from './pages/Logros/Logros';
 export { default as CentroInformacionGlobal } from './pages/CentroInformacionGlobal/CentroInformacionGlobal';
+export { default as RecursosInvestigacion} from './pages/CentroInformacionGlobal/RecursosInvestigacion';
+export { default as LayoutCIG} from './pages/CentroInformacionGlobal/LayoutCIG';

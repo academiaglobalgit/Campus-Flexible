@@ -59,7 +59,17 @@ export const AppRouting = createHashRouter([
               },
               {
                 path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
-                Component: Component.CentroInformacionGlobal
+                Component: Component.LayoutCIG,
+                children: [
+                  {
+                    path: '',
+                    Component: Component.CentroInformacionGlobal
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_RECURSOS_INVESTIGACION,
+                    Component: Component.RecursosInvestigacion
+                  }
+                ]
               },
               {
                 path: AppRoutingPaths.MI_PERFIL,

@@ -7,6 +7,7 @@ import { BibliotecaCig, EventosFormativos, Libros, RecursosDatos } from "@iconsC
 import { flexColumn } from "@styles";
 import Button from "../../atoms/Button/Button";
 import ArrowRightAltOutlinedIcon from '@mui/icons-material/ArrowRightAltOutlined';
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 
 const cards_array = [
@@ -31,6 +32,8 @@ const cards_array = [
 
 const CentroInformacionGlobal: React.FC = () => {
     const theme = useTheme();
+    const navigate = useNavigate()
+
 
     const cards = (card, index: number) => {
         return (
@@ -93,7 +96,7 @@ const CentroInformacionGlobal: React.FC = () => {
                     ¡Accede a la Biblioteca de CONALITEG y abre las puertas a un mundo de conocimiento especialmente diseñado para estudiantes de Preparatoria!
                 </Typography>
                 <Button
-                    onClick={() => {}}
+                    onClick={() => navigate('/cig/recursos-investigacion')}
                     icon={<ArrowRightAltOutlinedIcon />}
                     iconPosition="end"
                     sxProps={{width: '413px'}}
@@ -101,6 +104,7 @@ const CentroInformacionGlobal: React.FC = () => {
                     Acceder al centro de Información
                 </Button>
             </Box>
+
             
         </ContainerDesktop>
     );

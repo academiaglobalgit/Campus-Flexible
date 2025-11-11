@@ -64,3 +64,11 @@ export { default as BibliotecaCig } from './Biblioteca_cig.svg?react';
 export { default as Libros } from './Libros.svg?react';
 export { default as EventosFormativos } from './Eventosformativos.svg?react';
 export { default as RecursosDatos } from './Recursosdatos.svg?react';
+// CIG right bar icons (UpperCase names)
+export { default as CigBarSearch } from './cig_bar_search.svg?react';
+export { default as CigBarFav } from './cig_bar_fav.svg?react';
+export { default as CigBarDownload } from './cig_bar_download.svg?react';
+export { default as CigBarCalendar } from './cig_bar_calendar.svg?react';
+export { default as CigBarLibrary } from './cig_bar_library.svg?react';
+export { default as CigBarHistory } from './cig_bar_history.svg?react';
+export { default as CigBarVideo } from './cig_bar_video.svg?react';
