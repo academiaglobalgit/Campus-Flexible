@@ -5,7 +5,7 @@ import {
     IconButton, 
     Button, 
     TextField,
-    Divider 
+    useTheme
 } from '@mui/material';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
@@ -80,21 +80,12 @@ export const ComentariosMultimedia: React.FC<CommentsProps> = ({
                     onChange={(e) => setNewComment(e.target.value)}
                     multiline
                     maxRows={4}
+                    rows={2}
                     sx={{
                         '& .MuiInput-root': {
                             fontSize: '14px',
                             backgroundColor: '#F5F5F5',
                             padding: '12px 16px',
-                            borderRadius: '20px',
-                            '&:before': {
-                                borderBottom: 'none',
-                            },
-                            '&:after': {
-                                borderBottom: 'none',
-                            },
-                            '&:hover:not(.Mui-disabled):before': {
-                                borderBottom: 'none',
-                            },
                         },
                     }}
                 />
@@ -129,6 +120,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
     onDislike,
     onReply,
 }) => {
+    const theme = useTheme();
     const [liked, setLiked] = useState(comment.userLiked || false);
     const [disliked, setDisliked] = useState(comment.userDisliked || false);
     const [likes, setLikes] = useState(comment.likes);
@@ -189,7 +181,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                     </Typography>
                     <Typography
                         variant="caption"
-                        sx={{ color: 'text.secondary', fontSize: '12px' }}
+                        sx={{ color: `${theme.palette.primary.light}`, fontSize: '12px' }}
                     >
                         {comment.timeAgo}
                     </Typography>

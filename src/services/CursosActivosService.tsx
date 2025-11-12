@@ -16,7 +16,7 @@ export const useGetCursos = () => {
     });
 };
 
-export const TabsCursos = [
+const TabsCursos = [
     { id_tipo_recurso: 3, tipo: "Contenido" },
     { id_tipo_recurso: 1, tipo: "Actividades" },
     { id_tipo_recurso: 5, tipo: "Foros" },

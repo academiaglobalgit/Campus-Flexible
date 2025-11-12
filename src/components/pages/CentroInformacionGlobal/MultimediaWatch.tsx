@@ -16,6 +16,7 @@ import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlin
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import { Divider, IconButton } from "@mui/material";
 import { ComentariosMultimedia } from "../../molecules/ComentariosMultimedia/ComentariosMultimedia";
+import { MultimediaRecomendaciones } from "./MultimediaRecomendaciones";
 
 const MultimediaWatch: React.FC = () => {
     const urlVideo = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm";
@@ -73,6 +74,45 @@ const MultimediaWatch: React.FC = () => {
             content: 'Increíble explicación, justo lo que necesitaba. ¡Gracias!',
             likes: 42,
             userLiked: false,
+        },
+    ];
+
+    const recommendations: any[] = [
+        {
+            id: 1,
+            thumbnail: 'https://picsum.photos/seed/video1/336/188',
+            duration: '12:45',
+            title: 'Cómo crear una aplicación web moderna en 2024',
+            channel: 'Tech Academy',
+            views: '245K',
+            uploadTime: '2 días',
+        },
+        {
+            id: 2,
+            thumbnail: 'https://picsum.photos/seed/video2/336/188',
+            duration: '18:32',
+            title: 'Tutorial completo de React y TypeScript para principiantes',
+            channel: 'Code Masters',
+            views: '128K',
+            uploadTime: '1 semana',
+        },
+        {
+            id: 3,
+            thumbnail: 'https://picsum.photos/seed/video3/336/188',
+            duration: '15:20',
+            title: 'Las mejores prácticas de código que todos debes',
+            channel: 'Dev Tips',
+            views: '99K',
+            uploadTime: '3 días',
+        },
+        {
+            id: 4,
+            thumbnail: 'https://picsum.photos/seed/video4/336/188',
+            duration: '22:15',
+            title: 'Diseño UI/UX: Principios fundamentales explicados',
+            channel: 'Design Pro',
+            views: '312K',
+            uploadTime: '5 días',
         },
     ];
 
@@ -246,7 +286,10 @@ const MultimediaWatch: React.FC = () => {
                 />
             </Grid>
             <Grid size={{md: 4, xs: 12}}>
-
+                <MultimediaRecomendaciones 
+                    videos={recommendations}
+                    title="Recomendaciones"
+                />
             </Grid>
         </Grid>
     );
