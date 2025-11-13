@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, Tab, Tabs, tabsClasses } from "@mui/material";
 import { toRoman } from "../../../utils/Helpers";
-import { useAuth } from "../../../hooks";
 import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 type PeriodosTabsProps = {
@@ -11,7 +10,6 @@ type PeriodosTabsProps = {
 }
 
 const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabSelected = 0, tabChange}) => {
-    const { configPlataforma } = useAuth();
     const { config: configPlanEstudio } = usePlanEstudio();
     const [value, setValue] = React.useState(0);
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {

@@ -53,7 +53,9 @@ const TerminosCondiciones: React.FC = () => {
     }
 
     const goToPage = () => {
-        navigate(configPlanEstudio.goToPageTerminosCondiciones(AppRoutingPaths.PLAN_ESTUDIOS));
+        if (configPlanEstudio) {
+            navigate(configPlanEstudio.goToPageTerminosCondiciones(AppRoutingPaths.PLAN_ESTUDIOS));
+        }
     }
 
     const createMutation = useMutation({
