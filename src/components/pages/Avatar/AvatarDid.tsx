@@ -45,7 +45,7 @@ const AvatarDid: React.FC = () => {
             const agentConfigs: Record<number, { clientKey: string; agentId: string }> = {
                 17: {
                     clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
-                    agentId: 'v2_agt_4Yofx9b_',
+                    agentId: 'v2_agt_TWSn-Kb3',
                 },
                 19: {
                     clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
