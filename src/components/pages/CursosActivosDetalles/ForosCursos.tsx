@@ -12,26 +12,15 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import { AppRoutingPaths, type CursosTabs } from "@constants";
 import { setForoSelected } from "../../../hooks/useLocalStorage";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
-import { useAuth } from "../../../hooks";
-import { useEffect, useState } from "react";
 
 export const ForosCursos: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { configPlataforma } = useAuth();
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useGetForosManuales(Number(id!), "Foros");
 
-    const [ foroConfig, setForoConfig ] = useState({ titulo: 'Foros', loading: 'Cargando Foros...', botonEntrar: 'Entrar al foro', mostrarBotonEvaluacion: true });
-
-    useEffect(() => {
-        switch(configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomado
-                setForoConfig({ titulo: 'Momentos', loading: 'Cargando Momentos...', botonEntrar: 'Comentar', mostrarBotonEvaluacion: false })
-            break;
-        }
-    }, [configPlataforma]);
+    const foroConfig = { titulo: 'Foros', loading: 'Cargando Foros...', botonEntrar: 'Entrar al foro', mostrarBotonEvaluacion: true };
 
     const handleForo = (item: CursosTabs) => {
         setForoSelected(JSON.stringify(item));

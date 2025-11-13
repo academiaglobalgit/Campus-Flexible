@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type JSX, type ReactNode } from "react";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { useAuth } from "./AuthContext";
-import { AppRoutingPaths } from "@constants";
+import { AppRoutingPaths, TitleScreen } from "@constants";
 
 import DiplomadoCoppel from "../assets/reestablecer_password.png";
 import HomeDiplomado from "../assets/login_diplomado.png";
@@ -9,11 +9,16 @@ import type { BotonesCalificacionProps } from "../types/Calificaciones.interface
 import React from "react";
 import Button from "../components/atoms/Button/Button";
 import Box from "@mui/material/Box";
+import { truncateText } from "../utils/Helpers";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import DsSvgIcon from "../components/atoms/Icon/Icon";
+import ListItemText from "@mui/material/ListItemText";
 
 // Constantes de planes
 export const PLAN_ESTUDIOS: Record<string, number[]> = {
-  DIPLOMADOS: [17, 19],
-  OTRO_CAMPUS: [20],
+  DIPLOMADOS: [17, 19], // IDs de planes de diplomados NO AGREGAR MAS PLANES AQUÍ, siempre y cuando muestren la misma configuración
+//   OTRO_CAMPUS: [20],
 };
 
 export const EXCLUDED_MENU_ROUTES_IDS = {
@@ -39,6 +44,22 @@ interface ActividadesConfig {
     subirArchivos: boolean;
 }
 
+interface CalificacionesConfig { 
+    titulo: string; 
+    loading: string;
+    mostrarPromedio: boolean;
+    mostrarGlosario: boolean;
+    mostrarPeriodos: boolean;
+}
+
+interface MenuMobile {
+    menu: any[];
+    handleNavigation: (item: any) => void;
+    menuItemStyle: any;
+    isMobile: boolean;
+    menuType: string;
+}
+
 interface PlanEstudioConfig {
     id: number;
     renderConditionalComponent: <T extends Record<string, any>>(
@@ -54,7 +75,13 @@ interface PlanEstudioConfig {
     getReestablecerPassword: (defaults: ReestablecerPassConfig) => ReestablecerPassConfig;
     getConfiguracionLogin: (defaults: ReestablecerPassConfig) => ReestablecerPassConfig;
     getConfiguracionActividades: (defaults: ActividadesConfig) => ActividadesConfig;
+    getConfiguracionCalificaciones: (defaults: CalificacionesConfig) => CalificacionesConfig;
     renderBotonesCalificacion: (props: BotonesCalificacionProps) => JSX.Element;
+    getValidarCalificacion: (curso: any) => string;
+    getSortedMenuInformacionIconTopBar: (data: any) => any[];
+    getMenuMobile: (props: MenuMobile) => JSX.Element[];
+    shouldPromediarDiplomados: (data: any) => boolean;
+    hiddenTabsCursosActivosDetalles: () => {hiddenTabs: number[], allowDownload: boolean};
 }
 
 type PlanEstudioContextType = {
@@ -94,7 +121,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
 
         const baseConfig: PlanEstudioConfig = {
             id,
-            renderConditionalComponent: (componentName, defaultComponent) => defaultComponent,
+            renderConditionalComponent: (_componentName, defaultComponent) => defaultComponent,
             getFilteredMenuRoutes: (routes) => routes,
             getLabelPeriodosTabs: (label) => label,
             getTabsAyuda: (tabs) => tabs,
@@ -103,6 +130,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
             getReestablecerPassword: (defaults) => ({...defaults }),
             getConfiguracionLogin: (defaults) => ({...defaults }),
             getConfiguracionActividades: (defaults) => ({...defaults }),
+            getConfiguracionCalificaciones: (defaults) => ({...defaults }),
             renderBotonesCalificacion: (props) => (
                 <React.Fragment>
                     <Button onClick={() => props.handleDetalle(props.curso.id_curso)} fullWidth>
@@ -113,6 +141,37 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     </Button>
                 </React.Fragment>
             ),
+            getValidarCalificacion: (curso) => (curso.estatus_curso_alumno === 'Finalizado' ? curso.calificacion : 'Pendiente'),
+            getSortedMenuInformacionIconTopBar: (data) => data,
+            getMenuMobile: (props) => {
+                return (
+                    props.menu.filter((item) => item.visible === 1).map((item, index) => (
+                        <MenuItem
+                            key={index}
+                            onClick={() => props.handleNavigation(item)}
+                            sx={[
+                                { ...props.menuItemStyle, mt: index === 0 ? 0 : 2 },
+                                !props.isMobile && { width: '100%', maxWidth: '232px' }
+                            ]}
+                        >
+                            {
+                                props.menuType === 'menuRoutes'
+                                    ?
+                                    item.text
+                                    :
+                                    <>
+                                        <ListItemIcon>
+                                            <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: configPlataforma?.color_primary }} />
+                                        </ListItemIcon>
+                                        <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
+                                    </>
+                            }
+                        </MenuItem>
+                    ))
+                );
+            },
+            shouldPromediarDiplomados: () => false,
+            hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [], allowDownload: true }),
         };
 
         // Configuración para planes especiales (17, 19)
@@ -154,7 +213,8 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                 getConfiguracionCursosActivos: () => ({ isPlan: true, tutorVer: false, tipoVideo: 4, isOpenVideo: true }),
                 getReestablecerPassword: () => {
                     const background = idPlanEstudio === 19 ? DiplomadoCoppel : HomeDiplomado;
-                    const verLogo = idPlanEstudio === 19 ? true : false;
+                    // const verLogo = idPlanEstudio === 19 ? true : false;
+                    const verLogo = true;
                     return { background, verLogo }
                 },
                 getConfiguracionLogin: () => {
@@ -163,6 +223,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     return { background, verLogo }
                 },
                 getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: false }),
+                getConfiguracionCalificaciones: () => ({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true }),
                 renderBotonesCalificacion: ({
                     curso,
                     loadingEncuesta,
@@ -230,12 +291,56 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                                             }),
                                     }}
                                 >
-                                    {encuesta.titulo}
+                                    {truncateText(encuesta.titulo)}
                                 </Button>
                             ))}
                         </Box>
                     );
                 },
+                getValidarCalificacion: (curso) => (curso.calificacion === null
+                                ? 'Pendiente'
+                                : Number(curso.calificacion) < 6
+                                    ? 'No aprobado'
+                                    : 'Aprobado'),
+                getSortedMenuInformacionIconTopBar: (data) => {
+                    return data.map((item: any) => {
+                        if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
+                            return { ...item, visible: 0 };
+                        }
+                        return item;
+                    });
+                },
+                getMenuMobile: (props) => {
+                    // console.log(props.menu);
+                    return (
+                        props.menu.filter((item) => item.visible === 1).map((item, index) => (
+                            <MenuItem
+                                key={index}
+                                disabled={item.text === 'Inducción'}
+                                onClick={() => props.handleNavigation(item)}
+                                sx={[
+                                    { ...props.menuItemStyle, mt: index === 0 ? 0 : 2 },
+                                    !props.isMobile && { width: '100%', maxWidth: '232px' }
+                                ]}
+                            >
+                                {
+                                    props.menuType === 'menuRoutes'
+                                        ?
+                                        item.text
+                                        :
+                                        <>
+                                            <ListItemIcon>
+                                                <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: configPlataforma?.color_primary }} />
+                                            </ListItemIcon>
+                                            <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
+                                        </>
+                                }
+                            </MenuItem>
+                        ))
+                    );
+                },
+                shouldPromediarDiplomados: (item) => (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100),
+                hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [5, 2], allowDownload: false })
             };
         }
 

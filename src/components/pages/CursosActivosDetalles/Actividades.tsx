@@ -6,7 +6,7 @@ import { accordionStyle, flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { useParams } from "react-router-dom";
 import { updateActividad, useGetActividades } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { convertRemoteToPreviewFile, isPlanInList } from "../../../utils/Helpers";
+import { convertRemoteToPreviewFile } from "../../../utils/Helpers";
 import { Typography } from "../../atoms/Typography/Typography";
 import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,6 @@ import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
 import React from "react";
-import { useAuth } from "../../../hooks";
 import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 type PreviewFile = {
@@ -176,6 +175,7 @@ export const Actividades: React.FC = () => {
 
             await queryClient.invalidateQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Actividades", Number(id!)], exact: true });
             await queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_CURSOS_CONTENIDO_BY_ID.key, "Contenido", Number(id!)], exact: true });
+            await queryClient.resetQueries({ queryKey: [CURSOS_ACTIVOS_ENDPOINTS.GET_LISTA_PROGRESO.key] });
             setIsSaving(false);
             setIsOpenAvisoActividad(false);
 
