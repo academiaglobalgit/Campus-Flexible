@@ -48,8 +48,8 @@ const AvatarDid: React.FC = () => {
                     agentId: 'v2_agt_4Yofx9b_',
                 },
                 19: {
-                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDkzMjkwOTg4MzA0Mzk1ODA4OTA6VnptQUZQOXVsSEZOWUJoc3lrWkxy',
-                    agentId: 'v2_agt_7alYvu7d',
+                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
+                    agentId: 'v2_agt_2AbTkpPF',
                 },
             };
 
