@@ -11,11 +11,11 @@ import { ForosCursos } from "./ForosCursos";
 import { Evaluaciones } from "./Evaluaciones";
 import { Tutorias } from "./Tutorias";
 import { getCursoSelected, getTabSelected, setTabSelected } from "../../../hooks/useLocalStorage";
-import { useAuth } from "../../../hooks";
 import { useLocation } from "react-router-dom";
 import { ListaPendientesDrawer } from "./ListaPendientesDrawer";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
-let CursosTabs = [
+const CursosTabs = [
     { id: 1, tab: 'Actividades', content: <Actividades />, hidden: false, order: 2 },
     { id: 6, tab: 'Clases', content: <Tutorias />, hidden: false, order: 4 },
     { id: 3, tab: 'Contenido', content: <Contenido />, hidden: false, order: 1 },
@@ -23,18 +23,9 @@ let CursosTabs = [
     { id: 5, tab: 'Foros', content: <ForosCursos />, hidden: false, order: 3 },
 ];
 
-const TAB_CONFIG: Record<number, { hiddenTabs: number[], allowDownload: boolean }> = {
-    // foros, clases y evaluaciones
-    // id de hidden tabs
-    17: { hiddenTabs: [5, 6, 2], allowDownload: false }, 
-    // foros y evaluaciones
-    // id de hidden tabs
-    19: { hiddenTabs: [5, 2], allowDownload: false },
-};
-
 const CursosActivosDetalles: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const curso = JSON.parse(getCursoSelected() || '{}');
     const [value, setValue] = React.useState(1);
     const [verContenidoDescargable, setContenidoDescargable] = React.useState(true);
@@ -46,9 +37,9 @@ const CursosActivosDetalles: React.FC = () => {
     React.useEffect(() => {
         const indexTab = getTabSelected('cursos-detalle');
 
-        if (!configPlataforma) return;
+        // if (!configPlataforma) return;
         
-        const config = TAB_CONFIG[configPlataforma.id_plan_estudio];
+        const config = configPlanEstudio?.hiddenTabsCursosActivosDetalles();
 
         if (config) {
             setTabs(
@@ -68,7 +59,7 @@ const CursosActivosDetalles: React.FC = () => {
         // este recurso esta siempre visible en todos los programas
         setValue(targetTab?.id ?? 3);
         
-    }, [configPlataforma, incomingTabId ]);
+    }, [configPlanEstudio, incomingTabId ]);
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         const tab = tabs.find(tab => tab.id === newValue);

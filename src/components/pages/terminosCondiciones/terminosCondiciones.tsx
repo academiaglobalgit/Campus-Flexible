@@ -16,9 +16,11 @@ import Button from "../../atoms/Button/Button";
 import { innerHTMLStyle } from "@styles";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { useAuth } from "../../../context/AuthContext";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 const TerminosCondiciones: React.FC = () => {
-    const { setAceptoTerminos, configPlataforma: config } = useAuth();
+    const { setAceptoTerminos } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const theme = useTheme();
     const navigate = useNavigate();
     const { showNotification } = useNotification()
@@ -51,14 +53,8 @@ const TerminosCondiciones: React.FC = () => {
     }
 
     const goToPage = () => {
-        switch (config?.id_plan_estudio) {
-            case 17:
-            case 19:
-                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-                break;
-            default:
-                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
-                break;
+        if (configPlanEstudio) {
+            navigate(configPlanEstudio.goToPageTerminosCondiciones(AppRoutingPaths.PLAN_ESTUDIOS));
         }
     }
 

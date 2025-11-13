@@ -56,3 +56,13 @@ export interface PromediosPorCategoria {
     Evaluaciones: number;
     Foros:        number;
 }
+
+export interface BotonesCalificacionProps {
+    curso: CalificacionCurso;
+    loadingEncuesta: boolean;
+    encuestas: any; // Tipar correctamente según tu estructura
+    handleIrCurso: (curso: CalificacionCurso) => void;
+    handleReporteCurso: (htmlResult: string, titulo: string) => void;
+    handleDetalle: (idCurso: number) => void;
+    isMobile: boolean;
+}

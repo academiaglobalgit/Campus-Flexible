@@ -6,7 +6,7 @@ import { accordionStyle, flexColumn, flexRows, innerHTMLStyle } from "@styles";
 import { useParams } from "react-router-dom";
 import { updateActividad, useGetActividades } from "../../../services/CursosActivosService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
-import { convertRemoteToPreviewFile, isPlanInList } from "../../../utils/Helpers";
+import { convertRemoteToPreviewFile } from "../../../utils/Helpers";
 import { Typography } from "../../atoms/Typography/Typography";
 import { FileUploader } from "../../molecules/FileUploader/FileUploader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ import { CURSOS_ACTIVOS_ENDPOINTS } from "../../../types/endpoints";
 import { ManualsButton } from "../../molecules/ManualsButton/ManualsButton";
 import { TipoManualesIds } from "@constants";
 import React from "react";
-import { useAuth } from "../../../hooks";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 type PreviewFile = {
     file: File;
@@ -29,7 +29,7 @@ type PreviewFile = {
 
 export const Actividades: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     const queryClient = useQueryClient();
     const { showNotification } = useNotification();
@@ -37,7 +37,6 @@ export const Actividades: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const [isSaving, setIsSaving] = useState(false);
-    const [verBotones, setVerBotones] = useState(false);
     const [totalPalabras, setTotalPalabras] = useState<Record<string, number | boolean>>({});
     const [isOpenAvisoActividad, setIsOpenAvisoActividad] = useState(false);
     const { id } = useParams<{ id: string }>();
@@ -51,6 +50,10 @@ export const Actividades: React.FC = () => {
     const [idRecursoPending, setIdRecursoPending] = useState(0);
     const [retroalimentacion, setRetroalimentacion] = useState<string>("");
 
+    const [verBotones, setVerBotones] = useState(true);
+    const [verCalificacion, setVerCalificacion] = useState(true);
+    const [subirArchivos, setSubirArchivos] = useState(true);
+
     const manuales = [
         TipoManualesIds.INSTRUMENTO_EVALUACION,
         TipoManualesIds.PORTADA,
@@ -59,18 +62,13 @@ export const Actividades: React.FC = () => {
     ];
 
     React.useEffect(() => {
-
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17:
-            case 19: // Diplomados UMI, Coppel
-                setVerBotones(false)
-                break;
-            default:
-                setVerBotones(true)
-                break;
+        const config = configPlanEstudio?.getConfiguracionActividades({verBotones: true, verCalificacion: true, subirArchivos: true});
+        if(config) {
+            setVerBotones(config.verBotones);
+            setVerCalificacion(config.verCalificacion);
+            setSubirArchivos(config.subirArchivos);
         }
-
-    }, []);
+    }, [configPlanEstudio]);
 
     const handleFilesChange = (id: number, files: PreviewFile[]) => {
         setArchivosPorId((prev) => ({
@@ -413,7 +411,7 @@ export const Actividades: React.FC = () => {
                                                 { ...flexRows, justifyContent: 'space-between', pl: 3, pr: 3, borderBottom: `1px solid #E0E0E0`, pb: 1 },
                                                 isMobile && { flexDirection: 'column', gap: '10px' }
                                             ]}>
-                                                {!isPlanInList(configPlataforma?.id_plan_estudio) &&
+                                                {verCalificacion &&
                                                     <Box sx={{ display: 'flex', gap: '10px' }}>
                                                         <Typography component="h3" variant="h3" color="primary">Calificación:</Typography>
                                                         <Typography component="h3" variant="h3" >{item.calificacion}</Typography>
@@ -480,7 +478,7 @@ export const Actividades: React.FC = () => {
                                             </Box>
 
                                             {
-                                                !isPlanInList(configPlataforma?.id_plan_estudio)
+                                                subirArchivos
                                                     ? <Files item={item} />
                                                     : (item.calificacion === null && (
                                                         <Button
