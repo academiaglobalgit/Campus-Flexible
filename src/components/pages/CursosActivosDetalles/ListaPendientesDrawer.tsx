@@ -64,7 +64,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                             </Typography>
 
                             {item.entregado === 1 ? (
-                                <CheckBoxIcon color="primary" />
+                                <CheckBoxIcon sx={{ color: '#fff' }} />
                             ) : (
                                 <CheckBoxOutlineBlankIcon sx={{ color: '#fff' }} />
                             )}

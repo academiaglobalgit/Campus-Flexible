@@ -13,13 +13,13 @@ import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesk
 import { useGetAyudaTickets } from "../../../services/AyudaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { FormatearFecha } from "../../../utils/Helpers";
-import { useAuth } from "../../../hooks";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 const Ayuda: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const sectionRef = useRef<HTMLDivElement>(null);
-    const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio, isInAnyPlan } = usePlanEstudio();
     const { data: Tickets, isLoading } = useGetAyudaTickets();
     const [verTutorias, setVerTutorias] = React.useState<boolean>(false);
 
@@ -48,20 +48,8 @@ const Ayuda: React.FC = () => {
         };
 
         const defaultTabs = ["Ayuda General", "Contacto con docente"];
-        const [arrayTab, setArrayTab] = React.useState(defaultTabs);
-
-        React.useEffect(() => {
-            switch (configPlataforma?.id_plan_estudio) {
-                case 17:
-                case 19: // Diplomados UMI, Coppel
-                    setArrayTab(defaultTabs.filter(item => item !== "Contacto con docente"));
-                    break;
-                default:
-                    setArrayTab(defaultTabs);
-                    setVerTutorias(true)
-                    break;
-            }
-        }, [configPlataforma?.id_plan_estudio]);
+        const arrayTab = configPlanEstudio?.getTabsAyuda(defaultTabs) || defaultTabs;
+        setVerTutorias(!isInAnyPlan());
 
         return (
             <Box sx={{ width: '100%', paddingTop: '50px' }}>

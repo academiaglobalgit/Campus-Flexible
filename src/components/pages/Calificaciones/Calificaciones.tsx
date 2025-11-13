@@ -12,7 +12,7 @@ import PeriodosTabs from '../../molecules/PeriodosTabs/PeriodosTabs';
 import TabPanel from '../../molecules/TabPanel/TabPanel';
 import { flexRows, innerHTMLStyle } from '@styles';
 import { useNavigate } from 'react-router-dom';
-import { isPlanInList, toRoman } from '../../../utils/Helpers';
+import { toRoman } from '../../../utils/Helpers';
 import StatusIcon from '../../molecules/StatusIcon/StatusIcon';
 import { useGetCalificaciones } from '../../../services/CalificacionesService';
 import { useGetDatosModulos } from "../../../services/ModulosCampusService";
@@ -23,8 +23,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { CURSOS_ACTIVOS_ENDPOINTS } from '../../../types/endpoints';
 import { getTabSelected, setCursoSelected, setTabSelected } from '../../../hooks/useLocalStorage';
 import { useGetEncuestas } from "../../../services/CursosActivosService";
-import { useAuth } from '../../../hooks';
 import { ReporteDialog } from '../../molecules/Dialogs/ReporteDialog/ReporteDialog';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 const Calificaciones: React.FC = () => {
     const navigate = useNavigate();
@@ -32,7 +32,6 @@ const Calificaciones: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const betweenDevice = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryClient = useQueryClient();
-    const { configPlataforma } = useAuth();
     const { data: encuestas, isLoading: loadingEncuesta } = useGetEncuestas();
     const [isOpen, setIsOpen] = React.useState(false);
     const [openReporteDialog, setOpenReporteDialog] = React.useState(false);
@@ -45,14 +44,11 @@ const Calificaciones: React.FC = () => {
 
     const [calificacionesConfig, setCalificacionesConfig] = React.useState({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: true, mostrarGlosario: true, mostrarPeriodos: true });
 
+    const { config: configPlanEstudio } = usePlanEstudio();
+
     React.useEffect(() => {
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados UMI
-            case 19: // Diplomados Coppel
-                setCalificacionesConfig({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true })
-                break;
-        }
-    }, [configPlataforma]);
+        setCalificacionesConfig(configPlanEstudio?.getConfiguracionCalificaciones(calificacionesConfig) || calificacionesConfig);
+    }, [configPlanEstudio]);
 
     const handleGlosario = () => (setIsOpen(true));
 
@@ -129,18 +125,10 @@ const Calificaciones: React.FC = () => {
                                 : 'disabled'
                         }
                     >
-                        {isPlanInList(configPlataforma?.id_plan_estudio)
-                            ? (curso.calificacion === null
-                                ? 'Pendiente'
-                                : Number(curso.calificacion) < 6
-                                    ? 'No aprobado'
-                                    : 'Aprobado')
-                            : (curso.estatus_curso_alumno === 'Finalizado'
-                                ? curso.calificacion
-                                : 'Pendiente')}
+                        {
+                            configPlanEstudio?.getValidarCalificacion(curso)
+                        }
                     </Typography>
-
-
                 </Box>
                 {
                     (curso.estatus_curso_alumno === 'Finalizado' || curso.estatus_curso_alumno === 'Cursando') &&
@@ -161,91 +149,16 @@ const Calificaciones: React.FC = () => {
     }
 
     const botonesCalificacion = (curso: CalificacionCurso) => {
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17:
-            case 19: { // Diplomados UMI, Coppel
-
-                if (loadingEncuesta) {
-                    return (
-                        <Button disabled fullWidth onClick={() => { }}>
-                            Cargando reportes...
-                        </Button>
-                    );
-                }
-
-                const encuestasCompletadas =
-                    encuestas?.data
-                        ?.filter(
-                            (e) =>
-                                e.estatus?.toLowerCase() === "completada" &&
-                                e.id_curso === curso.id_curso &&
-                                e.html_result !== null
-                        )?.sort((a, b) => Number(a.id_encuesta ?? 0) - Number(b.id_encuesta ?? 0)) ?? [];
-
-                const encuestasLimitadas = encuestasCompletadas.slice(0, 3);
-                return (
-                    <>
-                        <Box
-                            sx={{
-                                display: "grid",
-                                gap: 1.2,
-                                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
-                                width: "100%",
-                                alignItems: "stretch",
-                            }}
-                        >
-                            <Button
-                                onClick={() => handleIrCurso(curso)}
-                                fullWidth
-                                variant="contained"
-                            >
-                                Ir al Curso
-                            </Button>
-
-                            {encuestasLimitadas.map((encuesta) => (
-
-                                <Button
-                                    onClick={() => handleReporteCurso(encuesta.html_result, encuesta.titulo)}
-                                    fullWidth
-                                    sxProps={{
-                                        ...(isMobile
-                                            ? {
-                                                textOverflow: "ellipsis",
-                                                p: 1.5,
-                                                lineHeight: 1.3,
-                                            }
-                                            : {
-                                                whiteSpace: "normal",
-                                                wordBreak: "break-word",
-                                                textAlign: "center",
-                                                p: 1.5,
-                                                lineHeight: 1.3,
-                                            }),
-                                    }}
-                                >
-                                    {encuesta.titulo}
-                                </Button>
-                            ))}
-                        </Box>
-                    </>
-                );
-            }
-
-            default:
-                return (
-                    <React.Fragment>
-                        <Button onClick={() => handleDetalle(curso.id_curso)} fullWidth>
-                            Detalles Calificación
-                        </Button>
-                        <Button onClick={() => handleIrCurso(curso)} fullWidth>
-                            Ir al Curso
-                        </Button>
-                    </React.Fragment>
-                );
-        }
+        return configPlanEstudio?.renderBotonesCalificacion({
+            curso,
+            loadingEncuesta,
+            encuestas,
+            handleIrCurso,
+            handleReporteCurso,
+            handleDetalle,
+            isMobile,
+        })
     };
-
-
 
     const promedio = () => (
         <Box sx={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }, isMobile && { flexDirection: 'column' }]}>
@@ -313,13 +226,7 @@ const Calificaciones: React.FC = () => {
     );
 
     const getTituloIconAccordion = (index: number) => {
-        switch (configPlataforma?.id_plan_estudio) {
-            case 17: // Diplomados UMI
-            case 19: // Diplomados Coppel
-                return `Certificaciones`;
-            default:
-                return `Periodo ${toRoman(index + 1)} - Tus materias`;
-        }
+        return configPlanEstudio?.getLabelPeriodosTabs(`Periodo ${toRoman(index + 1)} - Tus materias`);
     }
 
     const ListadoMateriasVistaDesktop = (data: any[], periodos: number[]) => (

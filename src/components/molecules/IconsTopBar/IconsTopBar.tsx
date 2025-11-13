@@ -10,15 +10,16 @@ import { CardNotification } from "../CardNotification/CardNotification";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { useAuth } from "../../../hooks";
 import { ManualesUsuarioDialog } from "../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
-import { isPlanInList } from "../../../utils/Helpers";
 import { VideoBienvenidaDialog } from "../Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useDocumentos } from "../../../context/DocumentosContext";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 
 export const IconsTopBar: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [anchorElMasInfo, setAnchorElMasInfo] = React.useState<null | HTMLElement>(null);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -37,16 +38,8 @@ export const IconsTopBar: React.FC = () => {
     );
 
     const menuInformacion = React.useMemo(() => {
-        if (isPlanInList(configPlataforma?.id_plan_estudio)) {
-            return sortedMenuInformacion.map((item) => {
-                if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
-                    return { ...item, visible: 0 };
-                }
-                return item;
-            });
-        }
-        return sortedMenuInformacion;
-    }, [sortedMenuInformacion, configPlataforma?.id_plan_estudio]);
+        return configPlanEstudio?.getSortedMenuInformacionIconTopBar(sortedMenuInformacion);
+    }, [sortedMenuInformacion, configPlanEstudio]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -256,11 +249,10 @@ export const IconsTopBar: React.FC = () => {
                     Más información
                 </Typography>
                 {
-                    menuInformacion.filter((item) => item.visible === 1).map((item, index) => {
+                    menuInformacion?.filter((item) => item.visible === 1).map((item, index) => {
                         return (
                             <MenuItem
                                 key={index}
-                                //disabled={item.text === 'Inducción' && (isPlanInList(configPlataforma?.id_plan_estudio)) ? true : false}
                                 onClick={() => handleNavigation(item)}
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
