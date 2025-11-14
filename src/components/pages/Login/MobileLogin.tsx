@@ -8,7 +8,6 @@ import Button from '../../atoms/Button/Button';
 import { IconLabel } from "../../molecules/IconLabel/IconLabel";
 import { useAuth } from "../../../hooks";
 
-import Logo from '../../../assets/logo_ag.svg';
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";

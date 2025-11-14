@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthLogin as loginApi, useLogout as logoutApi, useAuthNewPassword, useGetPerfilUsuario } from '../services/AuthService';
+import { useAuthLogin as loginApi, useLogout as logoutApi, useAuthNewPassword } from '../services/AuthService';
 import type { User } from '@constants';
 import { checkAuthStatus, cleanStorage, setAuthModel, getAuthModel, setToken } from '../hooks/useLocalStorage';
 import { encryptData } from '../utils/crypto';
@@ -41,8 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLogout, setIsLogout] = useState(false);
     const [_nombrePrograma, setNombrePrograma] = useState("");
     const [configPlataforma, setConfigPlataforma] = useState<ConfigPlataforma | null>(null);
-
-    const { refetch } = useGetPerfilUsuario("Login", { enabled: false });
 
     const queryClient = useQueryClient();
     
