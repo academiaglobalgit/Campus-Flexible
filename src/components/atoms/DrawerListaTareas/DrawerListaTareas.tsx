@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Drawer, useTheme, useMediaQuery, type SxProps, type Theme } from "@mui/material";
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 type AnchorType = 'left' | 'right' | 'top' | 'bottom';
 
@@ -13,6 +14,7 @@ type DsDrawerProps = {
 
 export const DrawerListaTareas: React.FC<DsDrawerProps> = ({ children, isOpen = false, onClose, anchor = 'right', sxProps }) => {
     const theme = useTheme();
+    const {config: configPlanEstudio } = usePlanEstudio();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
@@ -24,7 +26,7 @@ export const DrawerListaTareas: React.FC<DsDrawerProps> = ({ children, isOpen = 
                 paper: {
                     sx: {
                         maxWidth: isMobile ? 300 : 440,
-                        backgroundColor: '#1A6FA7',
+                        backgroundColor: configPlanEstudio?.getColorDrawerListaTareas('#1A6FA7'),
                         display: 'flex',
                         flexDirection: 'column',
                         ...sxProps,
