@@ -107,11 +107,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             >
                 <Box
                     component="img"
-                    src={config?.data.logo_url || Logo}
+                    src={config?.data.logo_url}
                     alt="AG College Logo"
-                    sx={{
-                        mb: 2,
-                    }}
+                    sx={[
+                        { mb: 2, minHeight: '90px'},
+                        { width: configPlanEstudio?.getWidthLogoLogin() }
+                    ]}
                 />
 
                 <Typography

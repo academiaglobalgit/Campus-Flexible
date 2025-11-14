@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setNombrePrograma(response?.programa);         
                 SetVideoVisto(response?.video_visto)  
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa, response?.video_visto);
+                await procesarPerfil(response.perfil,  response?.acepto_terminos, response?.programa, response?.video_visto);
 
                 setIsAuthenticated(true);                
                 setIsLoading(false);
@@ -167,7 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setNombrePrograma(response?.programa); 
                 SetVideoVisto(response.video_visto)          
                 
-                await procesarPerfil(response?.acepto_terminos, response?.programa, response.video_visto);
+                await procesarPerfil(response.perfil, response?.acepto_terminos, response?.programa, response.video_visto);
                 
                 setIsAuthenticated(true);
                 setIsLoading(false);
@@ -189,35 +189,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }
 
-    const procesarPerfil = async(pAceptoTerminos: boolean | undefined, programa: string | undefined , videoBienvenida: number | undefined) => {
-        const perfil = await refetch();
-
-        if (perfil.data) {
-            const datos = perfil.data.data;
+    const procesarPerfil = async(perfil: any, pAceptoTerminos: boolean | undefined, programa: string | undefined , videoBienvenida: number | undefined) => {
+        try {
+            if (perfil) {
+                const datos = perfil;
             
-            const aceptoTerminosValue = pAceptoTerminos;
-            const video = videoBienvenida;
+                const aceptoTerminosValue = pAceptoTerminos;
+                const video = videoBienvenida;
 
-            const auth = {
-                name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
-                email: datos.correo,
-                photo: datos.foto_perfil_url,
-                city: datos.nombre_ciudad,
-                phone: datos.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
-                perfil: datos,
-                aceptoTerminos: aceptoTerminosValue,
-                videoVisto: video,
-                nombrePrograma: programa,
-            };
+                const auth = {
+                    name: `${datos.nombre} ${datos.apellido_paterno} ${datos.apellido_materno}`,
+                    email: datos.correo,
+                    photo: datos.foto_perfil_url,
+                    city: datos.nombre_ciudad,
+                    phone: datos.telefonos?.find((item: any) => item.tipo === "Celular")?.numero ?? "0000000000",
+                    perfil: datos,
+                    aceptoTerminos: aceptoTerminosValue,
+                    videoVisto: video,
+                    nombrePrograma: programa,
+                };
 
-            setUser(auth);
+                setUser(auth);
 
-            setAceptoTerminos(aceptoTerminosValue ?? false);
-            SetVideoVisto(video ?? 0)
+                setAceptoTerminos(aceptoTerminosValue ?? false);
+                SetVideoVisto(video ?? 0)
 
-            const encry = await encryptData(auth);
-            setAuthModel(encry);
-        } else {
+                const encry = await encryptData(auth);
+                setAuthModel(encry);
+            } else {
+                setUser(null);
+            }
+        } catch (error) {
+            console.error("Error fetching perfil:", error);
             setUser(null);
         }
     };
