@@ -8,7 +8,6 @@ import Button from '../../atoms/Button/Button';
 import { IconLabel } from "../../molecules/IconLabel/IconLabel";
 import { useAuth } from "../../../hooks";
 
-import Logo from '../../../assets/logo_ag.svg';
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
@@ -107,11 +106,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             >
                 <Box
                     component="img"
-                    src={config?.data.logo_url || Logo}
+                    src={config?.data.logo_url}
                     alt="AG College Logo"
-                    sx={{
-                        mb: 2,
-                    }}
+                    sx={[
+                        { mb: 2, minHeight: '90px'},
+                        { width: configPlanEstudio?.getWidthLogoLogin() }
+                    ]}
                 />
 
                 <Typography

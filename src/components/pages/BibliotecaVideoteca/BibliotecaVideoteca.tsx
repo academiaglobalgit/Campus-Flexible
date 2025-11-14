@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
 import { Videoteca } from "./Videoteca";
 import imgVideoteca from "../../../assets/videoteca.jpg";
 import imgBiblioteca from "../../../assets/biblioteca.jpg";
@@ -9,6 +9,7 @@ import TabPanel from "../../molecules/TabPanel/TabPanel";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { useGetBiblioteca, useGetBibliotecaById } from "../../../services/BibliotecaService";
 import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
+import { Typography } from "../../atoms/Typography/Typography";
 
 const BibliotecaVideoteca: React.FC = () => {
     const theme = useTheme();
@@ -18,7 +19,7 @@ const BibliotecaVideoteca: React.FC = () => {
 
     const id = biblioteca?.data?.id_modulo_campus;
 
-    const { data: detalle, isLoading: loadingDetalle } = useGetBibliotecaById(id!, {
+    const { data: detalle, isLoading: isLoadingDetalle } = useGetBibliotecaById(id!, {
         enabled: !!id
     });
 
@@ -38,8 +39,28 @@ const BibliotecaVideoteca: React.FC = () => {
         );
     };
 
+    const Loading = (text: string) => (
+        <Box
+            sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                gap: '20px', 
+                width: '100%', 
+                height: '300px' 
+            }}
+        >
+            <CircularProgress sx={{ color: 'primary.main' }} />
+            <Typography component="h4" variant="h4" color="primary">{text}</Typography>
+        </Box>
+    );
+
+
     const Contents = () => (
-        <>
+        isLoading ? (<LoadingCircular Text="Cargando..." />)
+        :
+        <>            
             <Image />
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
@@ -48,18 +69,18 @@ const BibliotecaVideoteca: React.FC = () => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                {isLoading || loadingDetalle ? (
-                    <LoadingCircular Text="Cargando Biblioteca..." />
-                ) : (
+                {
+                    isLoadingDetalle ? Loading("Cargando Biblioteca...")
+                    :
                     detalle && <Biblioteca data={detalle.data[0]} />
-                )}
+                }
             </TabPanel>
             <TabPanel value={value} index={1}>
-                {isLoading || loadingDetalle ? (
-                    <LoadingCircular Text="Cargando Videoteca..." />
-                ) : (
+                {
+                    isLoadingDetalle ? Loading("Cargando Videoteca...")
+                    :
                     detalle && <Videoteca data={detalle.data[1]} />
-                )}
+                }
             </TabPanel>
         </>
     );

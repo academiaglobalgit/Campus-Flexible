@@ -82,6 +82,8 @@ interface PlanEstudioConfig {
     getMenuMobile: (props: MenuMobile) => JSX.Element[];
     shouldPromediarDiplomados: (data: any) => boolean;
     hiddenTabsCursosActivosDetalles: () => {hiddenTabs: number[], allowDownload: boolean};
+    getWidthLogoLogin: () => string | undefined;
+    getColorDrawerListaTareas: (color: string) => string;
 }
 
 type PlanEstudioContextType = {
@@ -116,8 +118,6 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
 
     const getConfig = (id: number | null): PlanEstudioConfig | null => {
         if (!id) return null;
-
-        console.log(id);
 
         const baseConfig: PlanEstudioConfig = {
             id,
@@ -172,6 +172,8 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
             },
             shouldPromediarDiplomados: () => false,
             hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [], allowDownload: true }),
+            getWidthLogoLogin: () => undefined,
+            getColorDrawerListaTareas: (color) => color,
         };
 
         // Configuración para planes especiales (17, 19)
@@ -340,7 +342,9 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     );
                 },
                 shouldPromediarDiplomados: (item) => (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100),
-                hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [5, 2], allowDownload: false })
+                hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [5, 2], allowDownload: false }),
+                getWidthLogoLogin: () => ( idPlanEstudio === 17 ? '279px !important' : undefined),
+                getColorDrawerListaTareas: (color) => (idPlanEstudio === 17 ? 'primary.main' : color),
             };
         }
 
