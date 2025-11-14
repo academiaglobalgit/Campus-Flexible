@@ -2,10 +2,16 @@ import { Box, Divider, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Typography } from "../../atoms/Typography/Typography";
 import Button from "../../atoms/Button/Button";
+import FavoriteBadge from "../../atoms/FavoriteBadge/FavoriteBadge";
+import DsSvgIcon from "../../atoms/Icon/Icon";
+import { CigBarFav } from "@iconsCustomizeds";
+import { useFavorites, type FavoriteItem } from "../../../context/FavoritesContext";
 
 type Article = {
+  id: string;
   title: string;
   excerpt: string;
+  category: string;
 };
 
 const categories = [
@@ -17,34 +23,75 @@ const categories = [
   "IA",
 ];
 
-const leftArticles: Article[] = new Array(5).fill(0).map(() => ({
+const leftArticles: Article[] = Array.from({ length: 5 }, (_, index) => ({
+  id: `investigation-${index + 1}`,
   title: "Nombre del artículo Aquí",
   excerpt:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  category: categories[index % categories.length],
 }));
 
-const topReads: Article[] = new Array(3).fill(0).map(() => ({
+const topReads: Article[] = Array.from({ length: 3 }, (_, index) => ({
+  id: `top-read-${index + 1}`,
   title: "Nombre del artículo Aquí",
   excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  category: "Top Reads",
 }));
 
-const Thumb = () => (
+const toFavoriteItem = (article: Article, type: FavoriteItem["type"] = "investigation-resource"): FavoriteItem => ({
+  id: article.id,
+  title: article.title,
+  excerpt: article.excerpt,
+  category: article.category,
+  type,
+});
+
+type ThumbProps = {
+  isFavorite: boolean;
+  onToggle: () => void;
+};
+
+const Thumb: React.FC<ThumbProps> = ({ isFavorite, onToggle }) => (
   <Box
     sx={{
-        width: "100%",     // que se adapte al ancho de su columna
-      height: "100%",    // 🔑 se estira al alto del Grid padre
-      borderRadius: "6px",
-      background: "#E6EFFC",
-      border: "1px solid #F1F4F6",
+      position: "relative",
+      width: "100%",
+      height: "100%",
     }}
-  />
+  >
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        borderRadius: 1,
+        bgcolor: "#E6EFFC",
+        border: "1px solid #F1F4F6",
+      }}
+    />
+    <FavoriteBadge
+      icon={
+        <DsSvgIcon
+          component={CigBarFav}
+          color={isFavorite ? "white" : "primary"}
+          sxProps={{ fontSize: 12 }}
+        />
+      }
+      isActive={isFavorite}
+      onToggle={onToggle}
+      sx={{
+        position: "absolute",
+        top: 5,
+        right: 5,
+      }}
+    />
+  </Box>
 );
 
 const ThumbTwo = () => (
   <Box
     sx={{
-      width: 60,     // que se adapte al ancho de su columna
-      height: '100%',    // 🔑 se estira al alto del Grid padre
+      width: 60,
+      height: "100%",
       borderRadius: "6px",
       background: "#E6EFFC",
       border: "1px solid #F1F4F6",
@@ -52,9 +99,13 @@ const ThumbTwo = () => (
   />
 );
 
-const ArticleRow: React.FC<Article> = ({ title, excerpt }) => {
+const ArticleRow: React.FC<Article> = (article) => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favoriteItem = toFavoriteItem(article);
+  const favoriteActive = isFavorite(article.id);
 
   return (
     <Box sx={{ py: 2 }}>
@@ -65,7 +116,6 @@ const ArticleRow: React.FC<Article> = ({ title, excerpt }) => {
           alignItems: "stretch",
         }}
       >
-        {/* Columna del Thumb */}
         <Grid
           size={{ md: 2, lg: 2 }}
           sx={{
@@ -73,10 +123,12 @@ const ArticleRow: React.FC<Article> = ({ title, excerpt }) => {
             height: "auto",
           }}
         >
-          <Thumb />
+          <Thumb
+            isFavorite={favoriteActive}
+            onToggle={() => toggleFavorite(favoriteItem)}
+          />
         </Grid>
 
-        {/* Columna del texto */}
         <Grid
           size={{ md: 7, lg: 7 }}
           sx={{
@@ -88,14 +140,16 @@ const ArticleRow: React.FC<Article> = ({ title, excerpt }) => {
           }}
         >
           <Typography component="h5" variant="h5">
-            {title}
+            {article.title}
           </Typography>
-          <Typography component="p" variant="body2">
-            {excerpt}
+          <Typography
+            component="p"
+            variant="body2"
+          >
+            {article.excerpt}
           </Typography>
         </Grid>
 
-        {/* Columna del botón */}
         <Grid
           size={{ md: 3, lg: 3 }}
           sx={{
@@ -106,7 +160,7 @@ const ArticleRow: React.FC<Article> = ({ title, excerpt }) => {
             height: "100%",
           }}
         >
-          <Button size={isSm ? "small" : "medium"} onClick={() => {}}>
+          <Button size={isSm ? "small" : "medium"} color="primary" onClick={() => {}}>
             Leer Artículo
           </Button>
         </Grid>
@@ -123,8 +177,8 @@ const TopReadRow: React.FC<Article> = ({ title, excerpt }) => {
     <Box sx={{ py: 2 }}>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
+          display: "flex",
+          flexDirection: "row",
           gap: 2,
         }}
       >
@@ -134,25 +188,24 @@ const TopReadRow: React.FC<Article> = ({ title, excerpt }) => {
 
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Typography component="span" variant="subtitle1">
-             {title}
+            {title}
           </Typography>
           <Typography component="p" variant="body2">
-             {excerpt}
+            {excerpt}
           </Typography>
           <Box
             sx={{
-              paddingTop: 1
+              paddingTop: 1,
             }}
           >
-             <Button size={'small'} onClick={() => {}}>
-               Leer Artículo
-             </Button>
+            <Button size={isSm ? "small" : "medium"} onClick={() => {}}>
+              Leer Artículo
+            </Button>
           </Box>
         </Box>
       </Box>
@@ -184,56 +237,47 @@ const RecursosInvestigacion: React.FC = () => {
         ))}
       </Box>
 
-        <Grid 
-            container 
-            
-            size={{
-                lg: 12
-            }}
-
+      <Grid
+        container
+        size={{
+          lg: 12,
+        }}
+      >
+        <Grid
+          size={{
+            xs: 12,
+            md: 7,
+            lg: 7,
+            xl: 7,
+          }}
         >
-            {/* <Grid item xs={12} md={7}> */}
-            <Grid 
-                size={{
-                    xs: 12,
-                    md: 7,
-                    lg: 7,
-                    xl: 7
-                }}
-            >
-                {leftArticles.map((a, idx) => (
-                    <ArticleRow key={`a-${idx}`} {...a} />
-                ))}
-            </Grid>
-
-            <Divider
-                orientation="vertical"
-                flexItem
-                sx={{ mx: 2, display: { xs: "none", md: "block" } }}
-            />
-                
-
-            <Grid
-                size={{
-                    md: 3,
-                    xs: 12,
-                    lg: 3,
-                }}
-            >
-                <Typography 
-                    component="h4" 
-                    variant="h4" 
-                    sxProps={{ color: "#231F20" }}
-                >
-                    Top Más Leídos
-                </Typography>
-                
-                {topReads.map((a, idx) => (
-                    <TopReadRow key={`t-${idx}`} {...a} />
-                ))}
-            </Grid>
+          {leftArticles.map((article) => (
+            <ArticleRow key={article.id} {...article} />
+          ))}
         </Grid>
 
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ mx: 2, display: { xs: "none", md: "block" } }}
+        />
+
+        <Grid
+          size={{
+            md: 3,
+            xs: 12,
+            lg: 3,
+          }}
+        >
+          <Typography component="h4" variant="h4" sxProps={{ color: "#231F20" }}>
+            Top Más Leídos
+          </Typography>
+
+          {topReads.map((article) => (
+            <TopReadRow key={article.id} {...article} />
+          ))}
+        </Grid>
+      </Grid>
     </ContainerDesktop>
   );
 };

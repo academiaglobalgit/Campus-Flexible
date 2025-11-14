@@ -8,6 +8,7 @@ import './index.scss';
 import { AuthProvider } from './context/AuthContext';
 import { PlanEstudioProvider } from './context/PlanEstudioContext';
 import { NotificationProvider } from './providers/NotificationProvider';
+import { FavoritesProvider } from './context/FavoritesContext';
 import { getThemeByPlataforma } from './themes';
 
 import { loadAppConfig } from './config/configLoader';
@@ -77,7 +78,9 @@ function AppLoader() {
             <AuthProvider>
               <PlanEstudioProvider>
                 <NotificationProvider>
-                  <RouterProvider router={router} />
+                  <FavoritesProvider>
+                    <RouterProvider router={router} />
+                  </FavoritesProvider>
                 </NotificationProvider>
               </PlanEstudioProvider>
             </AuthProvider>

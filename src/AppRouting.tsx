@@ -1,6 +1,6 @@
 import App from "./App";
 import { AppRoutingPaths } from "@constants";
-import { createHashRouter } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 // createBrowserRouter
 // createHashRouter
 import * as Component from "@components";
@@ -67,7 +67,15 @@ export const AppRouting = createHashRouter([
                   },
                   {
                     path: AppRoutingPaths.CIG_RECURSOS_INVESTIGACION,
-                    Component: Component.RecursosInvestigacion
+                    Component: Component.CentroInformacionRecursosInvestigacion,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_RECURSOS_DIGITALES,
+                    Component: Component.CentroInformacionRecursosDigitales,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_FAVORITOS,
+                    Component: Component.CentroInformacionFavoritos,
                   },
                   {
                     path: AppRoutingPaths.CIG_MULTIMEDIA,
@@ -76,6 +84,10 @@ export const AppRouting = createHashRouter([
                   {
                     path: AppRoutingPaths.CIG_MULTIMEDIA_WATCH,
                     Component: Component.CentroInformacionMultimediaWatch
+                  },
+                  {
+                    path: AppRoutingPaths.NOTFOUND,
+                    Component: Component.NotFound
                   },
                 ]
               },

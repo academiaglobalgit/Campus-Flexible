@@ -67,6 +67,7 @@ export { default as RecursosDatos } from './Recursosdatos.svg?react';
 // CIG right bar icons (UpperCase names)
 export { default as CigBarSearch } from './cig_bar_search.svg?react';
 export { default as CigBarFav } from './cig_bar_fav.svg?react';
+export { default as CigBarFavWhite } from './cig_bar_fav_white.svg?react';
 export { default as CigBarDownload } from './cig_bar_download.svg?react';
 export { default as CigBarCalendar } from './cig_bar_calendar.svg?react';
 export { default as CigBarLibrary } from './cig_bar_library.svg?react';
