@@ -272,7 +272,7 @@ const Logros: React.FC = () => {
                 </>
                 :
                 <>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', height: 'auto' }} className='is1366'>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', height: 'auto' }}>
                         <Box sx={{ display: 'flex' }}>
                             {Insignias}
                             <Box>
