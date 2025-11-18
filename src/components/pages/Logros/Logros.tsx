@@ -29,6 +29,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper'
 import { formatFechaBonita } from "../../../utils/Helpers";
 import { DescripcionesPantallas } from '@constants';
+import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 
 interface MedallaProps {
     nivel: string;
@@ -222,13 +223,20 @@ const Logros: React.FC = () => {
     const handleDescargar = (download: string) => {
         if (!download) return;
 
-        const link = document.createElement("a");
-        link.href = download;
-        link.setAttribute("download", "");
-        link.target = "_blank";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        //Los console logs son temporales para detectar un error al remover el script
+        try {
+            const link = document.createElement("a");
+            link.href = download;
+            link.setAttribute("download", "");
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            console.error("Error downloading file: antes de removeChild");
+            document.body.removeChild(link);
+        }catch (error) {
+            localStorage.setItem("errorRemovingAvatarScript_logros", String(error));
+            console.error("Error downloading file:", error);
+        }
     };
 
 
@@ -419,12 +427,8 @@ const Logros: React.FC = () => {
 
         isLoading
             ?
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', height: '50vh', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
-                <CircularProgress />
-                <Typography component="h4" variant="h4" color="primary">
-                    Cargando logros...
-                </Typography>
-            </Box> :
+                <LoadingCircular Text="Cargando logros..." />
+            :
             isMobile
                 ?
                 <>

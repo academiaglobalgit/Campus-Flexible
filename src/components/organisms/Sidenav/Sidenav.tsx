@@ -19,7 +19,6 @@ import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
-//import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 import { LeftCircle } from '../../../assets/icons';
 import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 import { useAuth } from '../../../hooks';
@@ -329,16 +328,36 @@ const Sidenav: React.FC = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2 }}>
-          <Box
-            component="img"
-            src={open ? config?.data.logo_url : config?.data.logo_url_mini}
-            alt="AG College Logo"
-            sx={{
-              mt: 4,
-              mb: '29px',
-              maxWidth: open ? '200px' : 'auto',
-            }}
-          />
+          <Box sx={{ position: 'relative', mt: 4, mb: '29px', height: '80px' }}>
+            <Box
+              component="img"
+              src={config?.data.logo_url}
+              alt="AG College Logo"
+              sx={{
+                position: 'absolute',
+                maxWidth: '200px',
+                width: '200px',
+                opacity: open ? 1 : 0,
+                visibility: open ? 'visible' : 'hidden',
+                transition: 'opacity 0.1s ease-in-out',
+                left: '-100px',
+              }}
+            />
+            <Box
+              component="img"
+              src={config?.data.logo_url_mini}
+              alt="AG College Logo"
+              sx={{
+                position: 'absolute',
+                maxWidth: '80px',
+                width: '80px',
+                opacity: open ? 0 : 1,
+                visibility: open ? 'hidden' : 'visible',
+                transition: 'opacity 0.1s ease-in-out',
+                left: '-40px',
+              }}
+            />
+          </Box>
           {Listado("Menú", open, "main", selectedIndex, setSelectedIndex)}
           <Divider sx={{ width: open ? '90%' : '50%' }} />
           {Listado("Más", open, "more", selectedIndex, setSelectedIndex)}

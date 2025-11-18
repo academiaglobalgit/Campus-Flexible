@@ -87,9 +87,15 @@ const AvatarDid: React.FC = () => {
 
                 // Cleanup en un return (si es dentro de useEffect)
                 return () => {
-                    const script = document.querySelector<HTMLScriptElement>(scriptName);
-                    if (script) {
-                        document.head.removeChild(script);
+                    try {
+                        const script = document.querySelector<HTMLScriptElement>(scriptName);
+                        console.error("Error avatar did: antes de remover script");
+                        if (script) {
+                            document.head.removeChild(script);
+                        }
+                    } catch (error) {
+                        localStorage.setItem("errorRemovingAvatarScript_avatarDid", String(error));
+                        console.error("Error removing avatar script:", error);
                     }
                 };
             }

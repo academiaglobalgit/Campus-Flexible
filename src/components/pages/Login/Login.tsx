@@ -1,14 +1,7 @@
-import {
-  Box,
-  Container,
-  Grid,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
-
+import React from 'react';
+import { Box, Container, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { ManualInduccion, FAQS, Contacto, Help } from '../../../assets/icons';
 import { MobileLogin } from './MobileLogin';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutingPaths } from '@constants';
 
@@ -53,26 +46,57 @@ const LoginPage: React.FC = () => {
     });
   }, [queryClient, configPlanEstudio]);
 
-  const { data: contacto, isLoading } = useGetContacto(config?.data?.id_plan_estudio);
-  const { data: manual } = useGetManuales('Inducción', '', config?.data?.id_plan_estudio);
+  const { data: contacto, isLoading: isLoadingContacto } = useGetContacto(config?.data?.id_plan_estudio);
+  const { data: manual, isLoading: isLoadingInduccion } = useGetManuales('Inducción', '', config?.data?.id_plan_estudio);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const showImage = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const accessLogin = [
+  const access = [
     {
-      id: 'manual-induccion', icon: ManualInduccion, label: 'Inducción', action: () => {
-        setUrlVideo('<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1126642176?h=f8faae23b6&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Inducción a la plataforma del Diplomado en Inteligencia Artificial, Liderazgo y Cultura Digital"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>')
-        setIsOpenVideo(true)
-        setIsOpenVideo(true)
-        setTipoVideo(1)
-      }, isDisabled: manual?.url === null ? true : false
+      id: 'manual-induccion', 
+      icon: ManualInduccion, 
+      label: 'Inducción', 
+      action: () => handleVideoInduccion(''), 
+      isDisabled: true
     },
     { id: 'faqs', icon: FAQS, label: 'Preguntas frecuentes', action: () => Navigation(AppRoutingPaths.PREGUNTAS_FRECUENTES), isDisabled: false },
-    { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true), isDisabled: isLoading },
+    { id: 'contacto', icon: Contacto, label: 'Contacto', action: () => setIsOpen(true), isDisabled: true },
     { id: 'ayuda', icon: Help, label: 'Ayuda', action: () => Navigation(AppRoutingPaths.AYUDA_EXTERIOR), isDisabled: false },
   ];
+
+  const [accessLogin, setAccessLogin] = React.useState<Array<any>>(access);
+
+  const handleVideoInduccion = (url: string) => {
+    setUrlVideo(url);
+    setIsOpenVideo(true);
+    setTipoVideo(1);
+  }
+
+
+  React.useEffect(() => {
+    if (!isLoadingContacto && !isLoadingInduccion) {
+      setAccessLogin(prev => 
+        prev.map(item => {
+          if (item.id === 'manual-induccion') {
+            return {
+              ...item,
+              action: () => handleVideoInduccion(manual?.url ?? ''),
+              isDisabled: !manual?.url // false si hay URL, true si no hay
+            };
+          }
+          if (item.id === 'contacto') {
+            return {
+              ...item,
+              isDisabled: false
+            };
+          }
+          return item;
+        })
+      );
+    }
+  }, [isLoadingContacto, isLoadingInduccion, manual]);
 
   const handleCerrarVideo = async () => {
     setIsOpenVideo(false);

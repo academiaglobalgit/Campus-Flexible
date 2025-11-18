@@ -83,6 +83,7 @@ interface PlanEstudioConfig {
     shouldPromediarDiplomados: (data: any) => boolean;
     hiddenTabsCursosActivosDetalles: () => {hiddenTabs: number[], allowDownload: boolean};
     getWidthLogoLogin: () => string | undefined;
+    getWidthLogoSidenav: () => string | undefined;
     getColorDrawerListaTareas: (color: string) => string;
 }
 
@@ -173,6 +174,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
             shouldPromediarDiplomados: () => false,
             hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [], allowDownload: true }),
             getWidthLogoLogin: () => undefined,
+            getWidthLogoSidenav: () => undefined,
             getColorDrawerListaTareas: (color) => color,
         };
 
@@ -344,6 +346,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                 shouldPromediarDiplomados: (item) => (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100),
                 hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [5, 2], allowDownload: false }),
                 getWidthLogoLogin: () => ( idPlanEstudio === 17 ? '279px !important' : undefined),
+                getWidthLogoSidenav: () => (idPlanEstudio === 17 ? '90px !important' : undefined),
                 getColorDrawerListaTareas: (color) => (idPlanEstudio === 17 ? 'primary.main' : color),
             };
         }
