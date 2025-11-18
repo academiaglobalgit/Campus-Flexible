@@ -108,7 +108,7 @@ const Logros: React.FC = () => {
                     textAlign: "center",
                 }}
             >
-                <Box component="img" src={medallaSrc} alt="medalla"/>
+                <Box component="img" src={medallaSrc} alt="medalla" />
 
                 <Typography component="h2" variant="h5" color="primary">
                     Nivel: {nivel}
@@ -157,24 +157,58 @@ const Logros: React.FC = () => {
         );
     }
 
-    const Certificaciones = (title: string, fecha: string, download: string) => (
+    const estadoColor: Record<string, string | undefined> = {
+        Finalizado: "success",
+        Entregado: "warning",
+        Cursando: "warning",
+        "Sin Iniciar": "disabled",
+        Reprobado: "secondary",
+    };
+
+    const Certificaciones = (nombre_curso: string, fecha: string, download: string, estatus: string) => (
         <>
-            <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', mt: 1, gap: 2 }}>
-
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'space-between',
+                    mt: 1,
+                    gap: 2
+                }}
+            >
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {fecha === null ? (
+                        <Typography
+                            component="span"
+                            variant={isMobile ? 'body2' : 'h4'}
+                            color={estadoColor[estatus] || 'disabled'}
+                        >
+                            {estatus}
+                        </Typography>
+                    ) : (
+                        <Typography component="span" variant="body3" color="text">
+                            {formatFechaBonita(fecha)}
+                        </Typography>
+                    )}
 
-                    {
-                        fecha === null ? <Typography component="span" variant={isMobile ? 'body2' : 'h4'} color={'disabled'} >
-                            Sin iniciar
-                        </Typography> :
-                            <Typography component="span" variant="body3" color="text"> {formatFechaBonita(fecha)} </Typography>
-                    }
-                    <Typography component="h5" variant="h5" color="primary"> Certificación en {title} </Typography>
+                    <Typography component="h5" variant="h5" color="primary">
+                        {nombre_curso}
+                    </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '350px' }}>
-
-                    <Button disabled={download === null || download === '' ? true : false} onClick={() => handleDescargar(download)} sxProps={{ width: '140px' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        width: '350px'
+                    }}
+                >
+                    <Button
+                        disabled={!download}
+                        onClick={() => handleDescargar(download)}
+                        sxProps={{ width: '140px' }}
+                    >
                         Ver detalles
                     </Button>
                 </Box>
@@ -183,6 +217,7 @@ const Logros: React.FC = () => {
             <Divider />
         </>
     );
+
 
     const handleDescargar = (download: string) => {
         if (!download) return;
@@ -259,7 +294,7 @@ const Logros: React.FC = () => {
                         <Box sx={{ display: 'flex', mt: 1, flexDirection: 'column', gap: 4 }}>
                             {calificacionData?.cursos?.flatMap(periodo =>
                                 periodo.cursos.map(curso =>
-                                    Certificaciones(curso.nombre_curso, curso.fecha_registro, curso.url_accredible ?? '')
+                                    Certificaciones(curso.nombre_curso, curso.fecha_registro, curso.url_accredible ?? '', curso.estatus_curso_alumno)
                                 )
                             )}
                         </Box>
