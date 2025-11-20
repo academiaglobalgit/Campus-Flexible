@@ -7,7 +7,7 @@ type LoadingCircularProps = {
     isSaving?: boolean;
 }
 
-export const LoadingCircular: React.FC<LoadingCircularProps> = ({ Text = "Cargando...", sxProps, isSaving = false }) => {
+export const LoadingCircular: React.FC<LoadingCircularProps> = ({ Text = "Cargando...", sxProps, isSaving = true }) => {
     return (
         <Backdrop open
             sx={(theme) => ({

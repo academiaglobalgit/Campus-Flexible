@@ -8,7 +8,6 @@ import Button from '../../atoms/Button/Button';
 import { IconLabel } from "../../molecules/IconLabel/IconLabel";
 import { useAuth } from "../../../hooks";
 
-import Logo from '../../../assets/logo_ag.svg';
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../../providers/NotificationProvider";
 import { loginSchema, type LoginFormData } from "../../../schemas/authSchema";
@@ -17,6 +16,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AppRoutingPaths } from "@constants";
 import { ChangePasswordDialog } from "../../molecules/Dialogs/ChangePasswordDialog/ChangePasswordDialog";
 import { loadConfig } from "../../../config/configStorage";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 interface AccessLoginItem {
     id: string;
@@ -39,6 +39,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userName, setUserName] = useState("");
     const [config, setConfig] = React.useState<any>(null);
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     const CAPTCHA = import.meta.env.VITE_APP_CAPTCHA;
 
@@ -82,15 +83,7 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
     };
 
     const goToPage = () => {
-        switch (config?.data?.id_plan_estudio) {
-            case 17:
-            case 19:
-                navigate(AppRoutingPaths.CURSOS_ACTIVOS);
-                break;
-            default:
-                navigate(AppRoutingPaths.PLAN_ESTUDIOS);
-                break;
-        }
+        if(configPlanEstudio) navigate(configPlanEstudio.goToPageTerminosCondiciones(AppRoutingPaths.PLAN_ESTUDIOS));
     }
 
     const goToResetPass = () => {
@@ -113,11 +106,12 @@ export const MobileLogin: React.FC<AccessLogin> = ({ accessLogin }) => {
             >
                 <Box
                     component="img"
-                    src={config?.data.logo_url || Logo}
+                    src={config?.data.logo_url}
                     alt="AG College Logo"
-                    sx={{
-                        mb: 2,
-                    }}
+                    sx={[
+                        { mb: 2, minHeight: '90px'},
+                        { width: configPlanEstudio?.getWidthLogoLogin() }
+                    ]}
                 />
 
                 <Typography

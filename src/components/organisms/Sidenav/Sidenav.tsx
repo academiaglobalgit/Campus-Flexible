@@ -19,12 +19,12 @@ import { Avatar } from '../../atoms/Avatar/Avatar';
 import DsSvgIcon from '../../atoms/Icon/Icon';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import { IconsTopBar } from '../../molecules/IconsTopBar/IconsTopBar';
-//import { FabMenu } from '../../molecules/FabMenu/FabMenu';
 import { LeftCircle } from '../../../assets/icons';
 import { ShowBackMenuRoutes } from '../../../utils/Helpers';
 import { useAuth } from '../../../hooks';
 import { loadConfig } from '../../../config/configStorage';
 import { useGetCursos } from '../../../services/CursosActivosService';
+import { usePlanEstudio } from '../../../context/PlanEstudioContext';
 
 
 const drawerWidth = 240;
@@ -81,6 +81,8 @@ const Sidenav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { config: configPlanEstudio } = usePlanEstudio();
+  
   const showBackMenuRoutes = ShowBackMenuRoutes;
   const is1366 = useMediaQuery('(width: 1366px)');
 
@@ -158,14 +160,7 @@ const Sidenav: React.FC = () => {
       .filter((item) => item.menu === menuType)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-    switch (config?.data?.id_plan_estudio) {
-      case 17:
-      case 19:
-        menuRoutes = menuRoutes.filter(
-          (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-        );
-        break;
-    }
+    menuRoutes = configPlanEstudio?.getFilteredMenuRoutes(menuRoutes) || menuRoutes;
 
     const handleToggleSubmenu = (label: string) => {
       setOpenSubmenu((prev) => (prev === label ? null : label));
@@ -333,16 +328,36 @@ const Sidenav: React.FC = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', flexGrow: 2 }}>
-          <Box
-            component="img"
-            src={open ? config?.data.logo_url : config?.data.logo_url_mini}
-            alt="AG College Logo"
-            sx={{
-              mt: 4,
-              mb: '29px',
-              maxWidth: open ? '200px' : 'auto',
-            }}
-          />
+          <Box sx={{ position: 'relative', mt: 4, mb: '29px', height: '80px' }}>
+            <Box
+              component="img"
+              src={config?.data.logo_url}
+              alt="AG College Logo"
+              sx={{
+                position: 'absolute',
+                maxWidth: '200px',
+                width: '200px',
+                opacity: open ? 1 : 0,
+                visibility: open ? 'visible' : 'hidden',
+                transition: 'opacity 0.1s ease-in-out',
+                left: '-100px',
+              }}
+            />
+            <Box
+              component="img"
+              src={config?.data.logo_url_mini}
+              alt="AG College Logo"
+              sx={{
+                position: 'absolute',
+                maxWidth: '80px',
+                width: '80px',
+                opacity: open ? 0 : 1,
+                visibility: open ? 'hidden' : 'visible',
+                transition: 'opacity 0.1s ease-in-out',
+                left: '-40px',
+              }}
+            />
+          </Box>
           {Listado("Menú", open, "main", selectedIndex, setSelectedIndex)}
           <Divider sx={{ width: open ? '90%' : '50%' }} />
           {Listado("Más", open, "more", selectedIndex, setSelectedIndex)}

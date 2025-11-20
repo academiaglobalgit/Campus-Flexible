@@ -9,7 +9,6 @@ import { useGetListaPendientes } from "../../../services/CursosActivosService";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import type { ListaPendientes as IListaPendientes } from "@constants";
-import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import React from "react";
 import Button from "../../atoms/Button/Button";
@@ -18,6 +17,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import DsSvgIcon from "../../atoms/Icon/Icon";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 interface Props {
     goToTab: (tabIndex: number) => void;
@@ -35,6 +35,7 @@ const TipoRecursoIds: Record<string, number> = {
 
 export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
     const theme = useTheme();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { id } = useParams<{ id: string }>();
     const { data: lista, isLoading } = useGetListaPendientes(Number(id!));
@@ -65,7 +66,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                             </Typography>
 
                             {item.entregado === 1 ? (
-                                <CheckBoxIcon color="primary" />
+                                <CheckBoxIcon sx={{ color: '#fff' }} />
                             ) : (
                                 <CheckBoxOutlineBlankIcon sx={{ color: '#fff' }} />
                             )}
@@ -97,11 +98,12 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                 variant="contained"
                 icon={<DsSvgIcon component={ListaTareas} color={isMobile ? "primary" : "white"} />}
                 iconPosition="start"
+                disabled={isLoading}
                 sxProps={{
                     position: "fixed",
                     top: 100,
                     right: 0,
-                    backgroundColor: isMobile ? "#fff" : " rgba(0, 90, 155, 0.80)",
+                    backgroundColor: isMobile ? "#fff" : configPlanEstudio?.getColorDrawerListaTareas('rgba(0, 90, 155, 0.80)'),
                     borderRadius: "10px 0px 0px 10px",
                     padding: "8px 20px",
                     fontWeight: 700,
@@ -164,10 +166,6 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
 
 
     return (
-        isLoading
-            ?
-            <LoadingCircular Text="Cargando Lista de pendientes..." />
-            :
             <>
                 <DrawerListaTareas isOpen={openDrawer} onClose={() => setOpenDrawer(false)}>
 

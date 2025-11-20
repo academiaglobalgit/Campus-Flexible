@@ -45,11 +45,11 @@ const AvatarDid: React.FC = () => {
             const agentConfigs: Record<number, { clientKey: string; agentId: string }> = {
                 17: {
                     clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
-                    agentId: 'v2_agt_4Yofx9b_',
+                    agentId: 'v2_agt_TWSn-Kb3',
                 },
                 19: {
-                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDkzMjkwOTg4MzA0Mzk1ODA4OTA6VnptQUZQOXVsSEZOWUJoc3lrWkxy',
-                    agentId: 'v2_agt_7alYvu7d',
+                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMTgyODc4NjM3MDQwODcyOTIzNTI6dXlUbGxjbDJuWlhWY003OUh3cDA0',
+                    agentId: 'v2_agt_2AbTkpPF',
                 },
             };
 
@@ -87,9 +87,15 @@ const AvatarDid: React.FC = () => {
 
                 // Cleanup en un return (si es dentro de useEffect)
                 return () => {
-                    const script = document.querySelector<HTMLScriptElement>(scriptName);
-                    if (script) {
-                        document.head.removeChild(script);
+                    try {
+                        const script = document.querySelector<HTMLScriptElement>(scriptName);
+                        console.error("Error avatar did: antes de remover script");
+                        if (script) {
+                            document.head.removeChild(script);
+                        }
+                    } catch (error) {
+                        localStorage.setItem("errorRemovingAvatarScript_avatarDid", String(error));
+                        console.error("Error removing avatar script:", error);
                     }
                 };
             }
