@@ -161,7 +161,8 @@ export const Actividades: React.FC = () => {
 
         if (files.length === 0 && contenidoText.length === 0) {
             setIsSaving(false);
-            showNotification(`Debes dejar un comentario`, "warning");
+            setIsOpenAvisoActividad(false);
+            showNotification(`Debes dejar un comentario o subir un archivo`, "warning");
             return;
         }
 
@@ -283,7 +284,8 @@ export const Actividades: React.FC = () => {
 
 
 
-    const Files = (item: any) => {
+    const Files = ({item}: any) => {
+                    console.log("🚀 ~ Files ~ item.hasEntrega:", item.hasEntrega)
         return (
             <>
                 <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
@@ -291,7 +293,7 @@ export const Actividades: React.FC = () => {
                         Sube tu archivo aquí
                     </Typography>
                     <Typography component="p" variant="body1">
-                        (pdf. xml. word, ppt)
+                        (pdf, word)
                     </Typography>
                 </Box>
                 <FileUploader
@@ -387,8 +389,8 @@ export const Actividades: React.FC = () => {
                     ?
                     <LoadingCircular Text="Cargando Actividades..." />
                     :
-                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>
-                        <Accordion
+                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) => {
+                        return <Accordion
                             key={index}
                             title={getLabel(contenidos)}
                             sxProps={accordionStyle}
@@ -497,7 +499,8 @@ export const Actividades: React.FC = () => {
                                 ))
                             }
 
-                        </Accordion>
+                        </Accordion>;
+                    }
                     )
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
