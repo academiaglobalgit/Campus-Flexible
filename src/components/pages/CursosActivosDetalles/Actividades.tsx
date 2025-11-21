@@ -287,7 +287,6 @@ export const Actividades: React.FC = () => {
 
 
     const Files = ({item}: any) => {
-                    console.log("🚀 ~ Files ~ item.hasEntrega:", item.hasEntrega)
         return (
             <>
                 <Box sx={{ display: 'flex', width: '100%', gap: '8px' }}>
@@ -391,8 +390,8 @@ export const Actividades: React.FC = () => {
                     ?
                     <LoadingCircular Text="Cargando Actividades..." />
                     :
-                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) => {
-                        return <Accordion
+                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>
+                        <Accordion
                             key={index}
                             title={getLabel(contenidos)}
                             sxProps={accordionStyle}
@@ -500,9 +499,7 @@ export const Actividades: React.FC = () => {
                                     </Box>
                                 ))
                             }
-
-                        </Accordion>;
-                    }
+                        </Accordion>
                     )
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
