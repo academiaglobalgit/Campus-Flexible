@@ -176,15 +176,21 @@ export const getSubdomainKey = () => {
 };
 
 export const removeAvatarScript = () => {
-        const scriptName = 'script[data-name="did-agent"]';
-        const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
-        const target = document.querySelector<HTMLDivElement>('.didagent_target');
-        if (target) {
-            target.remove(); 
-        }
-        if (existingScript) {
-            document.head.removeChild(existingScript);
-        }
+  try {
+    const scriptName = 'script[data-name="did-agent"]';
+    const existingScript = document.querySelector<HTMLScriptElement>(scriptName);
+    const target = document.querySelector<HTMLDivElement>('.didagent_target');
+    if (target) {
+        target.remove(); 
+    }
+    console.log('Removing avatar script_helper:', existingScript);
+    if (existingScript) {
+        document.head.removeChild(existingScript);
+    }
+  }catch (error) {
+    localStorage.setItem("errorRemovingAvatarScript_helper", String(error));
+    console.error("Error removing avatar script helper:", error);
+  }    
 }
 
 export const isPlanInList = (idPlanEstudio?: number): boolean => {

@@ -10,15 +10,16 @@ import { CardNotification } from "../CardNotification/CardNotification";
 import DsSvgIcon from "../../atoms/Icon/Icon";
 import { useAuth } from "../../../hooks";
 import { ManualesUsuarioDialog } from "../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
-import { isPlanInList } from "../../../utils/Helpers";
 import { VideoBienvenidaDialog } from "../Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useDocumentos } from "../../../context/DocumentosContext";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 
 export const IconsTopBar: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [anchorElMasInfo, setAnchorElMasInfo] = React.useState<null | HTMLElement>(null);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -37,16 +38,8 @@ export const IconsTopBar: React.FC = () => {
     );
 
     const menuInformacion = React.useMemo(() => {
-        if (isPlanInList(configPlataforma?.id_plan_estudio)) {
-            return sortedMenuInformacion.map((item) => {
-                if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
-                    return { ...item, visible: 0 };
-                }
-                return item;
-            });
-        }
-        return sortedMenuInformacion;
-    }, [sortedMenuInformacion, configPlataforma?.id_plan_estudio]);
+        return configPlanEstudio?.getSortedMenuInformacionIconTopBar(sortedMenuInformacion);
+    }, [sortedMenuInformacion, configPlanEstudio]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -185,12 +178,24 @@ export const IconsTopBar: React.FC = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '11px',
+                    maxHeight: '85vh',
+                    overflowY: 'auto',
+                    maxWidth: isMobile ? '350px' : '420px'
+                }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', flexShrink: 0 }}>
                         <Typography component="h4" variant="h4">Notificaciones</Typography>
                         <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>{getTextCountNotification(filteredNotifications?.filter((item) => item.leida === 0).length)}</Typography>
                     </Box>
-                    <Box>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            overflowY: 'auto',
+                            px: 2
+                        }}>
                         {
                             isLoading
                                 ?
@@ -207,9 +212,9 @@ export const IconsTopBar: React.FC = () => {
                                     />
                                 ))
                         }
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', pt: '16px', cursor: 'pointer' }} onClick={handleAllNotifications}>
-                            <Typography component="span" variant="body2" color="primary">Ver todas las notificaciones</Typography>
-                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', pt: '16px', cursor: 'pointer', flexShrink: 0 }} onClick={handleAllNotifications}>
+                        <Typography component="span" variant="body2" color="primary">Ver todas las notificaciones</Typography>
                     </Box>
                 </Box>
 
@@ -256,11 +261,10 @@ export const IconsTopBar: React.FC = () => {
                     Más información
                 </Typography>
                 {
-                    menuInformacion.filter((item) => item.visible === 1).map((item, index) => {
+                    menuInformacion?.filter((item) => item.visible === 1).map((item, index) => {
                         return (
                             <MenuItem
                                 key={index}
-                                //disabled={item.text === 'Inducción' && (isPlanInList(configPlataforma?.id_plan_estudio)) ? true : false}
                                 onClick={() => handleNavigation(item)}
                                 sx={[
                                     { ...menuItemStyle, mt: index === 0 ? 0 : 2 },

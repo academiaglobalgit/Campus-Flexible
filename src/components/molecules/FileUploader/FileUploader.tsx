@@ -60,12 +60,9 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
     maxFiles,
     multiple: true,
     accept: {
-      'image/*': [],
       'application/pdf': [],
       'application/msword': [],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [],
-      'application/vnd.ms-excel': [],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [],
     },
   });
 
@@ -90,25 +87,25 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
     <Box sx={{ border: '2px dashed #ccc', p: 2, borderRadius: 2 }}>
       {
         canUpload &&
-          <Box
-            {...getRootProps()}
-            sx={{
-              cursor: 'pointer',
-              textAlign: 'center',
-              py: 3,
-              bgcolor: '#f9f9f9',
-              borderRadius: 2,
-            }}
-          >
-            <input {...getInputProps()} />
-            <Typography variant="body1">
-              {isDragActive
-                ? 'Suelta los archivos aquí'
-                : `Arrastra archivos o haz clic (máx. ${maxFiles}, máx. ${maxFileSizeMb}MB c/u)`}
-            </Typography>
-          </Box>
+        <Box
+          {...getRootProps()}
+          sx={{
+            cursor: 'pointer',
+            textAlign: 'center',
+            py: 3,
+            bgcolor: '#f9f9f9',
+            borderRadius: 2,
+          }}
+        >
+          <input {...getInputProps()} />
+          <Typography variant="body1">
+            {isDragActive
+              ? 'Suelta los archivos aquí'
+              : `Arrastra archivos o haz clic (máx. ${maxFiles}, máx. ${maxFileSizeMb}MB c/u)`}
+          </Typography>
+        </Box>
       }
-      
+
 
       {errorMessage && (
         <Alert severity="error" sx={{ mt: 2 }}>
@@ -150,7 +147,7 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
             </Typography>
             {
               canUpload &&
-                <IconButton
+              <IconButton
                 size="small"
                 onClick={() => removeFile(index)}
                 sx={{

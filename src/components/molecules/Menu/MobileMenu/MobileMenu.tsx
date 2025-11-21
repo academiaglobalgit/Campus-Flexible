@@ -1,14 +1,13 @@
 import React from "react";
-import { Box, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Menu, useMediaQuery, useTheme } from "@mui/material";
 import { Typography } from "../../../atoms/Typography/Typography";
 
 import { MenuRoutes as MenuItems, MenuInformacion, type MenuType, TitleScreen } from "@constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import DsSvgIcon from "../../../atoms/Icon/Icon";
 import { ManualesUsuarioDialog } from "../../Dialogs/ManualesUsuarioDialog/ManualesUsuarioDialog";
 import { useAuth } from "../../../../hooks";
-import { isPlanInList } from "../../../../utils/Helpers";
+import { usePlanEstudio } from "../../../../context/PlanEstudioContext";
 
 type MobileMenuProps = {
     anchorEl: HTMLElement | null;
@@ -20,6 +19,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const navigate = useNavigate();
     const theme = useTheme();
     const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
 
     const menuOpen = Boolean(anchorEl);
     const [maxWidth, setMaxWidth] = useState(370);
@@ -30,23 +30,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
     const [isOpenManualesDialog, setIsOpenManualesDialog] = React.useState(false);
     const [menuTypeDialog, setMenuTypeDialog] = React.useState('manuales');
 
-    let menuRoutes = [...MenuItems.filter((item) => item.menu === "main" || item.menu === 'more')].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const menuRoutes = [...MenuItems.filter((item) => item.menu === "main" || item.menu === 'more')].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const menuInformacion = [...MenuInformacion].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     let items = (menuType === 'menuRoutes' ? menuRoutes : menuInformacion) as any[];
 
-    switch (configPlataforma?.id_plan_estudio) {
-        case 17: // Diplomados
-        case 19: // Diplomados Coppel
-            //menuRoutes = menuRoutes.filter(item => item.id !== 1 && item.id !== 7); // Remover Plan de estudios y Sala de conversacion
-            menuRoutes = menuRoutes.filter(
-                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-            );
-            items = items.filter(
-                (item) => ![1, 7, 6, 8, 9, 10, 11, 12, 14].includes(item.id)
-            );
-            break;
-    }
+    items = configPlanEstudio?.getFilteredMenuRoutes(items) || items;
 
     const handleNavigation = (item: any) => {
         if (item.text === TitleScreen.MANUALES_USUARIOS || item.text === TitleScreen.LINEAMIENTOS) {
@@ -121,23 +110,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ anchorEl, onClose, menuT
                 <Typography component="h3" variant="h3" sxProps={{ py: 1, fontWeight: 'bold', color: 'primary.main', textAlign: 'center' }}>
                     {menuType === 'menuRoutes' ? 'Menú' : 'Más información'}
                 </Typography>
-                {
-                    items.filter((item) => item.visible === 1).map((item, index) => {
-                        return (<MenuItem key={index} disabled={item.text === 'Inducción' && isPlanInList(configPlataforma?.id_plan_estudio)} onClick={() => handleNavigation(item)} sx={[
-                            { ...menuItemStyle, mt: index === 0 ? 0 : 2 },
-                            !isMobile && { width: '100%', maxWidth: '232px' }
-                        ]}>
-                            {menuType === 'menuRoutes'
-                                ?
-                                item.text
-                                :
-                                <>
-                                    <ListItemIcon>
-                                        <DsSvgIcon color="primary" component={item.icon} sxProps={{ color: configPlataforma?.color_primary }} />
-                                    </ListItemIcon>
-                                    <ListItemText sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px' }}>{item.text}</ListItemText>
-                                </>}
-                        </MenuItem>);
+                { 
+                    configPlanEstudio?.getMenuMobile({
+                        menu: items,
+                        menuType,
+                        isMobile,
+                        menuItemStyle,
+                        handleNavigation
                     })
                 }
             </Menu>

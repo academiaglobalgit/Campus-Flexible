@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Box, Tab, Tabs, tabsClasses } from "@mui/material";
 import { toRoman } from "../../../utils/Helpers";
-import { useAuth } from "../../../hooks";
+import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 type PeriodosTabsProps = {
     periodos: number;
@@ -10,7 +10,7 @@ type PeriodosTabsProps = {
 }
 
 const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabSelected = 0, tabChange}) => {
-    const { configPlataforma } = useAuth();
+    const { config: configPlanEstudio } = usePlanEstudio();
     const [value, setValue] = React.useState(0);
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -24,13 +24,7 @@ const PeriodosTabs: React.FC<PeriodosTabsProps> = ({periodos, tabSelected = 0, t
     }, [tabSelected]);
 
     const getLabel = (index: number) => {
-        switch(configPlataforma?.id_plan_estudio) {
-            case 17:
-            case 19:
-                return `Certificaciones`;
-            default:
-                return `Periodo ${toRoman(index + 1)}`;
-        }
+        return configPlanEstudio?.getLabelPeriodosTabs(`Periodo ${toRoman(index + 1)}`);
     }
 
     return(
