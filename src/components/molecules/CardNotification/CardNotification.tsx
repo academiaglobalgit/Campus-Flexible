@@ -22,7 +22,6 @@ type NotificacionProps = {
 
 export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, setLoadingItems, setMarkedRead }) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
@@ -60,6 +59,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
             case 'anuncio': return <NotificationsNoneIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
             case 'tarea_nueva': return <ThumbsUpDownOutlinedIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
             case 'mensaje': return <BusinessCenterOutlinedIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
+            default: return <NotificationsNoneIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
         }
     };
 
