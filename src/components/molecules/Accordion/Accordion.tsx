@@ -22,11 +22,8 @@ export const Accordion: React.FC<AccordionProps> = (
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {
-    if (onChange) {
-      onChange();
-    } else {
-      setExpanded(!expanded);
-    }
+    setExpanded(!expanded);
+    if(onChange) onChange();
   };
 
   useEffect(() => {
