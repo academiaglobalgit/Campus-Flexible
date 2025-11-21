@@ -6,11 +6,13 @@ import { Divider } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AppRoutingPaths } from "@constants";
+import { useRecentlyViewed } from "../../../context/RecentlyViewedContext";
 
 const filters = ['Todos', 'Tecnología', 'Programación', 'Administración', 'Multimedia', 'IA'];
 
 const Multimedia: React.FC = () => {
     const navigate = useNavigate();
+    const { addItem: addRecentlyViewed } = useRecentlyViewed();
 
     const videos: any[] = [
         {
@@ -84,6 +86,17 @@ const Multimedia: React.FC = () => {
 
     const handleVideoSelect = (video: any) => {
         console.log("Video selected:", video);
+        addRecentlyViewed({
+            id: `video-${video.id}`,
+            title: video.title,
+            description: `${video.views} · ${video.uploadTime}`,
+            category: video.category,
+            thumbnail: video.thumbnail,
+            type: "multimedia",
+            actionLabel: "Ver Video",
+            author: video.author,
+            duration: video.duration,
+        });
         navigate(AppRoutingPaths.CIG_MULTIMEDIA_WATCH.replace(':id', video.id.toString()));
     }
 

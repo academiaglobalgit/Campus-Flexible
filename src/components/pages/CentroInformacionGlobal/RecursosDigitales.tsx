@@ -1,11 +1,9 @@
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
-import { Typography } from "../../atoms/Typography/Typography";
 import Button from "../../atoms/Button/Button";
-import DsSvgIcon from "../../atoms/Icon/Icon";
-import FavoriteBadge from "../../atoms/FavoriteBadge/FavoriteBadge";
-import { CigBarFav } from "@iconsCustomizeds";
 import { useFavorites, type FavoriteItem } from "../../../context/FavoritesContext";
+import { useRecentlyViewed } from "../../../context/RecentlyViewedContext";
+import ResourceRow from "../../molecules/ResourceRow/ResourceRow";
 
 type Resource = {
   id: string;
@@ -39,123 +37,22 @@ const toFavoriteItem = (resource: Resource): FavoriteItem => ({
   type: "digital-resource",
 });
 
-type ThumbProps = {
-  withFav?: boolean;
-  isFavorite?: boolean;
-  onToggle?: () => void;
-};
-
-const Thumb: React.FC<ThumbProps> = ({ withFav = true, isFavorite, onToggle }) => (
-  <Box
-    sx={{
-      position: "relative",
-      width: { xs: 64, sm: 72, md: 86 },
-      height: { xs: 64, sm: 72, md: 86 },
-    }}
-  >
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        borderRadius: 1,
-        bgcolor: "#E6EFFC",
-        border: "1px solid #F1F4F6",
-      }}
-    />
-    {withFav && (
-      <FavoriteBadge
-        icon={
-          <DsSvgIcon
-            component={CigBarFav}
-            color={isFavorite ? "white" : "primary"}
-            sxProps={{ fontSize: 12 }}
-          />
-        }
-        isActive={isFavorite}
-        onToggle={onToggle}
-        sx={{
-          position: "absolute",
-          top: 5,
-          right: 5,
-        }}
-      />
-    )}
-  </Box>
-);
-
-const ResourceRow: React.FC<Resource> = (resource) => {
-  const { id, title, excerpt, category } = resource;
-  const theme = useTheme();
-  const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const { isFavorite, toggleFavorite } = useFavorites();
-
-  const favoriteItem = toFavoriteItem(resource);
-  const favoriteActive = isFavorite(id);
-
-  return (
-    <Box sx={{ py: { xs: 1.5, md: 1 } }}>
-      <Grid
-        container
-        spacing={{ xs: 1.5, md: 2 }}
-        sx={{
-          alignItems: "center",
-          minHeight: { xs: 96, md: 120 },
-        }}
-      >
-        <Grid
-          size={{
-            xs: 2,
-            sm: 1.8,
-            md: 1,
-          }}
-          sx={{
-            display: "flex",
-          }}
-        >
-          <Thumb
-            isFavorite={favoriteActive}
-            onToggle={() => toggleFavorite(favoriteItem)}
-          />
-        </Grid>
-        <Grid
-          size={{
-            xs: 7,
-            sm: 9,
-            md: 9,
-          }}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 0.5,
-          }}
-        >
-          <Typography component="h5" variant="h5">
-            {title}
-          </Typography>
-          <Typography
-            component="p"
-            variant="body2"
-            
-          >
-            {excerpt}
-          </Typography>
-        </Grid>
-        <Grid
-          size={{ xs: 3, md: 2 }}
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <Button size={isSm ? "small" : "medium"} color="primary" onClick={() => {}}>
-            Ver Recurso
-          </Button>
-        </Grid>
-      </Grid>
-    </Box>
-  );
-};
-
 const RecursosDigitales: React.FC = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const { addItem: addRecentlyViewed } = useRecentlyViewed();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const handleViewResource = (resource: Resource) => {
+    addRecentlyViewed({
+      id: resource.id,
+      title: resource.title,
+      description: resource.excerpt,
+      category: resource.category,
+      type: "digital-resource",
+      actionLabel: "Ver Recurso",
+    });
+  };
 
   return (
     <ContainerDesktop
@@ -178,7 +75,16 @@ const RecursosDigitales: React.FC = () => {
       </Box>
 
       {resources.map((resource) => (
-        <ResourceRow key={resource.id} {...resource} />
+        <ResourceRow
+          key={resource.id}
+          title={resource.title}
+          description={resource.excerpt}
+          category={resource.category}
+          actionLabel="Ver Recurso"
+          onAction={() => handleViewResource(resource)}
+          isFavorite={isFavorite(resource.id)}
+          onToggleFavorite={() => toggleFavorite(toFavoriteItem(resource))}
+        />
       ))}
     </ContainerDesktop>
   );

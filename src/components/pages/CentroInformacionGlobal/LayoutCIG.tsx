@@ -21,20 +21,21 @@ import {
 } from "@iconsCustomizeds";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppRoutingPaths } from "@constants";
+import CigSearchModal from "../../molecules/CigSearchModal/CigSearchModal";
 
 type ActionItem = {
   icon: ElementType;
   label: string;
   uri?: string;
   match?: (pathname: string) => boolean;
+  openSearch?: boolean;
 };
 
 const actionItems: ActionItem[] = [
   {
     icon: CigBarSearch,
     label: "Buscar",
-    uri: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
-    match: (pathname) => pathname === AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
+    openSearch: true,
   },
   {
     icon: CigBarFav,
@@ -44,6 +45,7 @@ const actionItems: ActionItem[] = [
   {
     icon: CigBarHistory,
     label: "Visto Recientemente",
+    uri: AppRoutingPaths.CIG_VISTOS_RECIENTES,
   },
   {
     icon: CigBarLibrary,
@@ -67,7 +69,11 @@ const actionItems: ActionItem[] = [
   },
 ];
 
-const RightActionsBar = () => {
+type RightActionsBarProps = {
+  onSearchOpen?: () => void;
+};
+
+const RightActionsBar: FC<RightActionsBarProps> = ({ onSearchOpen }) => {
   const theme = useTheme();
   const isDownMd = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
@@ -103,12 +109,21 @@ const RightActionsBar = () => {
         const isActive = item.match
           ? item.match(location.pathname)
           : Boolean(item.uri && location.pathname === item.uri);
-        const disabled = !item.uri;
+        const disabled = !item.uri && !item.openSearch;
 
         return (
           <ButtonBase
             key={`action-item-${idx}`}
-            onClick={() => item.uri && navigate(item.uri)}
+            onClick={() => {
+              if (item.openSearch) {
+                onSearchOpen?.();
+                return;
+              }
+
+              if (item.uri) {
+                navigate(item.uri);
+              }
+            }}
             disableRipple
             sx={{
               width: "100%",
@@ -159,6 +174,7 @@ const RightActionsBar = () => {
 
 const LayoutCIG: FC = () => {
   const location = useLocation();
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const isRootCig = location.pathname === AppRoutingPaths.CENTRO_INFORMACION_GLOBAL;
 
@@ -166,7 +182,7 @@ const LayoutCIG: FC = () => {
     <>
       <Fade in={!isRootCig} timeout={800} mountOnEnter unmountOnExit>
         <div>
-          <RightActionsBar />
+          <RightActionsBar onSearchOpen={() => setIsSearchModalOpen(true)} />
         </div>
       </Fade>
 
@@ -181,6 +197,11 @@ const LayoutCIG: FC = () => {
           <Outlet />
         </motion.div>
       </AnimatePresence>
+
+      <CigSearchModal
+        open={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
     </>
   );
 };

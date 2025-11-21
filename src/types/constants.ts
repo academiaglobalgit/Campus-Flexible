@@ -45,6 +45,7 @@ export const AppRoutingPaths = {
     CIG_MULTIMEDIA_WATCH: "/cig/multimedia/watch/:id",
     CIG_RECURSOS_DIGITALES: "/cig/recursos-digitales",
     CIG_FAVORITOS: "/cig/favoritos",
+    CIG_VISTOS_RECIENTES: "/cig/vistos-recientemente",
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;

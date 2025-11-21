@@ -1,11 +1,12 @@
 import { Box, Divider, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { useCallback } from "react";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 import { Typography } from "../../atoms/Typography/Typography";
 import Button from "../../atoms/Button/Button";
-import FavoriteBadge from "../../atoms/FavoriteBadge/FavoriteBadge";
-import DsSvgIcon from "../../atoms/Icon/Icon";
-import { CigBarFav } from "@iconsCustomizeds";
 import { useFavorites, type FavoriteItem } from "../../../context/FavoritesContext";
+import { useRecentlyViewed } from "../../../context/RecentlyViewedContext";
+import ResourceRow from "../../molecules/ResourceRow/ResourceRow";
+import ResourceThumb from "../../atoms/ResourceThumb/ResourceThumb";
 
 type Article = {
   id: string;
@@ -38,7 +39,10 @@ const topReads: Article[] = Array.from({ length: 3 }, (_, index) => ({
   category: "Top Reads",
 }));
 
-const toFavoriteItem = (article: Article, type: FavoriteItem["type"] = "investigation-resource"): FavoriteItem => ({
+const toFavoriteItem = (
+  article: Article,
+  type: FavoriteItem["type"] = "investigation-resource"
+): FavoriteItem => ({
   id: article.id,
   title: article.title,
   excerpt: article.excerpt,
@@ -46,176 +50,89 @@ const toFavoriteItem = (article: Article, type: FavoriteItem["type"] = "investig
   type,
 });
 
-type ThumbProps = {
-  isFavorite: boolean;
-  onToggle: () => void;
-};
-
-const Thumb: React.FC<ThumbProps> = ({ isFavorite, onToggle }) => (
-  <Box
-    sx={{
-      position: "relative",
-      width: "100%",
-      height: "100%",
-    }}
-  >
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        borderRadius: 1,
-        bgcolor: "#E6EFFC",
-        border: "1px solid #F1F4F6",
-      }}
-    />
-    <FavoriteBadge
-      icon={
-        <DsSvgIcon
-          component={CigBarFav}
-          color={isFavorite ? "white" : "primary"}
-          sxProps={{ fontSize: 12 }}
-        />
-      }
-      isActive={isFavorite}
-      onToggle={onToggle}
-      sx={{
-        position: "absolute",
-        top: 5,
-        right: 5,
-      }}
-    />
-  </Box>
-);
-
-const ThumbTwo = () => (
-  <Box
-    sx={{
-      width: 60,
-      height: "100%",
-      borderRadius: "6px",
-      background: "#E6EFFC",
-      border: "1px solid #F1F4F6",
-    }}
-  />
-);
-
-const ArticleRow: React.FC<Article> = (article) => {
+const RecursosInvestigacion: React.FC = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const { addItem: addRecentlyViewed } = useRecentlyViewed();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const favoriteItem = toFavoriteItem(article);
-  const favoriteActive = isFavorite(article.id);
 
-  return (
-    <Box sx={{ py: 2 }}>
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          alignItems: "stretch",
-        }}
-      >
+  const handleReadArticle = useCallback(
+    (article: Article, type: FavoriteItem["type"]) => {
+      addRecentlyViewed({
+        id: article.id,
+        title: article.title,
+        description: article.excerpt,
+        category: article.category,
+        type,
+        actionLabel: "Leer Artículo",
+      });
+    },
+    [addRecentlyViewed]
+  );
+
+  type TopReadArticleProps = {
+    article: Article;
+    onRead: () => void;
+    isFavorite: boolean;
+    onToggleFavorite: () => void;
+  };
+
+  const TopReadArticle: React.FC<TopReadArticleProps> = ({
+    article,
+    onRead,
+    isFavorite,
+    onToggleFavorite,
+  }) => (
+    <Box sx={{ py: { xs: 2, md: 1.5 } }}>
+      <Grid container spacing={{ xs: 1.5, md: 1.5 }} alignItems="center">
         <Grid
-          size={{ md: 2, lg: 2 }}
-          sx={{
-            display: "flex",
-            height: "auto",
+          size={{
+            xs: 4,
+            sm: 4,
+            md: 1.3,
+            lg: 3,
           }}
+          sx={{ display: "flex" }}
         >
-          <Thumb
-            isFavorite={favoriteActive}
-            onToggle={() => toggleFavorite(favoriteItem)}
+          <ResourceThumb
+            sx={{
+              width: "100%",
+              height: "200px",
+            }}
+            isFavorite={isFavorite}
+            onToggleFavorite={onToggleFavorite}
           />
         </Grid>
 
         <Grid
-          size={{ md: 7, lg: 7 }}
+          size={{
+            xs: 7,
+            sm: 7.5,
+            md: 8.7,
+            lg: 9,
+          }}
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            gap: 1,
-            height: "100%",
+            justifyContent: "space-around",
+            gap: 0.75,
+            minHeight: "200px",
           }}
         >
           <Typography component="h5" variant="h5">
             {article.title}
           </Typography>
-          <Typography
-            component="p"
-            variant="body2"
-          >
+          <Typography component="p" variant="body2">
             {article.excerpt}
           </Typography>
-        </Grid>
 
-        <Grid
-          size={{ md: 3, lg: 3 }}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            pr: 3,
-            height: "100%",
-          }}
-        >
-          <Button size={isSm ? "small" : "medium"} color="primary" onClick={() => {}}>
-            Leer Artículo
+          <Button size={isSm ? "small" : "medium"} color="primary" onClick={onRead}>
+            Leer Articulo
           </Button>
         </Grid>
       </Grid>
     </Box>
   );
-};
-
-const TopReadRow: React.FC<Article> = ({ title, excerpt }) => {
-  const theme = useTheme();
-  const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-
-  return (
-    <Box sx={{ py: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 2,
-        }}
-      >
-        <Box>
-          <ThumbTwo />
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography component="span" variant="subtitle1">
-            {title}
-          </Typography>
-          <Typography component="p" variant="body2">
-            {excerpt}
-          </Typography>
-          <Box
-            sx={{
-              paddingTop: 1,
-            }}
-          >
-            <Button size={isSm ? "small" : "medium"} onClick={() => {}}>
-              Leer Artículo
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
-const RecursosInvestigacion: React.FC = () => {
-  const theme = useTheme();
-  const isSm = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <ContainerDesktop
@@ -246,13 +163,22 @@ const RecursosInvestigacion: React.FC = () => {
         <Grid
           size={{
             xs: 12,
-            md: 7,
-            lg: 7,
-            xl: 7,
+            md: 8,
+            lg: 8,
+            xl: 8,
           }}
         >
           {leftArticles.map((article) => (
-            <ArticleRow key={article.id} {...article} />
+            <ResourceRow
+              key={article.id}
+              title={article.title}
+              description={article.excerpt}
+              category={article.category}
+              actionLabel="Leer Artículo"
+              onAction={() => handleReadArticle(article, "investigation-resource")}
+              isFavorite={isFavorite(article.id)}
+              onToggleFavorite={() => toggleFavorite(toFavoriteItem(article))}
+            />
           ))}
         </Grid>
 
@@ -274,9 +200,17 @@ const RecursosInvestigacion: React.FC = () => {
           </Typography>
 
           {topReads.map((article) => (
-            <TopReadRow key={article.id} {...article} />
+            <TopReadArticle
+              key={article.id}
+              article={article}
+              onRead={() => handleReadArticle(article, "top-read")}
+              isFavorite={isFavorite(article.id)}
+              onToggleFavorite={() => toggleFavorite(toFavoriteItem(article, "top-read"))}
+            />
           ))}
+
         </Grid>
+
       </Grid>
     </ContainerDesktop>
   );
