@@ -226,7 +226,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     const verLogo = true;
                     return { background, verLogo }
                 },
-                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: false }),
+                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: true }),
                 getConfiguracionCalificaciones: () => ({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true }),
                 renderBotonesCalificacion: ({
                     curso,
