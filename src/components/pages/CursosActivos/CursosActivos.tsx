@@ -49,6 +49,8 @@ const CursoActivo: React.FC = () => {
     const [cursoId, setCursoId] = React.useState(0);
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
     const [refreshEncuestas, setRefreshEncuestas] = React.useState(true);
+    const [accordionOpen, setAccordionOpen] = React.useState<number | null>(null);
+
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
@@ -195,11 +197,14 @@ const CursoActivo: React.FC = () => {
     );
 
     const materiaItem = (item: ICursoActivo, index: number) => {
+        const keyAccordion = index;
         return (
             <Accordion
                 key={index}
                 sxProps={accordionStyle}
                 title={item.titulo_curso}
+                isExpanded={accordionOpen === keyAccordion}
+                onChange={() => {setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);}}
                 customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus} sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
             >
 

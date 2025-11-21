@@ -13,15 +13,20 @@ type AccordionProps = {
   backgroundDetails?: SxProps<Theme> | undefined;
   isExpanded?: boolean;
   isDisabled?: boolean;
+  onChange?: () => void;
 };
 
 export const Accordion: React.FC<AccordionProps> = (
-  { title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded = false, isDisabled = false }
+  { title, children, sxProps = undefined, opcion, customHeader: customSummary, backgroundDetails, isExpanded = false, isDisabled = false, onChange  }
 ) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleChange = () => {
-    setExpanded(!expanded);
+    if (onChange) {
+      onChange();
+    } else {
+      setExpanded(!expanded);
+    }
   };
 
   useEffect(() => {
