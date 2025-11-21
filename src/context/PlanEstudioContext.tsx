@@ -42,6 +42,7 @@ interface ActividadesConfig {
     verBotones: boolean; 
     verCalificacion: boolean; 
     subirArchivos: boolean;
+    notificacionMensaje: string;
 }
 
 interface CalificacionesConfig { 
@@ -226,7 +227,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     const verLogo = true;
                     return { background, verLogo }
                 },
-                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: true }),
+                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: idPlanEstudio === 19 ? true : false, notificacionMensaje : idPlanEstudio === 19 ? 'Debes dejar un comentario o subir un archivo':' Debes dejar un comentario' }),
                 getConfiguracionCalificaciones: () => ({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true }),
                 renderBotonesCalificacion: ({
                     curso,

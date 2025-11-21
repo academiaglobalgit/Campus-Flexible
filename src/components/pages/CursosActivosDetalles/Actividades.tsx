@@ -53,6 +53,7 @@ export const Actividades: React.FC = () => {
     const [verBotones, setVerBotones] = useState(true);
     const [verCalificacion, setVerCalificacion] = useState(true);
     const [subirArchivos, setSubirArchivos] = useState(true);
+    const [notificacionMensaje, setNotificacionMensaje] = useState('Debes dejar un comentario o subir un archivo');
 
     const manuales = [
         TipoManualesIds.INSTRUMENTO_EVALUACION,
@@ -62,11 +63,12 @@ export const Actividades: React.FC = () => {
     ];
 
     React.useEffect(() => {
-        const config = configPlanEstudio?.getConfiguracionActividades({verBotones: true, verCalificacion: true, subirArchivos: true});
+        const config = configPlanEstudio?.getConfiguracionActividades({verBotones: true, verCalificacion: true, subirArchivos: true, notificacionMensaje: 'Debes dejar un comentario o subir un archivo'});
         if(config) {
             setVerBotones(config.verBotones);
             setVerCalificacion(config.verCalificacion);
             setSubirArchivos(config.subirArchivos);
+            setNotificacionMensaje(config.notificacionMensaje)
         }
     }, [configPlanEstudio]);
 
@@ -162,7 +164,7 @@ export const Actividades: React.FC = () => {
         if (files.length === 0 && contenidoText.length === 0) {
             setIsSaving(false);
             setIsOpenAvisoActividad(false);
-            showNotification(`Debes dejar un comentario o subir un archivo`, "warning");
+            showNotification(notificacionMensaje, "warning");
             return;
         }
 
