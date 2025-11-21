@@ -58,8 +58,42 @@ export const AppRouting = createHashRouter([
                 Component: Component.PlanEstudioInformacion
               },
               {
-                path: AppRoutingPaths.BIBLIOTECA,
-                Component: Component.BibliotecaVideoteca
+                path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
+                Component: Component.LayoutCIG,
+                children: [
+                  {
+                    path: '',
+                    Component: Component.CentroInformacionGlobal
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_RECURSOS_INVESTIGACION,
+                    Component: Component.CentroInformacionRecursosInvestigacion,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_RECURSOS_DIGITALES,
+                    Component: Component.CentroInformacionRecursosDigitales,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_FAVORITOS,
+                    Component: Component.CentroInformacionFavoritos,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_VISTOS_RECIENTES,
+                    Component: Component.CentroInformacionVistosRecientemente,
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_MULTIMEDIA,
+                    Component: Component.CentroInformacionMultimedia
+                  },
+                  {
+                    path: AppRoutingPaths.CIG_MULTIMEDIA_WATCH,
+                    Component: Component.CentroInformacionMultimediaWatch
+                  },
+                  {
+                    path: AppRoutingPaths.NOTFOUND,
+                    Component: Component.NotFound
+                  },
+                ]
               },
               {
                 path: AppRoutingPaths.MI_PERFIL,
@@ -132,6 +166,10 @@ export const AppRouting = createHashRouter([
               {
                 path: AppRoutingPaths.LOGROS,
                 Component: Component.Logros
+              },
+              {
+                path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL,
+                Component: Component.CentroInformacionGlobal
               },
             ]
           }

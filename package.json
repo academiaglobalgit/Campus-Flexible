@@ -62,6 +62,7 @@
     "@tiptap/suggestion": "^2.25.0",
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.24",
     "jwt-decode": "^4.0.0",
     "mui-tiptap": "^1.19.0",
     "react": "^19.1.0",

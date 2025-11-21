@@ -39,7 +39,13 @@ export const AppRoutingPaths = {
     SESSION_EXPIRED: "/expired",
     PASSWORD_RESET: "/reset-password",
     LOGROS: "/Logros",
-    
+    CENTRO_INFORMACION_GLOBAL: "/cig",
+    CIG_RECURSOS_INVESTIGACION: "/cig/recursos-investigacion",
+    CIG_MULTIMEDIA: "/cig/multimedia",
+    CIG_MULTIMEDIA_WATCH: "/cig/multimedia/watch/:id",
+    CIG_RECURSOS_DIGITALES: "/cig/recursos-digitales",
+    CIG_FAVORITOS: "/cig/favoritos",
+    CIG_VISTOS_RECIENTES: "/cig/vistos-recientemente",
 } as const;
 
 export type AppRoutingPaths = typeof AppRoutingPaths;
@@ -76,6 +82,7 @@ export const TitleScreen = {
     TERMINOS_CONDICIONES: "Términos y Condiciones",
     MANUALES_USUARIOS: "Inducción",
     LOGROS: "Mis Logros",
+    CENTRO_INFORMACION_GLOBAL: "CIG"
 }
 
 export type TitleScreen = typeof TitleScreen;
