@@ -2,7 +2,7 @@ import React from "react";
 import type { Notificaciones } from "@constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
-import { Box, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
+import { Box, LinearProgress, useTheme } from "@mui/material";
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';

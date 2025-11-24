@@ -55,6 +55,9 @@ export const Actividades: React.FC = () => {
     const [subirArchivos, setSubirArchivos] = useState(true);
     const [notificacionMensaje, setNotificacionMensaje] = useState('Debes dejar un comentario o subir un archivo');
 
+    const [accordionOpen, setAccordionOpen] = useState<number | null>(null);
+
+
     const manuales = [
         TipoManualesIds.INSTRUMENTO_EVALUACION,
         TipoManualesIds.PORTADA,
@@ -390,11 +393,17 @@ export const Actividades: React.FC = () => {
                     ?
                     <LoadingCircular Text="Cargando Actividades..." />
                     :
-                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>
-                        <Accordion
+                    dataMapped?.agrupadoPorUnidad && Object.entries(dataMapped.agrupadoPorUnidad).map(([unidad, contenidos], index) =>{
+                    const keyAccordion = index;
+                    return( 
+                    <Accordion
                             key={index}
                             title={getLabel(contenidos)}
                             sxProps={accordionStyle}
+                            isExpanded={accordionOpen === keyAccordion}
+                            onChange={() => {
+                                setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);
+                            }}
                             customHeader={!isMobile ? <AccordionStatus tittle={getLabel(contenidos)} status={contenidos?.[0]?.estatus} /> : undefined}
                         >
                             {
@@ -500,6 +509,7 @@ export const Actividades: React.FC = () => {
                                 ))
                             }
                         </Accordion>
+                    )}
                     )
             }
             <RetroalimentacionDialog isOpen={openRetroDialog} close={() => setOpenRetroDialog(false)} retroalimentacion={retroalimentacion} />
