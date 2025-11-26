@@ -5,6 +5,7 @@ import { AppRoutingPaths, TitleScreen } from "@constants";
 
 import DiplomadoCoppel from "../assets/reestablecer_password.png";
 import HomeDiplomado from "../assets/login_diplomado.png";
+import PasswordImageAutoridad from "../assets/login_lic_autoridad.png";
 import type { BotonesCalificacionProps } from "../types/Calificaciones.interface";
 import React from "react";
 import Button from "../components/atoms/Button/Button";
@@ -17,13 +18,14 @@ import ListItemText from "@mui/material/ListItemText";
 
 // Constantes de planes
 export const PLAN_ESTUDIOS: Record<string, number[]> = {
-  DIPLOMADOS: [17, 19], // IDs de planes de diplomados NO AGREGAR MAS PLANES AQUÍ, siempre y cuando muestren la misma configuración
-//   OTRO_CAMPUS: [20],
+    DIPLOMADOS: [17, 19], // IDs de planes de diplomados NO AGREGAR MAS PLANES AQUÍ, siempre y cuando muestren la misma configuración
+    //   OTRO_CAMPUS: [20],
+    AUTORIDAD: [1, 2],
 };
 
 export const EXCLUDED_MENU_ROUTES_IDS = {
-  DIPLOMADOS: [1, 7, 6, 8, 9, 10, 11, 12, 14],
-//   OTRO_CAMPUS: [1, 7, 6, 8],
+    DIPLOMADOS: [1, 7, 6, 8, 9, 10, 11, 12, 14],
+    //   OTRO_CAMPUS: [1, 7, 6, 8],
 };
 
 interface CursosActivosConfig {
@@ -39,14 +41,14 @@ interface ReestablecerPassConfig {
 }
 
 interface ActividadesConfig {
-    verBotones: boolean; 
-    verCalificacion: boolean; 
+    verBotones: boolean;
+    verCalificacion: boolean;
     subirArchivos: boolean;
     notificacionMensaje: string;
 }
 
-interface CalificacionesConfig { 
-    titulo: string; 
+interface CalificacionesConfig {
+    titulo: string;
     loading: string;
     mostrarPromedio: boolean;
     mostrarGlosario: boolean;
@@ -82,7 +84,7 @@ interface PlanEstudioConfig {
     getSortedMenuInformacionIconTopBar: (data: any) => any[];
     getMenuMobile: (props: MenuMobile) => JSX.Element[];
     shouldPromediarDiplomados: (data: any) => boolean;
-    hiddenTabsCursosActivosDetalles: () => {hiddenTabs: number[], allowDownload: boolean};
+    hiddenTabsCursosActivosDetalles: () => { hiddenTabs: number[], allowDownload: boolean };
     getWidthLogoLogin: () => string | undefined;
     getWidthLogoSidenav: () => string | undefined;
     getColorDrawerListaTareas: (color: string) => string;
@@ -98,7 +100,7 @@ type PlanEstudioContextType = {
 const PlanEstudioContext = createContext<PlanEstudioContextType | undefined>(undefined);
 
 interface PlanEstudioProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ children }) => {
@@ -128,11 +130,11 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
             getLabelPeriodosTabs: (label) => label,
             getTabsAyuda: (tabs) => tabs,
             goToPageTerminosCondiciones: (label) => label,
-            getConfiguracionCursosActivos: (defaults) => ({...defaults, isPlan: false }),
-            getReestablecerPassword: (defaults) => ({...defaults }),
-            getConfiguracionLogin: (defaults) => ({...defaults }),
-            getConfiguracionActividades: (defaults) => ({...defaults }),
-            getConfiguracionCalificaciones: (defaults) => ({...defaults }),
+            getConfiguracionCursosActivos: (defaults) => ({ ...defaults, isPlan: false }),
+            getReestablecerPassword: (defaults) => ({ ...defaults }),
+            getConfiguracionLogin: (defaults) => ({ ...defaults }),
+            getConfiguracionActividades: (defaults) => ({ ...defaults }),
+            getConfiguracionCalificaciones: (defaults) => ({ ...defaults }),
             renderBotonesCalificacion: (props) => (
                 <React.Fragment>
                     <Button onClick={() => props.handleDetalle(props.curso.id_curso)} fullWidth>
@@ -186,20 +188,20 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                 renderConditionalComponent: (componentName, defaultComponent, props) => {
                     if (componentName === 'BottomBar') {
                         return (
-                            <BottomNavigationAction 
-                                sx={{ visibility: 'hidden' }} 
-                                disabled 
+                            <BottomNavigationAction
+                                sx={{ visibility: 'hidden' }}
+                                disabled
                             />
                         );
                     }
                     if (componentName === 'customButton') {
                         return (
-                            <BottomNavigationAction 
+                            <BottomNavigationAction
                                 {...props}
-                                sx={{ 
+                                sx={{
                                     backgroundColor: 'primary.main',
-                                    ...props?.sx 
-                                }} 
+                                    ...props?.sx
+                                }}
                             />
                         );
                     }
@@ -227,7 +229,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     const verLogo = true;
                     return { background, verLogo }
                 },
-                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: idPlanEstudio === 19 ? true : false, notificacionMensaje : idPlanEstudio === 19 ? 'Debes dejar un comentario o subir un archivo':' Debes dejar un comentario' }),
+                getConfiguracionActividades: () => ({ verBotones: false, verCalificacion: false, subirArchivos: idPlanEstudio === 19 ? true : false, notificacionMensaje: idPlanEstudio === 19 ? 'Debes dejar un comentario o subir un archivo' : ' Debes dejar un comentario' }),
                 getConfiguracionCalificaciones: () => ({ titulo: TitleScreen.CALIFICACIONES, loading: `Cargando ${TitleScreen.CALIFICACIONES}...`, mostrarPromedio: false, mostrarGlosario: false, mostrarPeriodos: true }),
                 renderBotonesCalificacion: ({
                     curso,
@@ -303,10 +305,10 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                     );
                 },
                 getValidarCalificacion: (curso) => (curso.calificacion === null
-                                ? 'Pendiente'
-                                : Number(curso.calificacion) < 6
-                                    ? 'No aprobado'
-                                    : 'Aprobado'),
+                    ? 'Pendiente'
+                    : Number(curso.calificacion) < 6
+                        ? 'No aprobado'
+                        : 'Aprobado'),
                 getSortedMenuInformacionIconTopBar: (data) => {
                     return data.map((item: any) => {
                         if (item.text === TitleScreen.SERVICIOS_ESCOLORES) {
@@ -346,9 +348,26 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                 },
                 shouldPromediarDiplomados: (item) => (item.estatus.toLowerCase() === 'cursando' && Number(item.progreso) === 100),
                 hiddenTabsCursosActivosDetalles: () => ({ hiddenTabs: [5, 2], allowDownload: false }),
-                getWidthLogoLogin: () => ( idPlanEstudio === 17 ? '279px !important' : undefined),
+                getWidthLogoLogin: () => (idPlanEstudio === 17 ? '279px !important' : undefined),
                 getWidthLogoSidenav: () => (idPlanEstudio === 17 ? '90px !important' : undefined),
                 getColorDrawerListaTareas: (color) => (idPlanEstudio === 17 ? 'primary.main' : color),
+            };
+        }
+
+        if (PLAN_ESTUDIOS.AUTORIDAD.includes(id)) {
+            return {
+                ...baseConfig,
+                // getFilteredMenuRoutes: <T extends { id: number }>(routes: T[]) => {
+                //     return routes.filter(
+                //         (item) => !EXCLUDED_MENU_ROUTES_IDS.AUTORIDAD.includes(item.id)
+                //     );
+                // },
+                getReestablecerPassword: () => {
+                    const background = [1, 2].includes(id) ? PasswordImageAutoridad : HomeDiplomado;
+                    // const verLogo = idPlanEstudio === 19 ? true : false;
+                    const verLogo = true;
+                    return { background, verLogo }
+                },
             };
         }
 
@@ -370,9 +389,9 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
     const config = getConfig(idPlanEstudio);
 
     const isInAnyPlan = (): boolean => {
-        return Object.values(PLAN_ESTUDIOS).some(planes => 
+        return Object.values(PLAN_ESTUDIOS).some(planes =>
             planes.includes(Number(idPlanEstudio))
-        ); 
+        );
     }
 
     return (
@@ -388,9 +407,9 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
 };
 
 export const usePlanEstudio = () => {
-  const context = useContext(PlanEstudioContext);
-  if (context === undefined) {
-    throw new Error('usePlanEstudio debe usarse dentro de PlanEstudioProvider');
-  }
-  return context;
+    const context = useContext(PlanEstudioContext);
+    if (context === undefined) {
+        throw new Error('usePlanEstudio debe usarse dentro de PlanEstudioProvider');
+    }
+    return context;
 };
