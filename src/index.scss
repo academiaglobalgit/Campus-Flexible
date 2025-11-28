@@ -16,6 +16,9 @@
 }
 
 @media screen and (max-width: 1366px) {
+  body {
+    zoom: 90%;
+  }
   .is1366 {
     width: 80% !important;
   }
