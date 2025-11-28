@@ -61,8 +61,6 @@ export const FileUploader: React.FC<DropzoneUploaderProps> = ({
     multiple: true,
     accept: {
       'application/pdf': [],
-      'application/msword': [],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [],
     },
   });
 

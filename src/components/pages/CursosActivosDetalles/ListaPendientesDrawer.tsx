@@ -103,7 +103,7 @@ export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
                     position: "fixed",
                     top: 100,
                     right: 0,
-                    backgroundColor: isMobile ? "#fff" : configPlanEstudio?.getColorDrawerListaTareas('rgba(0, 90, 155, 0.80)'),
+                    backgroundColor: isMobile ? "#fff" : 'primary.main',
                     borderRadius: "10px 0px 0px 10px",
                     padding: "8px 20px",
                     fontWeight: 700,
