@@ -93,9 +93,12 @@ const Sidenav: React.FC = () => {
   );
 
   const [open, setOpen] = React.useState(false);
+  const [verOpciones, setVerOpciones] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<any>(null);
 
   React.useEffect(() => {
+    const config = configPlanEstudio?.setVerMasOpciones?.({ verMasOpciones: true });
+    if (config) setVerOpciones(config.verMasOpciones);
     loadConfig().then(cfg => {
       setConfig(cfg);
     });
@@ -359,8 +362,8 @@ const Sidenav: React.FC = () => {
             />
           </Box>
           {Listado("Menú", open, "main", selectedIndex, setSelectedIndex)}
-          <Divider sx={{ width: open ? '90%' : '50%' }} />
-          {Listado("Más", open, "more", selectedIndex, setSelectedIndex)}
+          {verOpciones && <Divider sx={{ width: open ? '90%' : '50%' }} />}
+          {verOpciones && Listado("Más", open, "more", selectedIndex, setSelectedIndex)}
         </Box>
 
         <Box sx={[{ height: '70px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: !open ? 'center' : 'flex-start' }, open && { paddingLeft: '20px' }]}>

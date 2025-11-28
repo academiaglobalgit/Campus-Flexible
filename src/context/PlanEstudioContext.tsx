@@ -26,6 +26,7 @@ export const PLAN_ESTUDIOS: Record<string, number[]> = {
 export const EXCLUDED_MENU_ROUTES_IDS = {
     DIPLOMADOS: [1, 7, 6, 8, 9, 10, 11, 12, 14],
     //   OTRO_CAMPUS: [1, 7, 6, 8],
+    AUTORIDAD: [8, 9, 10, 11, 12, 13, 14],
 };
 
 interface CursosActivosConfig {
@@ -63,6 +64,10 @@ interface MenuMobile {
     menuType: string;
 }
 
+interface OpcionesMenu {
+    verMasOpciones: boolean;
+}
+
 interface PlanEstudioConfig {
     id: number;
     renderConditionalComponent: <T extends Record<string, any>>(
@@ -88,6 +93,7 @@ interface PlanEstudioConfig {
     getWidthLogoLogin: () => string | undefined;
     getWidthLogoSidenav: () => string | undefined;
     getColorDrawerListaTareas: (color: string) => string;
+    setVerMasOpciones?: (defaults: OpcionesMenu) => OpcionesMenu;
 }
 
 type PlanEstudioContextType = {
@@ -179,6 +185,7 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
             getWidthLogoLogin: () => undefined,
             getWidthLogoSidenav: () => undefined,
             getColorDrawerListaTareas: (color) => color,
+            setVerMasOpciones: (defaults) => ({ ...defaults }),
         };
 
         // Configuración para planes especiales (17, 19)
@@ -351,23 +358,25 @@ export const PlanEstudioProvider: React.FC<PlanEstudioProviderProps> = ({ childr
                 getWidthLogoLogin: () => (idPlanEstudio === 17 ? '279px !important' : undefined),
                 getWidthLogoSidenav: () => (idPlanEstudio === 17 ? '90px !important' : undefined),
                 getColorDrawerListaTareas: (color) => (idPlanEstudio === 17 ? 'primary.main' : color),
+                setVerMasOpciones: () => ({ verMasOpciones: true })
             };
         }
 
         if (PLAN_ESTUDIOS.AUTORIDAD.includes(id)) {
             return {
                 ...baseConfig,
-                // getFilteredMenuRoutes: <T extends { id: number }>(routes: T[]) => {
-                //     return routes.filter(
-                //         (item) => !EXCLUDED_MENU_ROUTES_IDS.AUTORIDAD.includes(item.id)
-                //     );
-                // },
+                getFilteredMenuRoutes: <T extends { id: number }>(routes: T[]) => {
+                    return routes.filter(
+                        (item) => !EXCLUDED_MENU_ROUTES_IDS.AUTORIDAD.includes(item.id)
+                    );
+                },
                 getReestablecerPassword: () => {
                     const background = [1, 2].includes(id) ? PasswordImageAutoridad : HomeDiplomado;
                     // const verLogo = idPlanEstudio === 19 ? true : false;
                     const verLogo = true;
                     return { background, verLogo }
                 },
+                setVerMasOpciones: () => ({ verMasOpciones: false })
             };
         }
 
