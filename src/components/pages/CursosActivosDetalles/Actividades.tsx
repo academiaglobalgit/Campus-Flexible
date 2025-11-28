@@ -297,7 +297,7 @@ export const Actividades: React.FC = () => {
                         Sube tu archivo aquí
                     </Typography>
                     <Typography component="p" variant="body1">
-                        (pdf, word)
+                        (pdf)
                     </Typography>
                 </Box>
                 <FileUploader
