@@ -17,7 +17,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import DsSvgIcon from "../../atoms/Icon/Icon";
-import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 
 interface Props {
     goToTab: (tabIndex: number) => void;
@@ -35,7 +34,6 @@ const TipoRecursoIds: Record<string, number> = {
 
 export const ListaPendientesDrawer: React.FC<Props> = ({ goToTab }) => {
     const theme = useTheme();
-    const { config: configPlanEstudio } = usePlanEstudio();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { id } = useParams<{ id: string }>();
     const { data: lista, isLoading } = useGetListaPendientes(Number(id!));
