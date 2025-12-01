@@ -6,40 +6,50 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { accordionStyle } from "@styles";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { useState } from "react";
 
 export const Contenido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { data: contenido, isLoading } = useGetContenidoTabs(Number(id!), "Contenido");
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [accordionOpen, setAccordionOpen] = useState<number | null>(null);
+    
 
     if(isLoading) 
         return <LoadingCircular Text="Cargando Contenido..." />
         
     return (
-        contenido?.data.map((item, index) => 
-            <Accordion 
-                key={index}
-                title={item.titulo_elemento}
-                customHeader={!isMobile ? <AccordionStatus tittle={item.titulo_elemento} status={item.estatus} /> : undefined}
-                sxProps={accordionStyle}
-            >
-                {
-                    isMobile && <Box sx={{ padding: '10px' }}>
-                        <StatusIcon estado={item.estatus} />
+        contenido?.data.map((item, index) =>{
+            const keyAccordion = index;
+            return(
+                <Accordion 
+                    key={index}
+                    title={item.titulo_elemento}
+                    isExpanded={accordionOpen === keyAccordion}
+                                onChange={() => {
+                                    setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);
+                    }}
+                    customHeader={!isMobile ? <AccordionStatus tittle={item.titulo_elemento} status={item.estatus} /> : undefined}
+                    sxProps={accordionStyle}
+                >
+                    {
+                        isMobile && <Box sx={{ padding: '10px' }}>
+                            <StatusIcon estado={item.estatus} />
+                        </Box>
+                    }
+                    <Box>
+                        <iframe
+                            src={item?.url}
+                            style={{
+                                width: "100%",
+                                height: "100vh",
+                                border: "none",
+                            }}
+                        />
                     </Box>
-                }
-                <Box>
-                    <iframe
-                        src={item?.url}
-                        style={{
-                            width: "100%",
-                            height: "100vh",
-                            border: "none",
-                        }}
-                    />
-                </Box>
-            </Accordion>
+                </Accordion>
+            )}
         )
     );
 };

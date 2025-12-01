@@ -72,7 +72,7 @@ const ContactoDialog: React.FC<ContactoDialogProps> = ({ isOpen, data, close }) 
                         return (
                             <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <WhatsAppContacto />
-                                <Link href={item.url_contacto} target="_blank" sx={{ textDecoration: 'none' }}> {formatWithIMask(item.valor_contacto, "phone")}</Link>
+                                <Link variant="body2" href={item.url_contacto} target="_blank" sx={{ textDecoration: 'none' }}> {formatWithIMask(item.valor_contacto, "phone")}</Link>
                             </Box>
                         )
                     } else {

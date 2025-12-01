@@ -2,7 +2,7 @@ import React from "react";
 import type { Notificaciones } from "@constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MarkReadNotification } from "../../../services/NotificacionesService";
-import { Box, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
+import { Box, LinearProgress, useTheme } from "@mui/material";
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ThumbsUpDownOutlinedIcon from '@mui/icons-material/ThumbsUpDownOutlined';
@@ -22,7 +22,6 @@ type NotificacionProps = {
 
 export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loadingItems, setLoadingItems, setMarkedRead }) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
@@ -60,6 +59,7 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
             case 'anuncio': return <NotificationsNoneIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
             case 'tarea_nueva': return <ThumbsUpDownOutlinedIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
             case 'mensaje': return <BusinessCenterOutlinedIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
+            default: return <NotificationsNoneIcon color="primary" sx={[item.leida === 1 && MarkedRead()]} />;
         }
     };
 
@@ -81,8 +81,6 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
                 navigate(_item.enlace_accion);
             }
         }
-
-        
     }
 
     return (
@@ -90,15 +88,16 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
             {hasLoading(item.id_notificacion) && <LinearProgress />}
             <Box onClick={() => item.leida === 0 ? handleNotifications(item) : goTo(item)}
                 sx={[{
-                    width: isMobile ? '350px' : '100%',
-                    // height: '138px',
+                    width: '100%',
+                    maxWidth: '100%',
                     height: 'auto',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     gap: '25px',
                     borderBottom: '1px solid #AAB1B6',
                     backgroundColor: item.leida === 0 ? '#F6FAFD' : '#FFFFFF',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    overflow: 'hidden'
                 }, index === 0 && { borderTop: '1px solid #AAB1B6' }]}
 
 
@@ -106,14 +105,14 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
                 <Box sx={{ pl: 1 }}>
                     {IconsNotification(item)}
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <Typography component="span" variant="h5" color="primary" >{item.titulo}</Typography>
                         {
                             item.leida === 0 && <Box sx={{ width: '8px', height: '8px', borderRadius: '100px', backgroundColor: '#1976D2' }}></Box>
                         }
                     </Box>
-                    <Box dangerouslySetInnerHTML={{ __html: item.mensaje }}/>
+                    <Box dangerouslySetInnerHTML={{ __html: item.mensaje }} />
                     <Typography component="span" variant="body1" sxProps={{ color: theme.palette.grey[100] }}>{tiempoTranscurrido(item.fecha_envio)}</Typography>
                 </Box>
             </Box>

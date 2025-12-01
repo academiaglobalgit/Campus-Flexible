@@ -11,6 +11,7 @@ import { LoadingCircular } from "../../molecules/LoadingCircular/LoadingCircular
 import type { Tutoria } from "@constants";
 import { AccordionStatus } from "../../molecules/AccordionStatus/AccordionStatus";
 import StatusIcon from "../../molecules/StatusIcon/StatusIcon";
+import { useState } from "react";
 
 export const Tutorias: React.FC = () => {
     const theme = useTheme();
@@ -18,6 +19,8 @@ export const Tutorias: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const { data: tutorias, isLoading } = useGetTutorias(Number(id!), "Tutorias");
+    const [accordionOpen, setAccordionOpen] = useState<number | null>(null);
+
 
     const text = (texto: string, color: 'primary' | any = 'primary') => (
         isMobile
@@ -89,11 +92,20 @@ export const Tutorias: React.FC = () => {
                 </Box>
 
                 {
-                    tutorias && tutorias.data.map((tutoria: Tutoria, i: number) => (
-                        <Accordion key={i}
+                    tutorias && tutorias.data.map((tutoria: Tutoria, i: number) => {
+                    const keyAccordion = i;
+                    return(
+                        <Accordion 
+                            key={i}
                             title={tutoria.titulo}
                             customHeader={!isMobile ? <AccordionStatus tittle={tutoria.titulo} status={tutoria.estatus} /> : undefined}
-                            sxProps={accordionStyle}>
+                            sxProps={accordionStyle}
+                            isExpanded={accordionOpen === keyAccordion}
+                            onChange={() => {
+                                setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);
+                            }}
+                        >
+                            
                             {
                                 isMobile
                                     ?
@@ -144,7 +156,7 @@ export const Tutorias: React.FC = () => {
                                     </Grid>
                             }
                         </Accordion>
-                    ))
+                    )})
                 }
             </>
     )
