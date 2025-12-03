@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Box, DialogActions, DialogContent, useMediaQuery, useTheme } from "@mui/material";
+import { Box, DialogContent, useMediaQuery, useTheme } from "@mui/material";
 
 import { Dialog } from "../../../atoms/Dialog/Dialog";
-import Button from "../../../atoms/Button/Button";
 import MiPerfil from "../../../pages/MiPerfil/MiPerfil";
 import type { PerfilResponse } from "@constants";
 import { Typography } from "../../../atoms/Typography/Typography";
 
 type DialogPerfilProps = {
   isOpen?: boolean;
-  close?: () => void;
-  canClose?: boolean;
   onProfileUpdated?: (perfil?: PerfilResponse) => void;
 };
 
-export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, close, canClose = true, onProfileUpdated }) => {
+export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, onProfileUpdated }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [open, setOpen] = useState(false);
@@ -22,12 +19,6 @@ export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, close, canCl
   useEffect(() => {
     setOpen(isOpen ?? false);
   }, [isOpen]);
-
-  const handleClose = () => {
-    if (!canClose) return;
-    setOpen(false);
-    if (close) close();
-  };
 
   if (!open) return null;
 
@@ -47,7 +38,7 @@ export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, close, canCl
         }}
       >
         <Box sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-          <Typography component="h3" variant="h3" sxProps={{ mb: 1}}>
+          <Typography component="h3" variant="h3" sxProps={{ mb: 1, color: 'primary.main', textAlign: 'center' }}>
             Importante: Actualiza tus datos de contacto
           </Typography>
           <Typography component="p" variant="body3" sxProps={{ textAlign: 'justify' }}>
@@ -59,13 +50,6 @@ export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, close, canCl
           <MiPerfil variant="dialog" onProfileUpdated={onProfileUpdated} />
         </Box>
       </DialogContent>
-      {canClose && (
-        <DialogActions sx={{ padding: isMobile ? "10px" : "24px" }}>
-          <Button fullWidth={isMobile} onClick={handleClose}>
-            Cerrar
-          </Button>
-        </DialogActions>
-      )}
     </Dialog>
   );
 };
