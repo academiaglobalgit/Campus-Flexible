@@ -32,7 +32,7 @@ const CursoActivo: React.FC = () => {
     const theme = useTheme();
     const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
     const { config: configPlanEstudio } = usePlanEstudio();
-    
+
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -75,15 +75,15 @@ const CursoActivo: React.FC = () => {
 
     React.useEffect(() => {
         const values = configPlanEstudio?.getConfiguracionCursosActivos({ tutorVer: true, tipoVideo: 1, isOpenVideo: false });
-        if(values?.isPlan) {
+        if (values?.isPlan) {
             setTutorVer(values.tutorVer);
-            if (videoVisto === 0 ) {
+            if (videoVisto === 0 && perfilUsuario && !isPerfilIncompleto(perfilUsuario)) {
                 setUrlVideo(manual?.url ?? '');
                 setTipoVideo(values.tipoVideo);
                 setIsOpenVideo(values.isOpenVideo);
             }
         }
-    }, [configPlanEstudio, manual]);
+    }, [configPlanEstudio, manual, perfilUsuario, videoVisto]);
 
     React.useEffect(() => {
         if (perfilUsuario) {
@@ -172,12 +172,12 @@ const CursoActivo: React.FC = () => {
     const handleCerrarVideo = async () => {
 
         updateVideoVisto().then(() => {
-            if (SetVideoVisto){
+            if (SetVideoVisto) {
 
                 setIsOpenVideo(false);
                 setRefreshEncuestas(prev => !prev);
                 SetVideoVisto(1);
-            } 
+            }
         })
             .catch(error => {
                 console.error("Error fetching encuestas:", error);
@@ -240,7 +240,7 @@ const CursoActivo: React.FC = () => {
                 sxProps={accordionStyle}
                 title={item.titulo_curso}
                 isExpanded={accordionOpen === keyAccordion}
-                onChange={() => {setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);}}
+                onChange={() => { setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion); }}
                 customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus} sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
             >
 
@@ -324,7 +324,7 @@ const CursoActivo: React.FC = () => {
                     {Materias}
                 </ContainerDesktop>
             }
-            
+
             <EncuestasModal
                 isOpen={openEncuesta}
                 data={{ encuesta: encuestaData[0], idAsignacion }}
