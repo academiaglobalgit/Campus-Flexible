@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import Button from "../../atoms/Button/Button";
-import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
+import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo, type PerfilResponse } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -25,6 +25,8 @@ import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useGetManuales } from "../../../services/ManualesService";
 import { usePlanEstudio } from "../../../context/PlanEstudioContext";
+import { DialogPerfil } from "../../molecules/Dialogs/DialogPerfil/DialogPerfil";
+import { useGetPerfilUsuario } from "../../../services/AuthService";
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
@@ -50,10 +52,26 @@ const CursoActivo: React.FC = () => {
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
     const [refreshEncuestas, setRefreshEncuestas] = React.useState(true);
     const [accordionOpen, setAccordionOpen] = React.useState<number | null>(null);
+    const [openPerfilDialog, setOpenPerfilDialog] = React.useState(false);
+    const { data: perfilUsuario, refetch: refetchPerfil } = useGetPerfilUsuario("CursosActivosPerfil");
+    const [perfilIncompleto, setPerfilIncompleto] = React.useState(false);
 
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
+
+    const isPerfilIncompleto = (perfil?: PerfilResponse) => {
+        const data = perfil?.data;
+        if (!data) return false;
+
+        const getNumero = (tipo: string) => data.telefonos?.find((item) => item.tipo === tipo)?.numero?.trim();
+        const email = data.correo?.trim();
+        const celular = getNumero("Celular");
+        const whatsapp = getNumero("Whatsapp");
+        const emergencia = getNumero("Emergencia");
+
+        return !email || !celular || !whatsapp || !emergencia;
+    };
 
     React.useEffect(() => {
         const values = configPlanEstudio?.getConfiguracionCursosActivos({ tutorVer: true, tipoVideo: 1, isOpenVideo: false });
@@ -66,6 +84,16 @@ const CursoActivo: React.FC = () => {
             }
         }
     }, [configPlanEstudio, manual]);
+
+    React.useEffect(() => {
+        if (perfilUsuario) {
+            const incompleto = isPerfilIncompleto(perfilUsuario);
+            setPerfilIncompleto(incompleto);
+            if (incompleto) {
+                setOpenPerfilDialog(true);
+            }
+        }
+    }, [perfilUsuario]);
 
     useEffect(() => {
         if (cursosData?.data) {
@@ -154,6 +182,14 @@ const CursoActivo: React.FC = () => {
             .catch(error => {
                 console.error("Error fetching encuestas:", error);
             })
+    };
+
+    const handlePerfilActualizado = (perfil?: PerfilResponse) => {
+        const perfilValidar = perfil ?? perfilUsuario;
+        const incompleto = isPerfilIncompleto(perfilValidar);
+        setPerfilIncompleto(incompleto);
+        setOpenPerfilDialog(incompleto ? true : false);
+        refetchPerfil();
     };
 
     const createMutation = useMutation({
@@ -301,6 +337,12 @@ const CursoActivo: React.FC = () => {
             />
             <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
+            <DialogPerfil
+                isOpen={openPerfilDialog}
+                canClose={!perfilIncompleto}
+                close={() => { if (!perfilIncompleto) setOpenPerfilDialog(false); }}
+                onProfileUpdated={handlePerfilActualizado}
+            />
         </>
     );
 };
