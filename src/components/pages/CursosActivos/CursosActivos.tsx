@@ -54,7 +54,6 @@ const CursoActivo: React.FC = () => {
     const [accordionOpen, setAccordionOpen] = React.useState<number | null>(null);
     const [openPerfilDialog, setOpenPerfilDialog] = React.useState(false);
     const { data: perfilUsuario, refetch: refetchPerfil } = useGetPerfilUsuario("CursosActivosPerfil");
-    const [perfilIncompleto, setPerfilIncompleto] = React.useState(false);
 
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -88,10 +87,7 @@ const CursoActivo: React.FC = () => {
     React.useEffect(() => {
         if (perfilUsuario) {
             const incompleto = isPerfilIncompleto(perfilUsuario);
-            setPerfilIncompleto(incompleto);
-            if (incompleto) {
-                setOpenPerfilDialog(true);
-            }
+            setOpenPerfilDialog(incompleto ? true : false);
         }
     }, [perfilUsuario]);
 
@@ -187,7 +183,6 @@ const CursoActivo: React.FC = () => {
     const handlePerfilActualizado = (perfil?: PerfilResponse) => {
         const perfilValidar = perfil ?? perfilUsuario;
         const incompleto = isPerfilIncompleto(perfilValidar);
-        setPerfilIncompleto(incompleto);
         setOpenPerfilDialog(incompleto ? true : false);
         refetchPerfil();
     };
@@ -339,8 +334,6 @@ const CursoActivo: React.FC = () => {
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
             <DialogPerfil
                 isOpen={openPerfilDialog}
-                canClose={!perfilIncompleto}
-                close={() => { if (!perfilIncompleto) setOpenPerfilDialog(false); }}
                 onProfileUpdated={handlePerfilActualizado}
             />
         </>
