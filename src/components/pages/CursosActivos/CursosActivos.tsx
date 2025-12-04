@@ -26,11 +26,11 @@ import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDi
 import { useGetManuales } from "../../../services/ManualesService";
 import { usePlanEstudio } from "../../../context/PlanEstudioContext";
 import { DialogPerfil } from "../../molecules/Dialogs/DialogPerfil/DialogPerfil";
-import { useGetPerfilUsuario } from "../../../services/AuthService";
+
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
+    const { configPlataforma, videoVisto, SetVideoVisto, user, updateUserProfile } = useAuth();
     const { config: configPlanEstudio } = usePlanEstudio();
 
     const { data: cursosData, isLoading } = useGetCursos();
@@ -53,17 +53,17 @@ const CursoActivo: React.FC = () => {
     const [refreshEncuestas, setRefreshEncuestas] = React.useState(true);
     const [accordionOpen, setAccordionOpen] = React.useState<number | null>(null);
     const [openPerfilDialog, setOpenPerfilDialog] = React.useState(false);
-    const { data: perfilUsuario, refetch: refetchPerfil } = useGetPerfilUsuario("CursosActivosPerfil");
+
 
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
     const isPerfilIncompleto = (perfil?: PerfilResponse) => {
-        const data = perfil?.data;
+        const data = perfil?.data || user?.perfil;
         if (!data) return false;
 
-        const getNumero = (tipo: string) => data.telefonos?.find((item) => item.tipo === tipo)?.numero?.trim();
+        const getNumero = (tipo: string) => data.telefonos?.find((item: any) => item.tipo === tipo)?.numero?.trim();
         const email = data.correo?.trim();
         const celular = getNumero("Celular");
         const whatsapp = getNumero("Whatsapp");
@@ -76,20 +76,20 @@ const CursoActivo: React.FC = () => {
         const values = configPlanEstudio?.getConfiguracionCursosActivos({ tutorVer: true, tipoVideo: 1, isOpenVideo: false });
         if (values?.isPlan) {
             setTutorVer(values.tutorVer);
-            if (videoVisto === 0 && perfilUsuario && !isPerfilIncompleto(perfilUsuario)) {
+            if (videoVisto === 0 && user?.perfil && !isPerfilIncompleto()) {
                 setUrlVideo(manual?.url ?? '');
                 setTipoVideo(values.tipoVideo);
                 setIsOpenVideo(values.isOpenVideo);
             }
         }
-    }, [configPlanEstudio, manual, perfilUsuario, videoVisto]);
+    }, [configPlanEstudio, manual, user, videoVisto]);
 
     React.useEffect(() => {
-        if (perfilUsuario) {
-            const incompleto = isPerfilIncompleto(perfilUsuario);
+        if (user) {
+            const incompleto = isPerfilIncompleto();
             setOpenPerfilDialog(incompleto ? true : false);
         }
-    }, [perfilUsuario]);
+    }, [user]);
 
     useEffect(() => {
         if (cursosData?.data) {
@@ -180,11 +180,12 @@ const CursoActivo: React.FC = () => {
             })
     };
 
-    const handlePerfilActualizado = (perfil?: PerfilResponse) => {
-        const perfilValidar = perfil ?? perfilUsuario;
-        const incompleto = isPerfilIncompleto(perfilValidar);
-        setOpenPerfilDialog(incompleto ? true : false);
-        refetchPerfil();
+    const handlePerfilActualizado = async (perfil?: PerfilResponse) => {
+        if (perfil?.data) {
+            await updateUserProfile(perfil.data);
+            const incompleto = isPerfilIncompleto(perfil);
+            setOpenPerfilDialog(incompleto);
+        }
     };
 
     const createMutation = useMutation({

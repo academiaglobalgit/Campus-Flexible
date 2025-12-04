@@ -8,23 +8,24 @@ import type { ConfigPlataforma } from '../types/ConfigPlataforma.interface';
 import { loadConfig } from '../config/configStorage';
 
 interface AuthContextType {
-  user: User | null;
-  isLoading?: boolean;
-  isAuthenticated: boolean;
-  error: string | null;
-  isInitializing: boolean;
-  isTokenExpired: boolean;
-  isLogout: boolean;
-  aceptoTerminos: boolean;
-  configPlataforma: ConfigPlataforma | null;
-  videoVisto: number;
-  clearError: () => void;
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
-  logout: () => Promise<void>;
-  setUser: (user: User) => void;
-  newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-  setAceptoTerminos?: (acepto: boolean) => void;
-  SetVideoVisto?:(acepto: number) => void;
+    user: User | null;
+    isLoading?: boolean;
+    isAuthenticated: boolean;
+    error: string | null;
+    isInitializing: boolean;
+    isTokenExpired: boolean;
+    isLogout: boolean;
+    aceptoTerminos: boolean;
+    configPlataforma: ConfigPlataforma | null;
+    videoVisto: number;
+    clearError: () => void;
+    login: (email: string, password: string) => Promise<{ success: boolean; message?: string; cambiarPassword?: boolean; aceptoTerminos?: boolean }>;
+    logout: () => Promise<void>;
+    setUser: (user: User) => void;
+    newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+    setAceptoTerminos?: (acepto: boolean) => void;
+    SetVideoVisto?: (acepto: number) => void;
+    updateUserProfile: (perfil: any) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,10 +44,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [configPlataforma, setConfigPlataforma] = useState<ConfigPlataforma | null>(null);
 
     const queryClient = useQueryClient();
-    
+
     useEffect(() => {
         loadConfig().then((cfg) => {
-          setConfigPlataforma(cfg.data || null);
+            setConfigPlataforma(cfg.data || null);
         });
     }, []);
 
@@ -109,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             const username = email;
             const response = await loginMutation.mutateAsync({ password, username });
-            
+
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
 
             if(response?.session) {
@@ -121,14 +122,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const aceptoTerminosValue = response?.acepto_terminos
                 setToken(response?.token);
                 setAceptoTerminos(aceptoTerminosValue);
-                setNombrePrograma(response?.programa);         
-                SetVideoVisto(response?.video_visto)  
-                
+                setNombrePrograma(response?.programa);
+                SetVideoVisto(response?.video_visto)
+
                 await procesarPerfil(response.perfil,  response?.acepto_terminos, response?.programa, response?.video_visto);
 
-                setIsAuthenticated(true);                
+                setIsAuthenticated(true);
                 setIsLoading(false);
-                
+
                 return { success: true, data: null, cambiarPassword: false, aceptoTerminos: aceptoTerminosValue };
             } else {
                 setIsLoading(false);
@@ -138,9 +139,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         } catch (error: any) {
             setIsLoading(false);
-            const errorMessage = error.response?.data?.message || 
-                            error.message || 
-                            'Error al conectar con el servidor';
+            const errorMessage = error.response?.data?.message ||
+                error.message ||
+                'Error al conectar con el servidor';
             setError(errorMessage);
             return { success: false, message: errorMessage, cambiarPassword: false };
         }
@@ -153,7 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const username = email;
             const token = localStorage.getItem("session") || "";
             const response = await newPasswordMutation.mutateAsync({ newPassword: password, username, token });
-            
+
             localStorage.removeItem("session");
 
             queryClient.invalidateQueries({ queryKey: ['currentUser']});
@@ -161,15 +162,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (response?.token) {
                 const aceptoTerminosValue = response?.acepto_terminos ?? false;
                 setToken(response?.token);
-                setAceptoTerminos(aceptoTerminosValue);     
-                setNombrePrograma(response?.programa); 
-                SetVideoVisto(response.video_visto)          
-                
+                setAceptoTerminos(aceptoTerminosValue);
+                setNombrePrograma(response?.programa);
+                SetVideoVisto(response.video_visto)
+
                 await procesarPerfil(response.perfil, response?.acepto_terminos, response?.programa, response.video_visto);
-                
+
                 setIsAuthenticated(true);
                 setIsLoading(false);
-                
+
                 return { success: true, data: null, aceptoTerminos: false };
             } else {
                 setIsLoading(false);
@@ -179,9 +180,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         } catch (error: any) {
             setIsLoading(false);
-            const errorMessage = error.response?.data?.message || 
-                            error.message || 
-                            'Error al conectar con el servidor';
+            const errorMessage = error.response?.data?.message ||
+                error.message ||
+                'Error al conectar con el servidor';
             setError(errorMessage);
             return { success: false, message: errorMessage };
         }
@@ -191,7 +192,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             if (perfil) {
                 const datos = perfil;
-            
+
                 const aceptoTerminosValue = pAceptoTerminos;
                 const video = videoBienvenida;
 
@@ -249,7 +250,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsTokenExpired(false);
         await logoutMutation.mutate();
     };
-    
+
     const clearError = () => {
         setError(null);
     };
@@ -259,10 +260,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(true);
         setIsAuthenticated(false);
         setError(null);
-        setIsTokenExpired(false);   
+        setIsTokenExpired(false);
         setIsLogout(false);
         setAceptoTerminos(true);
     }
+
+    const updateUserProfile = async (perfil: any) => {
+        if (user) {
+            const updatedUser = { ...user, perfil: perfil };
+
+            if (perfil.correo) updatedUser.email = perfil.correo;
+            if (perfil.telefonos) {
+                updatedUser.phone = perfil.telefonos?.find((item: any) => item.tipo === "Celular")?.numero ?? user.phone;
+            }
+
+            setUser(updatedUser);
+            const encry = await encryptData(updatedUser);
+            setAuthModel(encry);
+        }
+    };
 
     const value = {
         user,
@@ -281,16 +297,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser,
         newPassword: handleNewPassword,
         setAceptoTerminos: handleAceptoTerminos,
-        SetVideoVisto : handleVideoVisto
+        SetVideoVisto: handleVideoVisto,
+        updateUserProfile
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 };
 
 export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };
