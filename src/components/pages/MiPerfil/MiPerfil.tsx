@@ -33,12 +33,19 @@ import type { PreviewFile } from "../../../types/Perfil.interface";
 import { encryptData } from "../../../utils/crypto";
 import { ContainerDesktop } from "../../organisms/ContainerDesktop/ContainerDesktop";
 
-const MiPerfil: React.FC = () => {
+type MiPerfilProps = {
+  variant?: 'page' | 'dialog';
+  onProfileUpdated?: (perfil?: PerfilResponse) => void;
+};
+
+const MiPerfil: React.FC<MiPerfilProps> = ({ variant = 'page', onProfileUpdated }) => {
   const { logout, user, setUser } = useAuth();
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isDialog = variant === 'dialog';
 
   const [loading, setLoading] = React.useState(false);
   const [loadingData, setLoadingData] = React.useState(false);
@@ -205,6 +212,7 @@ const MiPerfil: React.FC = () => {
       const perfil = await refetch();
 
       setPerfil(perfil.data);
+      onProfileUpdated?.(perfil.data);
 
       if (perfil) {
         const auth: User = {
@@ -488,6 +496,19 @@ const MiPerfil: React.FC = () => {
     </>
   )
 
+  if (isDialog) {
+    return (
+      <Box sx={{ padding: isMobile ? '12px' : '24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <Box component="form">
+          {formMiPerfil}
+        </Box>
+        <Box sx={{ maxWidth: isMobile ? '100%' : '320px', alignSelf: 'flex-end' }}>
+          {ButtonGuardarCambios}
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <>
       {
@@ -540,7 +561,7 @@ const MiPerfil: React.FC = () => {
             </Grid>
           </ContainerDesktop>
       }
-      <UploadImagePerfilDialog isOpen={openUploadImage} close={(val) => handleImage(val)} />
+      {!isDialog && <UploadImagePerfilDialog isOpen={openUploadImage} close={(val) => handleImage(val)} />}
     </>
   );
 };

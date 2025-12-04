@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import Button from "../../atoms/Button/Button";
-import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo } from "@constants";
+import { AppRoutingPaths, TitleScreen, type CursoActivo as ICursoActivo, type PerfilResponse } from "@constants";
 import { Accordion } from "../../molecules/Accordion/Accordion";
 import { TituloIcon } from "../../molecules/TituloIcon/TituloIcon";
 import { Typography } from "../../atoms/Typography/Typography";
@@ -25,12 +25,14 @@ import { useAuth } from "../../../hooks";
 import { VideoBienvenidaDialog } from "../../molecules/Dialogs/VideoBienvenidaDialog/VideoBienvenidaDialog";
 import { useGetManuales } from "../../../services/ManualesService";
 import { usePlanEstudio } from "../../../context/PlanEstudioContext";
+import { DialogPerfil } from "../../molecules/Dialogs/DialogPerfil/DialogPerfil";
+
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma, videoVisto, SetVideoVisto } = useAuth();
+    const { configPlataforma, videoVisto, SetVideoVisto, user } = useAuth();
     const { config: configPlanEstudio } = usePlanEstudio();
-    
+
     const { data: cursosData, isLoading } = useGetCursos();
     const { data: cursosDatos } = useGetDatosModulos(ModulosCampusIds.CURSOS_ACTIVOS);
     const { refetch } = useGetEncuestas({ enabled: false });
@@ -50,22 +52,44 @@ const CursoActivo: React.FC = () => {
     const [encuestaData, setEncuestaData] = React.useState<EncuestasDatosResponse[]>([]);
     const [refreshEncuestas, setRefreshEncuestas] = React.useState(true);
     const [accordionOpen, setAccordionOpen] = React.useState<number | null>(null);
+    const [openPerfilDialog, setOpenPerfilDialog] = React.useState(false);
+
 
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
+    const isPerfilIncompleto = (perfil?: PerfilResponse) => {
+        const data = perfil?.data || user?.perfil;
+        if (!data) return false;
+
+        const getNumero = (tipo: string) => data.telefonos?.find((item: any) => item.tipo === tipo)?.numero?.trim();
+        const email = data.correo?.trim();
+        const celular = getNumero("Celular");
+        const whatsapp = getNumero("Whatsapp");
+        const emergencia = getNumero("Emergencia");
+
+        return !email || !celular || !whatsapp || !emergencia;
+    };
+
     React.useEffect(() => {
         const values = configPlanEstudio?.getConfiguracionCursosActivos({ tutorVer: true, tipoVideo: 1, isOpenVideo: false });
-        if(values?.isPlan) {
+        if (values?.isPlan) {
             setTutorVer(values.tutorVer);
-            if (videoVisto === 0 ) {
+            if (videoVisto === 0 && user?.perfil && !isPerfilIncompleto()) {
                 setUrlVideo(manual?.url ?? '');
                 setTipoVideo(values.tipoVideo);
                 setIsOpenVideo(values.isOpenVideo);
             }
         }
-    }, [configPlanEstudio, manual]);
+    }, [configPlanEstudio, manual, user, videoVisto]);
+
+    React.useEffect(() => {
+        if (user) {
+            const incompleto = isPerfilIncompleto();
+            setOpenPerfilDialog(incompleto ? true : false);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (cursosData?.data) {
@@ -144,16 +168,23 @@ const CursoActivo: React.FC = () => {
     const handleCerrarVideo = async () => {
 
         updateVideoVisto().then(() => {
-            if (SetVideoVisto){
+            if (SetVideoVisto) {
 
                 setIsOpenVideo(false);
                 setRefreshEncuestas(prev => !prev);
                 SetVideoVisto(1);
-            } 
+            }
         })
             .catch(error => {
                 console.error("Error fetching encuestas:", error);
             })
+    };
+
+    const handlePerfilActualizado = async (perfil?: PerfilResponse) => {
+        if (perfil?.data) {
+            const incompleto = isPerfilIncompleto(perfil);
+            setOpenPerfilDialog(incompleto);
+        }
     };
 
     const createMutation = useMutation({
@@ -204,7 +235,7 @@ const CursoActivo: React.FC = () => {
                 sxProps={accordionStyle}
                 title={item.titulo_curso}
                 isExpanded={accordionOpen === keyAccordion}
-                onChange={() => {setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion);}}
+                onChange={() => { setAccordionOpen(prev => prev === keyAccordion ? null : keyAccordion); }}
                 customHeader={<AccordionStatus tittle={item.titulo_curso} status={item.estatus} sxProps={{ flexDirection: isMobile ? 'column' : 'row' }} />}
             >
 
@@ -288,7 +319,7 @@ const CursoActivo: React.FC = () => {
                     {Materias}
                 </ContainerDesktop>
             }
-            
+
             <EncuestasModal
                 isOpen={openEncuesta}
                 data={{ encuesta: encuestaData[0], idAsignacion }}
@@ -301,6 +332,10 @@ const CursoActivo: React.FC = () => {
             />
             <GenericDialog mensaje={mensajeDialog} tipo="info" isOpen={isOpenInscribirmeDialog} close={(isConfirmar: boolean) => handleConfirmar(isConfirmar)} />
             <VideoBienvenidaDialog isOpen={isOpenVideo} close={() => handleCerrarVideo()} urlVideo={urlVideo} tipo={tipoVideos} />
+            <DialogPerfil
+                isOpen={openPerfilDialog}
+                onProfileUpdated={handlePerfilActualizado}
+            />
         </>
     );
 };
