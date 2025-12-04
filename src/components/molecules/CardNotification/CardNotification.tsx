@@ -102,10 +102,10 @@ export const CardNotification: React.FC<NotificacionProps> = ({ item, index, loa
 
 
             >
-                <Box sx={{ pl: 1 }}>
+                <Box sx={{ mt: 2 }}>
                     {IconsNotification(item)}
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <Typography component="span" variant="h5" color="primary" >{item.titulo}</Typography>
                         {
