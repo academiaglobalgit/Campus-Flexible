@@ -23,7 +23,7 @@ export const MenuRoutes: Menu[] = [
     { id: 2, text: TitleScreen.CURSOS_ACTIVOS, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CURSOS_ACTIVOS, order: 1, visible: 1, children:[], menu: 'main', hasCount: true },
     { id: 3, text: TitleScreen.CALIFICACIONES, icon: Icons.Calificaciones, path: AppRoutingPaths.CALIFICACIONES, order: 2, visible: 1, children:[], menu: 'main' },
     { id: 4, text: TitleScreen.CALENDARIO, icon: Icons.Calendario, path: AppRoutingPaths.CALENDARIO, order: 3, visible: 1, children:[], menu: 'main' },
-    { id: 5, text: TitleScreen.BIBLIOTECA, icon: Icons.Biblioteca, path: AppRoutingPaths.BIBLIOTECA, order: 4, visible: 1, children:[], menu: 'main' },
+    { id: 5, text: TitleScreen.CENTRO_INFORMACION_GLOBAL, icon: Icons.Biblioteca, path: AppRoutingPaths.CENTRO_INFORMACION_GLOBAL, order: 4, visible: 1, children:[], menu: 'main' },
     { id: 6, text: TitleScreen.CONSEJERIA, icon: Icons.CursosCertificaciones, path: AppRoutingPaths.CONSEJERIA_ESTUDIANTIL, order: 5, visible: 1, children:[], menu: 'main'},
     { id: 7, text: TitleScreen.SALA_CONVERSACIONES, icon: Icons.SalaConversacion, path: AppRoutingPaths.SALA_CONVERSACIONES, order: 6, visible: 1, children:[], menu: 'main' },
     { id: 8, text: TitleScreen.BOLETIN_EDUCATIVO, icon: Icons.BoletinAcademico, path: AppRoutingPaths.BOLETIN_EDUCATIVO, order: 7, visible: 1, children:[], menu: 'more' },
