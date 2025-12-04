@@ -46,6 +46,14 @@ export const useGetCalificacionesDetalles = (cursoId: number) => {
   });
 }
 
+export const useGetReportePruebas = (data: string) => {
+  return useQuery<Error>({
+    queryKey: [CALIFICACIONES_ENDPOINTS.GET_REPORTE_PRUEBAS.key, data],
+    queryFn: async () => await apiClient.get(`${CALIFICACIONES_ENDPOINTS.GET_REPORTE_PRUEBAS.path}?html=${data}`),
+    staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+  });
+}
+
 export const usePromediarCurso = async (id_curso: number): Promise<any> => {
   return await apiClient.post<any>(`${CALIFICACIONES_ENDPOINTS.POST_CALIFICACIONES_PROMEDIAR.path}/${id_curso}/finalizar-promedio`);
 };

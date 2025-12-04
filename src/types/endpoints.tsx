@@ -44,6 +44,7 @@ export const CALENDARIO_ENDPOINTS = {
 export const CALIFICACIONES_ENDPOINTS = {
     GET_CALIFICACIONES: { path: '/calificaciones', key: 'calificaciones' },
     GET_CALIFICACIONES_DETALLES: { path: '/calificaciones/curso/detalle', key: 'calificaciones_detalle' },
+    GET_REPORTE_PRUEBAS: { path: '/snapshot/prueba', key: 'reportes_pruebas' },
     POST_CALIFICACIONES_PROMEDIAR: { path: '/calificaciones/cursos' },
 }
 
