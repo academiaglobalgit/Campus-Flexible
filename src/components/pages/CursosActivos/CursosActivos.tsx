@@ -30,7 +30,7 @@ import { DialogPerfil } from "../../molecules/Dialogs/DialogPerfil/DialogPerfil"
 
 const CursoActivo: React.FC = () => {
     const theme = useTheme();
-    const { configPlataforma, videoVisto, SetVideoVisto, user, updateUserProfile } = useAuth();
+    const { configPlataforma, videoVisto, SetVideoVisto, user } = useAuth();
     const { config: configPlanEstudio } = usePlanEstudio();
 
     const { data: cursosData, isLoading } = useGetCursos();
@@ -182,7 +182,6 @@ const CursoActivo: React.FC = () => {
 
     const handlePerfilActualizado = async (perfil?: PerfilResponse) => {
         if (perfil?.data) {
-            await updateUserProfile(perfil.data);
             const incompleto = isPerfilIncompleto(perfil);
             setOpenPerfilDialog(incompleto);
         }

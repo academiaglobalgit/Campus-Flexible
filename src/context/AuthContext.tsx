@@ -25,7 +25,6 @@ interface AuthContextType {
     newPassword: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
     setAceptoTerminos?: (acepto: boolean) => void;
     SetVideoVisto?: (acepto: number) => void;
-    updateUserProfile: (perfil: any) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -265,21 +264,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setAceptoTerminos(true);
     }
 
-    const updateUserProfile = async (perfil: any) => {
-        if (user) {
-            const updatedUser = { ...user, perfil: perfil };
-
-            if (perfil.correo) updatedUser.email = perfil.correo;
-            if (perfil.telefonos) {
-                updatedUser.phone = perfil.telefonos?.find((item: any) => item.tipo === "Celular")?.numero ?? user.phone;
-            }
-
-            setUser(updatedUser);
-            const encry = await encryptData(updatedUser);
-            setAuthModel(encry);
-        }
-    };
-
     const value = {
         user,
         isLoading,
@@ -297,8 +281,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser,
         newPassword: handleNewPassword,
         setAceptoTerminos: handleAceptoTerminos,
-        SetVideoVisto: handleVideoVisto,
-        updateUserProfile
+        SetVideoVisto: handleVideoVisto
     }
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
