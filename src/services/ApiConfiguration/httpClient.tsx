@@ -4,7 +4,7 @@ import { getToken } from '../../hooks/useLocalStorage';
 
 import * as crypto from '../../utils/crypto';
 
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_APP_CAMPUS_API_BASE_URL;
 
 class httpClient {
   private readonly instance: AxiosInstance;

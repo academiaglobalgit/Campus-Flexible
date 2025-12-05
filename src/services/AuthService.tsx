@@ -7,11 +7,11 @@ import axios from 'axios';
 
 export const useAuthLogin = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const encryptedPayload = await apiClient.encryptData(credentials);
-    return await apiClient.post<AuthResponse>(LOGIN_ENDPOINTS.POST_LOGIN.path, { data: encryptedPayload });
+    return await apiClient.withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL).post<AuthResponse>(LOGIN_ENDPOINTS.POST_LOGIN.path, { data: encryptedPayload });
 };
 
 export const useLogout = async (): Promise<void> => {
-    return await apiClient.post<void>(LOGIN_ENDPOINTS.POST_LOGOUT.path);
+    return await apiClient.withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL).post<void>(LOGIN_ENDPOINTS.POST_LOGOUT.path);
 };
 
 export const useAuthNewPassword = async (payload: { username: string; newPassword: string; token: string }): Promise<AuthResponse> => {
@@ -37,18 +37,22 @@ export const useAuthNewPassword = async (payload: { username: string; newPasswor
 export const useGetPerfilUsuario = (key: string, options?: { enabled?: boolean }) => {
     return useQuery<PerfilResponse, Error>({
         queryKey: [PERFIL_ENDPOINTS.GET_PERFIL.key, key],
-        queryFn: async () => await apiClient.get<PerfilResponse>(`${PERFIL_ENDPOINTS.GET_PERFIL.path}`),
-        staleTime: 1000 * 60 * 5, // 5 minutos de stale time
+        queryFn: async () => {
+            return await apiClient
+                .withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL)
+                .get<PerfilResponse>(PERFIL_ENDPOINTS.GET_PERFIL.path);
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutos
         ...options,
     });
 };
 
 export const forgotPassword = async (username: string): Promise<AuthForgotPassword> => {
     const encryptedPayload = await apiClient.encryptData({ username: username });
-    return await apiClient.post<AuthForgotPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD.path, { data: encryptedPayload });
+    return await apiClient.withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL).post<AuthForgotPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD.path, { data: encryptedPayload });
 };
 
 export const resetPassword = async (datos: { username: string, code: string, newPassword: string }): Promise<ResetPassword> => {
     const encryptedPayload = await apiClient.encryptData(datos);
-    return await apiClient.post<ResetPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD_CONFIRM.path, { data: encryptedPayload });
+    return await apiClient.withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL).post<ResetPassword>(LOGIN_ENDPOINTS.POST_FORGOT_PASSWORD_CONFIRM.path, { data: encryptedPayload });
 };
