@@ -209,20 +209,33 @@ const MiPerfil: React.FC<MiPerfilProps> = ({ variant = 'page', onProfileUpdated 
         whatsApp: currentValues.whatsApp,
       });
 
-      const perfil = await refetch();
+      const perfilResponse = await refetch();
+      const perfilData = perfilResponse.data?.data
+        ? {
+            ...perfilResponse.data.data,
+            datos_verificados: 1,
+          }
+        : undefined;
 
-      setPerfil(perfil.data);
-      onProfileUpdated?.(perfil.data);
+      const perfilActualizado = perfilResponse.data && perfilData
+        ? {
+            ...perfilResponse.data,
+            data: perfilData,
+          }
+        : perfilResponse.data;
 
-      if (perfil) {
+      setPerfil(perfilActualizado);
+      onProfileUpdated?.(perfilActualizado);
+
+      if (perfilData) {
         const auth: User = {
           ...user,
-          name: `${perfil.data?.data.nombre} ${perfil.data?.data.apellido_paterno} ${perfil.data?.data.apellido_materno}`,
-          email: perfil.data?.data.correo ?? "",
-          photo: perfil.data?.data.foto_perfil_url ?? "",
-          city: `${perfil.data?.data.nombre_ciudad}`,
-          phone: perfil?.data?.data.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
-          perfil: perfil?.data?.data,
+          name: `${perfilData.nombre} ${perfilData.apellido_paterno} ${perfilData.apellido_materno}`,
+          email: perfilData.correo ?? "",
+          photo: perfilData.foto_perfil_url ?? "",
+          city: `${perfilData.nombre_ciudad}`,
+          phone: perfilData.telefonos?.find((item) => item.tipo === "Celular")?.numero ?? "0000000000",
+          perfil: perfilData,
         };
         setUser(auth);
         const encry = await encryptData(auth);

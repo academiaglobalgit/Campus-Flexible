@@ -7,7 +7,7 @@ const IS_PRODUCTION = import.meta.env.VITE_APP_IS_PRODUCTION === 'true';
 
 export const fetchConfigFromApi = async () => {
 
-  const PLAN = 'https://diplomados.academiaglobal.mx';
+  const PLAN = 'https://diplomados-coppel.academiaglobal.mx';
   const origin = !IS_PRODUCTION ? PLAN : window.location.origin;
 
   const { data } = await axios.get(`${BASE_URL}${LOGIN_ENDPOINTS.GET_PLAN_ESTUDIO.path}?url=${origin}`);
