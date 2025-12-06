@@ -37,7 +37,6 @@ export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, onProfileUpd
           padding: isMobile ? "10px" : "24px",
         }}
       >
-        <Box sx={{ maxHeight: "70vh", overflowY: "auto" }}>
           <Typography component="h3" variant="h3" sxProps={{ mb: 1, color: 'primary.main', textAlign: 'center' }}>
             Importante: Actualiza tus datos de contacto
           </Typography>
@@ -47,6 +46,7 @@ export const DialogPerfil: React.FC<DialogPerfilProps> = ({ isOpen, onProfileUpd
             Mantener esta información al día es esencial para un seguimiento académico óptimo y la recepción de avisos importantes. <br />
             Agradecemos de antemano tu valiosa colaboración.
           </Typography>
+        <Box sx={{ maxHeight: "70vh", overflowY: "auto" }}>
           <MiPerfil variant="dialog" onProfileUpdated={onProfileUpdated} />
         </Box>
       </DialogContent>

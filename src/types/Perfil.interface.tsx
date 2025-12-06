@@ -5,6 +5,7 @@ export interface PerfilResponse {
 
 export interface Perfil {
     apellido_materno: string;
+    datos_verificados: number;
     apellido_paterno: string;
     correo:           string;
     curp:             string;

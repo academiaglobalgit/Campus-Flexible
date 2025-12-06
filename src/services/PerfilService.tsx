@@ -10,7 +10,7 @@ export const useCreatePerfil = async (payload: PerfilPayload): Promise<any> => {
 
     if(payload.foto_perfil_url) formData.append("foto_perfil", payload.foto_perfil_url);
     
-    return await apiClient.post<any>(
+    return await apiClient.withBaseUrl(import.meta.env.VITE_APP_API_BASE_URL).post<any>(
         PERFIL_ENDPOINTS.POST_PERFIL.path,
         formData
       );
