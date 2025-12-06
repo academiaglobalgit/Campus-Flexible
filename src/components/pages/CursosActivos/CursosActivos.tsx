@@ -59,17 +59,11 @@ const CursoActivo: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
-    const isPerfilIncompleto = (perfil?: PerfilResponse) => {
+    const isPerfilIncompleto = (perfil?: PerfilResponse): boolean => {
         const data = perfil?.data || user?.perfil;
         if (!data) return false;
 
-        const getNumero = (tipo: string) => data.telefonos?.find((item: any) => item.tipo === tipo)?.numero?.trim();
-        const email = data.correo?.trim();
-        const celular = getNumero("Celular");
-        const whatsapp = getNumero("Whatsapp");
-        const emergencia = getNumero("Emergencia");
-
-        return !email || !celular || !whatsapp || !emergencia;
+        return data.datos_verificados === 0;
     };
 
     React.useEffect(() => {
